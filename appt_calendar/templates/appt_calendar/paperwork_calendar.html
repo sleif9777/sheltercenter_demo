@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  </head>
+  <body>
+    <div class="roleselector">
+      <nav>
+        <div class="roleselector-center">
+          <ul>
+            <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+            <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+            <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="activitymenu">
+      <nav>
+        <div class="actmenu-center">
+          <ul>
+            <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
+            <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
+            <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
+            <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
+            <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="calendar_header">
+      <h1><a href="{% url 'paperwork_calendar' role previous_day.year previous_day.month previous_day.day appt.id hw_status %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'paperwork_calendar' role next_day.year next_day.month next_day.day appt.id hw_status %}">&#9654;</a></h1>
+    </div>
+
+    {% if empty_day == True %}
+      No appointments on this day.
+
+    {% else %}
+
+    {% for timeslot, appointments in timeslots.items %}
+      <div class="timeslot">
+        <h2 class="timeslotheader">{{timeslot}}</h2>
+        {% for appt in appointments %}
+          <div class="appointment">
+            <div class="appt_description">
+              <p>{{appt}}</p>
+            </div>
+          </div>
+        {% endfor %}<br>
+
+        <a class="timeslot_action" href="{% url 'add_paperwork_appointment' role timeslot.id date.year date.month date.day appt.id %}">Add {{fta_or_adoption}} Paperwork Appointment</a>
+      </div>
+    {% endfor %}
+    <br><br>
+    {% endif %}
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  </head>
+  <body>
+    <div class="roleselector">
+      <nav>
+        <div class="roleselector-center">
+          <ul>
+            <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+            <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+            <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="activitymenu">
+      <nav>
+        <div class="actmenu-center">
+          <ul>
+            <li><a href="{% url 'calendar' 'greeter' %}">Calendar</a> </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="calendar_header">
+      <h1>{{date_pretty}}</h1>
+    </div>
+
+    {% for timeslot, appointments in timeslots.items %}
+      <div class="timeslot">
+        <h2 class="timeslotheader">{{timeslot}}</h2>
+        {% for appt in appointments %}
+          {% if appt.available == False %}
+            <div class="appointment">
+              <div class="appt_description appt_action">
+                <p>{{appt}}</p>
+              </div>
+              <div class="appt_notes">
+                <em>
+                {% if appt.internal_notes %}
+                  <a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}"><b>Internal notes:</b> {{appt.internal_notes}}</a><br>
+                {% endif %}
+                {% if appt.adopter_notes %}
+                  <b>Adopter notes:</b> {{appt.adopter_notes}}<br></a>
+                {% endif %}
+                {% if appt.bringing_dog %}
+                  <b>Bringing dog</b>
+                {% endif %}
+                </em>
+              </div>
+              {% if appt.appt_type in schedulable %}
+                <div class="greeter_appt_action">
+                  <a href="{% url 'send_followup' role appt.id date.year date.month date.day %}">Send Follow-Up Email</a>
+                  <a href="{% url 'send_followup_w_host' role appt.id date.year date.month date.day %}"> (with Host Information)</a><br>
+                  <a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id date.year date.month date.day%}">Reschedule</a><br>
+                  {% if appt.outcome == "1" %}
+                    <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">Enter Decision</a>
+                  {% else %}
+                    <div class="decision">
+                      {% if appt.outcome == "5" %}
+                        {{appt.get_outcome_display}}
+                      {% else %}
+                        <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog}}</a>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+              </div>
+            {% endif %}
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <br><br>
+
+  </body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+</head>
+<body>
+  <div class="roleselector">
+    <nav>
+      <div class="roleselector-center">
+        <ul>
+          <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+          <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+          <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="activitymenu">
+    <nav>
+      <div class="actmenu-center">
+        <ul>
+          <li><a href="{% url 'adopter_home' adopter.id %}">Calendar</a></li>
+          <li><a href="{% url 'faq' adopter.id %}">FAQ</a></li>
+          {% if adopter.has_current_appt == True %}
+            <li><a href="{% url 'visitor_instructions' adopter.id %}">Visitor Instructions</a></li>
+          {% endif %}
+          <li><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="textpage">
+    <h1>Visitor Instructions</h1>
+        <h2 class="visitor_instruction">Directions</h2>
+        <p>Our address is 13400 Old Creedmoor Rd, Wake Forest, NC, located behind Harris Teeter at the intersection of NC-98 and Old Creedmoor Rd. We are just under a mile west of the NC-98 and NC-50 intersection. You will see a teal shed with butterflies at the end of our driveway. Once parked, enter through the gate located in the far back left corner of the parking lot and check in with the greeter. Please do not pull into the driveway with the closed wooden gate or use the neighbor’s driveway to turn around. We request you go down to the next street to make your U-turn. We appreciate your help in respecting our neighbor's privacy and property.</p>
+        <h2 class="visitor_instruction">Dress for the Occasion</h2>
+        <p>Be prepared to meet a friendly furry welcoming committee! Everyone is well behaved, but they get very excited and may jump on you. All our meeting areas are outside, so dress for comfort according to the weather. We continue with appointments even if it is raining, so dress appropriately.</p>
+        <h2 class="visitor_instruction">Hydration</h2>
+        <p>It can be quite hot on the farm, so please make sure to bring water with you. We want you to enjoy your time while meeting dogs and staying hydrated will help with that.</p>
+        <h2 class="visitor_instruction">Restrooms</h2>
+        <p>We have a port-a-potty available for use at the farm. There are also public facilities available at Harris Teeter.</p>
+        <h2 class="visitor_instruction">Supplies</h2>
+        <p>When you adopt one of our dogs, they will go home with a collar and a slip leash. Most new owners find it best to take their new dog shopping with them to find the appropriately sized items. Our Saving Grace Supply Co. store, located at the intersection of NC-98 and Six Forks Rd (about two miles east of our farm), carries many essential supplies.</p>
+        <h2 class="visitor_instruction">Adoption Fee</h2>
+        <p>We accept credit/debit card or cash. We do not accept personal checks. Our adoption fee is $380.00. There is an additional $15 credit/debit card fee. If using cash, please bring the exact amount as we do not keep change onsite. Otherwise, we would be happy to accept the extra as a donation. This fee covers the medical costs and expenses which ensure that your dog comes to you altered, microchipped, up to date on all vaccinations, on preventatives for fleas, ticks, and heartworms, and having received a baseline wellness exam.</p>
+        <h2 class="visitor_instruction">Training</h2>
+        <p>Many of our dogs have crate experience, but please have realistic expectations. We cannot guarantee any dog to be entirely housetrained. A transition period is to be expected for any new dog as they get used to your home. Remember your lifestyle and routine will be new to your dog and it will be your responsibility to acclimate them to your home.</p>
+        <h2 class="visitor_instruction">Bringing Your Dog</h2>
+        <p>You are welcome to bring your dog, but we do want to let you know that we do not have any off leash meet and greet areas and so all meetings take place on leash in the parking lot. In the warmer seasons, your dog will need to wait in the parking lot with a family member. If it is cool enough, they may wait in the car while you meet potential buddies.</p>
+        <h2 class="visitor_instruction">Canceling and Rescheduling</h2>
+        <p>If you can no longer make your scheduled appointment, please give us the courtesy of 24 hours’ notice (or as soon as possible, if scheduled within 24 hours) so we may offer the slot to another adopter. If you wish to reschedule within two weeks, please provide at least three specific alternate dates and times so that we have options to work with. As a reminder, our hours are noon to 6pm on Mondays/Tuesdays/Thursdays/Fridays and 1pm to 6pm on Wednesdays. We do not offer morning or weekend appointments and there is no flexibility in this regard.</p>
+        <h2 class="visitor_instruction">A Special Note for Renters</h2>
+        <p>We will assume you have standard breed restrictions unless you provide a written statement from your landlord or property manager that indicates otherwise. As the adopter, you should always do your own due diligence in communicating directly with your landlord or property manager and verifying if they have restrictions (size, weight, age, breeds, maximum number of pets, etc.) before your visit as the lease is between you and them.</p>
+  </div>
+  </body>
+</html>

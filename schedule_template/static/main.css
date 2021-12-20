@@ -1,0 +1,410 @@
+* {
+  margin: 0;
+}
+
+body {
+  font-family: 'Lato',Helvetica,Arial,Lucida,sans-serif;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.roleselector {
+  background-color: #2996b0;
+  width: 100%;
+  text-align: center;
+}
+
+.roleselector li {
+  display: inline-block;
+  list-style-type: none;
+}
+
+.roleselector a {
+  height: 100%;
+  color: white;
+  text-decoration: none;
+  margin: 5px auto;
+  padding: 0px 20px;
+  font-size: 10pt;
+}
+
+.roleselector a:hover {
+  color: #48c8d3;
+  text-decoration: underline;
+}
+
+.roleselector ul {
+  width: 100%;
+}
+
+.activitymenu {
+  background-color: #c45389;
+  padding: 5px 0px;
+  width: 100%;
+}
+
+.activitymenu li {
+  display: inline-block;
+  list-style-type: none;
+}
+
+.activitymenu a {
+  text-decoration: none;
+  color: white;
+  margin: 5px auto;
+  padding: 0px 20px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.activitymenu a:hover {
+  color: #fd6da8;
+  text-decoration: underline;
+}
+
+.actmenu-center {
+  text-align: center;
+}
+
+.textpage {
+  padding: 10px;
+}
+
+.page_header {
+  padding-bottom: 10px;
+}
+
+.timeslot, .week, #allreports {
+  text-align: center;
+  padding: 20px 0px;
+}
+
+.calendar_header {
+  text-align: center;
+  padding-top: 5px;
+}
+
+.calendar_actions {
+  text-align: center;
+}
+
+.calendar_header a, .calendar_actions a {
+  color: black;
+  margin: 5px;
+  text-decoration: none;
+}
+
+.calendar_header a:hover, .calendar_actions a:hover {
+  color: #c45389;
+  text-decoration: underline;
+}
+
+.timeslot h2 {
+  text-align: center;
+  padding-bottom: 5px;
+}
+
+.appointment, .day, .report {
+  display: inline-table;
+  background-color: #48c8d3;
+  border: 5px solid #2996b0;
+  margin: 10px 10px;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+/* .appointment {
+  display: inline-table;
+  border: 5px solid #2996b0;
+  margin: 10px 10px;
+  padding: 10px;
+  border-radius: 15px;
+} */
+
+.appt_description {
+  font-size: 18pt;
+}
+
+.appt_description p {
+  color: white;
+}
+
+.appt_action {
+  display: inline-table;
+  padding: 5px;
+}
+
+.appt_action a {
+  color: white;
+  text-decoration: none;
+  margin: 5px;
+}
+
+.appt_action a:hover {
+  color: #2996b0;
+  text-decoration: underline;
+}
+
+.timeslot_action {
+  margin: 0px 5px;
+  color: #2996b0;
+  text-decoration: none;
+}
+
+.timeslot_action:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+.day_action {
+  margin-left: 5px;
+}
+
+.day_action a {
+  color: black;
+  text-decoration: none;
+}
+
+.day_action a:hover {
+  color: #c45389;
+  text-decoration: underline;
+}
+
+.appt_notes {
+  padding: 5px 0px;
+}
+
+.appt_notes em {
+  color: white;
+}
+
+.appt_notes a:hover {
+  color: #2996b0;
+  text-decoration: underline;
+}
+
+.appt_notes a {
+  color: white;
+  text-decoration: none;
+}
+
+.contact_adopter {
+  border-top: 1px solid #2996b0;
+  border-bottom: 1px solid #2996b0;
+  padding: 5px;
+}
+
+.contact_adopter_header {
+  font-size: 14pt;
+}
+
+.contact_adopter_header a {
+  color: white;
+  text-decoration: none;
+}
+
+.contact_adopter_header a:hover {
+  color: #2996b0;
+  text-decoration: underline;
+}
+
+.contact_adopter_quickbuttons {
+  display: inline-table;
+}
+
+.contact_adopter_quickbuttons a {
+  color: white;
+  display: inline-table;
+  text-decoration: none;
+  margin: 2px 5px;
+}
+
+.contact_adopter_quickbuttons a:hover {
+  color: #2996b0;
+  text-decoration: underline;
+}
+
+.contact_adopter_quickbuttons a:visited {
+  color: grey;
+}
+
+.greeter_appt_action a {
+  color: white;
+  display: inline-table;
+  text-decoration: none;
+  margin: 0px 5px;
+}
+
+.greeter_appt_action a:hover {
+  color: #2996b0;
+  text-decoration: underline;
+}
+
+.greeter_appt_action a:visited {
+  color: grey;
+}
+
+.day_link a, .report_link a {
+  font-size: 18pt;
+  color: white;
+  text-decoration: none;
+}
+
+.day_link a:hover, .report_link a:hover {
+  color: #2996b0;
+  text-decoration: underline;
+}
+
+.copy_template_button {
+  text-align: center;
+}
+
+input[type=submit].copytemplate {
+  background-color: #48c8d3;
+  border-radius: 15px;
+  border: 5px solid #2996b0;
+  font-size: 18pt;
+  display: inline-table;
+  color: white;
+  padding: 10px;
+}
+
+input[type=submit].copytemplate:hover {
+  background-color: #2996b0;
+  text-decoration: underline;
+}
+
+input[type=submit].submitform {
+  background-color: #48c8d3;
+  border: 1px solid #2996b0;
+  border-radius: 5px;
+  display: inline-table;
+  color: white;
+  padding: 5px;
+}
+
+input[type=submit].submitform:hover {
+  background-color: #2996b0;
+  text-decoration: underline;
+}
+
+p.standalone {
+  margin-bottom: 5px;
+}
+
+a.standalone {
+  color: #c45389;
+  text-decoration: none;
+}
+
+a.standalone:hover {
+  color: grey;
+  text-decoration: underline;
+}
+
+.adopter_messages {
+  padding: 10px;
+  text-align: center;
+}
+
+.faq_section_div {
+  /* border: 1px solid blue; */
+  margin-bottom: 10px;
+}
+
+.faq_section {
+  /* border: 1px solid purple; */
+  margin-bottom: 10px;
+}
+
+.faq_question {
+  /* border: 1px solid lightblue; */
+  margin-bottom: 5px;
+}
+
+.visitor_instruction {
+  /* border: 1px solid lightblue; */
+  margin: 10px 0px;
+}
+
+.faq_answer {
+  margin-bottom: 15px;
+}
+
+.decision_faq_header {
+  margin-bottom: 5px;
+}
+
+.decision_faq_section_div {
+  /* border: 1px solid blue; */
+  margin-bottom: 10px;
+}
+
+.decision_faq_section {
+  /* border: 1px solid purple; */
+  margin-bottom: 10px;
+}
+
+.decision_faq_question {
+  /* border: 1px solid lightblue; */
+  margin-bottom: 5px;
+}
+
+.decision_faq_answer {
+  margin-bottom: 15px;
+}
+
+.decision {
+  color: grey;
+}
+
+.decision a {
+  color: white;
+}
+
+.decision a:visited {
+  color: grey
+}
+
+.decision a:hover {
+  color: #2996b0;
+  text-decoration: underline;
+}
+
+.add_adopter input[type=text], .add_adopter input[type=email], .add_adopter input[type=checkbox] {
+  margin-bottom: 10px;
+}
+
+textarea {
+  width: 100%;
+  height: 200px;
+}
+
+td {
+  border-bottom: 1px solid #2996b0;
+  border-collapse: collapse;
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+  width: 50%;
+}
+
+.chosen_board_actions a {
+  color: #c45389;
+  text-decoration: none;
+}
+
+.chosen_board_actions a:hover {
+  color: #fd6da8;
+  text-decoration: underline;
+}
+
+p.greeting {
+  font-size: 20pt;
+}

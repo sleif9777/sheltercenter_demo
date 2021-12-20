@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  </head>
+  <body>
+    <div class="roleselector">
+      <nav>
+        <div class="roleselector-center">
+          <ul>
+            <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+            <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+            <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="activitymenu">
+      <nav>
+        <div class="actmenu-center">
+          <ul>
+            <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
+            <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
+            <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
+            <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
+            <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="textpage">
+      <h1 class="page_header">Chosen Board</h1>
+      <table>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Adopter</th>
+          <th>Outcome</th>
+          <th>Dog</th>
+          <th>Ready To Roll?</th>
+        </tr>
+        {% for appt in appointments %}
+          {% if appt.outcome == "3" or appt.outcome == "6" or appt.outcome == "7" %}
+            <tr>
+              <td>{{appt.date}}</td>
+              <td>{{appt.time}}</td>
+              <td>{{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}</td>
+              <td>{{appt.get_outcome_display}}</td>
+              <td>{{appt.dog}}</td>
+              <td>
+                {% if appt.outcome == "3" %}
+                  <div class="chosen_board_actions">
+                    <a href="{% url 'send_ready_to_roll_msg' role appt.id 'negative' %}">Heartworm Negative</a><br>
+                    <a href="{% url 'send_ready_to_roll_msg' role appt.id 'positive' %}">Heartworm Positive</a>
+                  </div>
+                {% elif appt.outcome == "6" %}
+                  Adopters Notified<br>
+                  {% if appt.heartworm == True %}
+                    <div class="chosen_board_actions">
+                      <a class="chosen_board_actions" href="{% url 'paperwork_calendar' role today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
+                    </div>
+                  {% else %}
+                    <div class="chosen_board_actions">
+                      <a class="chosen_board_actions" href="{% url 'paperwork_calendar' role today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
+                    </div>
+                  {% endif %}
+                {% elif appt.outcome == "7" %}
+                  Adopters Notified<br>
+                  Paperwork Scheduled
+                {% endif %}
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+        <br><br>
+      </table>
+    </div>
+
+  </body>
+</html>

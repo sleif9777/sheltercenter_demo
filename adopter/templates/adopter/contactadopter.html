@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+</head>
+<body>
+  <div class="roleselector">
+    <nav>
+      <div class="roleselector-center">
+        <ul>
+          <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+          <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+          <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="activitymenu">
+    <nav>
+      <div class="actmenu-center">
+        <ul>
+          <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
+          <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
+          <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
+          <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
+          <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="textpage">
+    <h1 class="page_header">Contact Adopter</h1>
+
+    <p>Hi {{adopter_first_name}},</p>
+    <br>
+    <form class="" action="" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <br>
+      <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
+      <br>
+      <input class="submitform" type="submit" name="" value="Send Message">
+    </form>
+
+  </div>
+  </body>
+</html>

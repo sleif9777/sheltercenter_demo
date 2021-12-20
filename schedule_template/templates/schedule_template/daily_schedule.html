@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  </head>
+  <body>
+    <div class="roleselector">
+      <nav>
+        <div class="roleselector-center">
+          <ul>
+            <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+            <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+            <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="activitymenu">
+      <nav>
+        <div class="actmenu-center">
+          <ul>
+            <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
+            <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
+            <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
+            <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
+            <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="calendar_header">
+      <h1>{{daily_sched.dow_string}}</h1>
+    </div>
+
+    <div class="calendar_actions">
+      <a href="{% url 'add_timeslot' daily_sched.id %}">Add Timeslot</a>
+    </div>
+
+    {% for timeslot in timeslots %}
+      <div class="timeslot">
+        <h2 class="timeslotheader">{{timeslot}}</h2>
+        {% for time, appointment in appointments.items %}
+          {% if timeslot.time == time.time %}
+            {% for appt in appointment %}
+              <div class="appointment">
+                <div class="appt_description appt_action">
+                  <a href="{% url 'edit_appointment' daily_sched.id appt.id %}">{{appt}}</a>
+                </div>
+                <br>
+                <div class="delete_appt appt_action">
+                  <a href="{% url 'delete_appointment' daily_sched.id appt.id %}">Delete</a>
+                </div>
+              </div>
+            {% empty %}
+              No appointments yet.
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+        <br>
+        <a class="timeslot_action" href="{% url 'add_appointment' daily_sched.id timeslot.id %}">Add Appointment</a>
+        <a class="timeslot_action" href="{% url 'delete_timeslot' daily_sched.id timeslot.id %}">Delete Timeslot</a>
+      </div>
+    {% endfor %}
+    <br><br>
+    <!-- <a href="{% url 'add_timeslot' daily_sched.id %}">Add Appointment</a> -->
+
+  </body>
+</html>
