@@ -80,11 +80,6 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'autoscheduledb',
-        # 'USER': 'postgres',
-        # 'PASSWORD': 'Momo624!',
-        # 'HOST': 'localhost',
-        # 'PORT': '5432',
         'DISABLE_SERVER_SIDE_CURSORS': True,
     }
 }
@@ -112,6 +107,7 @@ if POSTGRES_READY:
             "PASSWORD": POSTGRES_PASSWORD,
             "HOST": POSTGRES_HOST,
             "PORT": POSTGRES_PORT,
+            'DISABLE_SERVER_SIDE_CURSORS': True,
         }
     }
 
