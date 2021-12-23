@@ -5,7 +5,7 @@ from appt_calendar.models import Appointment
 
 def send_email(text, html, reply_to, subject, receiver_email):
     sender_email = "sheltercenterdev@gmail.com"
-    password = "Momo624!"
+    password = "deploy9876"
 
     message = MIMEMultipart("alternative")
     message["From"] = sender_email
