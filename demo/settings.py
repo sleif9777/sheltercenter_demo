@@ -27,7 +27,7 @@ DEBUG = str(os.environ.get('DEBUG')) == "1"
 
 ALLOWED_HOSTS = []#'127.0.0.1', 'localhost']
 if not DEBUG:
-    ALLOWED_HOSTS += [os.environ.get("DJANGO_ALLOWED_HOST")]
+    ALLOWED_HOSTS += [os.environ.get("DJANGO_ALLOWED_HOST"), 'sheltercenter.dog']
 
 # Application definition
 
@@ -162,12 +162,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATIC_URL = '/static/'
 
-# if not DEBUG:
-#     STATIC_ROOT = ''
-#
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static/'),
-# ]
+if not DEBUG:
+    STATIC_ROOT = ''
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static/'),
+]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
