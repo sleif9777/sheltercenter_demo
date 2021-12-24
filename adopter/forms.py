@@ -31,15 +31,15 @@ class AdopterForm(forms.ModelForm):
         kwargs.setdefault('label_suffix', '')
         super(AdopterForm, self).__init__(*args, **kwargs)
 
-class SelectAdopterForm(forms.Form):
-    get_all_adopters = Adopter.objects
-    print("Adopters: " + str(get_all_adopters))
-    ALL_ADOPTERS = []
-
-    for adopter in get_all_adopters.iterator():
-        ALL_ADOPTERS += [(str(adopter.id), adopter.adopter_list_name())]
-
-    session_adopter = forms.ChoiceField(choices = ALL_ADOPTERS)
+# class SelectAdopterForm(forms.Form):
+#     get_all_adopters = Adopter.objects
+#     print("Adopters: " + str(get_all_adopters))
+#     ALL_ADOPTERS = []
+#
+#     for adopter in get_all_adopters.iterator():
+#         ALL_ADOPTERS += [(str(adopter.id), adopter.adopter_list_name())]
+#
+#     session_adopter = forms.ChoiceField(choices = ALL_ADOPTERS)
 
 class ContactUsForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea(attrs={"rows":5, "cols":20}))
