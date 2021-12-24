@@ -107,7 +107,7 @@ if POSTGRES_READY:
             "PASSWORD": POSTGRES_PASSWORD,
             "HOST": POSTGRES_HOST,
             "PORT": POSTGRES_PORT,
-            "DISABLE_SERVER_SIDE_CURSORS": os.environ.get("DISABLE_SERVER_SIDE_CURSORS") #databaseport
+            "DISABLE_SERVER_SIDE_CURSORS": True, #databaseport
         }
     }
 
