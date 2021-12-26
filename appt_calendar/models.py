@@ -107,7 +107,7 @@ class Appointment(models.Model):
         return self.date_string() + " at " + self.time_string()
 
     def appt_string(self):
-        appt_type = ["Adults", "Puppies", "Puppies or Adults", "Surrender", "Adoption", "FTA"]
+        appt_type = ["Adults", "Puppies", "Puppies or Adults", "Surrender", "Adoption", "FTA", "Visit"]
         return appt_type[int(self.appt_type) - 1]
 
     class Meta:
