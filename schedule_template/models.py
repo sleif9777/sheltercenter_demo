@@ -9,9 +9,8 @@ class AppointmentTemplate(models.Model):
         ("2", "Puppies"),
         ("3", "Puppies or Adults"),
         ("4", "Surrender"),
-        ("5", "Adoption Paperwork"),
-        ("6", "FTA Paperwork"),
-        ("7", "Visit")
+        ("5", "Adoption"),
+        ("6", "FTA"),
     ]
 
     DAYS_OF_WEEK = (
