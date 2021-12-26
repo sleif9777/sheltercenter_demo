@@ -96,6 +96,7 @@ class Daily_Schedule(models.Model):
 
     day_of_week = models.CharField(default="0", max_length=1, choices=DAYS_OF_WEEK)
     timeslots = models.ManyToManyField(TimeslotTemplate, blank=True)
+    bah = models.CharField(default="", max_length=2)
 
     def __str__(self):
         render_dow = self.dow_string()
