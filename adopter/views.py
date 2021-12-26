@@ -56,7 +56,7 @@ def add(request):
             invite_lives_w_parents(adopter)
         elif adopter.adopting_foster == True:
             shellappt = Appointment()
-            shellappt.time = datetime.now()
+            shellappt.time = datetime.datetime.now()
             shellappt.adopter_choice = adopter
             shellappt.dog = adopter.chosen_dog
             shellappt.outcome = "3"
