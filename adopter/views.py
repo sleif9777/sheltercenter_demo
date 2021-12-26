@@ -77,6 +77,8 @@ def add(request):
 
             adopter.has_current_appt = False
 
+            adopter.save()
+
             invite_friends_of_foster_adoption(adopter)
         elif adopter.adopting_host == True:
             shellappt = Appointment()
@@ -88,6 +90,8 @@ def add(request):
             shellappt.save()
 
             adopter.has_current_appt = False
+
+            adopter.save()
 
             invite_host_adoption(adopter)
         else:
