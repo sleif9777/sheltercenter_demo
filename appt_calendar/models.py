@@ -98,10 +98,10 @@ class Appointment(models.Model):
         return display_string
 
     def date_string(self):
-        return self.date.strftime("%A, %B %#d, %Y")
+        return self.date.strftime("%A, %B %-d, %Y")
 
     def time_string(self):
-        return self.time.strftime('%#I:%M%p')
+        return self.time.strftime('%-I:%M%p')
 
     def date_and_time_string(self):
         return self.date_string() + " at " + self.time_string()
@@ -123,7 +123,7 @@ class Timeslot(models.Model):
         return render_time
 
     def time_string(self):
-        return self.time.strftime('%#I:%M%p')
+        return self.time.strftime('%-I:%M%p')
 
     class Meta:
         ordering = ('time',)

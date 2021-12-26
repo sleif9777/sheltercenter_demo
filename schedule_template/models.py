@@ -47,7 +47,7 @@ class AppointmentTemplate(models.Model):
         return dows[int(self.day_of_week)]
 
     def time_string(self):
-        return self.time.strftime('%#I:%M%p')
+        return self.time.strftime('%-I:%M%p')
 
     def appt_string(self):
         appt_type = ["Adults", "Puppies", "Puppies or Adults", "Surrender", "Adoption", "FTA"]

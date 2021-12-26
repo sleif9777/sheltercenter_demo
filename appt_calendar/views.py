@@ -51,7 +51,7 @@ def set_alert_date(request, role, adopter_id, date_year, date_month, date_day):
 def greeter_reschedule(request, role, adopter_id, appt_id, date_year, date_month, date_day):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %#d, %Y")
+    date_pretty = date.strftime("%A, %B %-d, %Y")
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
     today = datetime.date.today()
@@ -118,7 +118,7 @@ def adopter_calendar_date(request, role, adopter_id, date_year, date_month, date
     adopter = Adopter.objects.get(pk=adopter_id)
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %#d, %Y")
+    date_pretty = date.strftime("%A, %B %-d, %Y")
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
@@ -295,7 +295,7 @@ def jump_to_date_adopter(request, role, adopter_id):
 def calendar_date(request, role, date_year, date_month, date_day):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %#d, %Y")
+    date_pretty = date.strftime("%A, %B %-d, %Y")
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
@@ -352,7 +352,7 @@ def calendar_date(request, role, date_year, date_month, date_day):
 def paperwork_calendar(request, role, date_year, date_month, date_day, appt_id, hw_status):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %#d, %Y")
+    date_pretty = date.strftime("%A, %B %-d, %Y")
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
@@ -416,7 +416,7 @@ def paperwork_calendar(request, role, date_year, date_month, date_day, appt_id, 
 def daily_report_all_appts(request, role, date_year, date_month, date_day):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %#d, %Y")
+    date_pretty = date.strftime("%A, %B %-d, %Y")
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
@@ -470,7 +470,7 @@ def daily_report_all_appts(request, role, date_year, date_month, date_day):
 def daily_reports_home(request, role):
     all_dows = Daily_Schedule.objects
     date = datetime.date.today()
-    date_pretty = date.strftime("%A, %B %#d, %Y")
+    date_pretty = date.strftime("%A, %B %-d, %Y")
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
@@ -555,7 +555,7 @@ def send_ready_to_roll_msg(request, role, appt_id, hw_status):
 def daily_report_adopted_chosen_fta(request, role, date_year, date_month, date_day):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %#d, %Y")
+    date_pretty = date.strftime("%A, %B %-d, %Y")
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
