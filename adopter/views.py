@@ -61,6 +61,8 @@ def add(request):
             shellappt.dog = adopter.chosen_dog
             shellappt.outcome = "3"
 
+            shellappt.save()
+
             adopter.has_current_appt = False
 
             invite_foster_adoption(adopter)
@@ -71,6 +73,8 @@ def add(request):
             shellappt.dog = adopter.chosen_dog
             shellappt.outcome = "3"
 
+            shellappt.save()
+
             adopter.has_current_appt = False
 
             invite_friends_of_foster_adoption(adopter)
@@ -80,6 +84,8 @@ def add(request):
             shellappt.adopter_choice = adopter
             shellappt.dog = adopter.chosen_dog
             shellappt.outcome = "3"
+
+            shellappt.save()
 
             adopter.has_current_appt = False
 
