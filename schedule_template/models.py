@@ -76,7 +76,7 @@ class TimeslotTemplate(models.Model):
         return render_time
 
     def time_string(self):
-        return self.time.strftime('%#I:%M%p')
+        return self.time.strftime('%-I:%M%p')
 
     class Meta:
         ordering = ('time',)
