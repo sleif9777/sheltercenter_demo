@@ -77,6 +77,7 @@
             </div>
             {% if appt.appt_type in schedulable and appt.available == False %}
               <div class="appt_action">
+                <a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">Edit Appointment Notes</a><br>
                 {% if appt.outcome == "1" %}
                   <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">Enter Decision</a>
                 {% else %}
