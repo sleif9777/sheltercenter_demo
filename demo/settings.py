@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'schedule_template.apps.ScheduleTemplateConfig',
     'appt_calendar.apps.ApptCalendarConfig',
     'adopter.apps.AdopterConfig',
@@ -159,17 +160,24 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = "/var/www/sheltercenter.dog/static/"
 
-
-
-# if not DEBUG:
-#     STATIC_ROOT = ''
-#
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles-cdn') #in prod we want cdn
+
+from .cdn.conf import * # noqa
+
+# if not DEBUG:
+#     STATIC_ROOT = ''
+#
+
+
+# https://sheltercenter-demo.nyc3.digitaloceanspaces.com/
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

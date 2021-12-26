@@ -2,10 +2,11 @@ import smtplib, ssl, datetime, time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from appt_calendar.models import Appointment
+import os
 
 def send_email(text, html, reply_to, subject, receiver_email):
     sender_email = "sheltercenterdev@gmail.com"
-    password = "deploy9876"
+    password = os.environ.get('EMAIL_PASSWORD')
 
     message = MIMEMultipart("alternative")
     message["From"] = sender_email

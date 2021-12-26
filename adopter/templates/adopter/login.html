@@ -1,0 +1,5 @@
+{% for adopter in adopters %}
+
+  <a href="{% url 'adopter_home' adopter.id %}">{{adopter}}</a><br>
+
+{% endfor %}

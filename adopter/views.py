@@ -9,18 +9,13 @@ from emails.email_template import *
 
 # Create your views here.
 def login(request):
-    form = SelectAdopterForm(request.POST or None)
-    if form.is_valid():
-        data = form.cleaned_data
-        session_adopter = data['session_adopter']
-
-        return redirect('adopter_home', session_adopter)
+    adopters = Adopter.objects.all()    
 
     context = {
-        'form': form,
+        'adopters': adopters
     }
 
-    return render(request, "adopter/renderform.html", context)
+    return render(request, "adopter/login.html", context)
 
 def faq(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)
