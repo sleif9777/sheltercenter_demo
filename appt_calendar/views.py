@@ -219,8 +219,6 @@ def book_appointment(request, role, adopter_id, appt_id, date_year, date_month, 
         appt.published = False
         appt.save()
 
-        confirm(appt.time, appt.date, appt.adopter_choice, appt)
-
         form = BookAppointmentForm(request.POST or None, instance=appt)
 
         if form.is_valid():
@@ -228,6 +226,9 @@ def book_appointment(request, role, adopter_id, appt_id, date_year, date_month, 
 
             return redirect('adopter_calendar_date', role, adopter_id, date.year, date.month, date.day)
         else:
+
+            confirm(appt.time, appt.date, appt.adopter_choice, appt)
+
             form = BookAppointmentForm(request.POST or None, instance=appt, initial={'adopter_choice': adopter})
 
         context = {

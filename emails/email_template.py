@@ -70,8 +70,8 @@ def dates_are_open(adopter, date):
     name = adopter.adopter_first_name
     email = adopter.adopter_email
 
-    plain_url = 'http://127.0.0.1:8000/calendar/adopter/' + str(adopter.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    url = '<a href="http://127.0.0.1:8000/calendar/adopter/' + str(adopter.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to schedule your appointment.</a>'
+    plain_url = 'http://sheltercenter.dog/calendar/adopter/' + str(adopter.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    url = '<a href="http://sheltercenter.dog/calendar/adopter/' + str(adopter.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to schedule your appointment.</a>'
 
     date_string = date.strftime("%A, %-m/%-d")
 
@@ -107,11 +107,11 @@ def limited_matches(adopter, appt, description):
     name = adopter.adopter_first_name
     date = appt.date
 
-    plain_reschedule_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    reschedule_url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">If you would prefer to reschedule your appointment, click here.</a>'
+    plain_reschedule_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    reschedule_url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">If you would prefer to reschedule your appointment, click here.</a>'
 
-    plain_cancel_url = 'http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">If you would prefer to cancel your appointment, click here.</a>'
+    plain_cancel_url = 'http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    cancel_url = '<a href="http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">If you would prefer to cancel your appointment, click here.</a>'
 
     if description in ["puppies", "small dogs"]:
         print("yes2!")
@@ -291,11 +291,11 @@ def dogs_were_adopted(adopter, appt):
     name = adopter.adopter_first_name
     date = appt.date
 
-    plain_reschedule_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    reschedule_url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">If you wish to reschedule your appointment, click here.</a>'
+    plain_reschedule_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    reschedule_url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">If you wish to reschedule your appointment, click here.</a>'
 
-    plain_cancel_url = 'http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">If you wish to cancel your appointment, click here.</a>'
+    plain_cancel_url = 'http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    cancel_url = '<a href="http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">If you wish to cancel your appointment, click here.</a>'
 
     text = """\
     Hi """ + name + """,\n
@@ -332,8 +332,8 @@ def new_contact_adopter_msg(adopter, message, include_links):
     name = adopter.adopter_first_name
     email = adopter.adopter_email
 
-    plain_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">Manage Your Appointment Here</a>'
+    plain_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">Manage Your Appointment Here</a>'
 
     if include_links == True:
         text = """\
@@ -391,10 +391,10 @@ def new_contact_us_msg(adopter, message):
 
     if appt != None:
         header_appt = appt.date_and_time_string()
-        plain_cancel_url = 'http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-        cancel_url = '<a href="http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Cancel Appointment</a>'
-        plain_reschedule_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-        reschedule_url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">Reschedule Appointment</a>'
+        plain_cancel_url = 'http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+        cancel_url = '<a href="http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Cancel Appointment</a>'
+        plain_reschedule_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+        reschedule_url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">Reschedule Appointment</a>'
 
         text = """\
         Adopter: """ + adopter.adopter_full_name() + """\n
@@ -416,8 +416,8 @@ def new_contact_us_msg(adopter, message):
         """
     else:
         header_appt = "None Scheduled"
-        plain_schedule_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-        schedule_url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">Schedule Appointment</a>'
+        plain_schedule_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+        schedule_url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">Schedule Appointment</a>'
 
         text = """\
         Adopter: """ + adopter.adopter_full_name() + """\n
@@ -439,15 +439,15 @@ def new_contact_us_msg(adopter, message):
     send_email(text, html, reply_to, subject, email)
 
 def confirm(time, date, adopter, appt):
-    subject = "Your Appointment Has Been Confirmed: " + adopter.adopter_full_name().upper()
+    subject = "Your appointment has been confirmed: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email
     name = adopter.adopter_first_name
 
-    plain_reschedule_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    reschedule_url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">Click here to reschedule your appointment.</a>'
+    plain_reschedule_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    reschedule_url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">Click here to reschedule your appointment.</a>'
 
-    plain_cancel_url = 'http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
+    plain_cancel_url = 'http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    cancel_url = '<a href="http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
 
     time, date = clean_time_and_date(time, date)
 
@@ -527,10 +527,10 @@ def confirm(time, date, adopter, appt):
 
 def adoption_paperwork(time, date, adopter, appt, hw_status):
     if hw_status == False:
-        subject = "Your Final Adoption Appointment Has Been Confirmed: " + adopter.adopter_full_name().upper()
+        subject = "Your final adoption appointment has been confirmed: " + adopter.adopter_full_name().upper()
         appt_type = "adoption"
     else:
-        subject = "Your FTA Appointment Has Been Confirmed: " + adopter.adopter_full_name().upper()
+        subject = "Your FTA appointment has been confirmed: " + adopter.adopter_full_name().upper()
         appt_type = "foster-to-adopt (FTA)"
     email = adopter.adopter_email
     name = adopter.adopter_first_name
@@ -596,13 +596,13 @@ def adoption_paperwork(time, date, adopter, appt, hw_status):
     print("done")
 
 def cancel(time, date, adopter):
-    subject = "Your Appointment Has Been Cancelled"
+    subject = "Your appointment has been cancelled"
     email = adopter.adopter_email
     name = adopter.adopter_first_name
     time, date = clean_time_and_date(time, date)
 
-    plain_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">If you wish to reschedule at any time, you may do so by clicking here.</a>'
+    plain_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">If you wish to reschedule at any time, you may do so by clicking here.</a>'
 
     text = """\
     Appointment Cancelled\n
@@ -629,15 +629,15 @@ def cancel(time, date, adopter):
     send_email(text, html, "default", subject, email)
 
 def reschedule(time, date, adopter, appt):
-    subject = "Your Appointment Has Been Rescheduled: " + adopter.adopter_full_name().upper()
+    subject = "Your appointment has been rescheduled: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email
     name = adopter.adopter_first_name
 
-    plain_reschedule_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    reschedule_url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">Click here to reschedule your appointment.</a>'
+    plain_reschedule_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    reschedule_url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">Click here to reschedule your appointment.</a>'
 
-    plain_cancel_url = 'http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
+    plain_cancel_url = 'http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    cancel_url = '<a href="http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
 
     time, date = clean_time_and_date(time, date)
 
@@ -713,15 +713,15 @@ def reschedule(time, date, adopter, appt):
     send_email(text, html, "default", subject, email)
 
 def greeter_reschedule_email(time, date, adopter, appt):
-    subject = "Your Follow-Up Appointment Has Been Scheduled: " + adopter.adopter_full_name().upper()
+    subject = "Your follow-up appointment has been scheduled: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email
     name = adopter.adopter_first_name
 
-    plain_reschedule_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    reschedule_url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">Click here to reschedule your appointment.</a>'
+    plain_reschedule_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    reschedule_url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">Click here to reschedule your appointment.</a>'
 
-    plain_cancel_url = 'http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://127.0.0.1:8000/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
+    plain_cancel_url = 'http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    cancel_url = '<a href="http://sheltercenter.dog/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
 
     time, date = clean_time_and_date(time, date)
 
@@ -797,11 +797,11 @@ def greeter_reschedule_email(time, date, adopter, appt):
     send_email(text, html, "default", subject, email)
 
 def follow_up(adopter):
-    subject = "Thank You For Visiting: " + adopter.adopter_full_name().upper()
+    subject = "Thank you for visiting: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email
     name = adopter.adopter_first_name
-    plain_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">If you would like to schedule another appointment, click here.</a>'
+    plain_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">If you would like to schedule another appointment, click here.</a>'
 
     text = """\
     Hi """ + name + """,\n
@@ -833,8 +833,8 @@ def follow_up_w_host(adopter):
     email = adopter.adopter_email
     name = adopter.adopter_first_name
 
-    plain_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">If you would like to schedule another appointment, click here.</a>'
+    plain_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">If you would like to schedule another appointment, click here.</a>'
 
     plain_host_url = 'https://savinggracenc.org/host-a-dog/'
     host_url = '<a href="https://savinggracenc.org/host-a-dog/">If you would like to learn more about our Weekend Host program, click here.</a>'
@@ -870,8 +870,8 @@ def invite(adopter):
     subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email
     name = adopter.adopter_first_name
-    plain_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">You may review our response by clicking here.</a>'
+    plain_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">You may review our response by clicking here.</a>'
 
     text = """\
 Hi """ + name + """,\n
@@ -900,8 +900,8 @@ def invite_oos(adopter, url):
     email = adopter.adopter_email
     name = adopter.adopter_first_name
 
-    plain_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">After reading these special expectations for long-distance adoption, you may click here to continue forward in our process, review our standard adoption expectations, and schedule an appointment.</a>'
+    plain_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">After reading these special expectations for long-distance adoption, you may click here to continue forward in our process, review our standard adoption expectations, and schedule an appointment.</a>'
 
     text = """\
 Hi """ + name + """,\n
@@ -933,8 +933,8 @@ def invite_lives_w_parents(adopter, url):
     subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email
     name = adopter.adopter_first_name
-    plain_url = 'http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/'
-    url = '<a href="http://127.0.0.1:8000/adopter/' + str(adopter.id) + '/">You may review our adoption policies and schedule an appointment by clicking here.</a>'
+    plain_url = 'http://sheltercenter.dog/adopter/' + str(adopter.id) + '/'
+    url = '<a href="http://sheltercenter.dog/adopter/' + str(adopter.id) + '/">You may review our adoption policies and schedule an appointment by clicking here.</a>'
 
     text = """\
 Hi """ + name + """,\n
