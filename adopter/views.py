@@ -66,7 +66,7 @@ def add(request):
             invite_foster_adoption(adopter)
         elif adopter.friend_of_foster == True:
             shellappt = Appointment()
-            shellappt.time = datetime.now()
+            shellappt.time = datetime.datetime.now()
             shellappt.adopter_choice = adopter
             shellappt.dog = adopter.chosen_dog
             shellappt.outcome = "3"
@@ -76,7 +76,7 @@ def add(request):
             invite_friends_of_foster_adoption(adopter)
         elif adopter.adopting_host == True:
             shellappt = Appointment()
-            shellappt.time = datetime.now()
+            shellappt.time = datetime.datetime.now()
             shellappt.adopter_choice = adopter
             shellappt.dog = adopter.chosen_dog
             shellappt.outcome = "3"
