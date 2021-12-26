@@ -111,7 +111,7 @@ class Appointment(models.Model):
         return appt_type[int(self.appt_type) - 1]
 
     class Meta:
-        ordering = ('time', 'appt_type',)
+        ordering = ('time', 'appt_type', 'id',)
 
 class Timeslot(models.Model):
     date = models.DateField(default = datetime.date.today())
