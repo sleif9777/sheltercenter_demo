@@ -30,7 +30,12 @@
     </div>
 
     <div class="calendar_header">
-      <h1>{{date_pretty}}</h1>
+      <h1><a href="{% url 'calendar_date' role previous_day.year previous_day.month previous_day.day %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'calendar_date' role next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
+    </div>
+
+    <div class="calendar_actions">
+      <a href="{% url 'jump_to_date_admin' role %}">Jump To Date</a>
+      <a href="{% url 'calendar' 'greeter' %}">Return to Today</a>
     </div>
 
     {% for timeslot, appointments in timeslots.items %}

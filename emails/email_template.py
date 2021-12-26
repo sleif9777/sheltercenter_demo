@@ -102,7 +102,7 @@ def limited_matches(adopter, appt, description):
     if description == "lowshed":
         description = "low-shedding and/or hypoallergenic dogs"
 
-    subject = "An Update About Your Saving Grace Appointment"
+    subject = "An update about your Saving Grace appointment"
     email = adopter.adopter_email
     name = adopter.adopter_first_name
     date = appt.date
@@ -328,7 +328,7 @@ def dogs_were_adopted(adopter, appt):
     send_email(text, html, "default", subject, email)
 
 def new_contact_adopter_msg(adopter, message, include_links):
-    subject = "New Message From The Saving Grace Adoptions Team"
+    subject = "New message from the Saving Grace adoptions team"
     name = adopter.adopter_first_name
     email = adopter.adopter_email
 
@@ -377,7 +377,7 @@ def new_contact_adopter_msg(adopter, message, include_links):
     send_email(text, html, "default", subject, email)
 
 def new_contact_us_msg(adopter, message):
-    subject = "New Message From " + adopter.adopter_full_name()
+    subject = "New message from " + adopter.adopter_full_name()
     reply_to = adopter.adopter_email
     email = "sheltercenterdev@gmail.com"
 
@@ -829,7 +829,7 @@ def follow_up(adopter):
     send_email(text, html, "default", subject, email)
 
 def follow_up_w_host(adopter):
-    subject = "Thank You For Visiting: " + adopter.adopter_full_name().upper()
+    subject = "Thank you for visiting: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email
     name = adopter.adopter_first_name
 
@@ -877,6 +877,7 @@ def invite(adopter):
 Hi """ + name + """,\n
 Your Saving Grace adoption request has been reviewed. You may review our response here:\n""" + plain_url + """\n
 If you are a current foster or host who is adopting your foster/host dog, please respond directly to this email so we can proceed accordingly.\n
+If you are having technical issues with our scheduling software, please email us directly so we can best help.\n
 Thank you,
 The Adoptions Team\n
 Saving Grace Animals for Adoption
@@ -888,6 +889,7 @@ Saving Grace Animals for Adoption
         <p>Hi """ + name + """,</p>
         <p>Your Saving Grace adoption request has been reviewed. """ + url + """</p>
         <p>If you are a current foster or host who is adopting your foster/host dog, please respond directly to this email so we can proceed accordingly.</p>
+        <p>If you are having technical issues with our scheduling software, please email us directly so we can best help.</p>
         <p>Thank you,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
       </body>
     </html>
@@ -895,7 +897,7 @@ Saving Grace Animals for Adoption
 
     send_email(text, html, "default", subject, email)
 
-def invite_oos(adopter, url):
+def invite_oos(adopter):
     subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email
     name = adopter.adopter_first_name
@@ -929,7 +931,7 @@ Saving Grace Animals for Adoption
 
     send_email(text, html, "default", subject, email)
 
-def invite_lives_w_parents(adopter, url):
+def invite_lives_w_parents(adopter):
     subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email
     name = adopter.adopter_first_name

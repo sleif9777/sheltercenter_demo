@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-#from . import views
+from appt_calendar import views as cal_views
 #import scheduleconfig.views
 #import schedule_template.views
 #import appt_calendar.views
@@ -30,5 +30,6 @@ urlpatterns = [
     #path("config/createtimeslot/", scheduleconfig.views.createtimeslot, name="createtimeslot"),
     path('calendar/template/', include('schedule_template.urls')),
     path('calendar/', include('appt_calendar.urls')),
-    path('adopter/', include('adopter.urls'))
+    path('adopter/', include('adopter.urls')),
+    path('', cal_views.calendar_home, name="home")
 ]

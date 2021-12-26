@@ -1,15 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Adopter
+from appt_calendar.models import Appointment
 from .forms import *
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
-import datetime
+import datetime, time
 from emails.email_template import *
 
 
 # Create your views here.
 def login(request):
-    adopters = Adopter.objects.all()    
+    adopters = Adopter.objects.all()
 
     context = {
         'adopters': adopters
@@ -50,14 +51,38 @@ def add(request):
         adopter.save()
 
         if adopter.out_of_state == True:
-            invite_oos(adopter, "URL LATER")
+            invite_oos(adopter)
         elif adopter.lives_with_parents == True:
-            invite_lives_w_parents(adopter, "URL LATER")
+            invite_lives_w_parents(adopter)
         elif adopter.adopting_foster == True:
+            shellappt = Appointment()
+            shellappt.time = datetime.now()
+            shellappt.adopter_choice = adopter
+            shellappt.dog = adopter.chosen_dog
+            shellappt.outcome = "3"
+
+            adopter.has_current_appt = False
+
             invite_foster_adoption(adopter)
         elif adopter.friend_of_foster == True:
+            shellappt = Appointment()
+            shellappt.time = datetime.now()
+            shellappt.adopter_choice = adopter
+            shellappt.dog = adopter.chosen_dog
+            shellappt.outcome = "3"
+
+            adopter.has_current_appt = False
+
             invite_friends_of_foster_adoption(adopter)
         elif adopter.adopting_host == True:
+            shellappt = Appointment()
+            shellappt.time = datetime.now()
+            shellappt.adopter_choice = adopter
+            shellappt.dog = adopter.chosen_dog
+            shellappt.outcome = "3"
+
+            adopter.has_current_appt = False
+
             invite_host_adoption(adopter)
         else:
             invite(adopter)

@@ -8,9 +8,9 @@ from emails.email_template import *
 #
 # # Create your views here.
 #
-# def calendar_home(request):
-#     today = datetime.date.today()
-#     return redirect('calendar_date', today.year, today.month, today.day, "adopter")
+def calendar_home(request):
+    today = datetime.date.today()
+    return redirect('calendar', "admin")
 
 def calendar(request, role):
     today = datetime.date.today()
