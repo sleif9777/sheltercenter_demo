@@ -219,6 +219,8 @@ def book_appointment(request, role, adopter_id, appt_id, date_year, date_month, 
         appt.published = False
         appt.save()
 
+        confirm(appt.time, appt.date, appt.adopter_choice, appt)
+
         form = BookAppointmentForm(request.POST or None, instance=appt)
 
         if form.is_valid():
@@ -746,8 +748,6 @@ def edit_appointment(request, role, date_year, date_month, date_day, appt_id):
             post_save_email = appt.adopter_choice.adopter_email
         except:
             post_save_email = None
-        if current_email != post_save_email and appt.adopter_choice != None:
-            confirm(appt.time, appt.date, appt.adopter_choice, appt)
         if appt.adopter_choice != None or appt.appt_type not in ["1", "2", "3"]:
             appt.available = False
             appt.published = False
