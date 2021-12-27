@@ -70,7 +70,7 @@ def greeter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
 
     print(adopter)
 
-    if delta_from_today <= 13:
+    if delta_from_today <= 6:
         visible_to_adopters = True
     else:
         visible_to_adopters = False
@@ -137,7 +137,7 @@ def adopter_calendar_date(request, role, adopter_id, date_year, date_month, date
 
     has_current_appt = adopter.has_current_appt
 
-    if delta_from_today <= 13:
+    if delta_from_today <= 6:
         visible_to_adopters = True
     else:
         visible_to_adopters = False
@@ -306,7 +306,7 @@ def calendar_date(request, role, date_year, date_month, date_day):
     open_timeslots = []
     delta_from_today = (date - datetime.date.today()).days
 
-    if delta_from_today <= 13:
+    if delta_from_today <= 6:
         visible_to_adopters = True
     else:
         visible_to_adopters = False
@@ -363,7 +363,7 @@ def paperwork_calendar(request, role, date_year, date_month, date_day, appt_id, 
     open_timeslots = []
     delta_from_today = (date - datetime.date.today()).days
 
-    if delta_from_today <= 13:
+    if delta_from_today <= 6:
         visible_to_adopters = True
     else:
         visible_to_adopters = False
@@ -427,7 +427,7 @@ def daily_report_all_appts(request, role, date_year, date_month, date_day):
     open_timeslots = []
     delta_from_today = (date - datetime.date.today()).days
 
-    if delta_from_today <= 13:
+    if delta_from_today <= 6:
         visible_to_adopters = True
     else:
         visible_to_adopters = False
@@ -481,7 +481,7 @@ def daily_reports_home(request, role):
     open_timeslots = []
     delta_from_today = (date - datetime.date.today()).days
 
-    if delta_from_today <= 13:
+    if delta_from_today <= 6:
         visible_to_adopters = True
     else:
         visible_to_adopters = False
@@ -566,7 +566,7 @@ def daily_report_adopted_chosen_fta(request, role, date_year, date_month, date_d
     open_timeslots = []
     delta_from_today = (date - datetime.date.today()).days
 
-    if delta_from_today <= 13:
+    if delta_from_today <= 6:
         visible_to_adopters = True
     else:
         visible_to_adopters = False
@@ -749,11 +749,12 @@ def edit_appointment(request, role, date_year, date_month, date_day, appt_id):
             post_save_email = appt.adopter_choice.adopter_email
         except:
             post_save_email = None
-        if appt.adopter_choice != None or appt.appt_type not in ["1", "2", "3"]:
+        if appt.adopter_choice != None:
+            if appt.appt_type in ["1", "2", "3"]:
+                confirm(appt.time, appt.date, appt.adopter_choice, appt)
             appt.available = False
             appt.published = False
             appt.save()
-
 
         return redirect('calendar_date', role, date.year, date.month, date.day)
     else:

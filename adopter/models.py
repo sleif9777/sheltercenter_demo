@@ -35,4 +35,4 @@ class Adopter(models.Model):
         return self.adopter_full_name()
 
     class Meta:
-        ordering = ('adopter_last_name',)
+        ordering = ('adopter_last_name', 'adopter_first_name')
