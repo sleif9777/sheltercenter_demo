@@ -10,6 +10,7 @@ class Appointment(models.Model):
         ("4", "Surrender"),
         ("5", "Adoption Paperwork"),
         ("6", "FTA Paperwork"),
+        ("7", "Visit")
     ]
 
     OUTCOME_TYPES = [
