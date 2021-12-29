@@ -831,7 +831,14 @@ def adopter_self_cancel(request, role, adopter_id, date_year, date_month, date_d
     appt.bringing_dog = False
     appt.save()
 
-    return redirect("adopter_calendar_date", role, adopter_id, date.year, date.month, date.day)
+    appt_str = appt.date_and_time_string()
+
+    context = {
+        'adopter': adopter,
+        'appt_str': appt_str,
+    }
+
+    return render(request, "appt_calendar/adopter_self_cancel.html", context)
 
 def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month, date_day):
     adopter = Adopter.objects.get(pk=adopter_id)

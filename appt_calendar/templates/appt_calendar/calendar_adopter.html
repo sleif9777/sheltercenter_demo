@@ -27,7 +27,8 @@
             <li><a href="{% url 'faq' adopter.id %}">FAQ</a></li>
             {% if adopter.has_current_appt == True %}
               <li><a href="{% url 'visitor_instructions' adopter.id %}">Visitor Instructions</a></li>
-            {% endif %}            <li><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
+            {% endif %}
+            <li><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
           </ul>
         </div>
       </nav>
