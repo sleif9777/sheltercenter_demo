@@ -110,8 +110,8 @@ def limited_matches(adopter, appt, description):
     plain_reschedule_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
     reschedule_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">If you would prefer to reschedule your appointment, click here.</a>'
 
-    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">If you would prefer to cancel your appointment, click here.</a>'
+    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">If you would prefer to cancel your appointment, click here.</a>'
 
     if description in ["puppies", "small dogs"]:
         print("yes2!")
@@ -294,8 +294,8 @@ def dogs_were_adopted(adopter, appt):
     plain_reschedule_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
     reschedule_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">If you wish to reschedule your appointment, click here.</a>'
 
-    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">If you wish to cancel your appointment, click here.</a>'
+    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">If you wish to cancel your appointment, click here.</a>'
 
     text = """\
     Hi """ + name + """,\n
@@ -391,8 +391,8 @@ def new_contact_us_msg(adopter, message):
 
     if appt != None:
         header_appt = appt.date_and_time_string()
-        plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-        cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Cancel Appointment</a>'
+        plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+        cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Cancel Appointment</a>'
         plain_reschedule_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
         reschedule_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">Reschedule Appointment</a>'
 
@@ -446,8 +446,8 @@ def confirm(time, date, adopter, appt):
     plain_reschedule_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
     reschedule_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">Click here to reschedule your appointment.</a>'
 
-    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
+    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
 
     time, date = clean_time_and_date(time, date)
 
@@ -636,8 +636,8 @@ def reschedule(time, date, adopter, appt):
     plain_reschedule_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
     reschedule_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">Click here to reschedule your appointment.</a>'
 
-    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
+    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
 
     time, date = clean_time_and_date(time, date)
 
@@ -720,8 +720,8 @@ def greeter_reschedule_email(time, date, adopter, appt):
     plain_reschedule_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
     reschedule_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">Click here to reschedule your appointment.</a>'
 
-    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
+    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
+    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
 
     time, date = clean_time_and_date(time, date)
 
