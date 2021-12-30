@@ -223,9 +223,16 @@ body {
 }
 
 a.completed_appt_action {
-  color: red;
+  color: grey;
   display: inline-table;
-  text-decoration: none;
+  text-decoration: line-through;
+  margin: 2px 5px;
+}
+
+a.completed_appt_action:hover {
+  color: grey;
+  display: inline-table;
+  text-decoration: line-through;
   margin: 2px 5px;
 }
 
