@@ -56,6 +56,7 @@ class Appointment(models.Model):
     comm_limited_small = models.BooleanField(default=False)
     comm_limited_hypo = models.BooleanField(default=False)
     comm_limited_other = models.BooleanField(default=False)
+    comm_followup = models.BooleanField(default=False)
 
     def __repr__(self):
         display_string = ""
