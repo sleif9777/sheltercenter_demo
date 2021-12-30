@@ -222,7 +222,7 @@ body {
   margin: 2px 5px;
 }
 
-.contact_adopter_quickbuttons.completed_appt_action {
+a.completed_appt_action {
   color: red;
   display: inline-table;
   text-decoration: none;
