@@ -154,14 +154,29 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day):
 def send_dogs_were_adopted_msg(request, appt_id):
     appt = Appointment.objects.get(pk=appt_id)
     adopter = appt.adopter_choice
+
+    appt.comm_adopted_dogs = True
+    appt.save()
+
     dogs_were_adopted(adopter, appt)
 
     return redirect('calendar', "admin")
 
 def send_limited_matches_msg(request, appt_id, description, date_year, date_month, date_day):
-    print("yes!")
     appt = Appointment.objects.get(pk=appt_id)
     adopter = appt.adopter_choice
+
+    if description == "puppies":
+        appt.comm_limited_puppies = True
+    elif description == "small dogs":
+        appt.comm_limited_small = True
+    elif description == "low-shedding and/or hypoallergenic dogs":
+        appt.comm_limited_hypo = True
+    else:
+        appt.comm_limited_other = True
+
+    appt.save()
+
     limited_matches(adopter, appt, description)
 
     return redirect('calendar_date', "admin", date_year, date_month, date_day)

@@ -811,6 +811,11 @@ def remove_adopter(request, role, date_year, date_month, date_day, appt_id):
     appt.internal_notes = ""
     appt.adopter_notes = ""
     appt.bringing_dog = False
+    appt.comm_adopted_dogs = False
+    appt.comm_limited_puppies = False
+    appt.comm_limited_small = False
+    appt.comm_limited_hypo = False
+    appt.comm_limited_other = False
     appt.save()
 
     return redirect('calendar_date', role, date.year, date.month, date.day)
@@ -831,6 +836,11 @@ def adopter_self_cancel(request, role, adopter_id, date_year, date_month, date_d
     appt.internal_notes = ""
     appt.adopter_notes = ""
     appt.bringing_dog = False
+    appt.comm_adopted_dogs = False
+    appt.comm_limited_puppies = False
+    appt.comm_limited_small = False
+    appt.comm_limited_hypo = False
+    appt.comm_limited_other = False
     appt.save()
 
     appt_str = appt.date_and_time_string()
@@ -879,6 +889,11 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
             current_appt.internal_notes = ""
             current_appt.adopter_notes = ""
             current_appt.bringing_dog = False
+            current_appt.comm_adopted_dogs = False
+            current_appt.comm_limited_puppies = False
+            current_appt.comm_limited_small = False
+            current_appt.comm_limited_hypo = False
+            current_appt.comm_limited_other = False
             current_appt.save()
 
         new_appt.adopter_choice = adopter
