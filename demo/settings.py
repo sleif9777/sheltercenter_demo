@@ -136,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/New York'
+TIME_ZONE = 'UTC'
 
 USE_I18N = False
 
@@ -153,7 +153,7 @@ USE_L10N = False
 #     '%#H%p',
 # ]
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
