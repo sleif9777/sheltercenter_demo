@@ -241,21 +241,16 @@ a.completed_appt_action:hover {
   text-decoration: underline;
 }
 
-.greeter_appt_action a {
+.greeter_appt_action_links {
   color: white;
   display: inline-table;
   text-decoration: none;
   margin: 0px 5px;
 }
 
-.greeter_appt_action a:hover {
+.greeter_appt_action_links:hover {
   color: #2996b0;
   text-decoration: underline;
-}
-
-.greeter_appt_action a:visited {
-  color: grey;
-  text-decoration: line-through;
 }
 
 .day_link a, .report_link a {

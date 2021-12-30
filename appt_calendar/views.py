@@ -614,6 +614,7 @@ def send_followup(request, role, appt_id, date_year, date_month, date_day):
     appt = Appointment.objects.get(pk=appt_id)
 
     appt.outcome = "5"
+    appt.comm_followup = True
     appt.save()
 
     adopter = appt.adopter_choice
@@ -630,6 +631,7 @@ def send_followup_w_host(request, role, appt_id, date_year, date_month, date_day
     appt = Appointment.objects.get(pk=appt_id)
 
     appt.outcome = "5"
+    appt.comm_followup = True
     appt.save()
 
     adopter = appt.adopter_choice
