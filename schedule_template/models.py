@@ -1,6 +1,6 @@
 from django.db import models
 import datetime
-from .date_time_strings import *
+from appt_calendar.date_time_strings import *
 
 # Create your models here.
 
