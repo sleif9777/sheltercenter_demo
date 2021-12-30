@@ -1,8 +1,8 @@
-import smtplib, ssl, datetime, time
+import smtplib, ssl, datetime, time, os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from appt_calendar.models import Appointment
-import os
+from appt_calendar.date_time_strings import *
 
 def send_email(text, html, reply_to, subject, receiver_email):
     sender_email = "sheltercenterdev@gmail.com"
@@ -31,8 +31,8 @@ def send_email(text, html, reply_to, subject, receiver_email):
         )
 
 def clean_time_and_date(time, date):
-    time = time.strftime("%-I:%M%p")
-    date = date.strftime("%A, %-m/%-d")
+    time = time_str(time)
+    date = date_no_year_str(date)
 
     return time, date
 
@@ -43,7 +43,7 @@ def alert_date_set(adopter, date):
     name = adopter.adopter_first_name
     email = adopter.adopter_email
 
-    date_string = date.strftime("%A, %-m/%-d")
+    date_string = date_str(date)
 
     text = """\
     Hi """ + name + """,\n
@@ -73,7 +73,7 @@ def dates_are_open(adopter, date):
     plain_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/' + str(adopter.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
     url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/' + str(adopter.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to schedule your appointment.</a>'
 
-    date_string = date.strftime("%A, %-m/%-d")
+    date_string = date_str(date)
 
     text = """\
     Hi """ + name + """,\n
@@ -222,9 +222,9 @@ def ready_to_roll(appt, hw_status):
         next_bd_string = "tomorrow"
 
     if next_business_day == 2:
-        next_bd_opening_hour = datetime.time(13,0).strftime("%-I:%M%p").lower()
+        next_bd_opening_hour = next_bd_open(13, 0)
     else:
-        next_bd_opening_hour = datetime.time(12,0).strftime("%-I:%M%p").lower()
+        next_bd_opening_hour = next_bd_open(12, 0)
 
     if hw_status == "negative":
         text = """\

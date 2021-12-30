@@ -1,5 +1,6 @@
 from django.db import models
 import datetime
+from .date_time_strings import *
 from adopter.models import Adopter
 
 class Appointment(models.Model):
@@ -99,10 +100,10 @@ class Appointment(models.Model):
         return display_string
 
     def date_string(self):
-        return self.date.strftime("%A, %B %-d, %Y")
+        return date_str(self.date)
 
     def time_string(self):
-        return self.time.strftime('%-I:%M%p')
+        return time_str(self.time)
 
     def date_and_time_string(self):
         return self.date_string() + " at " + self.time_string()
@@ -124,7 +125,7 @@ class Timeslot(models.Model):
         return render_time
 
     def time_string(self):
-        return self.time.strftime('%-I:%M%p')
+        return time_str(self.time)
 
     class Meta:
         ordering = ('time',)

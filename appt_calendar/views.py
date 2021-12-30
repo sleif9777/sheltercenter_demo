@@ -1,13 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
-import datetime
+import datetime, time
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
 from .models import Timeslot, Appointment
 from adopter.models import Adopter
 from .forms import *
 from emails.email_template import *
+from .date_time_strings import *
 #
 # # Create your views here.
 #
+
 def calendar_home(request):
     today = datetime.date.today()
     return redirect('calendar', "admin")
@@ -51,11 +53,11 @@ def set_alert_date(request, role, adopter_id, date_year, date_month, date_day):
 def greeter_reschedule(request, role, adopter_id, appt_id, date_year, date_month, date_day):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %-d, %Y")
+    date_pretty = date_str(date)
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
     today = datetime.date.today()
-    weekday = date.strftime("%A")
+    weekday = weekday_str(date)
     timeslots_query = Timeslot.objects.filter(date = date)
     timeslots = {}
     open_timeslots = []
@@ -118,11 +120,11 @@ def adopter_calendar_date(request, role, adopter_id, date_year, date_month, date
     adopter = Adopter.objects.get(pk=adopter_id)
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %-d, %Y")
+    date_pretty = date_str(date)
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
-    weekday = date.strftime("%A")
+    weekday = weekday_str(date)
     timeslots_query = Timeslot.objects.filter(date = date)
     timeslots = {}
     open_timeslots = []
@@ -296,11 +298,11 @@ def jump_to_date_adopter(request, role, adopter_id):
 def calendar_date(request, role, date_year, date_month, date_day):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %-d, %Y")
+    date_pretty = date_str(date)
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
-    weekday = date.strftime("%A")
+    weekday = weekday_str(date)
     timeslots_query = Timeslot.objects.filter(date = date)
     timeslots = {}
     open_timeslots = []
@@ -353,11 +355,11 @@ def calendar_date(request, role, date_year, date_month, date_day):
 def paperwork_calendar(request, role, date_year, date_month, date_day, appt_id, hw_status):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %-d, %Y")
+    date_pretty = date_str(date)
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
-    weekday = date.strftime("%A")
+    weekday = weekday_str(date)
     timeslots_query = Timeslot.objects.filter(date = date)
     timeslots = {}
     open_timeslots = []
@@ -417,11 +419,11 @@ def paperwork_calendar(request, role, date_year, date_month, date_day, appt_id, 
 def daily_report_all_appts(request, role, date_year, date_month, date_day):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %-d, %Y")
+    date_pretty = date_str(date)
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
-    weekday = date.strftime("%A")
+    weekday = weekday_str(date)
     timeslots_query = Timeslot.objects.filter(date = date)
     timeslots = {}
     open_timeslots = []
@@ -471,11 +473,11 @@ def daily_report_all_appts(request, role, date_year, date_month, date_day):
 def daily_reports_home(request, role):
     all_dows = Daily_Schedule.objects
     date = datetime.date.today()
-    date_pretty = date.strftime("%A, %B %-d, %Y")
+    date_pretty = date_str(date)
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
-    weekday = date.strftime("%A")
+    weekday = weekday_str(date)
     timeslots_query = Timeslot.objects.filter(date = date)
     timeslots = {}
     open_timeslots = []
@@ -556,11 +558,11 @@ def send_ready_to_roll_msg(request, role, appt_id, hw_status):
 def daily_report_adopted_chosen_fta(request, role, date_year, date_month, date_day):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date.strftime("%A, %B %-d, %Y")
+    date_pretty = date_str(date)
     today = datetime.date.today()
     next_day = date + datetime.timedelta(days=1)
     previous_day = date - datetime.timedelta(days=1)
-    weekday = date.strftime("%A")
+    weekday = weekday_str(date)
     timeslots_query = Timeslot.objects.filter(date = date)
     timeslots = {}
     open_timeslots = []

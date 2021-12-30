@@ -1,5 +1,6 @@
 from django.db import models
 import datetime
+from .date_time_strings import *
 
 # Create your models here.
 
@@ -47,7 +48,7 @@ class AppointmentTemplate(models.Model):
         return dows[int(self.day_of_week)]
 
     def time_string(self):
-        return self.time.strftime('%-I:%M%p')
+        return time_str(self.time)
 
     def appt_string(self):
         appt_type = ["Adults", "Puppies", "Puppies or Adults", "Surrender", "Adoption", "FTA"]
@@ -76,7 +77,7 @@ class TimeslotTemplate(models.Model):
         return render_time
 
     def time_string(self):
-        return self.time.strftime('%-I:%M%p')
+        return time_str(self.time)
 
     class Meta:
         ordering = ('time',)
