@@ -58,6 +58,9 @@
                 {% if appt.bringing_dog %}
                   <b>Bringing dog</b>
                 {% endif %}
+                {% if appt.adopter_choice.visits_to_date > 1 %}
+                  <b>{{appt.adopter_choice.number_of_visits}}</b>
+                {% endif %}
                 </em>
               </div>
               {% if appt.appt_type in schedulable %}

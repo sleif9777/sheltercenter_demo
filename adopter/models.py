@@ -1,5 +1,6 @@
 from django.db import models
 import datetime
+from num2words import num2words
 
 # Create your models here.
 
@@ -16,6 +17,21 @@ class Adopter(models.Model):
     chosen_dog = models.CharField(default="", max_length=200, blank=True)
     has_current_appt = models.BooleanField(default = False)
     alert_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
+    visits_to_date = models.IntegerField(default=0)
+
+    def number_of_visits(self):
+        ordinal = num2words(self.visits_to_date + 1, to='ordinal')
+
+        #if an adopter has come for 1 visit and visits_to_date == 1, then the string should be "second visit" as that is what is upcoming
+
+        ordinal = ordinal[0].upper() + ordinal[1:]
+        ordinal = ordinal + " visit"
+
+        if self.visits_to_date >= 2:
+            for i in range(2, self.visits_to_date + 1):
+                ordinal += "!"
+
+        return ordinal
 
     def adopter_full_name(self):
         return self.adopter_first_name + " " + self.adopter_last_name

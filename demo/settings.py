@@ -142,16 +142,31 @@ USE_I18N = False
 
 USE_L10N = False
 
-# TIME_INPUT_FORMATS = [
-#     '%#I:%M %p',
-#     '%#I:%M%p',
-#     '%#I %p',
-#     '%#I%p',
-#     '%#H:%M %p',
-#     '%#H:%M%p',
-#     '%#H %p',
-#     '%#H%p',
-# ]
+# is_windows = os.environ.get('WINDOWS')
+#
+# if is_windows:
+#     TIME_INPUT_FORMATS = [
+#         '%#I:%M %p',
+#         '%#I:%M%p',
+#         '%#I %p',
+#         '%#I%p',
+#         '%#H:%M %p',
+#         '%#H:%M%p',
+#         '%#H %p',
+#         '%#H%p',
+#     ]
+# else:
+#     TIME_INPUT_FORMATS = [
+#         '%-I:%M %p',
+#         '%-I:%M%p',
+#         '%-I %p',
+#         '%-I%p',
+#         '%-H:%M %p',
+#         '%-H:%M%p',
+#         '%-H %p',
+#         '%#H%p',
+#     ]
+
 
 USE_TZ = False
 
