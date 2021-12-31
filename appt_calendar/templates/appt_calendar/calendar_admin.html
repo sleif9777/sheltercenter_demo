@@ -84,11 +84,7 @@
                 {% if appt.outcome == "1" %}
                   <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">Enter Decision</a>
                 {% else %}
-                  {% if appt.outcome == "5" %}
-                    <a href="#" class="decision_made">{{appt.get_outcome_display}}</a>
-                  {% else %}
-                    <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog}}</a>
-                  {% endif %}
+                  <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog}}</a>
                 {% endif %}
                 <a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id date.year date.month date.day%}">Reschedule Adopter</a>
                 <a href="{% url 'remove_adopter' role appt.id date.year date.month date.day %}">Cancel Adopter</a><br>
