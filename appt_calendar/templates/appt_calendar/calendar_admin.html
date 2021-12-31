@@ -82,7 +82,7 @@
                   <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">Enter Decision</a>
                 {% else %}
                   {% if appt.outcome == "5" %}
-                    {{appt.get_outcome_display}}
+                    <a href="#" class="decision"></a>{{appt.get_outcome_display}}
                   {% else %}
                     <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog}}</a>
                   {% endif %}
