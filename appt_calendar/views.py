@@ -622,6 +622,7 @@ def send_followup(request, role, appt_id, date_year, date_month, date_day):
     follow_up(adopter)
 
     adopter.has_current_appt = False
+    adopter.visits_to_date += 1
     adopter.save()
 
     return redirect('calendar_date', role, date.year, date.month, date.day)
@@ -639,6 +640,7 @@ def send_followup_w_host(request, role, appt_id, date_year, date_month, date_day
     follow_up_w_host(adopter)
 
     adopter.has_current_appt = False
+    adopter.visits_to_date += 1
     adopter.save()
 
     return redirect('calendar_date', role, date.year, date.month, date.day)
@@ -782,6 +784,15 @@ def enter_decision(request, role, appt_id, date_year, date_month, date_day):
         appt.adopter_choice.has_current_appt = False
         appt.adopter_choice.save()
 
+        adopter = appt.adopter_choice
+
+        if appt.outcome == "5":
+            adopter.visits_to_date += 1
+        elif appt.outcome in ["2", "3", "4"]:
+            adopter.visits_to_date = 0
+
+        adopter.save()
+
         if role == "admin":
             return redirect('calendar_date', role, date_year, date_month, date_day)
         elif role == "greeter":
@@ -903,6 +914,9 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
         new_appt.available = False
         new_appt.published = False
         new_appt.save()
+
+        adopter.visits_to_date += 1
+        adopter.save()
 
         if role == "adopter":
             reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)

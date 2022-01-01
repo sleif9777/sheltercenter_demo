@@ -35,10 +35,10 @@ class AppointmentModelFormPrefilled(forms.ModelForm):
             'dog_fka': '(For surrenders, if applicable) FKA:',
             'internal_notes': 'Notes:',
         }
-        # widgets = {
-        #     'day_of_week': forms.HiddenInput(),
-        #     'time': forms.HiddenInput(),
-        # }
+        widgets = {
+            'date': forms.HiddenInput(),
+            'time': forms.HiddenInput(),
+        }
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label_suffix', '')

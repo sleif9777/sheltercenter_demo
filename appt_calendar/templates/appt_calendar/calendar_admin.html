@@ -73,6 +73,9 @@
               {% if appt.bringing_dog %}
                 <b>Bringing dog</b>
               {% endif %}
+              {% if appt.adopter_choice.visits_to_date > 1 %}
+                <b>{{appt.adopter_choice.number_of_visits}}</b>
+              {% endif %}
               </em>
             </div>
             {% if appt.appt_type in schedulable and appt.available == False %}
@@ -81,11 +84,7 @@
                 {% if appt.outcome == "1" %}
                   <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">Enter Decision</a>
                 {% else %}
-                  {% if appt.outcome == "5" %}
-                    <a href="#" class="decision"></a>{{appt.get_outcome_display}}
-                  {% else %}
-                    <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog}}</a>
-                  {% endif %}
+                  <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog}}</a>
                 {% endif %}
                 <a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id date.year date.month date.day%}">Reschedule Adopter</a>
                 <a href="{% url 'remove_adopter' role appt.id date.year date.month date.day %}">Cancel Adopter</a><br>
