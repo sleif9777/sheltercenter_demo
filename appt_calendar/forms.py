@@ -2,6 +2,7 @@ from django import forms
 import datetime
 from .models import Timeslot, Appointment
 from adopter.models import Adopter
+import demo.settings as settings
 
 # class AdopterForm(forms.ModelForm):
 #     class Meta:
@@ -90,5 +91,6 @@ class TimeslotModelFormPrefilled(forms.ModelForm):
         ]
         widgets = {
             'date': forms.HiddenInput(),
+            #'time': TimePickerWidget(format='%-I:%M%p'),
             'appointments': forms.MultipleHiddenInput(),
         }
