@@ -32,5 +32,6 @@ urlpatterns = [
     path('calendar/template/', include('schedule_template.urls')),
     path('calendar/', include('appt_calendar.urls')),
     path('adopter/', include('adopter.urls')),
-    path('', adopt_views.simple_add_form, name="home")
+    path('', cal_views.calendar_home, name="home"),
+    #path('', adopt_views.simple_add_form, name="home")
 ]
