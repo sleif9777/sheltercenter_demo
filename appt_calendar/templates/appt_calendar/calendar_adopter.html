@@ -53,7 +53,11 @@
       <p class="greeting"><b>Hello, {{adopter.adopter_first_name}}!</b></p><br>
 
       {% if has_current_appt == True %}
-        Your appointment is currently set for {{current_appt_str}}.
+        Your appointment is currently set for {{current_appt_str}}.<br>
+        {% if current_appt.adopter_notes %}
+          <b>Your notes: </b> "{{current_appt.adopter_notes}}"<br>
+        {% endif %}
+        <b><a class="standalone" href="{% url 'book_cal_appointment' 'adopter' adopter.id current_appt.id date.year date.month date.day %}">Click here to edit your appointment notes.</a></b>
         {% if visible == True %}
           <br><br>Click any open slot below to reschedule your appointment. We only book one appointment per adopter at a time. By booking any appointment below, you will forfeit your current appointment slot.
           <br><br><b><a class="standalone" href="{% url 'adopter_self_cancel' 'adopter' adopter.id current_appt.id date.year date.month date.day %}">Click here to cancel your appointment.</a></b>
@@ -84,8 +88,8 @@
 
     {% for timeslot, appointments in timeslots.items %}
       <div class="timeslot">
+        <h2 class="timeslotheader">{{timeslot}}</h2>
         {% if timeslot in open_timeslots %}
-          <h2 class="timeslotheader">{{timeslot}}</h2>
           {% for appt in appointments %}
               {% if appt.available == True %}
                 <div class="appointment">
@@ -122,6 +126,8 @@
                 </div>
               {% endif %}
           {% endfor %}
+        {% else %}
+          No appointments available.
         {% endif %}
       </div>
     {% endfor %}

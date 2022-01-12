@@ -37,7 +37,7 @@ class Appointment(models.Model):
     # print(ADOPTER_CHOICES)
 
     #date = models.CharField(default=datetime.date.today)
-    date = models.DateField(default = datetime.date.today())
+    date = models.DateField(default = timezone.now())
     time = models.TimeField(default=datetime.time(12,00))
     appt_type = models.CharField(default="1", max_length=1, choices=APPT_TYPES)
     adopter_choice = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL)
@@ -123,7 +123,7 @@ class Appointment(models.Model):
         ordering = ('time', 'appt_type', 'id',)
 
 class Timeslot(models.Model):
-    date = models.DateField(default = datetime.date.today())
+    date = models.DateField(default = timezone.now())
     time = models.TimeField(default=datetime.time(12,00))
     appointments = models.ManyToManyField(Appointment, blank=True)
 

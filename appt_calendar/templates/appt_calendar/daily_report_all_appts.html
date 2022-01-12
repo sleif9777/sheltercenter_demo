@@ -47,12 +47,12 @@
     </div>
     {% else %}
 
-    <table style="width:100%;">
+    <table style="width:80%;">
       <tr>
-        <th>Time</th>
-        <th>Adopter</th>
-        <th>Outcome</th>
-        <th>Dog</th>
+        <th style="width:15%;">Time</th>
+        <th style="width:30%;">Adopter</th>
+        <th style="width:30%;">Outcome</th>
+        <th style="width:25%;">Dog</th>
       </tr>
       {% for timeslot, appointments in timeslots.items %}
         {% for appt in appointments %}

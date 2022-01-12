@@ -941,7 +941,6 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
             'appt': Appointment.objects.get(pk=appt_id),
             'date': date,
         }
-        print("STOP!" + str(adopter))
 
         return render(request, "appt_calendar/appt_not_available.html", context)
     else:
@@ -965,24 +964,24 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
             current_appt.save()
 
         new_appt.adopter_choice = adopter
-        new_appt.adopter_choice.has_current_appt = False
+        new_appt.adopter_choice.has_current_appt = True
         new_appt.available = False
         new_appt.published = False
         new_appt.save()
 
-        adopter.visits_to_date += 1
-        adopter.save()
-
         if role == "adopter":
             reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
             return redirect("adopter_calendar_date", role, adopter_id, date_year, date_month, date_day)
-        elif role == "greeter":
+        else:
+            adopter.visits_to_date += 1
+            adopter.save()
             today = datetime.date.today()
-            greeter_reschedule_email(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
-            return redirect("calendar_date", role, today.year, today.month, today.day)
-        elif role == "admin":
-            today = datetime.date.today()
-            reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
+            if role == "greeter":
+                current_appt.outcome = "5"
+                current_appt.save()
+                greeter_reschedule_email(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
+            elif role == "admin":
+                reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
             return redirect("calendar_date", role, today.year, today.month, today.day)
 
 def delete_appointment(request, role, date_year, date_month, date_day, appt_id):
