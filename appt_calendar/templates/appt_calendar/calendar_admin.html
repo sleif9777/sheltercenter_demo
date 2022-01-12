@@ -40,6 +40,7 @@
     <div class="calendar_actions">
       <a href="{% url 'jump_to_date_admin' role %}">Jump To Date</a>
       <a href="{% url 'calendar' 'admin' %}">Return to Today</a>
+      <a href="{% url 'calendar_print' role date.year date.month date.day %}" target="_blank">Print View</a>
       <a href="{% url 'add_timeslot' role date.year date.month date.day %}">Add Timeslot</a>
     </div>
 
@@ -71,7 +72,7 @@
                 <b>Adopter notes:</b> {{appt.adopter_notes}}<br></a>
               {% endif %}
               {% if appt.bringing_dog %}
-                <b>Bringing dog</b>
+                <b>Bringing dog<br></b>
               {% endif %}
               {% if appt.adopter_choice.visits_to_date > 1 %}
                 <b>{{appt.adopter_choice.number_of_visits}}</b>

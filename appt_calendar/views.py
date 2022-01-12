@@ -416,6 +416,61 @@ def paperwork_calendar(request, role, date_year, date_month, date_day, appt_id, 
 
     return render(request, "appt_calendar/paperwork_calendar.html/", context)
 
+
+def calendar_print(request, role, date_year, date_month, date_day):
+    all_dows = Daily_Schedule.objects
+    date = datetime.date(date_year, date_month, date_day)
+    date_pretty = date_str(date)
+    today = datetime.date.today()
+    next_day = date + datetime.timedelta(days=1)
+    previous_day = date - datetime.timedelta(days=1)
+    weekday = weekday_str(date)
+    timeslots_query = Timeslot.objects.filter(date = date)
+    timeslots = {}
+    open_timeslots = []
+    delta_from_today = (date - datetime.date.today()).days
+
+    if delta_from_today <= 13:
+        visible_to_adopters = True
+    else:
+        visible_to_adopters = False
+
+    for time in timeslots_query.iterator():
+        get_appts = time.appointments.filter(date = date, time = time.time)
+        appts_for_time = []
+        add_to_open_timeslots = False
+        for appointment in get_appts:
+            appts_for_time += [appointment]
+            if appointment.available == True:
+                add_to_open_timeslots = True
+        timeslots[time] = appts_for_time
+        if add_to_open_timeslots == True:
+            open_timeslots += [time]
+
+    if timeslots == {}:
+        empty_day = True
+    else:
+        empty_day = False
+
+    context = {
+        "date": date,
+        "date_pretty": date_pretty,
+        "next_day": next_day,
+        "previous_day": previous_day,
+        "weekday": weekday,
+        "timeslots": timeslots,
+        "empty_day": empty_day,
+        "schedulable": ["1", "2", "3"],
+        "all_dows": all_dows,
+        "visible": visible_to_adopters,
+        "delta": delta_from_today,
+        "role": role,
+        "open_timeslots": open_timeslots,
+        "today": today,
+    }
+
+    return render(request, "appt_calendar/calendar_print.html/", context)
+
 def daily_report_all_appts(request, role, date_year, date_month, date_day):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
