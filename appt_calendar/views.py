@@ -994,13 +994,22 @@ def delete_appointment(request, role, date_year, date_month, date_day, appt_id):
 def add_timeslot(request, role, date_year, date_month, date_day):
     date = datetime.date(date_year, date_month, date_day)
 
-    form = TimeslotModelFormPrefilled(request.POST or None, initial={"date": date})
+    form = NewTimeslotModelForm(request.POST or None, initial={"daypart": "1"})
 
     if form.is_valid():
-        form.save()
+        data = form.cleaned_data
+        hour = int(data['hour'])
+        minute = int(data['minute'])
+        daypart = data['daypart']
+
+        if daypart == "1":
+            hour += 12
+
+        new_ts = Timeslot.objects.create(date = date, time = datetime.time(hour, minute))
+
         return redirect('calendar_date', role, date.year, date.month, date.day)
     else:
-        form = TimeslotModelFormPrefilled(request.POST or None, initial={"date": date})
+        form = NewTimeslotModelForm(request.POST or None, initial={'daypart': "1"})
 
     context = {
         'form': form,

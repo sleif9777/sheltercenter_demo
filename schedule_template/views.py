@@ -77,8 +77,6 @@ def add_timeslot(request, dow_id):
     context = {
         'form': form,
         'dow': dow,
-        'hourrange': range(1, 13),
-        'minuterange': [str(i).zfill(2) for i in range(0, 60, 15)],
     }
 
     return render(request, "schedule_template/timeslot_form.html", context)
