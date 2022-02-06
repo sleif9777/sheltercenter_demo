@@ -94,3 +94,28 @@ class TimeslotModelFormPrefilled(forms.ModelForm):
             #'time': TimePickerWidget(format='%-I:%M%p'),
             'appointments': forms.MultipleHiddenInput(),
         }
+
+class NewTimeslotModelForm(forms.Form):
+    HOUR_CHOICES = [
+        (str(i), str(i)) for i in range(1, 13)
+    ]
+
+    MINUTE_CHOICES = [
+        (str(i), str(i).zfill(2)) for i in range(0, 60, 15)
+    ]
+
+    DAYPART_CHOICES = [
+        ("0", "AM"),
+        ("1", "PM"),
+    ]
+
+    hour = forms.ChoiceField(choices = HOUR_CHOICES, label="Select a time")
+    minute = forms.ChoiceField(choices = MINUTE_CHOICES, label=":")
+    daypart = forms.ChoiceField(choices = DAYPART_CHOICES, label="")
+
+    class Meta:
+        labels = {
+            'hour': 'Select a time',
+            'minute': '',
+            'daypart': ''
+        }

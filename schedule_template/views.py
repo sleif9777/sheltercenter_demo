@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import GenericTimeslotModelFormPrefilled, GenericAppointmentModelFormPrefilled
+from .forms import GenericTimeslotModelFormPrefilled, GenericAppointmentModelFormPrefilled, NewTimeslotModelForm
 from .models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
 import datetime
 
@@ -56,22 +56,32 @@ def delete_appointment(request, dow_id, appt_id):
 def add_timeslot(request, dow_id):
     dow = Daily_Schedule.objects.get(pk=dow_id)
 
-    print(dow.day_of_week)
+    form = NewTimeslotModelForm(request.POST or None, initial={'daypart': "1"})
 
-    form = GenericTimeslotModelFormPrefilled(request.POST or None, initial={'day_of_week': dow.day_of_week})
     if form.is_valid():
-        form.save()
+        data = form.cleaned_data
+        hour = int(data['hour'])
+        minute = int(data['minute'])
+        daypart = data['daypart']
+
+        if daypart == "1":
+            hour += 12
+
+        new_ts = TimeslotTemplate.objects.create(day_of_week = dow.day_of_week, time = datetime.time(hour, minute))
         dow.timeslots.add(TimeslotTemplate.objects.latest('id'))
+
         return redirect('daily', dow_id)
     else:
-        form = GenericTimeslotModelFormPrefilled(initial={'day_of_week': dow.day_of_week})
+        form = NewTimeslotModelForm(request.POST or None, initial={'daypart': "1"})
 
     context = {
         'form': form,
-        'dow': dow
+        'dow': dow,
+        'hourrange': range(1, 13),
+        'minuterange': [str(i).zfill(2) for i in range(0, 60, 15)],
     }
 
-    return render(request, "schedule_template/render_form.html", context)
+    return render(request, "schedule_template/timeslot_form.html", context)
 
 def add_appointment(request, dow_id, timeslot_id):
 #    dow_id -= 2

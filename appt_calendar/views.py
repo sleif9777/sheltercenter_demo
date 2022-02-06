@@ -993,7 +993,9 @@ def delete_appointment(request, role, date_year, date_month, date_day, appt_id):
 
 def add_timeslot(request, role, date_year, date_month, date_day):
     date = datetime.date(date_year, date_month, date_day)
+
     form = TimeslotModelFormPrefilled(request.POST or None, initial={"date": date})
+
     if form.is_valid():
         form.save()
         return redirect('calendar_date', role, date.year, date.month, date.day)
