@@ -201,10 +201,12 @@ def send_limited_matches_msg(request, appt_id, description, date_year, date_mont
         appt.comm_limited_puppies = True
     elif description == "small dogs":
         appt.comm_limited_small = True
-    elif description == "low-shedding and/or hypoallergenic dogs":
+    elif description == "lowshed":
         appt.comm_limited_hypo = True
+        print("hypo")
     else:
         appt.comm_limited_other = True
+        print("other")
 
     appt.save()
 

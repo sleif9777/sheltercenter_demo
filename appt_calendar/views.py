@@ -128,6 +128,7 @@ def adopter_calendar_date(request, role, adopter_id, date_year, date_month, date
     timeslots_query = Timeslot.objects.filter(date = date)
     timeslots = {}
     open_timeslots = []
+    schedulable = ["1", "2", "3"]
     delta_from_today = (date - datetime.date.today()).days
 
     try:
@@ -153,7 +154,7 @@ def adopter_calendar_date(request, role, adopter_id, date_year, date_month, date
                 add_to_open_timeslots = False
                 for appointment in get_appts:
                     appts_for_time += [appointment]
-                    if appointment.available == True:
+                    if appointment.available == True and appointment.appt_type in schedulable:
                         add_to_open_timeslots = True
                 timeslots[time] = appts_for_time
                 if add_to_open_timeslots == True:
@@ -163,12 +164,15 @@ def adopter_calendar_date(request, role, adopter_id, date_year, date_month, date
             appts_for_time = []
             add_to_open_timeslots = False
             for appointment in get_appts:
+                print(appointment.appt_type)
                 appts_for_time += [appointment]
-                if appointment.available == True:
+                if appointment.available == True and appointment.appt_type in schedulable:
                     add_to_open_timeslots = True
+                    print("eligible")
             timeslots[time] = appts_for_time
             if add_to_open_timeslots == True:
                 open_timeslots += [time]
+                print(time)
 
     if timeslots == {}:
         empty_day = True
@@ -187,7 +191,7 @@ def adopter_calendar_date(request, role, adopter_id, date_year, date_month, date
         "weekday": weekday,
         "timeslots": timeslots,
         "empty_day": empty_day,
-        "schedulable": ["1", "2", "3"],
+        "schedulable": schedulable,
         "all_dows": all_dows,
         "visible": visible_to_adopters,
         "delta": delta_from_today,
@@ -843,6 +847,7 @@ def enter_decision(request, role, appt_id, date_year, date_month, date_day):
 
         if appt.outcome == "5":
             adopter.visits_to_date += 1
+            follow_up(adopter)
         elif appt.outcome in ["2", "3", "4"]:
             adopter.visits_to_date = 0
 
@@ -1002,7 +1007,7 @@ def add_timeslot(request, role, date_year, date_month, date_day):
         minute = int(data['minute'])
         daypart = data['daypart']
 
-        if daypart == "1":
+        if daypart == "1" and hour < 12:
             hour += 12
 
         new_ts = Timeslot.objects.create(date = date, time = datetime.time(hour, minute))

@@ -87,49 +87,47 @@
     </div>
 
     {% for timeslot, appointments in timeslots.items %}
+      {% if timeslot in open_timeslots %}
       <div class="timeslot">
         <h2 class="timeslotheader">{{timeslot}}</h2>
-        {% if timeslot in open_timeslots %}
-          {% for appt in appointments %}
-              {% if appt.available == True %}
-                <div class="appointment">
-                  {% if has_current_appt == False %}
-                      <div class="appt_description appt_action">
-                        <p><a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">{{appt}}</a></p>
-                      </div>
-                    {% else %}
-                      <div class="appt_description appt_action">
-                        <p><a href="{% url 'adopter_reschedule' 'adopter' adopter.id appt.id date.year date.month date.day %}">{{appt}}</a></p>
-                      </div>
+        {% for appt in appointments %}
+            {% if appt.available == True and appt.appt_type in schedulable %}
+              <div class="appointment">
+                {% if has_current_appt == False %}
+                    <div class="appt_description appt_action">
+                      <p><a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">{{appt}}</a></p>
+                    </div>
+                  {% else %}
+                    <div class="appt_description appt_action">
+                      <p><a href="{% url 'adopter_reschedule' 'adopter' adopter.id appt.id date.year date.month date.day %}">{{appt}}</a></p>
+                    </div>
+                {% endif %}
+              </div>
+            {% elif appt.available == False and appt.adopter_choice == adopter and appt.appt_type in schedulable %}
+              <div class="appointment">
+                <div class="appt_description appt_action">
+                  <p><a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">{{appt}}</a></p>
+                </div>
+                <div class="appt_notes">
+                  <em>
+                  {% if appt.adopter_notes %}
+                    <a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">"{{appt.adopter_notes}}"</a><br>
                   {% endif %}
+                  {% if appt.bringing_dog %}
+                    <b>Bringing dog</b>
+                  {% endif %}
+                  </em>
                 </div>
-              {% elif appt.available == False and appt.adopter_choice == adopter and appt.appt_type in schedulable %}
-                <div class="appointment">
-                  <div class="appt_description appt_action">
-                    <p><a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">{{appt}}</a></p>
-                  </div>
-                  <div class="appt_notes">
-                    <em>
-                    {% if appt.adopter_notes %}
-                      <a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">"{{appt.adopter_notes}}"</a><br>
-                    {% endif %}
-                    {% if appt.bringing_dog %}
-                      <b>Bringing dog</b>
-                    {% endif %}
-                    </em>
-                  </div>
-                  <div class="appt_action">
-                    <a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">Edit My Appointment Notes</a><br>
-                    <a href="{% url 'adopter_self_cancel' 'adopter' adopter.id appt.id date.year date.month date.day %}">Cancel My Appointment</a>
-                  </div>
-                  <br>
+                <div class="appt_action">
+                  <a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">Edit My Appointment Notes</a><br>
+                  <a href="{% url 'adopter_self_cancel' 'adopter' adopter.id appt.id date.year date.month date.day %}">Cancel My Appointment</a>
                 </div>
-              {% endif %}
-          {% endfor %}
-        {% else %}
-          No appointments available.
-        {% endif %}
+                <br>
+              </div>
+            {% endif %}
+        {% endfor %}
       </div>
+      {% endif %}
     {% endfor %}
 
     {% endif %}

@@ -61,10 +61,11 @@ def add_timeslot(request, dow_id):
     if form.is_valid():
         data = form.cleaned_data
         hour = int(data['hour'])
+        print(hour)
         minute = int(data['minute'])
         daypart = data['daypart']
 
-        if daypart == "1":
+        if daypart == "1" and hour < 12:
             hour += 12
 
         new_ts = TimeslotTemplate.objects.create(day_of_week = dow.day_of_week, time = datetime.time(hour, minute))
