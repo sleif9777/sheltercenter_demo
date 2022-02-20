@@ -1,0 +1,13 @@
+<form class="" action="{% url 'saf_submit' %}" method="post">
+    {% csrf_token %}
+    <label for="fname">First name: </label>
+    <input type="text" name="fname" value="" required><br>
+    <label for="lname">Last name: </label>
+    <input type="text" name="lname" value="" required><br>
+    <label for="email">Email: </label>
+    <input type="text" name="email" value="" required><br>
+    <label for="subjnotes">Subject line notes: </label>
+    <input type="text" name="subjnotes" value=""><br>
+    <input type="submit" name="submit" value="In NC/SC/VA">
+    <input type="submit" name="submit_oos" value="Out of State" formaction="{% url 'saf_sub_oos' %}">
+</form>

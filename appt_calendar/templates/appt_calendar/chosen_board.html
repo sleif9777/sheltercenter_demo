@@ -35,14 +35,14 @@
 
     <div class="textpage">
       <h1 class="page_header">Chosen Board</h1>
-      <table>
+      <table style="width: 80%;">
         <tr>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Adopter</th>
-          <th>Outcome</th>
-          <th>Dog</th>
-          <th>Ready To Roll?</th>
+          <th style="width:15%;">Date</th>
+          <th style="width:10%;">Time</th>
+          <th style="width:25%;">Adopter</th>
+          <th style="width:10%;">Outcome</th>
+          <th style="width:15%;">Dog</th>
+          <th style="width:25%;">Ready To Roll?</th>
         </tr>
         {% for appt in appointments %}
           {% if appt.outcome == "3" or appt.outcome == "6" or appt.outcome == "7" %}

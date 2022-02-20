@@ -56,9 +56,9 @@
                   <b>Adopter notes:</b> {{appt.adopter_notes}}<br></a>
                 {% endif %}
                 {% if appt.bringing_dog %}
-                  <b>Bringing dog</b>
+                  <b>Bringing dog</b><br>
                 {% endif %}
-                {% if appt.adopter_choice.visits_to_date > 1 %}
+                {% if appt.adopter_choice.visits_to_date > 1 and appt.outcome != "5" %}
                   <b>{{appt.adopter_choice.number_of_visits}}</b>
                 {% endif %}
                 </em>

@@ -40,6 +40,7 @@
     <div class="calendar_actions">
       <a href="{% url 'jump_to_date_admin' role %}">Jump To Date</a>
       <a href="{% url 'calendar' 'admin' %}">Return to Today</a>
+      <a href="{% url 'calendar_print' role date.year date.month date.day %}" target="_blank">Print View</a>
       <a href="{% url 'add_timeslot' role date.year date.month date.day %}">Add Timeslot</a>
     </div>
 
@@ -71,7 +72,7 @@
                 <b>Adopter notes:</b> {{appt.adopter_notes}}<br></a>
               {% endif %}
               {% if appt.bringing_dog %}
-                <b>Bringing dog</b>
+                <b>Bringing dog<br></b>
               {% endif %}
               {% if appt.adopter_choice.visits_to_date > 1 %}
                 <b>{{appt.adopter_choice.number_of_visits}}</b>
@@ -84,7 +85,12 @@
                 {% if appt.outcome == "1" %}
                   <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">Enter Decision</a>
                 {% else %}
-                  <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog}}</a>
+                  {% if appt.outcome == "5" %}
+                    <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
+                  {% else %}
+                    <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog.upper}}</a>
+                  {% endif %}
+                  </a>
                 {% endif %}
                 <a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id date.year date.month date.day%}">Reschedule Adopter</a>
                 <a href="{% url 'remove_adopter' role appt.id date.year date.month date.day %}">Cancel Adopter</a><br>

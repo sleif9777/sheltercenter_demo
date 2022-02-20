@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from appt_calendar import views as cal_views
+from adopter import views as adopt_views
 #import scheduleconfig.views
 #import schedule_template.views
 #import appt_calendar.views
@@ -31,5 +32,6 @@ urlpatterns = [
     path('calendar/template/', include('schedule_template.urls')),
     path('calendar/', include('appt_calendar.urls')),
     path('adopter/', include('adopter.urls')),
-    path('', cal_views.calendar_home, name="home")
+    path('', cal_views.calendar_home, name="home"),
+    #path('', adopt_views.simple_add_form, name="home")
 ]

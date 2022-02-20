@@ -67,8 +67,9 @@
     <br>
     <form class="" action="" method="post">
       {% csrf_token %}
-      {{ form.as_p }}
-      <br>
+
+      <p>{{form}}</p>
+
       <input class="submitform" type="submit" name="" value="Submit">
     </form>
 

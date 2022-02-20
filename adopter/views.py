@@ -9,6 +9,37 @@ from emails.email_template import *
 
 
 # Create your views here.
+
+def simple_add_form(request):
+
+    return render(request, "adopter/simple_add_form.html")
+
+def simple_add_form_submit(request):
+
+    fname = request.POST['fname']
+    lname = request.POST['lname']
+    email = request.POST['email']
+
+    try:
+        subjnotes = request.POST['subjnotes']
+    except:
+        subjnotes = None
+
+    simple_invite(fname, lname, email, subjnotes)
+
+    return redirect('simple_add_form')
+
+def simple_add_form_oos(request):
+
+    fname = request.POST['fname']
+    lname = request.POST['lname']
+    email = request.POST['email']
+    subjnotes = request.POST['subjnotes']
+
+    simple_invite_oos(fname, lname, email, subjnotes)
+
+    return redirect('simple_add_form')
+
 def login(request):
     adopters = Adopter.objects.all()
 
@@ -170,10 +201,12 @@ def send_limited_matches_msg(request, appt_id, description, date_year, date_mont
         appt.comm_limited_puppies = True
     elif description == "small dogs":
         appt.comm_limited_small = True
-    elif description == "low-shedding and/or hypoallergenic dogs":
+    elif description == "lowshed":
         appt.comm_limited_hypo = True
+        print("hypo")
     else:
         appt.comm_limited_other = True
+        print("other")
 
     appt.save()
 

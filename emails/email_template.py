@@ -13,7 +13,7 @@ def send_email(text, html, reply_to, subject, receiver_email):
     message["To"] = receiver_email
 
     if reply_to == "default":
-        message['Reply-To'] = "sheltercenterdev+sam@gmail.com"
+        message['Reply-To'] = "sheltercenterdev@gmail.com"
     else:
         message['Reply-To'] = reply_to
     message['Subject'] = subject
@@ -96,6 +96,223 @@ def dates_are_open(adopter, date):
     """
 
     send_email(text, html, "default", subject, email)
+
+def simple_invite(fname, lname, email, subjnotes):
+    subject = "Your adoption request has been reviewed: " + fname.upper() + " " + lname.upper()
+
+    if subjnotes:
+        subject += " (" + subjnotes + ")"
+
+    text = """\
+Congratulations, your Saving Grace adoption request has been reviewed and it is time to schedule your appointment. Please review the following information before responding. Many of our FAQs are addressed here.\n\n
+Communicating with the Adoptions Team\n\n
+- Our Adoptions Managers actively engage with dogs and onsite adopters during working hours. As a result, their response time to emails may be limited.\n
+- Other team members who moderate this email are off-site and focus their volunteer efforts towards scheduling appointments and answering questions about our policies. They are not as familiar with the dogs. Please save all questions about specific dogs until you are on-site for your appointment - those you meet in-person will have the best answers for you.\n
+- Our phone line is not monitored. We do not make phone calls to adopters.\n
+- Multiple team members moderate this email. Please help us all stay on the same page by always responding directly to the last email you received from us.\n\n
+Operating Hours\n\n
+Monday: 12:00pm to 6:00pm\n
+Tuesday: 12:00pm to 6:00pm\n
+Wednesday: 1:00pm to 6:00pm (if interested in puppies, schedule for this day)\n
+Thursday: 12:00pm to 6:00pm (if interested in puppies, schedule for this day)\n
+Friday: 12:00pm to 6:00pm\n\n
+We do not hold adoption appointments during mornings or weekends. There are no exceptions or flexibility offered in this regard.\n\n
+Scheduling an Appointment\n\n
+- Please respond with three specific dates and times that work for you. Giving us options helps us schedule you an appointment as fast as possible and saves everyone a lot of back-and-forth.\n
+- Supply your own availability rather than ask ours. We are working with many adopters at once and our calendar can change from one moment to the next.\n
+- Schedule for a day that you are fully prepared to take a dog home immediately following the appointment. We do not hold chosen dogs unless they need further veterinary care. If you have upcoming travel and are concerned that will disrupt your new pet's adjustment period, please plan your visit for after you return home.\n
+- Bring your entire family, including children and dogs (no non-canine pets). It is very important not only for the entire family to be comfortable with the choice of dog, <b>but also for the dog to demonstrate that they are comfortable with the family as well.<b> We ask this in the interest of making a match that works for everyone. A video meeting is not a substitute, as dogs respond most strongly to scent and temperament, not appearance.\n
+- Puppies arrive on Wednesdays and Thursdays and stay with us until they find a home. To have the best selection of puppies, please schedule for a Wednesday or Thursday. We cannot guarantee puppies to be available on Mondays, Tuesdays, or Fridays.\n
+- Our puppies are of unknown parentage, we cannot guarantee them to grow to be any specific size.\n
+- Appointments can be scheduled up to two weeks in advance. If you are looking to adopt later than two weeks in advance, please hold onto this email and respond closer to that time.\n
+What To Expect During Your Appointment\n\n
+- Your appointment is structured to take about one hour.\n
+- You will have the opportunity to meet multiple available dogs.\n
+- We strongly encourage adopters to keep an open mind and not narrow their scope to only one dog from the website. We likely have a good match for you, even if it isn't the dog you expect it to be. The more open you are to just engage in the process, the more potential options for dogs you will have.\n
+- Dogs are not placed on hold. We do not accept deposits. It is important that you meet a dog in-person to experience their temperament and energy in-person. Our website's photos and short bios are only meant to be an introduction.\n
+- If a dog is removed from the website, they have been adopted.\n
+- It takes time for dogs to get photographed and posted to our website. There are always some available who haven't been posted and your match may be in that group. This is particularly true for small dogs, though we can let you know if we do not have many available.\n\n
+Potential Adoption Outcomes\n\n
+ADOPTABLE: Some of our dogs are ready to join their new families and will be able to leave the same day with you. If your dog falls into this category, you will need to take them home immediately following the appointment.\n\n
+RESERVED/CHOSEN: Some of our dogs are newer to the program and may still require vetting before they can be adopted and go home. These are considered “Chosen” and will be unavailable for other adopters as they wait for what they need.\n\n
+FOSTER TO ADOPT (FTA): We treat numerous dogs with heartworm disease, which is mosquito-borne and common throughout the Carolinas. If your chosen dog is heartworm-positive, he/she will be able to go home with you as a foster until the treatments are complete. We still need to legally own the dog in order to administer treatments, and so transfer of final adoption occurs after the third treatment. The process takes approximately 8-10 weeks. Adoptions Team members will discuss heartworm treatment with you and provide you further information during your appointment.\n\n
+NO DECISION: It is possible you may not find your match during your appointment. You can schedule subsequent appointments until you do without filling out another application.\n\n
+
+After having reviewed the above information, please respond directly to this email with upcoming availability and your desired size and age group in order to continue the adoption process. We look forward to working with you.\n\n
+
+The Adoptions Team\n
+Saving Grace Animals For Adoption
+    """
+
+    html = """\
+    <html>
+      <body>
+        <p>Congratulations, your Saving Grace adoption request has been reviewed and it is time to schedule your appointment. Please review the following information before responding. Many of our FAQs are addressed here.</p>
+        <h2 style="color: #C45389;">Communicating with the Adoptions Team</h2>
+        <ul>
+        <li>Our Adoptions Managers actively engage with dogs and onsite adopters during working hours. As a result, their response time to emails may be limited.</li>
+        <li>Other team members who moderate this email are off-site and focus their volunteer efforts towards scheduling appointments and answering questions about our policies. They are not as familiar with the dogs. Please save all questions about specific dogs until you are on-site for your appointment - those you meet in-person will have the best answers for you.</li>
+        <li>Our phone line is not monitored. We do not make phone calls to adopters.</li>
+        <li>Multiple team members moderate this email. Please help us all stay on the same page by always responding directly to the last email you received from us.</li>
+        </ul>
+        <h2 style="color: #C45389;">Scheduling an Appointment</h2>
+        <h3 style="color: #C45389;">Operating Hours</h3>
+        <b>Monday: </b> 12:00pm to 6:00pm<br>
+        <b>Tuesday: </b> 12:00pm to 6:00pm<br>
+        <b>Wednesday: </b> 1:00pm to 6:00pm (if interested in puppies, schedule for this day)<br>
+        <b>Thursday: </b> 12:00pm to 6:00pm (if interested in puppies, schedule for this day)<br>
+        <b>Friday: </b> 12:00pm to 6:00pm<br>
+        <ul>
+        <li>We do not hold adoption appointments during mornings or weekends. There are no exceptions or flexibility offered in this regard.</li>
+        </ul>
+        <h3 style="color: #C45389;">Scheduling Policies</h3>
+        <ul>
+        <li>Respond with <b>three specific dates and times</b> that work for you. Giving us options helps us schedule you an appointment as fast as possible and saves everyone a lot of back-and-forth.</li>
+        <li>Supply your own availability rather than ask ours. We are working with many adopters at once and our calendar can change from one moment to the next.</li>
+        <li>Schedule for a day that you are fully prepared to take a dog home immediately following the appointment. We do not hold chosen dogs unless they need further veterinary care. If you have upcoming travel and are concerned that will disrupt your new pet's adjustment period, please plan your visit for after you return home.</li>
+        <li>Bring your entire family, including children and dogs (no non-canine pets). It is very important not only for the entire family to be comfortable with the choice of dog, <b>but also for the dog to demonstrate that they are comfortable with the family as well.<b> We ask this in the interest of making a match that works for everyone. A video meeting is not a substitute, as dogs respond most strongly to scent and temperament, not appearance.</li>
+        <li>Puppies arrive on Wednesdays and Thursdays and stay with us until they find a home. To have the best selection of puppies, please schedule for a Wednesday or Thursday. We cannot guarantee puppies to be available on Mondays, Tuesdays, or Fridays.</li>
+        <li>Our puppies are of unknown parentage, we cannot guarantee them to grow to be any specific size.</li>
+        <li>Appointments can be scheduled up to two weeks in advance. If you are looking to adopt later than two weeks in advance, please hold onto this email and respond closer to that time.</li>
+        </ul>
+        <h2 style="color: #C45389;">What To Expect During Your Appointment</h2>
+        <li>Your appointment is structured to take about one hour.</li>
+        <li>You will have the opportunity to meet multiple available dogs.</li>
+        <li>We strongly encourage adopters to keep an open mind and not narrow their scope to only one dog from the website. We likely have a good match for you, even if it isn't the dog you expect it to be. The more open you are to just engage in the process, the more potential options for dogs you will have.</li>
+        <li><b>Dogs are not placed on hold. We do not accept deposits.</b> It is important that you meet a dog in-person to experience their temperament and energy in-person. Our website's photos and short bios are only meant to be an introduction.</li>
+        <li>If a dog is removed from the website, they have been adopted.</li>
+        <li>It takes time for dogs to get photographed and posted to our website. There are always some available who haven't been posted and your match may be in that group. This is particularly true for small dogs, though we can let you know if we do not have many available.</li>
+        <h3 style="color: #C45389;">Potential Adoption Outcomes</h3>
+        <h4 style="color: #C45389;">Adoptable</h4>
+        <p>Some of our dogs are ready to join their new families and will be able to leave the same day with you. If your dog falls into this category, you will need to take them home immediately following the appointment.</p>
+        <h4 style="color: #C45389;">Reserved/Chosen</h4>
+        <p>Some of our dogs are newer to the program and may still require vetting before they can be adopted and go home. These are considered “Chosen” and will be unavailable for other adopters as they wait for what they need.</p>
+        <h4 style="color: #C45389;">Foster to Adopt (FTA)</h4>
+        <p>We treat numerous dogs with heartworm disease, which is mosquito-borne and common throughout the Carolinas. If your chosen dog is heartworm-positive, he/she will be able to go home with you as a foster until the treatments are complete. We still need to legally own the dog in order to administer treatments, and so transfer of final adoption occurs after the third treatment. The process takes approximately 8-10 weeks. Adoptions Team members will discuss heartworm treatment with you and provide you further information during your appointment.</p>
+        <h4 style="color: #C45389;">No Decision</h4>
+        <p>It is possible you may not find your match during your appointment. You can schedule subsequent appointments until you do without filling out another application.</p>
+        <p>After having reviewed the above information, please respond directly to this email with upcoming availability and your desired size and age group in order to continue the adoption process. We look forward to working with you.<p>
+        <p>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
+      </body>
+    </html>
+    """
+
+    send_email(text, html, "adoptions@savinggracenc.org", subject, email)
+
+
+def simple_invite_oos(fname, lname, email, subjnotes):
+    subject = "Your adoption request has been reviewed: " + fname.upper() + " " + lname.upper()
+
+    if subjnotes:
+        subject += " (" + subjnotes + ")"
+
+    text = """\
+Congratulations, your Saving Grace adoption request has been reviewed and it is time to schedule your appointment. Please review the following information before responding. Many of our FAQs are addressed here.\n\n
+Out-Of-State Adoption Policies\n\n
+We are happy to help adopters coming from a distance, but want to set appropriate expectations for adopting through our program.\n\n
+- We do not ship or offer transport for adopted dogs. Each adopter must visit with an animal in person and commit to following through with adoption.\n
+- In order to give the most dogs an opportunity for a forever family, dogs are not placed on hold. This means a dog you are considering may be adopted before your visit. It is best to visit with an open mind and choose a dog in person that best fits what you are looking for rather than be set on adopting a specific dog on the website.\n
+- If a dog has not completed their veterinary care, an additional trip may be necessary at a later date to complete the adoption and pick up the dog. This process will vary with each animal and their medical needs. It is best to check with your veterinarian in your state of residence regarding health certificates/licensing required when bringing a new animal into your state. It is up to adopters to acquire the health certificate from a North Carolina veterinarian. While we can recommend veterinarians, we are unable to provide this service.\n\n
+Communicating with the Adoptions Team\n\n
+- Our Adoptions Managers actively engage with dogs and onsite adopters during working hours. As a result, their response time to emails may be limited.\n
+- Other team members who moderate this email are off-site and focus their volunteer efforts towards scheduling appointments and answering questions about our policies. They are not as familiar with the dogs. Please save all questions about specific dogs until you are on-site for your appointment - those you meet in-person will have the best answers for you.\n
+- Our phone line is not monitored. We do not make phone calls to adopters.\n
+- Multiple team members moderate this email. Please help us all stay on the same page by always responding directly to the last email you received from us.\n\n
+Operating Hours\n\n
+Monday: 12:00pm to 6:00pm\n
+Tuesday: 12:00pm to 6:00pm\n
+Wednesday: 1:00pm to 6:00pm (if interested in puppies, schedule for this day)\n
+Thursday: 12:00pm to 6:00pm (if interested in puppies, schedule for this day)\n
+Friday: 12:00pm to 6:00pm\n\n
+We do not hold adoption appointments during mornings or weekends. There are no exceptions or flexibility offered in this regard.\n\n
+Scheduling an Appointment\n\n
+- Please respond with three specific dates and times that work for you. Giving us options helps us schedule you an appointment as fast as possible and saves everyone a lot of back-and-forth.\n
+- Please supply your own availability rather than ask ours. We are working with many adopters at once and our calendar can change from one moment to the next.\n
+- We ask that you schedule for a day that you are fully prepared to take a dog home immediately following the appointment. We do not hold chosen dogs unless they need further veterinary care. If you have upcoming travel and are concerned that will disrupt your new pet's adjustment period, please schedule an appointment for after you return home.\n
+- Please bring your entire family, including children and dogs (no non-canine pets). It is very important not only for the entire family to be comfortable with the choice of dog, <b>but also for the dog to demonstrate that they are comfortable with the family as well.<b> We ask this in the interest of making a match that works for everyone. A video meeting is not a substitute, as dogs respond most strongly to scent and temperament, not appearance.\n
+- Puppies arrive on Wednesdays and Thursdays and stay with us until they find a home. To have the best selection of puppies, please schedule for a Wednesday or Thursday. We cannot guarantee puppies to be available on Mondays, Tuesdays, or Fridays.\n
+- Our puppies are of unknown parentage, we cannot guarantee them to grow to be any specific size.\n
+- Appointments can be scheduled up to two weeks in advance. If you are looking to adopt later than two weeks in advance, please hold onto this email and respond closer to that time.\n
+What To Expect During Your Appointment\n\n
+- Your appointment is structured to take about one hour.\n
+- You will have the opportunity to meet multiple available dogs.\n
+- We strongly encourage adopters to keep an open mind and not narrow their scope to only one dog from the website. We likely have a good match for you, even if it isn't the dog you expect it to be. The more open you are to just engage in the process, the more potential options for dogs you will have.\n
+- Dogs are not placed on hold. We do not accept deposits. It is important that you meet a dog in-person to experience their temperament and energy in-person. Our website's photos and short bios are only meant to be an introduction.\n
+- If a dog is removed from the website, they have been adopted.\n
+- It takes time for dogs to get photographed and posted to our website. There are always some available who haven't been posted and your match may be in that group. This is particularly true for small dogs, though we can let you know if we do not have many available.\n\n
+Potential Adoption Outcomes\n\n
+ADOPTABLE: Some of our dogs are ready to join their new families and will be able to leave the same day with you. If your dog falls into this category, you will need to take them home immediately following the appointment.\n\n
+RESERVED/CHOSEN: Some of our dogs are newer to the program and may still require vetting before they can be adopted and go home. These are considered “Chosen” and will be unavailable for other adopters as they wait for what they need.\n\n
+FOSTER TO ADOPT (FTA): We treat numerous dogs with heartworm disease, which is mosquito-borne and common throughout the Carolinas. If your chosen dog is heartworm-positive, he/she will be able to go home with you as a foster until the treatments are complete. We still need to legally own the dog in order to administer treatments, and so transfer of final adoption occurs after the third treatment. The process takes approximately 8-10 weeks. Adoptions Team members will discuss heartworm treatment with you and provide you further information during your appointment.\n\n
+NO DECISION: It is possible you may not find your match during your appointment. You can schedule subsequent appointments until you do without filling out another application.\n\n
+
+After having reviewed the above information, please respond directly to this email with upcoming availability and your desired size and age group in order to continue the adoption process. We look forward to working with you.\n\n
+
+The Adoptions Team\n
+Saving Grace Animals For Adoption
+    """
+
+    html = """\
+    <html>
+      <body>
+        <p>Congratulations, your Saving Grace adoption request has been reviewed and it is time to schedule your appointment. Please review the following information before responding. Many of our FAQs are addressed here.</p>
+        <h2 style="color: #C45389;">Out-Of-State Adoption Policies</h2>
+        <p>We are happy to help adopters coming from a distance, but want to set appropriate expectations for adopting through our program.</p>
+        <ul>
+        <li>We do not ship or offer transport for adopted dogs. Each adopter must visit with an animal in person and commit to following through with adoption.</li>
+        <li>In order to give the most dogs an opportunity for a forever family, <b>dogs are not placed on hold.</b> This means a dog you are considering may be adopted before your visit. It is best to visit with an open mind and choose a dog in person that best fits what you are looking for rather than be set on adopting a specific dog on the website.</li>
+        <li>If a dog has not completed their veterinary care, an additional trip may be necessary at a later date to complete the adoption and pick up the dog. This process will vary with each animal and their medical needs. It is best to check with your veterinarian in your state of residence regarding health certificates/licensing required when bringing a new animal into your state. It is up to adopters to acquire the health certificate from a North Carolina veterinarian. While we can recommend veterinarians, we are unable to provide this service.</li>
+        </ul>
+        <h2 style="color: #C45389;">Communicating with the Adoptions Team</h2>
+        <ul>
+        <li>Our Adoptions Managers actively engage with dogs and onsite adopters during working hours. As a result, their response time to emails may be limited.</li>
+        <li>Other team members who moderate this email are off-site and focus their volunteer efforts towards scheduling appointments and answering questions about our policies. They are not as familiar with the dogs. Please save all questions about specific dogs until you are on-site for your appointment - those you meet in-person will have the best answers for you.</li>
+        <li>Our phone line is not monitored. We do not make phone calls to adopters.</li>
+        <li>Multiple team members moderate this email. Please help us all stay on the same page by always responding directly to the last email you received from us.</li>
+        </ul>
+        <h2 style="color: #C45389;">Scheduling an Appointment</h2>
+        <h3 style="color: #C45389;">Operating Hours</h3>
+        <b>Monday: </b> 12:00pm to 6:00pm<br>
+        <b>Tuesday: </b> 12:00pm to 6:00pm<br>
+        <b>Wednesday: </b> 1:00pm to 6:00pm (if interested in puppies, schedule for this day)<br>
+        <b>Thursday: </b> 12:00pm to 6:00pm (if interested in puppies, schedule for this day)<br>
+        <b>Friday: </b> 12:00pm to 6:00pm<br>
+        <ul>
+        <li>We do not hold adoption appointments during mornings or weekends. There are no exceptions or flexibility offered in this regard.</li>
+        </ul>
+        <h3 style="color: #C45389;">Scheduling Policies</h3>
+        <ul>
+        <li>Please respond with <b>three specific dates and times</b> that work for you. Giving us options helps us schedule you an appointment as fast as possible and saves everyone a lot of back-and-forth.</li>
+        <li>Please supply your own availability rather than ask ours. We are working with many adopters at once and our calendar can change from one moment to the next.</li>
+        <li>We ask that you schedule for a day that you are fully prepared to take a dog home immediately following the appointment. We do not hold chosen dogs unless they need further veterinary care. If you have upcoming travel and are concerned that will disrupt your new pet's adjustment period, please schedule an appointment for after you return home.</li>
+        <li>Please bring your entire family, including children and dogs (no non-canine pets). It is very important not only for the entire family to be comfortable with the choice of dog, <b>but also for the dog to demonstrate that they are comfortable with the family as well.<b> We ask this in the interest of making a match that works for everyone. A video meeting is not a substitute, as dogs respond most strongly to scent and temperament, not appearance.</li>
+        <li>Puppies arrive on Wednesdays and Thursdays and stay with us until they find a home. To have the best selection of puppies, please schedule for a Wednesday or Thursday. We cannot guarantee puppies to be available on Mondays, Tuesdays, or Fridays.</li>
+        <li>Our puppies are of unknown parentage, we cannot guarantee them to grow to be any specific size.</li>
+        <li>Appointments can be scheduled up to two weeks in advance. If you are looking to adopt later than two weeks in advance, please hold onto this email and respond closer to that time.</li>
+        </ul>
+        <h2 style="color: #C45389;">What To Expect During Your Appointment</h2>
+        <li>Your appointment is structured to take about one hour.</li>
+        <li>You will have the opportunity to meet multiple available dogs.</li>
+        <li>We strongly encourage adopters to keep an open mind and not narrow their scope to only one dog from the website. We likely have a good match for you, even if it isn't the dog you expect it to be. The more open you are to just engage in the process, the more potential options for dogs you will have.</li>
+        <li><b>Dogs are not placed on hold. We do not accept deposits.</b> It is important that you meet a dog in-person to experience their temperament and energy in-person. Our website's photos and short bios are only meant to be an introduction.</li>
+        <li>If a dog is removed from the website, they have been adopted.</li>
+        <li>It takes time for dogs to get photographed and posted to our website. There are always some available who haven't been posted and your match may be in that group. This is particularly true for small dogs, though we can let you know if we do not have many available.</li>
+        <h3 style="color: #C45389;">Potential Adoption Outcomes</h3>
+        <h4 style="color: #C45389;">Adoptable</h4>
+        <p>Some of our dogs are ready to join their new families and will be able to leave the same day with you. If your dog falls into this category, you will need to take them home immediately following the appointment.</p>
+        <h4 style="color: #C45389;">Reserved/Chosen</h4>
+        <p>Some of our dogs are newer to the program and may still require vetting before they can be adopted and go home. These are considered “Chosen” and will be unavailable for other adopters as they wait for what they need.</p>
+        <h4 style="color: #C45389;">Foster to Adopt (FTA)</h4>
+        <p>We treat numerous dogs with heartworm disease, which is mosquito-borne and common throughout the Carolinas. If your chosen dog is heartworm-positive, he/she will be able to go home with you as a foster until the treatments are complete. We still need to legally own the dog in order to administer treatments, and so transfer of final adoption occurs after the third treatment. The process takes approximately 8-10 weeks. Adoptions Team members will discuss heartworm treatment with you and provide you further information during your appointment.</p>
+        <h4 style="color: #C45389;">No Decision</h4>
+        <p>It is possible you may not find your match during your appointment. You can schedule subsequent appointments until you do without filling out another application.</p>
+        <p>After having reviewed the above information, please respond directly to this email with upcoming availability and your desired size and age group in order to continue the adoption process. We look forward to working with you.<p>
+        <p>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
+      </body>
+    </html>
+    """
+
+    send_email(text, html, "adoptions@savinggracenc.org", subject, email)
 
 def limited_matches(adopter, appt, description):
     print(description)
