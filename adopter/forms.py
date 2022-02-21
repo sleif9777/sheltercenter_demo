@@ -44,6 +44,9 @@ class AdopterForm(forms.ModelForm):
 class ContactUsForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea(attrs={"rows":5, "cols":20}))
 
+class AdopterCSVForm(forms.Form):
+    file = forms.FileField(label = "Upload a CSV file to add adopters", required = True)
+
 class ContactAdopterForm(forms.Form):
     message = forms.CharField(label = "", widget=forms.Textarea(attrs={"rows":5, "cols":20}))
     include_links = forms.BooleanField(label = "Include personalized ShelterCenter link?", required = False)

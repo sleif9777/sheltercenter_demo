@@ -1013,6 +1013,37 @@ def greeter_reschedule_email(time, date, adopter, appt):
 
     send_email(text, html, "default", subject, email)
 
+def duplicate_app(adopter):
+    subject = "We already have you in our database: " + adopter.adopter_full_name().upper()
+    email = adopter.adopter_email
+    name = adopter.adopter_first_name
+    plain_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
+    url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">You can schedule an appointment at any time by clicking here.</a>'
+
+    text = """\
+    Hi """ + name + """,\n
+    Thank you for sending in your most recent application.\n
+    We already have you in our database. Your application is not specific to any one dog and we do not require a new one for each visit. If you would like to schedule an appointment, visit this website:\n""" + plain_url + """\n
+    If you are having trouble using this website, please reply to this email so we can best help you.\n
+    All the best, \n
+    The Adoptions Team\n
+    Saving Grace Animals for Adoption
+    """
+
+    html = """\
+    <html>
+      <body>
+        <p>Hi """ + name + """,</p>
+        <p>Thank you for sending in your most recent application.</p>
+        <p>We already have you in our database. Your application is not specific to any one dog and we do not require a new one for each visit. """ + url + """</p>
+        <p>If you are having trouble using this website, please reply to this email so we can best help you.</p>
+        <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
+      </body>
+    </html>
+    """
+
+    send_email(text, html, "default", subject, email)
+
 def follow_up(adopter):
     subject = "Thank you for visiting: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email

@@ -12,6 +12,7 @@ urlpatterns = [
     #path("decision/<int:adopter_id>/", views.adopter_decision, name="adopter_decision"),
     #path("add/", views.add_adopter, name="add_adopter")
     path("add/", views.add, name="add_adopter"),
+    path("add_csv/", views.addcsv, name="add_adopter_csv"),
     path("acknowledged/<int:adopter_id>", views.acknowledged_faq, name="acknowledged_faq"),
     path("<int:adopter_id>/instructions/", views.visitor_instructions, name="visitor_instructions"),
     path('contact_adopter/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.contact_adopter, name="contact_adopter"),

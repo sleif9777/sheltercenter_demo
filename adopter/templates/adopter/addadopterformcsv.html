@@ -36,15 +36,8 @@
     <h1 class="page_header">Add Adopters</h1>
     <form class="add_adopter" enctype="multipart/form-data" action="" method="post">
       {% csrf_token %}
-      <label for="app_file">Upload a file to add multiple adopters from Shelterluv:</label><br><br>
+      <label for="app_file">Upload a file:</label><br><br>
       <input type="file" name="app_file" value="app_file"><br><br>
-      <input class="submitform" type="submit" name="" value="Add Adopters"><br>
-    </form>
-    <br><hr><br>
-    <p>Or input each adopter individually:</p><br>
-    <form class="add_adopter" action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
       <input class="submitform" type="submit" name="" value="Add Adopter"><br>
     </form>
   </div>

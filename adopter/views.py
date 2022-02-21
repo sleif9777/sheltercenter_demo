@@ -4,8 +4,9 @@ from .models import Adopter
 from appt_calendar.models import Appointment
 from .forms import *
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
-import datetime, time
+import datetime, time, csv
 from emails.email_template import *
+from .name_manager import *
 
 
 # Create your views here.
@@ -69,11 +70,114 @@ def visitor_instructions(request, adopter_id):
 
     return render(request, "adopter/visitor_instructions.html", context)
 
+def addcsv(request):
+    all_dows = Daily_Schedule.objects
+    today = datetime.date.today()
+    form = AdopterCSVForm(request.POST, request.FILES)
+
+    if request.method == 'POST' and request.FILES['app_file']:
+        file = request.FILES['app_file']
+        decoded_file = file.read().decode('utf-8').splitlines()
+        reader = list(csv.reader(decoded_file))
+
+        for row in reader[1:]:
+            print(row[13] + " " + row[14])
+
+            new_adopter = Adopter()
+
+            try:
+                existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
+                print("Adopter " + existing_adopter.adopter_full_name() + " already in system as adopter #" + str(existing_adopter.id))
+                duplicate_app(existing_adopter)
+            except:
+                if row[13].islower() or row[13].isupper():
+                    row[13] = clean_name(row[13])
+
+                if row[14].islower() or row[14].isupper():
+                    row[14] = clean_name(row[14])
+
+                new_adopter.adopter_first_name = row[13]
+                new_adopter.adopter_last_name = row[14]
+                new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "") + new_adopter.adopter_last_name.replace(" ", "") + "@gmail.com"
+
+                if row[35] == "Live with Parents":
+                    new_adopter.lives_with_parents = True
+
+                if row[19] not in ["NC", "SC", "VA"]:
+                    new_adopter.out_of_state = True
+
+                new_adopter.save()
+
+                if new_adopter.out_of_state == True:
+                    invite_oos(new_adopter)
+                elif new_adopter.lives_with_parents == True:
+                    invite_lives_w_parents(new_adopter)
+                else:
+                    invite(new_adopter)
+
+        form = AdopterCSVForm()
+    else:
+        print("not valid")
+        form = AdopterCSVForm()
+
+    form = AdopterCSVForm()
+
+    context = {
+        'form': form,
+        'dows': all_dows,
+        'today': today,
+        'role': 'admin',
+    }
+
+    return render(request, "adopter/addadopterformcsv.html", context)
+
+
 def add(request):
     all_dows = Daily_Schedule.objects
     today = datetime.date.today()
     form = AdopterForm(request.POST or None)
-    if form.is_valid():
+
+    if request.method == 'POST' and request.FILES['app_file']:
+        file = request.FILES['app_file']
+        decoded_file = file.read().decode('utf-8').splitlines()
+        reader = list(csv.reader(decoded_file))
+
+        for row in reader[1:]:
+            print(row[13] + " " + row[14])
+
+            new_adopter = Adopter()
+
+            try:
+                existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
+                print("Adopter " + existing_adopter.adopter_full_name() + " already in system as adopter #" + str(existing_adopter.id))
+                duplicate_app(existing_adopter)
+            except:
+                if row[13].islower() or row[13].isupper():
+                    row[13] = clean_name(row[13])
+
+                if row[14].islower() or row[14].isupper():
+                    row[14] = clean_name(row[14])
+
+                new_adopter.adopter_first_name = row[13]
+                new_adopter.adopter_last_name = row[14]
+                new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "") + new_adopter.adopter_last_name.replace(" ", "") + "@gmail.com"
+
+                if row[35] == "Live with Parents":
+                    new_adopter.lives_with_parents = True
+
+                if row[19] not in ["NC", "SC", "VA"]:
+                    new_adopter.out_of_state = True
+
+                new_adopter.save()
+
+                if new_adopter.out_of_state == True:
+                    invite_oos(new_adopter)
+                elif new_adopter.lives_with_parents == True:
+                    invite_lives_w_parents(new_adopter)
+                else:
+                    invite(new_adopter)
+
+    elif form.is_valid():
         form.save()
         adopter = Adopter.objects.latest('id')
 
