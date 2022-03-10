@@ -6,6 +6,7 @@ from adopter.models import Adopter
 from .forms import *
 from emails.email_template import *
 from .date_time_strings import *
+from .appointment_manager import *
 #
 # # Create your views here.
 #
@@ -221,9 +222,7 @@ def book_appointment(request, role, adopter_id, appt_id, date_year, date_month, 
         adopter.save()
 
         appt.adopter_choice = adopter
-        appt.available = False
-        appt.published = False
-        appt.save()
+        delist_appt(appt)
 
         form = BookAppointmentForm(request.POST or None, instance=appt)
 
@@ -721,9 +720,7 @@ def add_appointment(request, role, date_year, date_month, date_day, timeslot_id)
         timeslot.appointments.add(appt)
 
         if int(appt.appt_type) > 3:
-            appt.available = False
-            appt.published = False
-            appt.save()
+            delist_appt(appt)
 
         if appt.adopter_choice != None:
 
@@ -731,9 +728,7 @@ def add_appointment(request, role, date_year, date_month, date_day, timeslot_id)
             adopter.has_current_appt = True
             adopter.save()
 
-            appt.available = False
-            appt.published = False
-            appt.save()
+            delist_appt(appt)
 
             confirm(appt.time, appt.date, appt.adopter_choice, appt)
 
@@ -777,9 +772,7 @@ def add_paperwork_appointment(request, role, date_year, date_month, date_day, ti
             adopter.has_current_appt = False
             adopter.save()
 
-            appt.available = False
-            appt.published = False
-            appt.save()
+            delist_appt(appt)
 
             adoption_paperwork(appt.time, appt.date, appt.adopter_choice, appt, original_appt.heartworm)
 
@@ -817,9 +810,7 @@ def edit_appointment(request, role, date_year, date_month, date_day, appt_id):
         if appt.adopter_choice != None:
             if appt.appt_type in ["1", "2", "3"]:
                 confirm(appt.time, appt.date, appt.adopter_choice, appt)
-            appt.available = False
-            appt.published = False
-            appt.save()
+            delist_appt(appt)
 
         return redirect('calendar_date', role, date.year, date.month, date.day)
     else:
@@ -902,19 +893,7 @@ def adopter_self_cancel(request, role, adopter_id, date_year, date_month, date_d
     adopter.has_current_appt = False
     adopter.save()
 
-    appt.adopter_choice = None
-    appt.available = True
-    appt.published = True
-    appt.outcome = "1"
-    appt.internal_notes = ""
-    appt.adopter_notes = ""
-    appt.bringing_dog = False
-    appt.comm_adopted_dogs = False
-    appt.comm_limited_puppies = False
-    appt.comm_limited_small = False
-    appt.comm_limited_hypo = False
-    appt.comm_limited_other = False
-    appt.save()
+    reset_appt(appt)
 
     appt_str = appt.date_and_time_string()
 
@@ -969,10 +948,10 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
             current_appt.save()
 
         new_appt.adopter_choice = adopter
-        new_appt.adopter_choice.has_current_appt = True
-        new_appt.available = False
-        new_appt.published = False
-        new_appt.save()
+        adopter.has_current_appt = True
+        adopter.save()
+
+        delist_appt(new_appt)
 
         if role == "adopter":
             reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)

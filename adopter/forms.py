@@ -15,6 +15,7 @@ class AdopterForm(forms.ModelForm):
             'adopting_foster',
             'friend_of_foster',
             'chosen_dog',
+            'app_interest'
         ]
         labels = {
             'adopter_first_name': 'First Name:',
@@ -26,6 +27,7 @@ class AdopterForm(forms.ModelForm):
             'adopting_foster': 'Adopting their foster dog',
             'friend_of_foster': "Adopting a friend's foster dog",
             'chosen_dog': '(For foster/host adoptions) Chosen Dog:',
+            'app_interest': '(For general adoptions) Interested in:'
         }
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label_suffix', '')

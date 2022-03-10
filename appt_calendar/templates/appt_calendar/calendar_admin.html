@@ -65,6 +65,7 @@
             </div>
             <div class="appt_notes">
               <em>
+                <b>Application interest:</b> {{appt.adopter_choice.app_interest}}<br>
               {% if appt.internal_notes %}
                 <a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}"><b>Internal notes:</b> {{appt.internal_notes}}</a><br>
               {% endif %}
