@@ -65,6 +65,28 @@ def alert_date_set(adopter, date):
 
     send_email(text, html, "default", subject, email)
 
+def upload_errors(errors):
+    subject = "Some Adopters Were Not Uploaded"
+
+    text = "The following applicants have a status of Blocked and were not sent an invitation:"
+
+    html = """\
+    <html>
+      <body>
+      <p>The following applicants have a status of Blocked and were not sent an invitation:</p>
+    """
+
+    for e in errors:
+        text += e + "\n"
+        html += "{0}<br>".format(e)
+
+    html += """\
+      </body>
+    </html>
+    """
+
+    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+
 def dates_are_open(adopter, date):
     subject = "Let's Book Your Saving Grace Adoption Appointment!"
     name = adopter.adopter_first_name

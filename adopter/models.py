@@ -5,6 +5,11 @@ from num2words import num2words
 # Create your models here.
 
 class Adopter(models.Model):
+    STATUSES = [
+        ("1", "Approved"),
+        ("2", "Blocked"),
+    ]
+
     adopter_first_name = models.CharField(default="", max_length=200, blank=True) #need to refactor and add verbose
     adopter_last_name = models.CharField(default="", max_length=200, blank=True) #""
     adopter_email = models.EmailField(default="", blank=True) #""
@@ -20,6 +25,7 @@ class Adopter(models.Model):
     visits_to_date = models.IntegerField(default=0)
     app_interest = models.CharField(default="", max_length=500, blank=True)
     accept_date = models.DateField(default=datetime.date.today(), blank=True)
+    status = models.CharField(default="1", max_length=1, choices=STATUSES)
 
     def number_of_visits(self):
         ordinal = num2words(self.visits_to_date + 1, to='ordinal')

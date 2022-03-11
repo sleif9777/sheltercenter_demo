@@ -102,121 +102,132 @@ def add(request):
     today = datetime.date.today()
     form = AdopterForm(request.POST or None)
 
-    if request.method == 'POST' and request.FILES['app_file']:
-        file = request.FILES['app_file']
-        decoded_file = file.read().decode('utf-8').splitlines()
-        reader = list(csv.reader(decoded_file))
-        print([today - datetime.timedelta(days = x) for x in range(2)])
-        print(today - datetime.timedelta(days = 365))
+    try:
+        if request.method == 'POST' and request.FILES['app_file']:
+            file = request.FILES['app_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = list(csv.reader(decoded_file))
+            print([today - datetime.timedelta(days = x) for x in range(2)])
+            print(today - datetime.timedelta(days = 365))
+            errors = []
 
-        for row in reader[1:]:
-            new_adopter = Adopter()
+            for row in reader[1:]:
+                new_adopter = Adopter()
 
-            try:
-                existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
-                print("Adopter " + existing_adopter.adopter_full_name() + " already in system as adopter #" + str(existing_adopter.id))
-                if existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
-                    print("renewal")
-                    existing_adopter.accept_date = datetime.date.today()
-                    existing_adopter.save()
+                try:
+                    existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
+                    print("Adopter " + existing_adopter.adopter_full_name() + " already in system as adopter #" + str(existing_adopter.id))
+                    if existing_adopter.status == "2":
+                        print("blocked")
+                        errors += [existing_adopter.adopter_full_name()]
+                    elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
+                        print("renewal")
+                        existing_adopter.accept_date = datetime.date.today()
+                        existing_adopter.save()
 
-                    if existing_adopter.out_of_state == True:
-                        invite_oos(existing_adopter)
-                    elif existing_adopter.lives_with_parents == True:
-                        invite_lives_w_parents(existing_adopter)
+                        if existing_adopter.out_of_state == True:
+                            invite_oos(existing_adopter)
+                        elif existing_adopter.lives_with_parents == True:
+                            invite_lives_w_parents(existing_adopter)
+                        else:
+                            invite(existing_adopter)
+                    elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
+                        duplicate_app(existing_adopter)
                     else:
-                        invite(existing_adopter)
-                elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
-                    duplicate_app(existing_adopter)
-                else:
-                    print("added today")
-            except:
-                print("added now")
-                if row[13].islower() or row[13].isupper():
-                    row[13] = clean_name(row[13])
+                        print("added today")
+                except:
+                    print("added now")
+                    if row[13].islower() or row[13].isupper():
+                        row[13] = clean_name(row[13])
 
-                if row[14].islower() or row[14].isupper():
-                    row[14] = clean_name(row[14])
-                #
-                # print(row[3])
-                # print(type(row[3]))
+                    if row[14].islower() or row[14].isupper():
+                        row[14] = clean_name(row[14])
+                    #
+                    # print(row[3])
+                    # print(type(row[3]))
 
-                new_adopter.adopter_first_name = row[13]
-                new_adopter.adopter_last_name = row[14]
-                new_adopter.app_interest = row[11]
-                new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "") + new_adopter.adopter_last_name.replace(" ", "") + "@gmail.com"
-                print(new_adopter.adopter_email)
+                    new_adopter.adopter_first_name = row[13]
+                    new_adopter.adopter_last_name = row[14]
+                    new_adopter.app_interest = row[11]
+                    new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "") + new_adopter.adopter_last_name.replace(" ", "") + "@gmail.com"
+                    print(new_adopter.adopter_email)
 
-                if row[35] == "Live with Parents":
-                    new_adopter.lives_with_parents = True
+                    if row[35] == "Live with Parents":
+                        new_adopter.lives_with_parents = True
 
-                if row[19] not in ["NC", "SC", "VA"]:
-                    new_adopter.out_of_state = True
+                    if row[19] not in ["NC", "SC", "VA"]:
+                        new_adopter.out_of_state = True
 
-                new_adopter.save()
+                    new_adopter.save()
 
-                if new_adopter.out_of_state == True:
-                    invite_oos(new_adopter)
-                elif new_adopter.lives_with_parents == True:
-                    invite_lives_w_parents(new_adopter)
-                else:
-                    invite(new_adopter)
+                    if new_adopter.out_of_state == True:
+                        invite_oos(new_adopter)
+                    elif new_adopter.lives_with_parents == True:
+                        invite_lives_w_parents(new_adopter)
+                    else:
+                        invite(new_adopter)
 
-    elif form.is_valid():
-        form.save()
-        adopter = Adopter.objects.latest('id')
+            upload_errors(errors)
+    except:
+        if form.is_valid():
+            form.save()
+            adopter = Adopter.objects.latest('id')
 
-        #for testing purposes, do not put into prod
-        adopter.adopter_email = "sheltercenterdev+" + adopter.adopter_first_name + adopter.adopter_last_name + "@gmail.com"
-        adopter.save()
-
-        if adopter.out_of_state == True:
-            invite_oos(adopter)
-        elif adopter.lives_with_parents == True:
-            invite_lives_w_parents(adopter)
-        elif adopter.adopting_foster == True:
-            shellappt = Appointment()
-            shellappt.time = datetime.datetime.now()
-            shellappt.adopter_choice = adopter
-            shellappt.dog = adopter.chosen_dog
-            shellappt.outcome = "3"
-
-            shellappt.save()
-
-            adopter.has_current_appt = False
-
-            invite_foster_adoption(adopter)
-        elif adopter.friend_of_foster == True:
-            shellappt = Appointment()
-            shellappt.time = datetime.datetime.now()
-            shellappt.adopter_choice = adopter
-            shellappt.dog = adopter.chosen_dog
-            shellappt.outcome = "3"
-
-            shellappt.save()
-
-            adopter.has_current_appt = False
-
+            #for testing purposes, do not put into prod
+            adopter.adopter_email = "sheltercenterdev+" + adopter.adopter_first_name + adopter.adopter_last_name + "@gmail.com"
             adopter.save()
 
-            invite_friends_of_foster_adoption(adopter)
-        elif adopter.adopting_host == True:
-            shellappt = Appointment()
-            shellappt.time = datetime.datetime.now()
-            shellappt.adopter_choice = adopter
-            shellappt.dog = adopter.chosen_dog
-            shellappt.outcome = "3"
+            if adopter.status != "2":
+                if adopter.out_of_state == True:
+                    invite_oos(adopter)
+                elif adopter.lives_with_parents == True:
+                    invite_lives_w_parents(adopter)
+                elif adopter.adopting_foster == True:
+                    shellappt = Appointment()
+                    shellappt.time = datetime.datetime.now()
+                    shellappt.adopter_choice = adopter
+                    shellappt.dog = adopter.chosen_dog
+                    shellappt.outcome = "3"
 
-            shellappt.save()
+                    shellappt.save()
 
-            adopter.has_current_appt = False
+                    adopter.has_current_appt = False
 
-            adopter.save()
+                    invite_foster_adoption(adopter)
+                elif adopter.friend_of_foster == True:
+                    shellappt = Appointment()
+                    shellappt.time = datetime.datetime.now()
+                    shellappt.adopter_choice = adopter
+                    shellappt.dog = adopter.chosen_dog
+                    shellappt.outcome = "3"
 
-            invite_host_adoption(adopter)
-        else:
-            invite(adopter)
-        form = AdopterForm()
+                    shellappt.save()
+
+                    adopter.has_current_appt = False
+
+                    adopter.save()
+
+                    invite_friends_of_foster_adoption(adopter)
+                elif adopter.adopting_host == True:
+                    shellappt = Appointment()
+                    shellappt.time = datetime.datetime.now()
+                    shellappt.adopter_choice = adopter
+                    shellappt.dog = adopter.chosen_dog
+                    shellappt.outcome = "3"
+
+                    shellappt.save()
+
+                    adopter.has_current_appt = False
+
+                    adopter.save()
+
+                    invite_host_adoption(adopter)
+                else:
+                    invite(adopter)
+            else:
+                print("blocked")
+
+            form = AdopterForm()
 
     context = {
         'form': form,
