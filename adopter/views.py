@@ -50,6 +50,32 @@ def login(request):
 
     return render(request, "adopter/login.html", context)
 
+def manage(request):
+    adopters = Adopter.objects.all()
+
+    context = {
+        'adopters': adopters
+    }
+
+    return render(request, "adopter/adoptermgmt.html", context)
+
+def edit_adopter(request, adopter_id):
+#    dow_id -= 2
+    adopter = Adopter.objects.get(pk=adopter_id)
+    #form = GenericTimeslotModelForm(request.POST or None, initial={"day_of_week": dow.day_of_week})
+    form = AdopterForm(request.POST or None, instance=adopter)
+    if form.is_valid():
+        form.save()
+        return redirect('adopter_manage')
+    else:
+        form = AdopterForm(request.POST or None, instance=adopter)
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, "adopter/renderform.html", context)
+
 def faq(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)
 
@@ -80,27 +106,46 @@ def add(request):
         file = request.FILES['app_file']
         decoded_file = file.read().decode('utf-8').splitlines()
         reader = list(csv.reader(decoded_file))
+        print([today - datetime.timedelta(days = x) for x in range(2)])
+        print(today - datetime.timedelta(days = 365))
 
         for row in reader[1:]:
-            print(row[13] + " " + row[14])
-
             new_adopter = Adopter()
 
             try:
                 existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
                 print("Adopter " + existing_adopter.adopter_full_name() + " already in system as adopter #" + str(existing_adopter.id))
-                duplicate_app(existing_adopter)
+                if existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
+                    print("renewal")
+                    existing_adopter.accept_date = datetime.date.today()
+                    existing_adopter.save()
+
+                    if existing_adopter.out_of_state == True:
+                        invite_oos(existing_adopter)
+                    elif existing_adopter.lives_with_parents == True:
+                        invite_lives_w_parents(existing_adopter)
+                    else:
+                        invite(existing_adopter)
+                elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
+                    duplicate_app(existing_adopter)
+                else:
+                    print("added today")
             except:
+                print("added now")
                 if row[13].islower() or row[13].isupper():
                     row[13] = clean_name(row[13])
 
                 if row[14].islower() or row[14].isupper():
                     row[14] = clean_name(row[14])
+                #
+                # print(row[3])
+                # print(type(row[3]))
 
                 new_adopter.adopter_first_name = row[13]
                 new_adopter.adopter_last_name = row[14]
                 new_adopter.app_interest = row[11]
                 new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "") + new_adopter.adopter_last_name.replace(" ", "") + "@gmail.com"
+                print(new_adopter.adopter_email)
 
                 if row[35] == "Live with Parents":
                     new_adopter.lives_with_parents = True

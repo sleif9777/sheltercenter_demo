@@ -15,4 +15,6 @@ urlpatterns = [
     path('simple_add', views.simple_add_form, name="simple_add_form"),
     path('simple_add/submit/', views.simple_add_form_submit, name="saf_submit"),
     path('simple_add/oos/', views.simple_add_form_oos, name="saf_sub_oos"),
+    path('edit/<int:adopter_id>/', views.edit_adopter, name="edit_adopter"),
+    path('manage/', views.manage, name="adopter_manage")
 ]

@@ -8,3 +8,6 @@ def chg_appt_status(adopter):
 
     adopter.has_current_appt = not adopter.has_current_appt
     adopter.save()
+# 
+# def create_email(fname, lname):
+#     # creates a default shelterluv email address

@@ -28,26 +28,16 @@
           <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
           <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
           <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-          <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
+          <li><a href="{% url 'chosen_board' 'admin' %}">Chosen Board</a></li>
         </ul>
       </div>
     </nav>
   </div>
-
   <div class="textpage">
-    <h1 class="page_header">Contact Adopter</h1>
-
-    <p>Hi {{adopter_first_name}},</p>
-    <br>
-    <form class="" action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <br>
-      <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
-      <br>
-      <input class="submitform" type="submit" name="" value="Send Message">
-    </form>
-
+    <h1 class="page_header">Manage Adopters</h1>
+    {% for adopter in adopters %}
+      <a href="{% url 'edit_adopter' adopter.id %}">{{adopter}}</a><br>
+    {% endfor %}
   </div>
   </body>
 </html>
