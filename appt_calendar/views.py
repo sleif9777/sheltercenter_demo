@@ -895,6 +895,9 @@ def adopter_self_cancel(request, role, adopter_id, date_year, date_month, date_d
 
     reset_appt(appt)
 
+    if appt.date == datetime.date.today():
+        notify_adoptions_cancel(appt, adopter)
+
     appt_str = appt.date_and_time_string()
 
     context = {
@@ -955,6 +958,12 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
 
         if role == "adopter":
             reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
+
+            if current_appt.date == datetime.date.today():
+                notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+            elif new_appt.date == datetime.date.today():
+                notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+
             return redirect("adopter_calendar_date", role, adopter_id, date_year, date_month, date_day)
         else:
             adopter.visits_to_date += 1
@@ -965,6 +974,12 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
                 current_appt.save()
                 greeter_reschedule_email(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
             elif role == "admin":
+
+                if current_appt.date == datetime.date.today():
+                    notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+                elif new_appt.date == datetime.date.today():
+                    notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+
                 reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
             return redirect("calendar_date", role, today.year, today.month, today.day)
 

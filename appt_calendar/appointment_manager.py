@@ -17,7 +17,7 @@ def reset_appt(appt):
     appt.comm_limited_other = False
     appt.save()
 
-def delist_appt(adopter, appt):
+def delist_appt(appt):
     # sets the adopter upon booking and changes their appt status, turns off the publish and available attributes of an appt
 
     appt.available = False

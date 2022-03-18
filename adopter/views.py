@@ -5,6 +5,7 @@ from appt_calendar.models import Appointment
 from .forms import *
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
 import datetime, time, csv
+from random import randint
 from emails.email_template import *
 from .adopter_manager import *
 
@@ -72,9 +73,10 @@ def edit_adopter(request, adopter_id):
 
     context = {
         'form': form,
+        'adopter': adopter,
     }
 
-    return render(request, "adopter/renderform.html", context)
+    return render(request, "adopter/edit_adopter.html", context)
 
 def faq(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)
@@ -158,7 +160,19 @@ def add(request):
                     if row[19] not in ["NC", "SC", "VA"]:
                         new_adopter.out_of_state = True
 
+                    auth_code = randint(100000, 999999)
+
+                    while auth_code % 10 == 0:
+                        auth_code = randint(100000, 999999)
+
+                    print(row[13] + " " + row[14])
+                    print(auth_code)
+
+                    new_adopter.auth_code = auth_code
+
                     new_adopter.save()
+
+                    print(new_adopter.auth_code)
 
                     if new_adopter.out_of_state == True:
                         invite_oos(new_adopter)
@@ -226,6 +240,19 @@ def add(request):
                     invite(adopter)
             else:
                 print("blocked")
+
+            auth_code = randint(100000, 999999)
+
+            while auth_code % 10 == 0:
+                auth_code = randint(100000, 999999)
+
+            print(auth_code)
+
+            adopter.auth_code = auth_code
+
+            adopter.save()
+
+            print(adopter.auth_code)
 
             form = AdopterForm()
 

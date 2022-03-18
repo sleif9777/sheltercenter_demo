@@ -1308,3 +1308,56 @@ Saving Grace Animals for Adoption
     """
 
     send_email(text, html, "default", subject, email)
+
+def notify_adoptions_cancel(appt, adopter):
+    subject = "UPDATE FOR TODAY'S SCHEDULE"
+
+    text = """\
+{0} has cancelled their {1} appointment today.
+""".format(adopter.adopter_full_name(), time_str(appt.time))
+
+    html = """\
+    <html>
+      <body>
+        <p>{0} has cancelled their {1} appointment today.</p>
+      </body>
+    </html>
+    """.format(adopter.adopter_full_name(), time_str(appt.time))
+
+    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+
+def notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt):
+    subject = "UPDATE FOR TODAY'S SCHEDULE"
+
+    text = """\
+{0} has rescheduled their {1} appointment today for {2} at {3}.\n
+The greeter and admin calendars have been updated with this change.
+""".format(adopter.adopter_full_name(), time_str(current_appt.time), date_str(new_appt.date), time_str(new_appt.time))
+
+    html = """\
+    <html>
+      <body>
+        <p>{0} has rescheduled their {1} appointment today for {2} at {3}.<br>The greeter and admin calendars have been updated with this change.</p>
+      </body>
+    </html>
+    """.format(adopter.adopter_full_name(), time_str(current_appt.time), date_str(new_appt.date), time_str(new_appt.time))
+
+    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+
+def notify_adoptions_reschedule_add(adopter, current_appt, new_appt):
+    subject = "UPDATE FOR TODAY'S SCHEDULE"
+
+    text = """\
+{0} has rescheduled their appointment for {1} today.\n
+The greeter and admin calendars have been updated with this change. Please print their application from Shelterluv as soon as possible.
+""".format(adopter.adopter_full_name(), time_str(new_appt.time))
+
+    html = """\
+    <html>
+      <body>
+        <p>{0} has rescheduled their appointment for {1} today.<br>The greeter and admin calendars have been updated with this change. Please print their application from Shelterluv as soon as possible.</p>
+      </body>
+    </html>
+    """.format(adopter.adopter_full_name(), time_str(new_appt.time))
+
+    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
