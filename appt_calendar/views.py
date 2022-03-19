@@ -222,6 +222,7 @@ def book_appointment(request, role, adopter_id, appt_id, date_year, date_month, 
         adopter.save()
 
         appt.adopter_choice = adopter
+        print(type(adopter.auth_code))
         delist_appt(appt)
 
         form = BookAppointmentForm(request.POST or None, instance=appt)

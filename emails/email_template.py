@@ -101,6 +101,7 @@ def dates_are_open(adopter, date):
     Hi """ + name + """,\n
     We are now scheduling adoption appointments for """ + date_string + """.\n
     Visit this website to schedule your adoption appointment: """ + url + """\n
+    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.\n
     All the best, \n
     The Adoptions Team
     Saving Grace Animals for Adoption
@@ -112,6 +113,7 @@ def dates_are_open(adopter, date):
         <p>Hi """ + name + """,</p>
         <p>We are now scheduling adoption appointments for """ + date_string + """.</p>
         <p>""" + url + """</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
       </body>
     </html>
@@ -361,6 +363,7 @@ def limited_matches(adopter, appt, description):
         We do encourage you to keep your appointment. There are always wonderful dogs for you to visit with and we always recommend keeping an open mind to see who may click with you. We also have dogs who have not had the chance to have photos taken and are not on our website yet.\n
         If you wish to reschedule your appointment, you can do so here: """ + plain_reschedule_url + """\n
         If you wish to cancel your appointment, you can do so here: """ + plain_cancel_url + """\n
+        Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.\n
         All the best, \n
         The Adoptions Team
         Saving Grace Animals for Adoption
@@ -389,6 +392,7 @@ def limited_matches(adopter, appt, description):
         We do encourage you to keep your appointment. There are always wonderful dogs for you to visit with and we always recommend keeping an open mind to see who may click with you. We also have dogs who have not had the chance to have photos taken and are not on our website yet.\n
         If you wish to reschedule your appointment, you can do so here: """ + plain_reschedule_url + """\n
         If you wish to cancel your appointment, you can do so here: """ + plain_cancel_url + """\n
+        Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.\n
         All the best, \n
         The Adoptions Team
         Saving Grace Animals for Adoption
@@ -416,6 +420,7 @@ def limited_matches(adopter, appt, description):
         While your first choices may no longer be available, we do encourage you to keep your appointment. We always have wonderful dogs for you to visit with and always recommend keeping an open mind to see who may click with you. Many adopters end up adopting a totally different dog than the one they come to meet. We also have dogs who have not had the chance to have photos taken and are not on our website yet.\n
         If you wish to reschedule your appointment, you can do so here: """ + plain_reschedule_url + """\n
         If you wish to cancel your appointment, you can do so here: """ + plain_cancel_url + """\n
+        Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.\n
         All the best, \n
         The Adoptions Team
         Saving Grace Animals for Adoption
@@ -543,6 +548,7 @@ def dogs_were_adopted(adopter, appt):
     While your first choices may no longer be available, we do encourage you to keep your appointment. We always have wonderful dogs for you to visit with and always recommend keeping an open mind to see who may click with you. We also have dogs who have not had the chance to have photos taken and are not on our website yet.\n
     If you wish to reschedule your appointment, you can do so here: """ + plain_reschedule_url + """\n
     If you wish to cancel your appointment, you can do so here: """ + plain_cancel_url + """\n
+    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.\n
     All the best, \n
     The Adoptions Team
     Saving Grace Animals for Adoption
@@ -579,6 +585,7 @@ def new_contact_adopter_msg(adopter, message, include_links):
         Hi """ + name + """,\n
         """ + message + """\n
         Visit this website to manage your adoption appointment: """ + plain_url + """\n
+        Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when scheduling, rescheduling, or cancelling an appointment.\n
         All the best, \n
         The Adoptions Team
         Saving Grace Animals for Adoption
@@ -696,6 +703,7 @@ def confirm(time, date, adopter, appt):
     You have been added to our schedule for """ + time + """ on """ + date + """.\n
     You can reschedule your appointment here: """ + plain_reschedule_url + """\n
     You can cancel your appointment here: """ + plain_cancel_url + """\n
+    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.\n
     It is important that you read the Visiting Instructions included below before you arrive for your appointment, as well as those in your original approval email. Our adoption policies and expectations, as well as the answers to many of our frequently asked questions, are provided here.\n
     We are continuing to follow CDC Guidelines for COVID. All visits take place outdoors, and we are a mask-optional venue that will respect your decisions based on your comfort level. Please know that our Adoptions Team has been vaccinated. We look forward to meeting you.\n
     All the best, \n
@@ -848,6 +856,7 @@ def cancel(time, date, adopter):
     Hi """ + name + """,\n
     Your appointment for """ + time + """ on """ + date + """ has been cancelled.\n
     Your adoption request is valid for one year. If you wish to reschedule at any time, you may do so using this website: """ + url + """\n
+    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you set up an appointment.\n
     All the best, \n
     The Adoptions Team
     Saving Grace Animals for Adoption
@@ -860,6 +869,7 @@ def cancel(time, date, adopter):
         <p>Hi """ + name + """,</p>
         <p>Your appointment for """ + time + """ on """ + date + """ has been cancelled.</p>
         <p>Your adoption request is valid for one year. """ + url + """</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
       </body>
     </html>
@@ -886,6 +896,7 @@ def reschedule(time, date, adopter, appt):
     Your appointment has been rescheduled for """ + time + """ on """ + date + """.\n
     You can reschedule your appointment here: """ + plain_reschedule_url + """\n
     You can cancel your appointment here: """ + plain_cancel_url + """\n
+    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.\n
     We have included the Visitor Instructions from your original confirmation email for your reference.\n
     All the best, \n
     The Adoptions Team
@@ -970,6 +981,7 @@ def greeter_reschedule_email(time, date, adopter, appt):
     Your follow-up appointment has been scheduled for """ + time + """ on """ + date + """.\n
     You can reschedule your appointment here: """ + plain_reschedule_url + """\n
     You can cancel your appointment here: """ + plain_cancel_url + """\n
+    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.\n
     We have included the Visitor Instructions from your original confirmation email for your reference.\n
     All the best, \n
     The Adoptions Team
@@ -1046,6 +1058,7 @@ def duplicate_app(adopter):
     Hi """ + name + """,\n
     Thank you for sending in your most recent application.\n
     We already have you in our database. Your application is not specific to any one dog and we do not require a new one for each visit. If you would like to schedule an appointment, visit this website:\n""" + plain_url + """\n
+    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.\n
     If you are having trouble using this website, please reply to this email so we can best help you.\n
     All the best, \n
     The Adoptions Team\n
@@ -1058,6 +1071,7 @@ def duplicate_app(adopter):
         <p>Hi """ + name + """,</p>
         <p>Thank you for sending in your most recent application.</p>
         <p>We already have you in our database. Your application is not specific to any one dog and we do not require a new one for each visit. """ + url + """</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.</p>
         <p>If you are having trouble using this website, please reply to this email so we can best help you.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
       </body>
@@ -1077,6 +1091,7 @@ def follow_up(adopter):
     Hi """ + name + """,\n
     Thank you for visiting the Funny Farm today!\n
     We are sorry we were not able to match you with anyone today. There are always great dogs entering our program, and your new best friend may be here soon! If you would like to schedule another appointment, visit this website:\n""" + plain_url + """\n
+    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.\n
     We hope to welcome you back soon.\n
     All the best, \n
     The Adoptions Team\n
@@ -1090,6 +1105,7 @@ def follow_up(adopter):
         <p>Hi """ + name + """,</p>
         <p>Thank you for visiting the Funny Farm today!</p>
         <p>We are sorry we were not able to match you with anyone today. There are always great dogs entering our program, and your new best friend may be here soon! """ + url + """</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.</p>
         <p>We hope to welcome you back soon.</p
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
       </body>
@@ -1113,6 +1129,7 @@ def follow_up_w_host(adopter):
     Hi """ + name + """,\n
     Thank you for visiting the Funny Farm today!\n
     We are sorry we were not able to match you with anyone today. There are always great dogs entering our program, and your new best friend may be here soon! If you would like to schedule another appointment, visit this website:\n""" + plain_url + """\n
+    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.\n
     We also mentioned the possibility of participating in our Weekend Host program. This program runs every weekend (when we do not hold appointments) to give our long-time residents a break from the noisy and busy shelter environment. You would provide us some baseline information on your household (i.e. other pets, children in home, fenced yard, desired size) and be matched with an available dog who would fit well with your home. You would not get to pick your host dog yourself, but you would get first priority to adopt them if the match proves to be a good fit. For more information on Weekend Host, visit this website: """ + plain_host_url + """\n
     We hope to welcome you back soon.\n
     All the best, \n
@@ -1127,6 +1144,7 @@ def follow_up_w_host(adopter):
         <p>Hi """ + name + """,</p>
         <p>Thank you for visiting the Funny Farm today!</p>
         <p>We are sorry we were not able to match you with anyone today. There are always great dogs entering our program, and your new best friend may be here soon! """ + url + """</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.</p>
         <p>We also mentioned the possibility of participating in our Weekend Host program. This program runs every weekend (when we do not hold appointments) to give our long-time residents a break from the noisy and busy shelter environment. You would provide us some baseline information on your household (i.e. other pets, children in home, fenced yard, desired size) and be matched with an available dog who would fit well with your home. You would not get to pick your host dog yourself, but you would get first priority to adopt them if the match proves to be a good fit. """ + host_url + """</p>
         <p>We hope to welcome you back soon.</p
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
@@ -1146,6 +1164,7 @@ def invite(adopter):
     text = """\
 Hi """ + name + """,\n
 Your Saving Grace adoption request has been reviewed. You may review our response here:\n""" + plain_url + """\n
+Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.\n
 If you are a current foster or host who is adopting your foster/host dog, please respond directly to this email so we can proceed accordingly.\n
 If you are having technical issues with our scheduling software, please email us directly so we can best help.\n
 Thank you,
@@ -1158,6 +1177,7 @@ Saving Grace Animals for Adoption
       <body>
         <p>Hi """ + name + """,</p>
         <p>Your Saving Grace adoption request has been reviewed. """ + url + """</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.</p>
         <p>If you are a current foster or host who is adopting your foster/host dog, please respond directly to this email so we can proceed accordingly.</p>
         <p>If you are having technical issues with our scheduling software, please email us directly so we can best help.</p>
         <p>Thank you,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
@@ -1181,6 +1201,7 @@ Thank you for considering adoption through Saving Grace in North Carolina where 
 We are happy to help out of state adopters and want to provide appropriate expectations for long-distance adoption. We do not ship or offer transport for adopted dogs. Each adopter must visit with an animal in person and commit to following through with adoption. In order to give the most dogs an opportunity for a forever family, dogs are not placed on hold. This means a dog you are considering may be adopted before your visit. It is best to visit with an open mind and choose a dog in person that best fits what you are looking for rather than be set on adopting a specific dog on the website.\n
 If a dog has not completed their veterinary care, an additional trip may be necessary at a later date to complete the adoption and pick up the dog. This process will vary with each animal and their medical needs. It is best to check with your veterinarian in your state of residence regarding health certificates/licensing required when bringing a new animal into your state. It is up to adopters to acquire the health certificate from a North Carolina veterinarian. While we can recommend veterinarians, we are unable to provide this service.\n
 After reading these special expectations for long-distance adoption, you may continue to review our standard adoption expectations and schedule an appointment here: \n""" + plain_url + """\n
+Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.\n
 Thank you,
 The Adoptions Team\n
 Saving Grace Animals for Adoption
@@ -1213,6 +1234,7 @@ Hi """ + name + """,\n
 Your Saving Grace adoption request has been reviewed and approved.\n
 We did notice on your application that you live with your family. It is our policy to require at least one parent attend any appointment with you. While the choice of dog is ultimately your decision as the adopter, we do want to take due diligence and ensure that a homeowner approves of the dog that is to live on their property. It would be ideal to bring all family members in the home to the appointment, as the dog would be living alongside them and should demonstrate comfort them prior to making a final decision.\n
 You may review our adoption policies and schedule an appointment at this website:\n""" + plain_url + """\n
+Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.\n
 Thank you,
 The Adoptions Team\n
 Saving Grace Animals for Adoption
