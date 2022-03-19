@@ -46,8 +46,10 @@
       <br>
       <label for="ready_to_adopt">I understand that dogs are not placed on hold for any non-medical reason. My entire family (including dogs) will be attending this appointment to ensure the match works for everyone. I will come into my appointment prepared to take a dog home immediately following, even if this is not the actual outcome. </label>
       <input type="checkbox" name="ready_to_adopt" value="ready_to_adopt" required><br><br>
-      <label for="auth_code">Please enter your six digit authorization code (included in the email we sent you):</label>
-      <input type="number" name="auth_code" value="" min="{{adopter.auth_code}}" max="{{adopter.auth_code}}" onchange="this.setCustomValidity('')" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('This authorization code is incorrect.')" required><br>
+      {% if title != "Edit Appointment" %}
+        <label for="auth_code">Please enter your six digit authorization code (included in the email we sent you):</label>
+        <input type="number" name="auth_code" value="" min="{{adopter.auth_code}}" max="{{adopter.auth_code}}" onchange="this.setCustomValidity('')" oninvalid="this.setCustomValidity('This authorization code is incorrect.')" required><br>
+      {% endif %}
       <input class="submitform" type="submit" name="" value="Submit">
     </form>
 

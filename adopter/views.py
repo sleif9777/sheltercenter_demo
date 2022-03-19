@@ -192,6 +192,19 @@ def add(request):
             adopter.save()
 
             if adopter.status != "2":
+                auth_code = randint(100000, 999999)
+
+                while auth_code % 10 == 0:
+                    auth_code = randint(100000, 999999)
+
+                print(auth_code)
+
+                adopter.auth_code = auth_code
+
+                adopter.save()
+
+                print(adopter.auth_code)
+
                 if adopter.out_of_state == True:
                     invite_oos(adopter)
                 elif adopter.lives_with_parents == True:
@@ -240,19 +253,6 @@ def add(request):
                     invite(adopter)
             else:
                 print("blocked")
-
-            auth_code = randint(100000, 999999)
-
-            while auth_code % 10 == 0:
-                auth_code = randint(100000, 999999)
-
-            print(auth_code)
-
-            adopter.auth_code = auth_code
-
-            adopter.save()
-
-            print(adopter.auth_code)
 
             form = AdopterForm()
 
@@ -350,7 +350,9 @@ def home(request, adopter_id):
         'first_name': adopter.adopter_first_name,
     }
 
-    if adopter.acknowledged_faq == False:
+    if adopter.status == "2":
+        return HttpResponse("<h1>Page Not Found</h1>")
+    elif adopter.acknowledged_faq == False:
         return render(request, "adopter/decision.html", context)
 
     today = datetime.date.today()

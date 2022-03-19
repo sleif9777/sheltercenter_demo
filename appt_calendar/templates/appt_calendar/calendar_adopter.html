@@ -57,10 +57,10 @@
         {% if current_appt.adopter_notes %}
           <b>Your notes: </b> "{{current_appt.adopter_notes}}"<br>
         {% endif %}
-        <b><a class="standalone" href="{% url 'book_cal_appointment' 'adopter' adopter.id current_appt.id date.year date.month date.day %}">Click here to edit your appointment notes.</a></b>
+        <b><a class="standalone" href="{% url 'edit_cal_appointment' 'adopter' current_appt.id date.year date.month date.day %}">Click here to edit your appointment notes.</a></b>
         {% if visible == True %}
           <br><br>Click any open slot below to reschedule your appointment. We only book one appointment per adopter at a time. By booking any appointment below, you will forfeit your current appointment slot.
-          <br><br><b><a class="standalone" href="{% url 'adopter_self_cancel' 'adopter' adopter.id current_appt.id date.year date.month date.day %}">Click here to cancel your appointment.</a></b>
+          <br><br><b><a class="standalone" href="{% url 'validate' 'adopter' 'cancel' adopter.id current_appt.id date.year date.month date.day %}">Click here to cancel your appointment.</a></b>
         {% endif %}
       {% else %}
         You do not currently have an appointment. Click any open slot below to schedule your appointment.
@@ -99,7 +99,7 @@
                     </div>
                   {% else %}
                     <div class="appt_description appt_action">
-                      <p><a href="{% url 'adopter_reschedule' 'adopter' adopter.id appt.id date.year date.month date.day %}">{{appt}}</a></p>
+                      <p><a href="{% url 'validate' 'adopter' 'reschedule' adopter.id appt.id date.year date.month date.day %}">{{appt}}</a></p>
                     </div>
                 {% endif %}
               </div>
@@ -120,7 +120,7 @@
                 </div>
                 <div class="appt_action">
                   <a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">Edit My Appointment Notes</a><br>
-                  <a href="{% url 'adopter_self_cancel' 'adopter' adopter.id appt.id date.year date.month date.day %}">Cancel My Appointment</a>
+                  <a href="{% url 'validate' 'adopter' 'cancel' adopter.id appt.id date.year date.month date.day %}">Cancel My Appointment</a>
                 </div>
                 <br>
               </div>

@@ -379,6 +379,7 @@ def limited_matches(adopter, appt, description):
             <p>We do encourage you to keep your appointment. There are always wonderful dogs for you to visit with and we always recommend keeping an open mind to see who may click with you. We also have dogs who have not had the chance to have photos taken and are not on our website yet.</p>
             <p>""" + reschedule_url + """</p>
             <p>""" + cancel_url + """</p>
+            <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.</p>
             <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
           </body>
         </html>
@@ -408,6 +409,7 @@ def limited_matches(adopter, appt, description):
             <p>We do encourage you to keep your appointment. There are always wonderful dogs for you to visit with and we always recommend keeping an open mind to see who may click with you. We also have dogs who have not had the chance to have photos taken and are not on our website yet.</p>
             <p>""" + reschedule_url + """</p>
             <p>""" + cancel_url + """</p>
+            <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.</p>
             <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
           </body>
         </html>
@@ -437,6 +439,7 @@ def limited_matches(adopter, appt, description):
             <p>While your first choices may no longer be available, we do encourage you to keep your appointment. We always have wonderful dogs for you to visit with and always recommend keeping an open mind to see who may click with you. We also have dogs who have not had the chance to have photos taken and are not on our website yet.</p>
             <p>""" + reschedule_url + """</p>
             <p>""" + cancel_url + """</p>
+            <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.</p>
             <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
           </body>
         </html>
@@ -565,6 +568,7 @@ def dogs_were_adopted(adopter, appt):
         <p>While your first choices may no longer be available, we do encourage you to keep your appointment. We always have wonderful dogs for you to visit with and always recommend keeping an open mind to see who may click with you. We also have dogs who have not had the chance to have photos taken and are not on our website yet.</p>
         <p>""" + reschedule_url + """</p>
         <p>""" + cancel_url + """</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
       </body>
     </html>
@@ -741,6 +745,7 @@ def confirm(time, date, adopter, appt):
         <p>You have been added to our schedule for """ + time + """ on """ + date + """.</p>
         <p>""" + reschedule_url + """</p>
         <p>""" + cancel_url + """</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.</p>
         <p>It is important that you read the Visiting Instructions included below before you arrive for your appointment, as well as those in your original approval email. Our adoption policies and expectations, as well as the answers to many of our frequently asked questions, are provided here.</p>
         <p>We are continuing to follow CDC Guidelines for COVID. All visits take place outdoors, and we are a mask-optional venue that will respect your decisions based on your comfort level. Please know that our Adoptions Team has been vaccinated. We look forward to meeting you.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
@@ -869,7 +874,7 @@ def cancel(time, date, adopter):
         <p>Hi """ + name + """,</p>
         <p>Your appointment for """ + time + """ on """ + date + """ has been cancelled.</p>
         <p>Your adoption request is valid for one year. """ + url + """</p>
-        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you set up an appointment.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
       </body>
     </html>
@@ -933,6 +938,7 @@ def reschedule(time, date, adopter, appt):
         <p>Your appointment has been rescheduled for """ + time + """ on """ + date + """.</p>
         <p>""" + reschedule_url + """</p>
         <p>""" + cancel_url + """</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.</p>
         <p>We have included the Visitor Instructions from your original confirmation email for your reference.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
         <h2>Visitor Instructions</h2>
@@ -1018,6 +1024,7 @@ def greeter_reschedule_email(time, date, adopter, appt):
         <p>Your appointment has been rescheduled for """ + time + """ on """ + date + """.</p>
         <p>""" + reschedule_url + """</p>
         <p>""" + cancel_url + """</p>
+        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.</p>
         <p>We have included the Visitor Instructions from your original confirmation email for your reference.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
         <h2>Visitor Instructions</h2>
@@ -1381,5 +1388,23 @@ The greeter and admin calendars have been updated with this change. Please print
       </body>
     </html>
     """.format(adopter.adopter_full_name(), time_str(new_appt.time))
+
+    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+
+def notify_adoptions_add(adopter, appt):
+    subject = "UPDATE FOR TODAY'S SCHEDULE"
+
+    text = """\
+{0} has booked their appointment for {1} today.\n
+The greeter and admin calendars have been updated with this change. Please print their application from Shelterluv as soon as possible.
+""".format(adopter.adopter_full_name(), time_str(appt.time))
+
+    html = """\
+    <html>
+      <body>
+        <p>{0} has booked their appointment for {1} today.<br>The greeter and admin calendars have been updated with this change. Please print their application from Shelterluv as soon as possible.</p>
+      </body>
+    </html>
+    """.format(adopter.adopter_full_name(), time_str(appt.time))
 
     send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
