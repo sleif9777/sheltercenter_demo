@@ -4,6 +4,9 @@ from appt_calendar.date_time_strings import *
 
 # Create your models here.
 
+class SystemSettings(models.Model):
+    last_adopter_upload = models.DateField(default=datetime.date.today())
+
 class AppointmentTemplate(models.Model):
     APPT_TYPES = [
         ("1", "Adults"),

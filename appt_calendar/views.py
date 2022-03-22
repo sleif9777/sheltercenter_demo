@@ -315,6 +315,15 @@ def calendar_date(request, role, date_year, date_month, date_day):
     open_timeslots = []
     delta_from_today = (date - datetime.date.today()).days
 
+    if role == 'admin':
+        empty_dates = []
+
+        for d in [today + datetime.timedelta(days=x) for x in range(14)]:
+            check_for_appts = list(Appointment.objects.filter(date = d))
+
+            if len(check_for_appts) <= 10 and d.weekday() < 5:
+                empty_dates += [[d, date_str(d)]]
+
     if delta_from_today <= 13:
         visible_to_adopters = True
     else:
@@ -345,6 +354,7 @@ def calendar_date(request, role, date_year, date_month, date_day):
         "weekday": weekday,
         "timeslots": timeslots,
         "empty_day": empty_day,
+        "empty_dates": empty_dates,
         "schedulable": ["1", "2", "3"],
         "all_dows": all_dows,
         "visible": visible_to_adopters,

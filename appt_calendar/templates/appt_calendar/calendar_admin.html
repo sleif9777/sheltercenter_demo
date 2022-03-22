@@ -45,6 +45,19 @@
       <a href="{% url 'add_timeslot' role date.year date.month date.day %}">Add Timeslot</a>
     </div>
 
+    {% if empty_dates %}
+      <div class="outstanding_task">
+        <p><div style="display:inline; font-size: 16pt;">&#9888;</div> There are some dates in the next two weeks that have less appointments than usual (or none at all). Please check that a full schedule is set:</p>
+        <ul>
+          {% for d, d_str in empty_dates %}
+          <li><a class="datelink" href="{% url 'calendar_date' role d.year d.month d.day %}">{{d_str}}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+
+
     {% if empty_day == True %}
       <div class="copy_template_button">
         <br>

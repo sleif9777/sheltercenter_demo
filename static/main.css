@@ -10,6 +10,29 @@ body {
   overflow-x: hidden;
 }
 
+.outstanding_task {
+  border: 4px #990000 solid;
+  width: 80%;
+  margin: auto;
+  margin-top: 10px;
+  padding: 10px;
+  color: #990000;
+  background-color: #ea9999;
+}
+
+.outstanding_task ul {
+  column-count: 2;
+}
+
+.datelink {
+  text-decoration: none;
+  color: #990000
+}
+
+.datelink:hover {
+  text-decoration: underline;
+}
+
 .roleselector {
   background-color: #2996b0;
   width: 100%;
