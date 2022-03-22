@@ -76,16 +76,15 @@
     {% for timeslot, appointments in timeslots.items %}
       <div class="timeslot">
         <h2 class="timeslotheader">{{timeslot}}</h2>
+        <ul class="appt_list">
         {% for appt in appointments %}
+        <li class="appt_slot">
           <div class="appointment">
             <div class="appt_description appt_action">
               <p><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">{{appt}}</a></p>
             </div>
             <div class="appt_notes">
               <em>
-              <!-- {% if appt.adopter_choice.app_interest %}
-                <b>Application interest:</b> {{appt.adopter_choice.app_interest}}<br>
-              {% endif %} -->
               <table>
                 {% if appt.internal_notes %}
                 <tr>
@@ -106,13 +105,6 @@
                 </tr>
                 {% endif %}
               </table>
-              <!-- <b>Internal notes:</b>
-              {% if appt.internal_notes %}
-                <a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a><br>
-              {% endif %}
-              {% if appt.adopter_notes %}
-                <b>Adopter notes:</b> {{appt.adopter_notes|linebreaks}}<br></a>
-              {% endif %} -->
               {% if appt.bringing_dog %}
                 <b>Bringing dog<br></b>
               {% endif %}
@@ -187,7 +179,9 @@
         <a class="timeslot_action" href="{% url 'add_cal_appointment' role timeslot.id date.year date.month date.day %}">Add Appointment</a>
         <a class="timeslot_action" href="{% url 'delete_cal_timeslot' role timeslot.id date.year date.month date.day %}">Delete Timeslot</a>
       </div>
+    </li>
     {% endfor %}
+    </ul>
     <br>
     {% endif %}
 

@@ -22,11 +22,30 @@ body {
 
 .outstanding_task ul {
   column-count: 2;
+  list-style-type: none;
+  padding: 0;
+  padding-top: 10px;
 }
 
 .datelink {
   text-decoration: none;
   color: #990000
+}
+
+@media only screen and (max-width: 800px) {
+  ul.appt_list {
+  list-style-type: none;
+  padding: 0;
+  column-count: 1;
+  }
+}
+
+@media only screen and (min-width: 801px) {
+  ul.appt_list {
+  list-style-type: none;
+  padding: 0;
+  column-count: 2;
+  }
 }
 
 .datelink:hover {
@@ -137,6 +156,10 @@ body {
   margin: 10px 10px;
   padding: 10px;
   border-radius: 15px;
+}
+
+.appointment {
+  width: 90%;
 }
 
 /* .appointment {
