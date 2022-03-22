@@ -52,13 +52,15 @@ class BookAppointmentForm(forms.ModelForm):
             'adopter_choice',
             'adopter_notes',
             'bringing_dog',
+            'has_cat',
         ]
         widgets = {
             'adopter_choice': forms.HiddenInput(),
         }
         labels = {
             'adopter_notes': "",
-            'bringing_dog': "Check this box if you plan to bring your current dog with you: "
+            'bringing_dog': "Check this box if you plan to bring your current dog with you: ",
+            'has_cat': "Check this box if you have a cat in the home: "
         }
 
     def __init__(self, *args, **kwargs):

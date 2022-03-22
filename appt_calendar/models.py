@@ -51,6 +51,7 @@ class Appointment(models.Model):
     outcome = models.CharField(default="1", max_length = 1, choices=OUTCOME_TYPES)
     heartworm = models.BooleanField(default=False)
     bringing_dog = models.BooleanField(default=False)
+    has_cat = models.BooleanField(default=False)
     comm_adopted_dogs = models.BooleanField(default=False)
     comm_limited_puppies = models.BooleanField(default=False)
     comm_limited_small = models.BooleanField(default=False)

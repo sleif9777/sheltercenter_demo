@@ -214,6 +214,15 @@ body {
   text-decoration: none;
 }
 
+.appt_notes table {
+  width: 100%;
+  text-align: left;
+}
+
+.appt_notes td {
+  vertical-align: top;
+}
+
 .contact_adopter {
   border-top: 1px solid #2996b0;
   border-bottom: 1px solid #2996b0;

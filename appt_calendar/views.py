@@ -320,7 +320,6 @@ def calendar_date(request, role, date_year, date_month, date_day):
 
     if role == 'admin':
         empty_dates = []
-
         for d in [today + datetime.timedelta(days=x) for x in range(14)]:
             check_for_appts = list(Appointment.objects.filter(date = d))
 
@@ -332,6 +331,8 @@ def calendar_date(request, role, date_year, date_month, date_day):
         if system_settings.last_adopter_upload == today:
             print("today")
             upload_current = True
+    else:
+        empty_dates = None
 
     if delta_from_today <= 13:
         visible_to_adopters = True

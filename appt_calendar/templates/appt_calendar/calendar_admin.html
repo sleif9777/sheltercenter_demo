@@ -83,17 +83,41 @@
             </div>
             <div class="appt_notes">
               <em>
-              {% if appt.adopter_choice.app_interest %}
+              <!-- {% if appt.adopter_choice.app_interest %}
                 <b>Application interest:</b> {{appt.adopter_choice.app_interest}}<br>
-              {% endif %}
+              {% endif %} -->
+              <table>
+                {% if appt.internal_notes %}
+                <tr>
+                  <td><b>Notes from Adoptions:</b></td>
+                  <td><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
+                </tr>
+                {% endif %}
+                {% if appt.adopter_notes %}
+                <tr>
+                  <td><b>Notes from {{appt.adopter_choice.adopter_first_name}}:</b></td>
+                  <td>{{appt.adopter_notes|linebreaks}}</td>
+                </tr>
+                {% endif %}
+                {% if appt.adopter_choice.app_interest %}
+                <tr>
+                  <td><b>Notes from Application:</b></td>
+                  <td>{{appt.adopter_choice.app_interest|linebreaks}}</td>
+                </tr>
+                {% endif %}
+              </table>
+              <!-- <b>Internal notes:</b>
               {% if appt.internal_notes %}
-                <a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}"><b>Internal notes:</b> {{appt.internal_notes}}</a><br>
+                <a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a><br>
               {% endif %}
               {% if appt.adopter_notes %}
-                <b>Adopter notes:</b> {{appt.adopter_notes}}<br></a>
-              {% endif %}
+                <b>Adopter notes:</b> {{appt.adopter_notes|linebreaks}}<br></a>
+              {% endif %} -->
               {% if appt.bringing_dog %}
                 <b>Bringing dog<br></b>
+              {% endif %}
+              {% if appt.has_cat %}
+                <b>Has a cat<br></b>
               {% endif %}
               {% if appt.adopter_choice.visits_to_date > 1 %}
                 <b>{{appt.adopter_choice.number_of_visits}}</b>
