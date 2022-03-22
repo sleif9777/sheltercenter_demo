@@ -75,7 +75,12 @@
 
     {% for timeslot, appointments in timeslots.items %}
       <div class="timeslot">
-        <h2 class="timeslotheader">{{timeslot}}</h2>
+        <table style = "width:95%; padding: 10px; margin-bottom: 0;">
+          <th style="font-size: 18pt; text-align: left;" class="timeslotheader">{{timeslot}}</th>
+          <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
+          <a href="{% url 'add_cal_appointment' role timeslot.id date.year date.month date.day %}">Add Appointment</a> |
+          <a href="{% url 'delete_cal_timeslot' role timeslot.id date.year date.month date.day %}">Delete Timeslot</a></th>
+        </table>
         {% if appointments|length <= 1 %}
         <ul class="appt_solo">
         {% else %}
@@ -91,7 +96,7 @@
                 {% else %}
                   <td class="appt_description" style="text-align: left; text-transform: uppercase;"><b><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">OPEN</a></b></td>
                 {% endif %}
-                <td class="appt_description" style="text-align: right;"><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a>
+                <td class="appt_description" style="text-align: right;"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a>
                   <a href="{% url 'delete_cal_appointment' role appt.id date.year date.month date.day %}">&#10006;</a></td>
               </tr>
               <tr>
@@ -117,11 +122,12 @@
                 </td>
               </tr>
             </table>
+            {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest %}
             <div class="appt_notes">
-              <table>
+              <table style="border-bottom: 1px solid #2996b0; margin-bottom: 0;">
                 <tr style="padding-bottom: 5px;">
-                  <th style="font-size: 14pt;">Notes</th>
-                  <th style="text-align: right; font-size: 14pt;"><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a></th>
+                  <th style="font-size: 14pt;"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">Notes</a></th>
+                  <th style="text-align: right; font-size: 14pt;"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a></th>
                 </tr>
                 {% if appt.internal_notes %}
                 <tr>
@@ -142,11 +148,41 @@
                 </tr>
                 {% endif %}
               </table>
-              {% if appt.adopter_choice.visits_to_date > 1 %}
-                <b>{{appt.adopter_choice.number_of_visits}}</b>
-              {% endif %}
             </div>
+            {% endif %}
             {% if appt.appt_type in schedulable and appt.available == False %}
+            <div class="appt_notes">
+              <table style="border-bottom: 1px solid #2996b0; margin-bottom: 0;">
+                <tr style="padding-bottom: 5px;">
+                  <th style="font-size: 14pt;"><a href="{% url 'contact_adopter' appt.id date.year date.month date.day %}">Contact</a></th>
+                  <th style="text-align: right; font-size: 14pt;"><a href="{% url 'contact_adopter' appt.id date.year date.month date.day %}">&#9993;</a></th>
+                </tr>
+                <tr>
+                  {% if appt.comm_adopted_dogs == False %}
+                    <td><a href="{% url 'dogs_were_adopted' appt.id %}" class="contact_adopter_quickbutton_links" style="margin: 0;">Dogs Were Adopted</a></td>
+                  {% else %}
+                    <td><a href="#" class="completed_appt_action" style="margin: 0;">Dogs Were Adopted</a></td>
+                  {% endif %}
+                  {% if appt.comm_limited_puppies == False %}
+                    <td style="text-align: right;"><a href="{% url 'limited_matches' appt.id 'puppies' date.year date.month date.day %}" class="contact_adopter_quickbutton_links" style="margin: 0;">Limited Puppies</a></td>
+                  {% else %}
+                    <td style="text-align: right;"><a href="#" class="completed_appt_action" style="margin: 0;">Limited Puppies</a></td>
+                  {% endif %}
+                </tr>
+                <tr>
+                  {% if appt.comm_limited_small == False %}
+                    <td><a href="{% url 'limited_matches' appt.id 'small dogs' date.year date.month date.day %}" class="contact_adopter_quickbutton_links" style="margin: 0;">Limited Small Dogs</a></td>
+                  {% else %}
+                    <td><a href="#" class="completed_appt_action" style="margin: 0;">Limited Small Dogs</a></td>
+                  {% endif %}
+                  {% if appt.comm_limited_hypo == False %}
+                    <td style="text-align: right;"><a href="{% url 'limited_matches' appt.id 'lowshed' date.year date.month date.day %}" class="contact_adopter_quickbutton_links" style="margin: 0;">Limited Low-shed/Hypo</a></td>
+                  {% else %}
+                    <td style="text-align: right;"><a href="#" class="completed_appt_action" style="margin: 0;">Limited Low-shed/Hypo</a></td>
+                  {% endif %}
+                </tr>
+              </table>
+            </div>
               <div class="appt_action">
                 <a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">Edit Appointment Notes</a><br>
                 {% if appt.outcome == "1" %}
@@ -162,50 +198,11 @@
                 <a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id date.year date.month date.day%}">Reschedule Adopter</a>
                 <a href="{% url 'remove_adopter' role appt.id date.year date.month date.day %}">Cancel Adopter</a><br>
               </div>
-              <div class="contact_adopter">
-                <div class="contact_adopter_header">
-                  <a href="{% url 'contact_adopter' appt.id date.year date.month date.day %}">Contact Adopter</a>
-                </div>
-                <div class="contact_adopter_quickbuttons">
-                  {% if appt.comm_adopted_dogs == False %}
-                    <a href="{% url 'dogs_were_adopted' appt.id %}" class="contact_adopter_quickbutton_links">Dogs Were Adopted</a>
-                  {% else %}
-                    <a href="#" class="completed_appt_action">Dogs Were Adopted</a>
-                  {% endif %}
-
-                  {% if appt.comm_limited_puppies == False %}
-                    <a href="{% url 'limited_matches' appt.id 'puppies' date.year date.month date.day %}" class="contact_adopter_quickbutton_links">Limited Puppies</a>
-                  {% else %}
-                    <a href="#" class="completed_appt_action">Limited Puppies</a>
-                  {% endif %}
-
-                  {% if appt.comm_limited_small == False %}
-                    <a href="{% url 'limited_matches' appt.id 'small dogs' date.year date.month date.day %}" class="contact_adopter_quickbutton_links">Limited Small Dogs</a>
-                  {% else %}
-                    <a href="#" class="completed_appt_action">Limited Small Dogs</a>
-                  {% endif %}
-
-                  {% if appt.comm_limited_hypo == False %}
-                    <a href="{% url 'limited_matches' appt.id 'lowshed' date.year date.month date.day %}" class="contact_adopter_quickbutton_links">Limited Low-Shed/Hypo</a>
-                  {% else %}
-                    <a href="#" class="completed_appt_action">Limited Low-Shed/Hypo</a>
-                  {% endif %}
-
-                  {% if appt.comm_limited_other == False %}
-                    <a href="{% url 'limited_matches' appt.id 'other' date.year date.month date.day %}" class="contact_adopter_quickbutton_links">Other</a>
-                  {% else %}
-                    <a href="#" class="completed_appt_action">Other</a>
-                  {% endif %}
-                </div>
-              </div>
             {% endif %}
           </div>
         </li>
         {% endfor %}
         </ul>
-        <br>
-        <a class="timeslot_action" href="{% url 'add_cal_appointment' role timeslot.id date.year date.month date.day %}">Add Appointment</a>
-        <a class="timeslot_action" href="{% url 'delete_cal_timeslot' role timeslot.id date.year date.month date.day %}">Delete Timeslot</a>
       </div>
     {% endfor %}
     <br>
