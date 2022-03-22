@@ -87,9 +87,9 @@
             <table id="appt_header_block" style="width: 100%;">
               <tr>
                 {% if appt.adopter_choice %}
-                  <td class="appt_description" style="text-align: left; text-transform: uppercase;"><b>{{appt.adopter_choice.adopter_full_name}}</b></td>
+                  <td class="appt_description" style="text-align: left; text-transform: uppercase;"><b><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">{{appt.adopter_choice.adopter_full_name}}</a></b></td>
                 {% else %}
-                  <td class="appt_description" style="text-align: left; text-transform: uppercase;"><b>OPEN</b></td>
+                  <td class="appt_description" style="text-align: left; text-transform: uppercase;"><b><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">OPEN</a></b></td>
                 {% endif %}
                 <td class="appt_description" style="text-align: right;"><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a>
                   <a href="{% url 'delete_cal_appointment' role appt.id date.year date.month date.day %}">&#10006;</a></td>
@@ -99,6 +99,8 @@
                 <td style="text-align: right;">
                   {% if appt.bringing_dog %}
                     <b>Bringing dog!<br></b>
+                  {% elif appt.has_cat and not appt.bringing_dog %}
+                    <b>Has a cat!</b>
                   {% endif %}
                 </td>
               </tr>
@@ -109,33 +111,33 @@
                   {% endif %}
                 </td>
                 <td style="text-align: right;">
-                  {% if appt.has_cat %}
+                  {% if appt.bringing_dog and appt.has_cat %}
                     <b>Has a cat!</b>
                   {% endif %}
                 </td>
               </tr>
             </table>
-            <div class="appt_description appt_action">
-              <p><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">{{appt}}</a></p>
-            </div>
             <div class="appt_notes">
-              <em>
               <table>
+                <tr style="padding-bottom: 5px;">
+                  <th style="font-size: 14pt;">Notes</th>
+                  <th style="text-align: right; font-size: 14pt;"><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a></th>
+                </tr>
                 {% if appt.internal_notes %}
                 <tr>
-                  <td><b>Notes from Adoptions:</b></td>
+                  <td><b>From Adoptions:</b></td>
                   <td><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
                 </tr>
                 {% endif %}
                 {% if appt.adopter_notes %}
                 <tr>
-                  <td><b>Notes from {{appt.adopter_choice.adopter_first_name}}:</b></td>
+                  <td><b>From {{appt.adopter_choice.adopter_first_name}}:</b></td>
                   <td>{{appt.adopter_notes|linebreaks}}</td>
                 </tr>
                 {% endif %}
                 {% if appt.adopter_choice.app_interest %}
                 <tr>
-                  <td><b>Notes from Application:</b></td>
+                  <td><b>From Shelterluv:</b></td>
                   <td>{{appt.adopter_choice.app_interest|linebreaks}}</td>
                 </tr>
                 {% endif %}
@@ -143,7 +145,6 @@
               {% if appt.adopter_choice.visits_to_date > 1 %}
                 <b>{{appt.adopter_choice.number_of_visits}}</b>
               {% endif %}
-              </em>
             </div>
             {% if appt.appt_type in schedulable and appt.available == False %}
               <div class="appt_action">
@@ -198,10 +199,6 @@
                 </div>
               </div>
             {% endif %}
-            <div class="delete_appt appt_action">
-              <a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">Edit Appointment</a>
-              <a href="{% url 'delete_cal_appointment' role appt.id date.year date.month date.day %}">Delete Appointment</a>
-            </div>
           </div>
         </li>
         {% endfor %}

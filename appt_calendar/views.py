@@ -328,8 +328,7 @@ def calendar_date(request, role, date_year, date_month, date_day):
 
         print(system_settings.last_adopter_upload)
 
-        if system_settings.last_adopter_upload == today:
-            print("today")
+        if system_settings.last_adopter_upload in [today - datetime.timedelta(days=x) for x in range(2)]:
             upload_current = True
     else:
         empty_dates = None
