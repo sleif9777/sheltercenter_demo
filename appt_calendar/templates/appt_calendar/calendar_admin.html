@@ -76,10 +76,45 @@
     {% for timeslot, appointments in timeslots.items %}
       <div class="timeslot">
         <h2 class="timeslotheader">{{timeslot}}</h2>
+        {% if appointments|length <= 1 %}
+        <ul class="appt_solo">
+        {% else %}
         <ul class="appt_list">
+        {% endif %}
         {% for appt in appointments %}
         <li class="appt_slot">
           <div class="appointment">
+            <table id="appt_header_block" style="width: 100%;">
+              <tr>
+                {% if appt.adopter_choice %}
+                  <td class="appt_description" style="text-align: left; text-transform: uppercase;"><b>{{appt.adopter_choice.adopter_full_name}}</b></td>
+                {% else %}
+                  <td class="appt_description" style="text-align: left; text-transform: uppercase;"><b>OPEN</b></td>
+                {% endif %}
+                <td class="appt_description" style="text-align: right;"><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a>
+                  <a href="{% url 'delete_cal_appointment' role appt.id date.year date.month date.day %}">&#10006;</a></td>
+              </tr>
+              <tr>
+                <td style="text-align: left;"><b>({{appt.appt_string}})</b></td>
+                <td style="text-align: right;">
+                  {% if appt.bringing_dog %}
+                    <b>Bringing dog!<br></b>
+                  {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">
+                  {% if appt.adopter_choice.visits_to_date > 1 %}
+                    <b>{{appt.adopter_choice.number_of_visits}}</b>
+                  {% endif %}
+                </td>
+                <td style="text-align: right;">
+                  {% if appt.has_cat %}
+                    <b>Has a cat!</b>
+                  {% endif %}
+                </td>
+              </tr>
+            </table>
             <div class="appt_description appt_action">
               <p><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">{{appt}}</a></p>
             </div>
@@ -105,12 +140,6 @@
                 </tr>
                 {% endif %}
               </table>
-              {% if appt.bringing_dog %}
-                <b>Bringing dog<br></b>
-              {% endif %}
-              {% if appt.has_cat %}
-                <b>Has a cat<br></b>
-              {% endif %}
               {% if appt.adopter_choice.visits_to_date > 1 %}
                 <b>{{appt.adopter_choice.number_of_visits}}</b>
               {% endif %}
@@ -174,14 +203,14 @@
               <a href="{% url 'delete_cal_appointment' role appt.id date.year date.month date.day %}">Delete Appointment</a>
             </div>
           </div>
+        </li>
         {% endfor %}
+        </ul>
         <br>
         <a class="timeslot_action" href="{% url 'add_cal_appointment' role timeslot.id date.year date.month date.day %}">Add Appointment</a>
         <a class="timeslot_action" href="{% url 'delete_cal_timeslot' role timeslot.id date.year date.month date.day %}">Delete Timeslot</a>
       </div>
-    </li>
     {% endfor %}
-    </ul>
     <br>
     {% endif %}
 

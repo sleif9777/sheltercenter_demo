@@ -38,6 +38,14 @@ body {
   padding: 0;
   column-count: 1;
   }
+
+  ul.appt_solo {
+  list-style-type: none;
+  padding: 0;
+  column-count: 1;
+  width: 100%;
+  }
+
 }
 
 @media only screen and (min-width: 801px) {
@@ -45,6 +53,14 @@ body {
   list-style-type: none;
   padding: 0;
   column-count: 2;
+  }
+
+  ul.appt_solo {
+  list-style-type: none;
+  padding: 0;
+  column-count: 1;
+  width: 50%;
+  margin: auto;
   }
 }
 
@@ -149,7 +165,7 @@ body {
   padding-bottom: 5px;
 }
 
-.appointment, .day, .report {
+.day, .report {
   display: inline-table;
   background-color: #48c8d3;
   border: 5px solid #2996b0;
@@ -160,6 +176,12 @@ body {
 
 .appointment {
   width: 90%;
+  display: inline-table;
+  background-color: #eeeeee;
+  border: 2px solid #cccccc;
+  margin: 10px 10px;
+  padding: 10px;
+  color: #2996b0;
 }
 
 /* .appointment {
@@ -174,6 +196,20 @@ body {
   font-size: 18pt;
 }
 
+#appt_header_block td {
+  border-bottom: none;
+}
+
+#appt_header_block a {
+  color: #2996b0;
+  text-decoration: none;
+}
+
+#appt_header_block a:hover {
+  color: #2996b0;
+  text-decoration: underline;
+}
+
 .appt_description p {
   color: white;
 }
@@ -184,7 +220,7 @@ body {
 }
 
 .appt_action a {
-  color: white;
+  color: #2996b0;
   text-decoration: none;
   margin: 5px;
 }
@@ -224,7 +260,7 @@ body {
 }
 
 .appt_notes em {
-  color: white;
+  color: #2996b0;
 }
 
 .appt_notes a:hover {
@@ -233,7 +269,7 @@ body {
 }
 
 .appt_notes a {
-  color: white;
+  color: #2996b0;
   text-decoration: none;
 }
 
@@ -257,7 +293,7 @@ body {
 }
 
 .contact_adopter_header a {
-  color: white;
+  color: #2996b0;
   text-decoration: none;
 }
 
@@ -271,7 +307,7 @@ body {
 }
 
 .contact_adopter_quickbutton_links {
-  color: white;
+  color: #2996b0;
   display: inline-table;
   text-decoration: none;
   margin: 2px 5px;
