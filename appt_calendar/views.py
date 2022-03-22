@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 import datetime, time
-from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
+from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
 from .models import Timeslot, Appointment
 from adopter.models import Adopter
 from .forms import *
@@ -10,6 +10,8 @@ from .appointment_manager import *
 #
 # # Create your views here.
 #
+
+system_settings = SystemSettings.objects.get(pk=1)
 
 def calendar_home(request):
     today = datetime.date.today()
@@ -314,6 +316,7 @@ def calendar_date(request, role, date_year, date_month, date_day):
     timeslots = {}
     open_timeslots = []
     delta_from_today = (date - datetime.date.today()).days
+    upload_current = False
 
     if role == 'admin':
         empty_dates = []
@@ -323,6 +326,12 @@ def calendar_date(request, role, date_year, date_month, date_day):
 
             if len(check_for_appts) <= 10 and d.weekday() < 5:
                 empty_dates += [[d, date_str(d)]]
+
+        print(system_settings.last_adopter_upload)
+
+        if system_settings.last_adopter_upload == today:
+            print("today")
+            upload_current = True
 
     if delta_from_today <= 13:
         visible_to_adopters = True
@@ -355,6 +364,7 @@ def calendar_date(request, role, date_year, date_month, date_day):
         "timeslots": timeslots,
         "empty_day": empty_day,
         "empty_dates": empty_dates,
+        "upload_current": upload_current,
         "schedulable": ["1", "2", "3"],
         "all_dows": all_dows,
         "visible": visible_to_adopters,

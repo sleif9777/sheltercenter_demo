@@ -3,12 +3,13 @@ from django.http import HttpResponse
 from .models import Adopter
 from appt_calendar.models import Appointment
 from .forms import *
-from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
+from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
 import datetime, time, csv
 from random import randint
 from emails.email_template import *
 from .adopter_manager import *
 
+system_settings = SystemSettings.objects.get(pk=1)
 
 # Create your views here.
 
@@ -181,6 +182,9 @@ def add(request):
                     else:
                         invite(new_adopter)
 
+            system_settings.last_adopter_upload = today
+            system_settings.save()
+            
             upload_errors(errors)
     except:
         if form.is_valid():

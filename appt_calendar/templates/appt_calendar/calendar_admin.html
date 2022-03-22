@@ -56,7 +56,11 @@
       </div>
     {% endif %}
 
-
+    {% if upload_current == False %}
+      <div class="outstanding_task">
+        <p><div style="display:inline; font-size: 16pt;">&#9888;</div> <a href="{% url 'add_adopter' %}" class="datelink">An adopter upload was not made yesterday. Please upload the most recent approved adopters.</a></p>
+      </div>
+    {% endif %}
 
     {% if empty_day == True %}
       <div class="copy_template_button">
