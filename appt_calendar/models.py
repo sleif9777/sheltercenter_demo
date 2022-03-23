@@ -65,21 +65,17 @@ class Appointment(models.Model):
 
         if int(self.appt_type) <= 3:
             if self.adopter_choice != None:
-                display_string += str(self.adopter_choice).upper() + " (" + render_appt_type
-
-                display_string += ")"
+                display_string += str(self.adopter_choice).upper()
             else:
-                display_string += "OPEN (" + render_appt_type + ")"
+                display_string += "OPEN"
         elif int(self.appt_type) > 3:
             if self.dog == "":
-                display_string += render_appt_type.upper() + " - MORE DETAILS NEEDED"
+                display_string += "MORE DETAILS NEEDED"
             else:
                 display_string += self.dog.upper()
 
                 if self.dog_fka != "":
                     display_string += " fka " + self.dog_fka.upper()
-
-                display_string += " (" + render_appt_type + ")"
 
         return display_string
 
@@ -89,21 +85,17 @@ class Appointment(models.Model):
 
         if int(self.appt_type) <= 3:
             if self.adopter_choice != None:
-                display_string += str(self.adopter_choice).upper() + " (" + render_appt_type
-
-                display_string += ")"
+                display_string += str(self.adopter_choice).upper()
             else:
-                display_string += "OPEN (" + render_appt_type + ")"
+                display_string += "OPEN"
         elif int(self.appt_type) > 3:
             if self.dog == "":
-                display_string += render_appt_type.upper() + " - MORE DETAILS NEEDED"
+                display_string += "MORE DETAILS NEEDED"
             else:
                 display_string += self.dog.upper()
 
                 if self.dog_fka != "":
                     display_string += " fka " + self.dog_fka.upper()
-
-                display_string += " (" + render_appt_type + ")"
 
         return display_string
 

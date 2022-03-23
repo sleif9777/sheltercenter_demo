@@ -192,33 +192,6 @@ body {
   border-radius: 15px;
 } */
 
-.appt_description {
-  font-size: 18pt;
-}
-
-#appt_header_block {
-  border-bottom: 1px solid #2996b0;
-  margin-bottom: 0;
-}
-
-#appt_header_block td {
-  border-bottom: none;
-}
-
-#appt_header_block a {
-  color: #2996b0;
-  text-decoration: none;
-}
-
-#appt_header_block a:hover {
-  color: #2996b0;
-  text-decoration: underline;
-}
-
-.appt_description p {
-  color: white;
-}
-
 .appt_action {
   display: inline-table;
   padding: 5px;
@@ -236,13 +209,11 @@ body {
 }
 
 .timeslot_action {
-  margin: 0px 5px;
-  color: #2996b0;
+  color: black;
   text-decoration: none;
 }
 
 .timeslot_action:hover {
-  color: black;
   text-decoration: underline;
 }
 
@@ -260,33 +231,43 @@ body {
   text-decoration: underline;
 }
 
-.appt_notes {
-  padding: 5px 0px;
+.appt_subblock th.right, .appt_subblock td.right {
+  text-align: right;
 }
 
-.appt_notes em {
+.appt_subblock {
+  padding-top: 5px;
+}
+
+.appt_subblock em {
   color: #2996b0;
 }
 
-.appt_notes a:hover {
+.appt_subblock a:hover {
   color: #2996b0;
   text-decoration: underline;
 }
 
-.appt_notes a {
+.appt_subblock a {
   color: #2996b0;
   text-decoration: none;
 }
 
-.appt_notes table {
+.appt_subblock table {
   width: 100%;
+  text-align: left;
+  border-bottom: 1px solid #2996b0;
+}
+
+.appt_subblock th {
   text-align: left;
 }
 
-.appt_notes td {
+.appt_subblock td {
   vertical-align: top;
   font-size: 10pt;
   border-bottom: none;
+  text-align: left;
 }
 
 .contact_adopter {
@@ -311,13 +292,6 @@ body {
 
 .contact_adopter_quickbuttons {
   display: inline-table;
-}
-
-.contact_adopter_quickbutton_links {
-  color: #2996b0;
-  display: inline-table;
-  text-decoration: none;
-  margin: 2px 5px;
 }
 
 a.completed_appt_action {
@@ -506,6 +480,55 @@ table {
   margin-right: auto;
   margin-bottom: 20px;
   width: 50%;
+}
+
+table.appt_info_block {
+  margin-bottom: 0px;
+  width: 100%;
+  border-bottom: 1px solid #2996b0;
+}
+
+table.appt_end_block {
+  border-bottom: none;
+}
+
+tr.info_block_subheader {
+  font-size: 14pt;
+  padding-bottom: 5px;
+}
+
+.appt_description {
+  font-size: 18pt;
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
+
+.upper {
+  text-transform: uppercase;
+}
+
+#appt_header_block {
+  margin-bottom: 0;
+}
+
+#appt_header_block td {
+  border-bottom: none;
+}
+
+#appt_header_block a {
+  color: #2996b0;
+  text-decoration: none;
+}
+
+#appt_header_block a:hover {
+  color: #2996b0;
+  text-decoration: underline;
 }
 
 .chosen_board_actions a {
