@@ -98,9 +98,18 @@ body {
 }
 
 .activitymenu {
-  background-color: #c45389;
-  padding: 5px 0px;
-  width: 100%;
+  /* padding: 5px 0px; */
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+}
+
+.calendar_day {
+  margin-left: 200px;
 }
 
 .activitymenu li {
@@ -110,9 +119,8 @@ body {
 
 .activitymenu a {
   text-decoration: none;
-  color: white;
-  margin: 5px auto;
-  padding: 0px 20px;
+  color: #c45389;
+  text-transform: uppercase;
   text-align: center;
   font-size: 18px;
   font-weight: bold;
@@ -125,6 +133,12 @@ body {
 
 .actmenu-center {
   text-align: center;
+  vertical-align: middle;
+}
+
+.actmenu-center ul {
+  padding: 0;
+  margin: 0;
 }
 
 .textpage {

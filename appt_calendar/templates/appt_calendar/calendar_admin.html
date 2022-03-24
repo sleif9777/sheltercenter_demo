@@ -13,6 +13,7 @@
       <nav>
         <div class="roleselector-center">
           <ul>
+            <li>FOR TEST PURPOSES ONLY</li>
             <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
             <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
             <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
@@ -23,10 +24,11 @@
 
     <!-- move to left sidebar -->
     <div class="activitymenu">
+      <img src="{% static 'media/logo.png' %}" alt="">
       <nav>
         <div class="actmenu-center">
           <ul>
-            <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
+            <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
             <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
             <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
             <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
