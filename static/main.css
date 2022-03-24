@@ -106,15 +106,28 @@ body {
   top: 0;
   left: 0;
   overflow-x: hidden;
+  padding: 10px 10px 0px 10px;
+  border-right: 1px solid #cccccc;
+}
+
+.activitymenu img {
+  padding-bottom: 10px;
 }
 
 .calendar_day {
-  margin-left: 200px;
+  margin-left: 220px;
 }
 
 .activitymenu li {
   display: inline-block;
   list-style-type: none;
+  padding: 5px 0;
+  border-bottom: #c45389 1px solid;
+  width: 100%;
+}
+
+.activitymenu li.end {
+  border-bottom: none;
 }
 
 .activitymenu a {
@@ -123,11 +136,10 @@ body {
   text-transform: uppercase;
   text-align: center;
   font-size: 18px;
-  font-weight: bold;
+  width: 100%;
 }
 
 .activitymenu a:hover {
-  color: #fd6da8;
   text-decoration: underline;
 }
 
