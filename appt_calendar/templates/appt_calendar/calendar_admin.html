@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">
   </head>
+
   <body>
-    <!-- move to left sidebar -->
+
     <div class="activitymenu">
-      <img src="{% static 'media/logo.png' %}" alt="">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
+
       <nav>
         <div class="actmenu-center">
           <ul>
@@ -23,17 +25,17 @@
           </ul>
         </div>
       </nav>
+
     </div>
 
-    <div class="calendar_day">
-
+    <div class="main">
 
         <!-- need to get rid of before live -->
         <div class="roleselector">
           <nav>
             <div class="roleselector-center">
               <ul>
-                <li>FOR TEST PURPOSES ONLY</li>
+                <li style="color: white;">FOR TEST PURPOSES ONLY</li>
                 <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
                 <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
                 <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
@@ -43,7 +45,7 @@
         </div>
 
     <!-- displays a calendar date and arrows to move back and forth -->
-        <div class="calendar_header">
+        <div class="page_header">
           <h1><a href="{% url 'calendar_date' role previous_day.year previous_day.month previous_day.day %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'calendar_date' role next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
         </div>
 
@@ -298,8 +300,11 @@
             </table>
 
         </div>
+
         <br>
+
         {% endif %}
     </div>
+
   </body>
 </html>

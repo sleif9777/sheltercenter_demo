@@ -114,7 +114,7 @@ body {
   padding-bottom: 10px;
 }
 
-.calendar_day {
+.main {
   margin-left: 220px;
 }
 
@@ -157,16 +157,12 @@ body {
   padding: 10px;
 }
 
-.page_header {
-  padding-bottom: 10px;
-}
-
 .timeslot, .week, #allreports {
   text-align: center;
   padding: 20px 0px;
 }
 
-.calendar_header {
+.page_header {
   text-align: center;
   padding-top: 5px;
 }
@@ -175,13 +171,13 @@ body {
   text-align: center;
 }
 
-.calendar_header a, .calendar_actions a {
+.page_header a, .calendar_actions a {
   color: black;
   margin: 5px;
   text-decoration: none;
 }
 
-.calendar_header a:hover, .calendar_actions a:hover {
+.page_header a:hover, .calendar_actions a:hover {
   color: #c45389;
   text-decoration: underline;
 }
@@ -367,17 +363,16 @@ a.completed_appt_action:hover {
 }
 
 input[type=submit].copytemplate {
-  background-color: #48c8d3;
-  border-radius: 15px;
-  border: 5px solid #2996b0;
+  background-color: #eeeeee;
+  border: 2px solid #cccccc;
   font-size: 18pt;
   display: inline-table;
-  color: white;
+  color: #2996b0;
   padding: 10px;
 }
 
 input[type=submit].copytemplate:hover {
-  background-color: #2996b0;
+  background-color: #dddddd;
   text-decoration: underline;
 }
 
