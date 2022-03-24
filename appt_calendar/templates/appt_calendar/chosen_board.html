@@ -45,24 +45,37 @@
       </div>
 
       <h1 class="page_header">Chosen Board</h1>
-      <table style="width: 80%;">
-        <tr>
+      <table id="chosenboard" style="width: 95%;">
+
+        <tr class="no-border" style="margin-bottom: 5px;">
           <th style="width:15%;">Date</th>
           <th style="width:10%;">Time</th>
-          <th style="width:25%;">Adopter</th>
+          <th style="width:17%;">Adopter</th>
           <th style="width:10%;">Outcome</th>
           <th style="width:15%;">Dog</th>
-          <th style="width:25%;">Ready To Roll?</th>
+          <th style="width:15%;">Last Update Sent</th>
+          <th style="width:18%;">Ready To Roll?</th>
         </tr>
+
         {% for appt in appointments %}
+          <!-- appts with chosen or paperwork status -->
           {% if appt.outcome == "3" or appt.outcome == "6" or appt.outcome == "7" %}
+
             <tr>
               <td>{{appt.date}}</td>
               <td>{{appt.time}}</td>
               <td>{{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}</td>
               <td>{{appt.get_outcome_display}}</td>
               <td>{{appt.dog}}</td>
+
               <td>
+                <div class="chosen_board_actions">
+                  {{appt.last_update_sent}}<br>
+                  <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a>
+                </div>
+              </td>
+
+              <td class="chosenboard">
                 {% if appt.outcome == "3" %}
                   <div class="chosen_board_actions">
                     <a href="{% url 'send_ready_to_roll_msg' role appt.id 'negative' %}">Heartworm Negative</a><br>
@@ -84,6 +97,7 @@
                   Paperwork Scheduled
                 {% endif %}
               </td>
+
             </tr>
           {% endif %}
         {% endfor %}

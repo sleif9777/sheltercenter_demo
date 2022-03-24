@@ -362,6 +362,28 @@ a.completed_appt_action:hover {
   text-align: center;
 }
 
+#chosenboard {
+  border-collapse: collapse;
+}
+
+#chosenboard th {
+  text-align: left;
+  padding-bottom: 10px;
+}
+
+#chosenboard tr {
+  border-bottom: 1px solid #2996b0;
+}
+
+#chosenboard tr.no-border {
+  border-bottom: none;
+  margin-bottom: 15px;
+}
+
+#chosenboard td {
+  border-bottom: none;
+}
+
 input[type=submit].copytemplate {
   background-color: #eeeeee;
   border: 2px solid #cccccc;

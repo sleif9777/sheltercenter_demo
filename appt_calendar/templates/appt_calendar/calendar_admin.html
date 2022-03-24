@@ -200,8 +200,8 @@
                     <table class="appt_subblock appt_info_block">
 
                       <tr class="info_block_subheader">
-                        <th><a href="{% url 'contact_adopter' appt.id date.year date.month date.day %}">Contact {{appt.adopter_choice.adopter_first_name}}</a></th>
-                        <th class="right"><a href="{% url 'contact_adopter' appt.id date.year date.month date.day %}">&#9993;</a></th>
+                        <th><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">Contact {{appt.adopter_choice.adopter_first_name}}</a></th>
+                        <th class="right"><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">&#9993;</a></th>
                       </tr>
 
                       <tr>

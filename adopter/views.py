@@ -184,7 +184,7 @@ def add(request):
 
             system_settings.last_adopter_upload = today
             system_settings.save()
-            
+
             upload_errors(errors)
     except:
         if form.is_valid():
@@ -287,7 +287,7 @@ def contact(request, adopter_id):
 
     return render(request, "adopter/contactteam.html", context)
 
-def contact_adopter(request, appt_id, date_year, date_month, date_day):
+def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     all_dows = Daily_Schedule.objects
     today = datetime.date.today()
     appt = Appointment.objects.get(pk=appt_id)
@@ -301,7 +301,15 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day):
         message = data['message']
         include_links = data['include_links']
         new_contact_adopter_msg(adopter, message, include_links)
-        return redirect('calendar_date', "admin", date_year, date_month, date_day)
+
+        if source == "calendar":
+            return redirect('calendar_date', "admin", date_year, date_month, date_day)
+        elif source == "update":
+
+            appt.last_update_sent = today
+            appt.save()
+
+            return redirect('chosen_board', 'admin')
 
     context = {
         'form': form,
