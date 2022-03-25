@@ -46,7 +46,7 @@
 
   <!-- displays a calendar date and arrows to move back and forth -->
       <div class="page_header">
-        <h1><a href="{% url 'calendar_date' role previous_day.year previous_day.month previous_day.day %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'calendar_date' role next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
+        <h1><a href="{% url 'calendar_date' role previous_day.year previous_day.month previous_day.day %}">&#9664;&#xFE0E;</a>  {{date_pretty}}  <a href="{% url 'calendar_date' role next_day.year next_day.month next_day.day %}">&#9654;&#xFE0E;</a></h1>
       </div>
 
   <!-- displays actions underneath the date -->
@@ -59,7 +59,7 @@
 
       {% if empty_dates %}
         <div class="outstanding_task">
-          <p><div style="display:inline; font-size: 16pt;">&#9888;</div> There are some dates in the next two weeks that have less appointments than usual (or none at all). Please check that a full schedule is set:</p>
+          <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> There are some dates in the next two weeks that have less appointments than usual (or none at all). Please check that a full schedule is set:</p>
           <ul>
             {% for d, d_str in empty_dates %}
             <li><a class="datelink" href="{% url 'calendar_date' role d.year d.month d.day %}">{{d_str}}</a></li>
@@ -70,7 +70,7 @@
 
       {% if upload_current == False %}
         <div class="outstanding_task">
-          <p><div style="display:inline; font-size: 16pt;">&#9888;</div> <a href="{% url 'add_adopter' %}" class="datelink">An adopter upload was not completed yesterday. Please upload the most recent approved adopters.</a></p>
+          <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> <a href="{% url 'add_adopter' %}" class="datelink">An adopter upload was not completed yesterday. Please upload the most recent approved adopters.</a></p>
         </div>
       {% endif %}
 

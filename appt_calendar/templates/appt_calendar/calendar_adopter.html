@@ -49,10 +49,10 @@
 
           <!-- display left arrow only if date is in future -->
           {% if delta > 0 %}
-            <a href="{% url 'adopter_calendar_date' 'adopter' adopter.id previous_day.year previous_day.month previous_day.day %}">&#9664;</a>
+            <a href="{% url 'adopter_calendar_date' 'adopter' adopter.id previous_day.year previous_day.month previous_day.day %}">&#9664;&#xFE0E;</a>
           {% endif %}
 
-          &#160;{{date_pretty}}  <a href="{% url 'adopter_calendar_date' 'adopter' adopter.id next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
+          &#160;&#xFE0E;{{date_pretty}}  <a href="{% url 'adopter_calendar_date' 'adopter' adopter.id next_day.year next_day.month next_day.day %}">&#9654;&#xFE0E;</a></h1>
       </div>
 
       <div class="calendar_actions">
