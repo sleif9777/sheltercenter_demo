@@ -7,71 +7,131 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">
   </head>
+
   <body>
-    <div class="roleselector">
-      <nav>
-        <div class="roleselector-center">
-          <ul>
-            <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
-            <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
-            <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-    {% if role == 'greeter' %}
-      <div class="activitymenu">
+
+    <div class="activitymenu">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
+
+      {% if role == "greeter" %}
         <nav>
           <div class="actmenu-center">
             <ul>
-              <li><a href="{% url 'calendar' 'greeter' %}">Calendar</a> </li>
+              <li class="end"><a href="{% url 'calendar' 'greeter' %}">Calendar</a> </li>
             </ul>
           </div>
         </nav>
-      </div>
-    {% elif role == 'admin' %}
-      <div class="activitymenu">
+
+      {% elif role == "admin" %}
         <nav>
-          <div class="actmenu-center">
-            <ul>
-              <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
-              <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
-              <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
-              <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
-              <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-              <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    {% endif %}
-
-    <div class="calendar_header">
-      <h1><a href="{% url 'greeter_reschedule' role adopter.id appt.id previous_day.year previous_day.month previous_day.day %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'greeter_reschedule' role adopter.id appt.id next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
-    </div>
-
-    <div class="calendar_actions">
-      <a href="{% url 'greeter_reschedule' role adopter.id appt.id today.year today.month today.day %}">Return to Today</a>
-    </div>
-
-    <h2 style="text-align: center; margin: 10px 0px;">Rescheduling for {{full_name}}</h2>
-
-    {% for timeslot, appointments in timeslots.items %}
-      <div class="timeslot">
-        <h2 class="timeslotheader">{{timeslot}}</h2>
-        {% for appt in appointments %}
-          {% if appt.available == True %}
-            <div class="appointment">
-              <div class="appt_description appt_action">
-                  <p><a href="{% url 'adopter_reschedule' role adopter.id appt.id date.year date.month date.day %}">{{appt}}</a></p>
-              </div>
+            <div class="actmenu-center">
+              <ul>
+                <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
+                <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
+                <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
+                <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
+                <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
+                <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
+              </ul>
             </div>
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% endfor %}
+        </nav>
 
-    <br><br>
+      {% endif %}
+
+    </div>
+
+    <div class="main">
+      <div class="roleselector">
+        <nav>
+          <div class="roleselector-center">
+            <ul>
+              <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+              <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+              <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <div class="page_header">
+        <h1><a href="{% url 'greeter_reschedule' role adopter.id appt.id previous_day.year previous_day.month previous_day.day %}">&#9664;&#xFE0E;</a>  {{date_pretty}}  <a href="{% url 'greeter_reschedule' role adopter.id appt.id next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
+      </div>
+
+      <div class="calendar_actions">
+        <a href="{% url 'greeter_reschedule' role adopter.id appt.id today.year today.month today.day %}">Return to Today</a>
+      </div>
+
+      <h2 style="text-align: center; margin: 10px 0px;">Rescheduling for {{full_name}}</h2>
+
+      {% for timeslot, appointments in timeslots.items %}
+
+        {% if timeslot in open_timeslots %}
+          <div class="timeslot">
+
+            <!-- two-column table displaying timeslot and timeslot-level actions -->
+            <table style = "width:100%; padding: 10px; margin: 0;">
+              <th style="font-size: 18pt; text-align: left;" class="timeslotheader">{{timeslot}}</th>
+              <th style="font-size: 18pt; text-align: right;" class="timeslotheader"></th>
+            </table>
+
+            <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment -->
+            {% if appointments|length <= 1 %}
+            <ul class="appt_solo">
+            <!-- else use appt_list for two-column responsive layout  -->
+            {% else %}
+            <ul class="appt_list">
+            {% endif %}
+
+            {% for appt in appointments %}
+
+              <!-- format for open appointments -->
+              {% if appt.available == True and appt.appt_type in schedulable %}
+                <li class="appt_slot">
+                  <div class="appointment">
+                    <!-- header grid, has a bottom border unless it is the only section -->
+                    <!-- it will be the only section when the appointment is not booked and has no notes -->
+                    {% if appt.adopter_notes %}
+                      <table class="appt_info_block" id="appt_header_block">
+                    {% else %}
+                      <table class="appt_info_block appt_end_block" id="appt_header_block">
+                    {% endif %}
+
+                      <tr>
+
+                        {% if appt.available == True and appt.appt_type in schedulable %}
+                          {% if not has_current_appt %}
+                            <td class="appt_description left upper"><b><a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">CLICK TO BOOK</a></b></td>
+                          {% else %}
+                            <td class="appt_description left upper"><b><a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">CLICK TO RESCHEDULE</a></b></td>
+                          {% endif %}
+                        {% endif %}
+
+                      </tr>
+
+                      <tr>
+                        <td class="left"><b>({{appt.appt_string}})</b></td>
+                        <td class="right"></td>
+                      </tr>
+
+                      {% if appt.available and appt.appt_type in schedulable and has_current_appt %}
+                        <tr>
+                          <td class="left" style="font-size: 10pt; padding-top: 5px;">By scheduling this appointment, you will forfeit your current appt for {{current_appt_str}}.</td>
+                          <td></td>
+                        </tr>
+
+                      {% endif %}
+
+
+                    </table>
+                  </div>
+                </li>
+              {% endif %}
+            {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
 
   </body>
 </html>

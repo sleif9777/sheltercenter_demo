@@ -130,7 +130,7 @@
                     {% endif %}
                     </td>
 
-                    <td class="appt_description right"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a> <a href="{% url 'delete_cal_appointment' role appt.id date.year date.month date.day %}">&#10006;</a></td>
+                    <td class="appt_description right"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a> <a href="{% url 'delete_cal_appointment' role appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
                   </tr>
 
                   <tr>
@@ -176,7 +176,7 @@
 
                     <tr class="info_block_subheader">
                       <th class="left"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">Notes</a></th>
-                      <th class="right"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a></th>
+                      <th class="right"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
                     </tr>
 
                     {% if appt.internal_notes %}
@@ -211,7 +211,7 @@
 
                     <tr class="info_block_subheader">
                       <th><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">Contact {{appt.adopter_choice.adopter_first_name}}</a></th>
-                      <th class="right"><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">&#9993;</a></th>
+                      <th class="right"><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">&#9993;&#xFE0E;</a></th>
                     </tr>
 
                     <tr>
