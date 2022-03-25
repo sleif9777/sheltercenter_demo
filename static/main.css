@@ -32,7 +32,7 @@ body {
   color: #990000
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 980px) {
   ul.appt_list {
   list-style-type: none;
   padding: 0;
@@ -48,7 +48,7 @@ body {
 
 }
 
-@media only screen and (min-width: 801px) {
+@media only screen and (min-width: 981px) {
   ul.appt_list {
   list-style-type: none;
   padding: 0;
@@ -199,7 +199,7 @@ body {
 .appointment {
   width: 90%;
   display: inline-table;
-  background-color: #eeeeee;
+  background-color: #e8e8e8;
   border: 2px solid #cccccc;
   margin: 10px 10px;
   padding: 10px;
@@ -316,18 +316,10 @@ body {
   display: inline-table;
 }
 
-a.completed_appt_action {
+p.completed_appt_action {
   color: grey;
   display: inline-table;
   text-decoration: line-through;
-  margin: 2px 5px;
-}
-
-a.completed_appt_action:hover {
-  color: grey;
-  display: inline-table;
-  text-decoration: line-through;
-  margin: 2px 5px;
 }
 
 .contact_adopter_quickbutton_links:hover {
@@ -385,31 +377,33 @@ a.completed_appt_action:hover {
 }
 
 input[type=submit].copytemplate {
-  background-color: #eeeeee;
+  background-color: #e8e8e8;
   border: 2px solid #cccccc;
   font-size: 18pt;
   display: inline-table;
   color: #2996b0;
   padding: 10px;
+  font-weight: bold;
 }
 
 input[type=submit].copytemplate:hover {
   background-color: #dddddd;
   text-decoration: underline;
+  font-weight: bold;
 }
 
 input[type=submit].submitform {
-  background-color: #48c8d3;
-  border: 1px solid #2996b0;
-  border-radius: 5px;
+  background-color: #e8e8e8;
+  border: 1px solid #cccccc;
   display: inline-table;
-  color: white;
+  color: #2996b0;
   padding: 5px;
 }
 
 input[type=submit].submitform:hover {
-  background-color: #2996b0;
+  background-color: #dddddd;
   text-decoration: underline;
+  font-weight: bold;
 }
 
 p.standalone {

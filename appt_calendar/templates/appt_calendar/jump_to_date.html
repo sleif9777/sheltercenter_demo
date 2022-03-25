@@ -1,79 +1,88 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-<head>
-  {% load static %}
-  <meta charset="utf-8">
-  <title></title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-  <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-</head>
-<body>
-  <div class="roleselector">
-    <nav>
-      <div class="roleselector-center">
-        <ul>
-          <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
-          <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
-          <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
-        </ul>
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  </head>
+
+  <body>
+
+    <div class="activitymenu">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
+
+      {% if role == 'adopter' %}
+        <nav>
+          <div class="actmenu-center">
+            <ul>
+              <li><a href="{% url 'adopter_home' adopter.id %}">Calendar</a></li>
+              <li><a href="{% url 'faq' adopter.id %}">FAQ</a></li>
+              {% if adopter.has_current_appt == True %}
+                <li><a href="{% url 'visitor_instructions' adopter.id %}">Visitor Instructions</a></li>
+              {% endif %}
+              <li class="end"><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
+            </ul>
+          </div>
+        </nav>
+
+      {% elif role == 'admin' %}
+        <nav>
+          <div class="actmenu-center">
+            <ul>
+              <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
+              <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
+              <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
+              <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
+              <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
+              <li class="end"><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
+            </ul>
+          </div>
+        </nav>
+
+      {% elif role == 'greeter'%}
+        <nav>
+          <div class="actmenu-center">
+            <ul>
+              <li class="end"><a href="{% url 'calendar' 'greeter' %}">Calendar</a> </li>
+            </ul>
+          </div>
+        </nav>
+
+      {% endif %}
+
+    </div>
+
+    <div class="main textpage">
+
+      <!-- need to get rid of before live -->
+      <div class="roleselector">
+        <nav>
+          <div class="roleselector-center">
+            <ul>
+              <li style="color: white;">FOR TEST PURPOSES ONLY</li>
+              <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+              <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+              <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+            </ul>
+          </div>
+        </nav>
       </div>
-    </nav>
-  </div>
-  {% if role == 'adopter' %}
-    <div class="activitymenu">
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li><a href="{% url 'adopter_home' adopter.id %}">Calendar</a></li>
-            <li><a href="{% url 'faq' adopter.id %}">FAQ</a></li>
-            {% if adopter.has_current_appt == True %}
-              <li><a href="{% url 'visitor_instructions' adopter.id %}">Visitor Instructions</a></li>
-            {% endif %}
-            <li><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-  {% elif role == 'admin' %}
-    <div class="activitymenu">
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
-            <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
-            <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
-            <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
-            <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-            <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-  {% elif role == 'greeter' %}
-    <div class="activitymenu">
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li><a href="{% url 'calendar' 'greeter' %}">Calendar</a> </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-  {% endif %}
 
-  <div class="textpage">
-    <h1 class="page_header">Jump To Date</h1>
+      <h1 class="page_header">Jump To Date</h1>
 
-    <p class="standalone">Select a date to jump to on the calendar.</p>
-    <br>
-    <form class="" action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
+      <p class="standalone">Select a date to jump to on the calendar.</p>
       <br>
-      <input class="submitform" type="submit" name="" value="Submit">
-    </form>
 
-  </div>
+      <form class="" action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <br>
+        <input class="submitform" type="submit" name="" value="Submit">
+      </form>
+
+    </div>
 
   </body>
 </html>

@@ -30,280 +30,288 @@
 
     <div class="main">
 
-        <!-- need to get rid of before live -->
-        <div class="roleselector">
-          <nav>
-            <div class="roleselector-center">
-              <ul>
-                <li style="color: white;">FOR TEST PURPOSES ONLY</li>
-                <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
-                <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
-                <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
-              </ul>
-            </div>
-          </nav>
-        </div>
-
-    <!-- displays a calendar date and arrows to move back and forth -->
-        <div class="page_header">
-          <h1><a href="{% url 'calendar_date' role previous_day.year previous_day.month previous_day.day %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'calendar_date' role next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
-        </div>
-
-    <!-- displays actions underneath the date -->
-        <div class="calendar_actions">
-          <a href="{% url 'jump_to_date_admin' role %}">Jump To Date</a>
-          <a href="{% url 'calendar' 'admin' %}">Return to Today</a>
-          <a href="{% url 'calendar_print' role date.year date.month date.day %}" target="_blank">Print View</a>
-          <a href="{% url 'add_timeslot' role date.year date.month date.day %}">Add Timeslot</a>
-        </div>
-
-        {% if empty_dates %}
-          <div class="outstanding_task">
-            <p><div style="display:inline; font-size: 16pt;">&#9888;</div> There are some dates in the next two weeks that have less appointments than usual (or none at all). Please check that a full schedule is set:</p>
+      <!-- need to get rid of before live -->
+      <div class="roleselector">
+        <nav>
+          <div class="roleselector-center">
             <ul>
-              {% for d, d_str in empty_dates %}
-              <li><a class="datelink" href="{% url 'calendar_date' role d.year d.month d.day %}">{{d_str}}</a></li>
-              {% endfor %}
+              <li style="color: white;">FOR TEST PURPOSES ONLY</li>
+              <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+              <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+              <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
             </ul>
           </div>
-        {% endif %}
+        </nav>
+      </div>
 
-        {% if upload_current == False %}
-          <div class="outstanding_task">
-            <p><div style="display:inline; font-size: 16pt;">&#9888;</div> <a href="{% url 'add_adopter' %}" class="datelink">An adopter upload was not completed yesterday. Please upload the most recent approved adopters.</a></p>
-          </div>
-        {% endif %}
+  <!-- displays a calendar date and arrows to move back and forth -->
+      <div class="page_header">
+        <h1><a href="{% url 'calendar_date' role previous_day.year previous_day.month previous_day.day %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'calendar_date' role next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
+      </div>
 
-        {% if empty_day == True %}
-          <div class="copy_template_button">
-            <br>
-            <form class="" action="{% url 'copy_temp_to_cal' role date.year date.month date.day %}" method="post">
-              {% csrf_token %}
-              <input class="copytemplate" type="submit" name="" value="Copy From My {{weekday}} Template">
-            </form>
-          </div>
+  <!-- displays actions underneath the date -->
+      <div class="calendar_actions">
+        <a href="{% url 'jump_to_date_admin' role %}">Jump To Date</a>
+        <a href="{% url 'calendar' 'admin' %}">Return to Today</a>
+        <a href="{% url 'calendar_print' role date.year date.month date.day %}" target="_blank">Print View</a>
+        <a href="{% url 'add_timeslot' role date.year date.month date.day %}">Add Timeslot</a>
+      </div>
 
-        {% else %}
-
-        {% for timeslot, appointments in timeslots.items %}
-          <div class="timeslot">
-
-            <!-- two-column table displaying timeslot and timeslot-level actions -->
-            <table style = "width:95%; padding: 10px; margin-bottom: 0;">
-              <th style="font-size: 18pt; text-align: left;" class="timeslotheader">{{timeslot}}</th>
-              <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
-              <a class="timeslot_action" href="{% url 'add_cal_appointment' role timeslot.id date.year date.month date.day %}">Add Appointment</a> |
-              <a class="timeslot_action" href="{% url 'delete_cal_timeslot' role timeslot.id date.year date.month date.day %}">Delete Timeslot</a></th>
-            </table>
-
-            <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment -->
-            {% if appointments|length <= 1 %}
-            <ul class="appt_solo">
-            <!-- else use appt_list for two-column responsive layout  -->
-            {% else %}
-            <ul class="appt_list">
-            {% endif %}
-
-            {% for appt in appointments %}
-              <!-- create a list item -->
-              <li class="appt_slot">
-                <div class="appointment">
-
-                  <!-- header grid, has a bottom border unless it is the only section -->
-                  <!-- it will be the only section when the appointment is not booked and has no notes -->
-                  {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest %}
-                    <table class="appt_info_block" id="appt_header_block">
-                  {% else %}
-                    <table class="appt_info_block appt_end_block" id="appt_header_block">
-                  {% endif %}
-
-                    <tr>
-                      <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">{{appt}}</a></b></td>
-                      <td class="appt_description right"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a>
-                        <a href="{% url 'delete_cal_appointment' role appt.id date.year date.month date.day %}">&#10006;</a></td>
-                    </tr>
-
-                    <tr>
-                      <td class="left"><b>({{appt.appt_string}})</b></td>
-                      <td class="right">
-                        <!-- displays bringing dog if applicable, bumps up has a cat if applicable -->
-                        {% if appt.bringing_dog %}
-                          <b>Bringing dog!<br></b>
-                        {% elif appt.has_cat and not appt.bringing_dog %}
-                          <b>Has a cat!</b>
-                        {% endif %}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td class="left">
-                        <!-- displays number_of_visits if second visit or greater -->
-                        {% if appt.adopter_choice.visits_to_date > 1 %}
-                          <b>{{appt.adopter_choice.number_of_visits}}</b>
-                        {% endif %}
-                      </td>
-                      <td class="right">
-                        <!-- displays has a cat if applicable and bringing dog -->
-                        {% if appt.bringing_dog and appt.has_cat %}
-                          <b>Has a cat!</b>
-                        {% endif %}
-                      </td>
-                    </tr>
-
-                  <!-- end header table -->
-                  </table>
-
-
-                  {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest %}
-
-                    <!-- if the appt has an adopter attached, there should be options for contact and other actions -->
-                    {% if appt.appt_type in schedulable and appt.available == False %}
-                      <table class="appt_subblock appt_info_block">
-                    <!-- if not, it is an open appointment, paperwork, or surrender and could have notes at most -->
-                    {% else %}
-                      <table class="appt_subblock appt_info_block appt_end_block">
-                    {% endif %}
-
-                      <tr class="info_block_subheader">
-                        <th class="left"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">Notes</a></th>
-                        <th class="right"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a></th>
-                      </tr>
-
-                      {% if appt.internal_notes %}
-                      <tr>
-                        <td class="left"><b>From Adoptions:</b></td>
-                        <td class="left"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
-                      </tr>
-                      {% endif %}
-
-                      {% if appt.adopter_notes %}
-                      <tr>
-                        <td class="left"><b>From {{appt.adopter_choice.adopter_first_name}}:</b></td>
-                        <td class="left">{{appt.adopter_notes|linebreaks}}</td>
-                      </tr>
-                      {% endif %}
-
-                      {% if appt.adopter_choice.app_interest %}
-                      <tr>
-                        <td class="left"><b>From Shelterluv:</b></td>
-                        <td class="left">{{appt.adopter_choice.app_interest|linebreaks}}</td>
-                      </tr>
-                      {% endif %}
-
-                    </table>
-                  {% endif %}
-
-                  <!-- if appt is booked, show actions and contacts -->
-                  {% if appt.appt_type in schedulable and appt.available == False %}
-
-                    <!-- this table would never be the last block -->
-                    <table class="appt_subblock appt_info_block">
-
-                      <tr class="info_block_subheader">
-                        <th><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">Contact {{appt.adopter_choice.adopter_first_name}}</a></th>
-                        <th class="right"><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">&#9993;</a></th>
-                      </tr>
-
-                      <tr>
-                        <td>
-                          {% if appt.comm_adopted_dogs == False %}
-                            <a href="{% url 'dogs_were_adopted' appt.id %}" class="contact_adopter_quickbutton_links" style="margin: 0;">Dogs Were Adopted</a>
-                          {% else %}
-                            <a href="#" class="completed_appt_action">Dogs Were Adopted</a>
-                          {% endif %}
-                        </td>
-
-                        <td class="right">
-                          {% if appt.comm_limited_puppies == False %}
-                            <a href="{% url 'limited_matches' appt.id 'puppies' date.year date.month date.day %}">Limited Puppies</a>
-                          {% else %}
-                            <a href="#" class="completed_appt_action">Limited Puppies</a>
-                          {% endif %}
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td>
-                          {% if appt.comm_limited_small == False %}
-                            <a href="{% url 'limited_matches' appt.id 'small dogs' date.year date.month date.day %}">Limited Small Dogs</a></td>
-                          {% else %}
-                            <a href="#" class="completed_appt_action">Limited Small Dogs</a></td>
-                          {% endif %}
-                        </td>
-
-                        <td class="right">
-                          {% if appt.comm_limited_hypo == False %}
-                            <a href="{% url 'limited_matches' appt.id 'lowshed' date.year date.month date.day %}">Limited Low-shed/Hypo</a>
-                          {% else %}
-                            <a href="#" class="completed_appt_action" style="margin: 0;">Limited Low-shed/Hypo</a>
-                          {% endif %}
-                        </td>
-                      </tr>
-
-                    </table>
-
-                    <!-- actions table will always be last (if present) -->
-                    <table class="appt_subblock appt_info_block appt_end_block">
-
-                      <tr class="info_block_subheader">
-                        <th>Actions</th>
-                        <th class="right">&#128432;</th>
-                      </tr>
-
-                      <tr>
-                        <td>
-                          {% if appt.outcome == "1" %}
-                            <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">Enter Decision</a>
-                          {% else %}
-                            {% if appt.outcome == "5" %}
-                              <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
-                            {% else %}
-                              <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog.upper}}</a>
-                            {% endif %}
-                          {% endif %}
-                        </td>
-
-                        <td class="right"><a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id date.year date.month date.day%}">Reschedule Adopter</a></td>
-                      </tr>
-
-                      <tr>
-                        <td><a href="{% url 'remove_adopter' role appt.id date.year date.month date.day %}">Cancel Adopter</a><br></td>
-                        <td class="right"></td>
-                      </tr>
-
-                    </table>
-
-                  <!-- endif for booked appt blocks   -->
-                  {% endif %}
-
-                <!-- /div for appointment block -->
-                </div>
-
-              <!-- /li for appointment   -->
-              </li>
-
-            <!-- endfor and /ul for appointments -->
+      {% if empty_dates %}
+        <div class="outstanding_task">
+          <p><div style="display:inline; font-size: 16pt;">&#9888;</div> There are some dates in the next two weeks that have less appointments than usual (or none at all). Please check that a full schedule is set:</p>
+          <ul>
+            {% for d, d_str in empty_dates %}
+            <li><a class="datelink" href="{% url 'calendar_date' role d.year d.month d.day %}">{{d_str}}</a></li>
             {% endfor %}
-            </ul>
+          </ul>
+        </div>
+      {% endif %}
 
-          <!-- /div and endfor for timeslot   -->
-          </div>
-        {% endfor %}
+      {% if upload_current == False %}
+        <div class="outstanding_task">
+          <p><div style="display:inline; font-size: 16pt;">&#9888;</div> <a href="{% url 'add_adopter' %}" class="datelink">An adopter upload was not completed yesterday. Please upload the most recent approved adopters.</a></p>
+        </div>
+      {% endif %}
 
+      {% if empty_day == True %}
+        <div class="copy_template_button">
+          <br>
+          <form class="" action="{% url 'copy_temp_to_cal' role date.year date.month date.day %}" method="post">
+            {% csrf_token %}
+            <input class="copytemplate" type="submit" name="" value="Copy From My {{weekday}} Template">
+          </form>
+        </div>
+
+      {% else %}
+
+      {% for timeslot, appointments in timeslots.items %}
         <div class="timeslot">
 
-            <!-- two-column table displaying timeslot and timeslot-level actions -->
-            <table style = "width:95%; padding: 10px; margin-bottom: 0;">
-              <th style="font-size: 18pt; text-align: left;" class="timeslotheader"></th>
-              <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
-              <a class="timeslot_action" href="{% url 'add_timeslot' role date.year date.month date.day %}">Add Timeslot</a>
-            </table>
+          <!-- two-column table displaying timeslot and timeslot-level actions -->
+          <table style = "width:100%; padding: 10px; margin: 0;">
+            <th style="font-size: 18pt; text-align: left;" class="timeslotheader">{{timeslot}}</th>
+            <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
+            <a class="timeslot_action" href="{% url 'add_cal_appointment' role timeslot.id date.year date.month date.day %}">Add Appointment</a> |
+            <a class="timeslot_action" href="{% url 'delete_cal_timeslot' role timeslot.id date.year date.month date.day %}">Delete Timeslot</a></th>
+          </table>
 
+          <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment -->
+          {% if appointments|length <= 1 %}
+          <ul class="appt_solo">
+          <!-- else use appt_list for two-column responsive layout  -->
+          {% else %}
+          <ul class="appt_list">
+          {% endif %}
+
+          {% for appt in appointments %}
+            <!-- create a list item -->
+            <li class="appt_slot">
+              <div class="appointment">
+
+                <!-- header grid, has a bottom border unless it is the only section -->
+                <!-- it will be the only section when the appointment is not booked and has no notes -->
+                {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest %}
+                  <table class="appt_info_block" id="appt_header_block">
+                {% else %}
+                  <table class="appt_info_block appt_end_block" id="appt_header_block">
+                {% endif %}
+
+                  <tr>
+                    <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">{{appt}}</a>
+                    {% if appt.mobility %}
+                      &#9855;&#xFE0E;
+                    {% endif %}
+                    {% if appt.bringing_dog %}
+                      &#128021;&#xFE0E;
+                    {% endif %}
+                    {% if appt.has_cat %}
+                      &#128008;&#xFE0E;
+                    {% endif %}
+                    </td>
+
+                    <td class="appt_description right"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a> <a href="{% url 'delete_cal_appointment' role appt.id date.year date.month date.day %}">&#10006;</a></td>
+                  </tr>
+
+                  <tr>
+                    <td class="left"><b>({{appt.appt_string}})</b></td>
+                    <td class="right">
+                      <!-- displays bringing dog if applicable, bumps up has a cat if applicable -->
+                      {% if appt.bringing_dog %}
+                        <b>Bringing dog!<br></b>
+                      {% elif appt.has_cat and not appt.bringing_dog %}
+                        <b>Has a cat!</b>
+                      {% endif %}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="left">
+                      <!-- displays number_of_visits if second visit or greater -->
+                      {% if appt.adopter_choice.visits_to_date > 1 %}
+                        <b>{{appt.adopter_choice.number_of_visits}}</b>
+                      {% endif %}
+                    </td>
+                    <td class="right">
+                      <!-- displays has a cat if applicable and bringing dog -->
+                      {% if appt.bringing_dog and appt.has_cat %}
+                        <b>Has a cat!</b>
+                      {% endif %}
+                    </td>
+                  </tr>
+
+                <!-- end header table -->
+                </table>
+
+
+                {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest %}
+
+                  <!-- if the appt has an adopter attached, there should be options for contact and other actions -->
+                  {% if appt.appt_type in schedulable and appt.available == False %}
+                    <table class="appt_subblock appt_info_block">
+                  <!-- if not, it is an open appointment, paperwork, or surrender and could have notes at most -->
+                  {% else %}
+                    <table class="appt_subblock appt_info_block appt_end_block">
+                  {% endif %}
+
+                    <tr class="info_block_subheader">
+                      <th class="left"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">Notes</a></th>
+                      <th class="right"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;</a></th>
+                    </tr>
+
+                    {% if appt.internal_notes %}
+                    <tr>
+                      <td class="left"><b>From Adoptions:</b></td>
+                      <td class="left"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
+                    </tr>
+                    {% endif %}
+
+                    {% if appt.adopter_notes %}
+                    <tr>
+                      <td class="left"><b>From {{appt.adopter_choice.adopter_first_name}}:</b></td>
+                      <td class="left">{{appt.adopter_notes|linebreaks}}</td>
+                    </tr>
+                    {% endif %}
+
+                    {% if appt.adopter_choice.app_interest %}
+                    <tr>
+                      <td class="left"><b>From Shelterluv:</b></td>
+                      <td class="left">{{appt.adopter_choice.app_interest|linebreaks}}</td>
+                    </tr>
+                    {% endif %}
+
+                  </table>
+                {% endif %}
+
+                <!-- if appt is booked, show actions and contacts -->
+                {% if appt.appt_type in schedulable and appt.available == False %}
+
+                  <!-- this table would never be the last block -->
+                  <table class="appt_subblock appt_info_block">
+
+                    <tr class="info_block_subheader">
+                      <th><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">Contact {{appt.adopter_choice.adopter_first_name}}</a></th>
+                      <th class="right"><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">&#9993;</a></th>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        {% if appt.comm_adopted_dogs == False %}
+                          <a href="{% url 'dogs_were_adopted' appt.id %}" class="contact_adopter_quickbutton_links" style="margin: 0;">Dogs Were Adopted</a>
+                        {% else %}
+                          <p class="completed_appt_action">Dogs Were Adopted</p>
+                        {% endif %}
+                      </td>
+
+                      <td class="right">
+                        {% if appt.comm_limited_puppies == False %}
+                          <a href="{% url 'limited_matches' appt.id 'puppies' date.year date.month date.day %}">Limited Puppies</a>
+                        {% else %}
+                          <p class="completed_appt_action">Limited Puppies</p>
+                        {% endif %}
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        {% if appt.comm_limited_small == False %}
+                          <a href="{% url 'limited_matches' appt.id 'small dogs' date.year date.month date.day %}">Limited Small Dogs</a></td>
+                        {% else %}
+                          <p class="completed_appt_action">Limited Small Dogs</p></td>
+                        {% endif %}
+                      </td>
+
+                      <td class="right">
+                        {% if appt.comm_limited_hypo == False %}
+                          <a href="{% url 'limited_matches' appt.id 'lowshed' date.year date.month date.day %}">Limited Low-shed/Hypo</a>
+                        {% else %}
+                          <p class="completed_appt_action">Limited Low-shed/Hypo</p>
+                        {% endif %}
+                      </td>
+                    </tr>
+
+                  </table>
+
+                  <!-- actions table will always be last (if present) -->
+                  <table class="appt_subblock appt_info_block appt_end_block">
+
+                    <tr class="info_block_subheader">
+                      <th>Actions</th>
+                      <th class="right">&#128498;&#xFE0E;</th>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        {% if appt.outcome == "1" %}
+                          <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">Enter Decision</a>
+                        {% else %}
+                          {% if appt.outcome == "5" %}
+                            <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
+                          {% else %}
+                            <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog.upper}}</a>
+                          {% endif %}
+                        {% endif %}
+                      </td>
+
+                      <td class="right"><a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id date.year date.month date.day%}">Reschedule Adopter</a></td>
+                    </tr>
+
+                    <tr>
+                      <td><a href="{% url 'remove_adopter' role appt.id date.year date.month date.day %}">Cancel Adopter</a><br></td>
+                      <td class="right"></td>
+                    </tr>
+
+                  </table>
+
+                <!-- endif for booked appt blocks   -->
+                {% endif %}
+
+              <!-- /div for appointment block -->
+              </div>
+            </li>
+
+          <!-- endfor and /ul for appointments -->
+          {% endfor %}
+          </ul>
+
+        <!-- /div and endfor for timeslot   -->
         </div>
+      {% endfor %}
 
-        <br>
+      <div class="timeslot">
 
-        {% endif %}
+          <!-- two-column table displaying timeslot and timeslot-level actions -->
+          <table style = "width:100%; padding: 10px; margin: 0;">
+            <th style="font-size: 18pt; text-align: left;" class="timeslotheader"></th>
+            <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
+            <a class="timeslot_action" href="{% url 'add_timeslot' role date.year date.month date.day %}">Add Timeslot</a>
+          </table>
+
+      </div>
+
+      <br>
+
+      {% endif %}
     </div>
 
   </body>

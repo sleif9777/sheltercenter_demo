@@ -52,6 +52,7 @@ class Appointment(models.Model):
     heartworm = models.BooleanField(default=False)
     bringing_dog = models.BooleanField(default=False)
     has_cat = models.BooleanField(default=False)
+    mobility = models.BooleanField(default=False)
     comm_adopted_dogs = models.BooleanField(default=False)
     comm_limited_puppies = models.BooleanField(default=False)
     comm_limited_small = models.BooleanField(default=False)
