@@ -7,19 +7,12 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
   <link rel="stylesheet"  href="{%  static  'main.css'  %}">
 </head>
+
 <body>
-  <div class="roleselector">
-    <nav>
-      <div class="roleselector-center">
-        <ul>
-          <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
-          <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
-          <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+
   <div class="activitymenu">
+    <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
+
     <nav>
       <div class="actmenu-center">
         <ul>
@@ -28,13 +21,27 @@
           {% if adopter.has_current_appt == True %}
             <li><a href="{% url 'visitor_instructions' adopter.id %}">Visitor Instructions</a></li>
           {% endif %}
-          <li><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
+          <li class="end"><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
         </ul>
       </div>
     </nav>
+
   </div>
 
-  <div class="textpage">
+  <div class="main textpage">
+
+    <div class="roleselector">
+      <nav>
+        <div class="roleselector-center">
+          <ul>
+            <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+            <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+            <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
     <h1 class="page_header">Book Appointment</h1>
 
     <p class="standalone">You can use this space to provide any preferences ahead of your appointment. This can include desired size, gender, or age. You can also provide the names of dogs you wish to see during your appointment that you have noticed on our website or social media. If you have no particular specifics and are open to meeting all dogs, you can note this as well.</p>

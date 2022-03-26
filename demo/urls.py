@@ -17,6 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 from appt_calendar import views as cal_views
 from adopter import views as adopt_views
+from . import settings
+from django.conf.urls.static import static
+
 #import scheduleconfig.views
 #import schedule_template.views
 #import appt_calendar.views
@@ -32,6 +35,13 @@ urlpatterns = [
     path('calendar/template/', include('schedule_template.urls')),
     path('calendar/', include('appt_calendar.urls')),
     path('adopter/', include('adopter.urls')),
+    path('emails/', include('email_mgr.urls')),
     path('', cal_views.calendar_home, name="home"),
+    path('tinymce/', include('tinymce.urls')),
+    # path('editor/', include('django_summernote.urls')),
     #path('', adopt_views.simple_add_form, name="home")
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)

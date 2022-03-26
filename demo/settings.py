@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'schedule_template.apps.ScheduleTemplateConfig',
     'appt_calendar.apps.ApptCalendarConfig',
     'adopter.apps.AdopterConfig',
+    'email_mgr.apps.EmailMgrConfig',
+    'tinymce',
+    'django_summernote',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -180,7 +184,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles-cdn') #in prod we want cdn
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') #in prod we want cdn
 
 from .cdn.conf import * # noqa
 
@@ -191,8 +195,24 @@ from .cdn.conf import * # noqa
 
 # https://sheltercenter-demo.nyc3.digitaloceanspaces.com/
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 MEDIA_URL = '/media/'
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#
+# TINYMCE_JS_URL = STATIC_URL + 'js/tiny_mce/tiny_mce.js'
+# TINYMCE_JS_ROOT = STATIC_ROOT + 'js/tiny_mce'
+#
+# TINYMCE_JS_URL = os.path.join(MEDIA_ROOT, "js/tiny_mce/tiny_mce.js")
+# TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "js/tiny_mce")
+# TINYMCE_DEFAULT_CONFIG = {
+#     'plugins': "table,spellchecker,paste,searchreplace",
+#     'theme': "advanced",
+#     'cleanup_on_startup': True,
+#     'custom_undo_redo_levels': 10,
+# }
+# TINYMCE_SPELLCHECKER = True
+# TINYMCE_COMPRESSOR = True

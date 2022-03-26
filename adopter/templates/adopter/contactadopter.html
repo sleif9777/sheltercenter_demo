@@ -8,33 +8,39 @@
   <link rel="stylesheet"  href="{%  static  'main.css'  %}">
 </head>
 <body>
-  <div class="roleselector">
-    <nav>
-      <div class="roleselector-center">
-        <ul>
-          <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
-          <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
-          <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+
   <div class="activitymenu">
+    <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
+
     <nav>
       <div class="actmenu-center">
         <ul>
-          <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
+          <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
           <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
           <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
           <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
           <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-          <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
+          <li class="end"><a href="{% url 'chosen_board' 'admin' %}">Chosen Board</a></li>
         </ul>
       </div>
     </nav>
+
   </div>
 
-  <div class="textpage">
+  <div class="main textpage">
+
+    <div class="roleselector">
+      <nav>
+        <div class="roleselector-center">
+          <ul>
+            <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+            <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+            <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
     <h1 class="page_header">Contact Adopter</h1>
 
     <p>Hi {{adopter_first_name}},</p>

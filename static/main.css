@@ -20,13 +20,6 @@ body {
   background-color: #ea9999;
 }
 
-.outstanding_task ul {
-  column-count: 2;
-  list-style-type: none;
-  padding: 0;
-  padding-top: 10px;
-}
-
 .datelink {
   text-decoration: none;
   color: #990000
@@ -46,6 +39,19 @@ body {
   width: 100%;
   }
 
+  .outstanding_task ul {
+    column-count: 1;
+    list-style-type: none;
+    padding: 0;
+    padding-top: 10px;
+  }
+
+  #adopter_list {
+    list-style-type: none;
+    column-count: 2;
+    padding: 0;
+  }
+
 }
 
 @media only screen and (min-width: 981px) {
@@ -62,6 +68,20 @@ body {
   width: 50%;
   margin: auto;
   }
+
+  .outstanding_task ul {
+    column-count: 2;
+    list-style-type: none;
+    padding: 0;
+    padding-top: 10px;
+  }
+
+  #adopter_list {
+    list-style-type: none;
+    column-count: 5;
+    padding: 0;
+  }
+
 }
 
 .datelink:hover {

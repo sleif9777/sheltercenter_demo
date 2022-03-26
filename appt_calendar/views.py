@@ -847,7 +847,10 @@ def edit_appointment(request, role, date_year, date_month, date_day, appt_id):
 
             delist_appt(appt)
 
-        return redirect('calendar_date', role, date.year, date.month, date.day)
+        if role == 'adopter':
+            return redirect('adopter_calendar_date', role, appt.adopter_choice.id, date.year, date.month, date.day)
+        else:
+            return redirect('calendar_date', role, date.year, date.month, date.day)
     else:
         if role == 'adopter':
             form = BookAppointmentForm(request.POST or None, instance=appt)
