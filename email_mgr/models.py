@@ -9,6 +9,9 @@ class EmailTemplate(models.Model):
     text = models.TextField(blank=True, null=True)
     plain = models.TextField(blank=True, null=True)
 
+    class Meta:
+        ordering = ('template_name',)
+
 class EmailTemplate2(models.Model):
 
     template_name = models.CharField(default="", max_length=200, blank=True) #need to refactor and add verbose

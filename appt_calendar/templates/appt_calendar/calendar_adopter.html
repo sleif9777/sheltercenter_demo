@@ -198,15 +198,13 @@
                         {% endif %}
 
                           <tr>
-
                             {% if appt.available == True and appt.appt_type in schedulable %}
                               {% if not has_current_appt %}
                                 <td class="appt_description left upper"><b><a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">CLICK TO BOOK</a></b></td>
                               {% else %}
-                                <td class="appt_description left upper"><b><a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">CLICK TO RESCHEDULE</a></b></td>
+                                <td class="appt_description left upper"><b><a href="{% url 'adopter_reschedule' 'adopter' adopter.id appt.id date.year date.month date.day %}">CLICK TO RESCHEDULE</a></b></td>
                               {% endif %}
                             {% endif %}
-
                           </tr>
 
                           <tr>

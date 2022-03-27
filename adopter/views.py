@@ -7,6 +7,7 @@ from schedule_template.models import Daily_Schedule, TimeslotTemplate, Appointme
 import datetime, time, csv
 from random import randint
 from emails.email_template import *
+from email_mgr.email_sender import *
 from .adopter_manager import *
 
 system_settings = SystemSettings.objects.get(pk=1)
@@ -129,9 +130,7 @@ def add(request):
                         existing_adopter.save()
 
                         if existing_adopter.out_of_state == True:
-                            invite_oos(existing_adopter)
-                        elif existing_adopter.lives_with_parents == True:
-                            invite_lives_w_parents(existing_adopter)
+                            invite_oos_etemp(existing_adopter)
                         else:
                             invite(existing_adopter)
                     elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
@@ -176,9 +175,7 @@ def add(request):
                     print(new_adopter.auth_code)
 
                     if new_adopter.out_of_state == True:
-                        invite_oos(new_adopter)
-                    elif new_adopter.lives_with_parents == True:
-                        invite_lives_w_parents(new_adopter)
+                        invite_oos_etemp(new_adopter)
                     else:
                         invite(new_adopter)
 
@@ -210,9 +207,7 @@ def add(request):
                 print(adopter.auth_code)
 
                 if adopter.out_of_state == True:
-                    invite_oos(adopter)
-                elif adopter.lives_with_parents == True:
-                    invite_lives_w_parents(adopter)
+                    invite_oos_etemp(adopter)
                 elif adopter.adopting_foster == True:
                     shellappt = Appointment()
                     shellappt.time = datetime.datetime.now()

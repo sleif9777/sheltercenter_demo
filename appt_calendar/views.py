@@ -972,6 +972,7 @@ def adopter_self_cancel(request, role, adopter_id, date_year, date_month, date_d
     return render(request, "appt_calendar/adopter_self_cancel.html", context)
 
 def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month, date_day):
+    print("woot")
     adopter = Adopter.objects.get(pk=adopter_id)
     date = datetime.date(date_year, date_month, date_day)
     appt_set = Appointment.objects.filter(adopter_choice=adopter.id).exclude(date__lt = datetime.date.today())
@@ -997,8 +998,11 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
     else:
         new_appt.internal_notes = current_appt.internal_notes
         new_appt.adopter_notes = current_appt.adopter_notes
-
         new_appt.bringing_dog = current_appt.bringing_dog
+        new_appt.has_cat = current_appt.has_cat
+        new_appt.mobility = current_appt.mobility
+
+        print('carryover')
 
         if role == "adopter" or role == "admin":
             current_appt.adopter_choice = None
@@ -1007,26 +1011,39 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
             current_appt.internal_notes = ""
             current_appt.adopter_notes = ""
             current_appt.bringing_dog = False
+            current_appt.has_cat = False
+            current_appt.mobility = False
             current_appt.comm_adopted_dogs = False
             current_appt.comm_limited_puppies = False
             current_appt.comm_limited_small = False
             current_appt.comm_limited_hypo = False
             current_appt.comm_limited_other = False
+            print("clear zzz")
             current_appt.save()
 
         new_appt.adopter_choice = adopter
         adopter.has_current_appt = True
         adopter.save()
 
+        new_appt.save()
+        print("saved, " + new_appt.adopter_choice.adopter_full_name())
+
         delist_appt(new_appt)
+        print("delisted, " + new_appt.adopter_choice.adopter_full_name())
 
         if role == "adopter":
-            reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
+            reschedule(adopter, new_appt)
+            print("emailed, " + new_appt.adopter_choice.adopter_full_name())
+
+            print("done")
 
             if current_appt.date == datetime.date.today():
                 notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
             elif new_appt.date == datetime.date.today():
                 notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+
+            print(new_appt.id)
+            print(new_appt.adopter_choice)
 
             return redirect("adopter_calendar_date", role, adopter_id, date_year, date_month, date_day)
         else:
@@ -1036,7 +1053,7 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
             if role == "greeter":
                 current_appt.outcome = "5"
                 current_appt.save()
-                greeter_reschedule_email(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
+                greeter_reschedule_email(adopter, new_appt)
             elif role == "admin":
 
                 if current_appt.date == datetime.date.today():
@@ -1044,7 +1061,7 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
                 elif new_appt.date == datetime.date.today():
                     notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
-                reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
+                reschedule(adopter, new_appt)
             return redirect("calendar_date", role, today.year, today.month, today.day)
 
 def delete_appointment(request, role, date_year, date_month, date_day, appt_id):
