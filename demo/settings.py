@@ -208,11 +208,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #
 # TINYMCE_JS_URL = os.path.join(MEDIA_ROOT, "js/tiny_mce/tiny_mce.js")
 # TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "js/tiny_mce")
-# TINYMCE_DEFAULT_CONFIG = {
-#     'plugins': "table,spellchecker,paste,searchreplace",
-#     'theme': "advanced",
-#     'cleanup_on_startup': True,
-#     'custom_undo_redo_levels': 10,
-# }
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': "table,spellchecker,paste,searchreplace",
+    'theme': "advanced",
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 100,
+    # 'height': 600,
+}
 # TINYMCE_SPELLCHECKER = True
 # TINYMCE_COMPRESSOR = True

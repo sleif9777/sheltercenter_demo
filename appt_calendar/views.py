@@ -5,6 +5,7 @@ from .models import Timeslot, Appointment
 from adopter.models import Adopter
 from .forms import *
 from emails.email_template import *
+from email_mgr.email_sender import *
 from .date_time_strings import *
 from .appointment_manager import *
 #
@@ -235,7 +236,8 @@ def book_appointment(request, role, adopter_id, appt_id, date_year, date_month, 
             return redirect('adopter_calendar_date', role, adopter_id, date.year, date.month, date.day)
         else:
 
-            confirm(appt.time, appt.date, appt.adopter_choice, appt)
+            confirm_etemp(adopter, appt)
+            # confirm(appt.time, appt.date, appt.adopter_choice, appt)
 
             if appt.date == datetime.date.today():
                 notify_adoptions_add(adopter, appt)
@@ -754,7 +756,8 @@ def add_appointment(request, role, date_year, date_month, date_day, timeslot_id)
 
             delist_appt(appt)
 
-            confirm(appt.time, appt.date, appt.adopter_choice, appt)
+            confirm_etemp(adopter, appt)
+            # confirm(appt.time, appt.date, appt.adopter_choice, appt)
 
             if appt.date == datetime.date.today():
                 notify_adoptions_add(adopter, appt)
@@ -801,7 +804,7 @@ def add_paperwork_appointment(request, role, date_year, date_month, date_day, ti
 
             delist_appt(appt)
 
-            adoption_paperwork(appt.time, appt.date, appt.adopter_choice, appt, original_appt.heartworm)
+            adoption_paperwork(adopter, appt, original_appt.heartworm)
 
         return redirect('chosen_board', role)
     else:
@@ -840,7 +843,8 @@ def edit_appointment(request, role, date_year, date_month, date_day, appt_id):
             post_save_email = None
         if appt.adopter_choice != None:
             if appt.appt_type in ["1", "2", "3"]:
-                confirm(appt.time, appt.date, appt.adopter_choice, appt)
+                confirm_etemp(appt.adopter_choice, appt)
+                # confirm(appt.time, appt.date, appt.adopter_choice, appt)
 
                 if appt.date == datetime.date.today():
                     notify_adoptions_add(appt.adopter_choice, appt)
@@ -904,9 +908,10 @@ def enter_decision(request, role, appt_id, date_year, date_month, date_day):
 def remove_adopter(request, role, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
-    cancel(appt.time, appt.date, appt.adopter_choice)
-
     adopter = appt.adopter_choice
+
+    cancel(adopter, appt)
+
     adopter.has_current_appt = False
     adopter.save()
 
@@ -947,7 +952,7 @@ def adopter_self_cancel(request, role, adopter_id, date_year, date_month, date_d
     appt = Appointment.objects.get(pk=appt_id)
     adopter = appt.adopter_choice
 
-    cancel(appt.time, appt.date, appt.adopter_choice)
+    cancel(adopter, appt)
 
     adopter.has_current_appt = False
     adopter.save()

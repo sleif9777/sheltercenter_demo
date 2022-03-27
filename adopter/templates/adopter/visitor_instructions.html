@@ -8,18 +8,10 @@
   <link rel="stylesheet"  href="{%  static  'main.css'  %}">
 </head>
 <body>
-  <div class="roleselector">
-    <nav>
-      <div class="roleselector-center">
-        <ul>
-          <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
-          <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
-          <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+
   <div class="activitymenu">
+    <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
+
     <nav>
       <div class="actmenu-center">
         <ul>
@@ -28,14 +20,15 @@
           {% if adopter.has_current_appt == True %}
             <li><a href="{% url 'visitor_instructions' adopter.id %}">Visitor Instructions</a></li>
           {% endif %}
-          <li><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
+          <li class="end"><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
         </ul>
       </div>
     </nav>
+
   </div>
 
-  <div class="textpage">
-    <h1>Visitor Instructions</h1>
+  <div class="main textpage">
+    <h1 class="page_header">Visitor Instructions</h1>
         <h2 class="visitor_instruction">Directions</h2>
         <p>Our address is 13400 Old Creedmoor Rd, Wake Forest, NC, located behind Harris Teeter at the intersection of NC-98 and Old Creedmoor Rd. We are just under a mile west of the NC-98 and NC-50 intersection. You will see a teal shed with butterflies at the end of our driveway. Once parked, enter through the gate located in the far back left corner of the parking lot and check in with the greeter. Please do not pull into the driveway with the closed wooden gate or use the neighbor’s driveway to turn around. We request you go down to the next street to make your U-turn. We appreciate your help in respecting our neighbor's privacy and property.</p>
         <h2 class="visitor_instruction">Dress for the Occasion</h2>

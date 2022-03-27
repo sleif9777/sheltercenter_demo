@@ -3,6 +3,49 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from appt_calendar.models import Appointment
 from appt_calendar.date_time_strings import *
+from io import StringIO
+from html.parser import HTMLParser
+from .email_sender import *
+from .models import EmailTemplate
+from .dictionary import *
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.reset()
+        self.strict = False
+        self.convert_charrefs= True
+        self.text = StringIO()
+    def handle_data(self, d):
+        self.text.write(d)
+    def get_data(self):
+        return self.text.getvalue()
+
+def strip_anchors(html, adopter, appt):
+    if os.environ.get('LOCALHOST'):
+        base_name = 'localhost'
+    else:
+        base_name = 'sheltercenter.dog'
+
+    cancel_url = '<a href="http://{0}/calendar/adopter/cancel/adopter/{1}/appt/{2}/date/{3}/{4}/{5}/">Click here to cancel your appointment.</a>'.format(base_name, adopter.id, appt.id, appt.date.year, appt.date.month, appt.date.day)
+
+    plain_cancel_url = 'http://{0}/calendar/adopter/cancel/adopter/{1}/appt/{2}/date/{3}/{4}/{5}/'.format(base_name, adopter.id, appt.id, appt.date.year, appt.date.month, appt.date.day)
+
+    reschedule_url = '<a href="http://{0}/adopter/{1}/">Click here to reschedule your appointment.</a>'.format(base_name, adopter.id)
+
+    plain_reschedule_url = 'http://{0}/adopter/{1}/'.format(base_name, adopter.id)
+
+    html = html.replace(cancel_url, plain_cancel_url)
+    html = html.replace(reschedule_url, plain_reschedule_url)
+
+    return html
+
+def strip_tags(html, adopter, appt):
+    html = strip_anchors(html, adopter, appt)
+
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
 
 def send_email(text, html, reply_to, subject, receiver_email):
     sender_email = "sheltercenterdev@gmail.com"
@@ -688,197 +731,43 @@ def new_contact_us_msg(adopter, message):
 
     send_email(text, html, reply_to, subject, email)
 
-def confirm(time, date, adopter, appt):
+def confirm_etemp(adopter, appt):
     subject = "Your appointment has been confirmed: " + adopter.adopter_full_name().upper()
     email = adopter.adopter_email
-    name = adopter.adopter_first_name
+    template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
 
-    plain_reschedule_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
-    reschedule_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">Click here to reschedule your appointment.</a>'
+    html = replacer(template.text, adopter, appt)
 
-    plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to cancel your appointment.</a>'
-
-    time, date = clean_time_and_date(time, date)
-
-    text = """\
-    Appointment Confirmation\n
-    Hi """ + name + """,\n
-    You have been added to our schedule for """ + time + """ on """ + date + """.\n
-    You can reschedule your appointment here: """ + plain_reschedule_url + """\n
-    You can cancel your appointment here: """ + plain_cancel_url + """\n
-    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.\n
-    It is important that you read the Visiting Instructions included below before you arrive for your appointment, as well as those in your original approval email. Our adoption policies and expectations, as well as the answers to many of our frequently asked questions, are provided here.\n
-    We are continuing to follow CDC Guidelines for COVID. All visits take place outdoors, and we are a mask-optional venue that will respect your decisions based on your comfort level. Please know that our Adoptions Team has been vaccinated. We look forward to meeting you.\n
-    All the best, \n
-    The Adoptions Team
-    Saving Grace Animals for Adoption
-    \n\n
-    Visitor Instructions\n\n
-    Directions:\n
-    Our address is 13400 Old Creedmoor Rd, Wake Forest, NC, located behind Harris Teeter at the intersection of NC-98 and Old Creedmoor Rd. We are just under a mile west of the NC-98 and NC-50 intersection. You will see a teal shed with butterflies at the end of our driveway. Once parked, enter through the gate located in the far back left corner of the parking lot and check in with the greeter. Please do not pull into the driveway with the closed wooden gate or use the neighbor’s driveway to turn around. We request you go down to the next street to make your U-turn. We appreciate your help in respecting our neighbor's privacy and property.\n\n
-    Dress for the Occasion:\n
-    Be prepared to meet a friendly furry welcoming committee! Everyone is well behaved, but they get very excited and may jump on you. All our meeting areas are outside, so dress for comfort according to the weather. We continue with appointments even if it is raining, so dress appropriately.\n\n
-    Hydration:\n
-    It can be quite hot on the farm, so please make sure to bring water with you. We want you to enjoy your time while meeting dogs and staying hydrated will help with that.</p>
-    Restrooms:\n
-    We have a port-a-potty available for use at the farm. There are also public facilities available at Harris Teeter.\n\n
-    Supplies:\n
-    When you adopt one of our dogs, they will go home with a collar and a slip leash. Most new owners find it best to take their new dog shopping with them to find the appropriately sized items. Our Saving Grace Supply Co. store, located at the intersection of NC-98 and Six Forks Rd (about two miles east of our farm), carries many essential supplies.\n\n
-    Adoption Fee:\n
-    We accept credit/debit card or cash. We do not accept personal checks. Our adoption fee is $380.00. There is an additional $15 credit/debit card fee. If using cash, please bring the exact amount as we do not keep change onsite. Otherwise, we would be happy to accept the extra as a donation. This fee covers the medical costs and expenses which ensure that your dog comes to you altered, microchipped, up to date on all vaccinations, on preventatives for fleas, ticks, and heartworms, and having received a baseline wellness exam.\n\n
-    Training:\n
-    Many of our dogs have crate experience, but please have realistic expectations. We cannot guarantee any dog to be entirely housetrained. A transition period is to be expected for any new dog as they get used to your home. Remember your lifestyle and routine will be new to your dog and it will be your responsibility to acclimate them to your home.\n\n
-    Bringing Your Dog:\n
-    You are welcome to bring your dog, but we do want to let you know that we do not have any off leash meet and greet areas and so all meetings take place on leash in the parking lot. In the warmer seasons, your dog will need to wait in the parking lot with a family member. If it is cool enough, they may wait in the car while you meet potential buddies.\n\n
-    Canceling and Rescheduling:\n
-    If you can no longer make your scheduled appointment, please give us the courtesy of 24 hours’ notice (or as soon as possible, if scheduled within 24 hours) so we may offer the slot to another adopter. If you wish to reschedule within two weeks, please provide at least three specific alternate dates and times so that we have options to work with. As a reminder, our hours are noon to 6pm on Mondays/Tuesdays/Thursdays/Fridays and 1pm to 6pm on Wednesdays. We do not offer morning or weekend appointments and there is no flexibility in this regard.\n\n
-    A Special Note for Renters:\n
-    We will assume you have standard breed restrictions unless you provide a written statement from your landlord or property manager that indicates otherwise. As the adopter, you should always do your own due diligence in communicating directly with your landlord or property manager and verifying if they have restrictions (size, weight, age, breeds, maximum number of pets, etc.) before your visit as the lease is between you and them.
-    """
-
-    html = """\
-    <html>
-      <body>
-        <h2>Appointment Confirmation</h2>
-        <p>Hi """ + name + """,</p>
-        <p>You have been added to our schedule for """ + time + """ on """ + date + """.</p>
-        <p>""" + reschedule_url + """</p>
-        <p>""" + cancel_url + """</p>
-        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you cancel or reschedule your appointment.</p>
-        <p>It is important that you read the Visiting Instructions included below before you arrive for your appointment, as well as those in your original approval email. Our adoption policies and expectations, as well as the answers to many of our frequently asked questions, are provided here.</p>
-        <p>We are continuing to follow CDC Guidelines for COVID. All visits take place outdoors, and we are a mask-optional venue that will respect your decisions based on your comfort level. Please know that our Adoptions Team has been vaccinated. We look forward to meeting you.</p>
-        <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
-        <h2>Visitor Instructions</h2>
-        <h3>Directions</h3>
-        <p>Our address is 13400 Old Creedmoor Rd, Wake Forest, NC, located behind Harris Teeter at the intersection of NC-98 and Old Creedmoor Rd. We are just under a mile west of the NC-98 and NC-50 intersection. You will see a teal shed with butterflies at the end of our driveway. Once parked, enter through the gate located in the far back left corner of the parking lot and check in with the greeter. Please do not pull into the driveway with the closed wooden gate or use the neighbor’s driveway to turn around. We request you go down to the next street to make your U-turn. We appreciate your help in respecting our neighbor's privacy and property.</p>
-        <h3>Dress for the Occasion</h3>
-        <p>Be prepared to meet a friendly furry welcoming committee! Everyone is well behaved, but they get very excited and may jump on you. All our meeting areas are outside, so dress for comfort according to the weather. We continue with appointments even if it is raining, so dress appropriately.</p>
-        <h3>Hydration</h3>
-        <p>It can be quite hot on the farm, so please make sure to bring water with you. We want you to enjoy your time while meeting dogs and staying hydrated will help with that.</p>
-        <h3>Restrooms</h3>
-        <p>We have a port-a-potty available for use at the farm. There are also public facilities available at Harris Teeter.</p>
-        <h3>Supplies</h3>
-        <p>When you adopt one of our dogs, they will go home with a collar and a slip leash. Most new owners find it best to take their new dog shopping with them to find the appropriately sized items. Our Saving Grace Supply Co. store, located at the intersection of NC-98 and Six Forks Rd (about two miles east of our farm), carries many essential supplies.</p>
-        <h3>Adoption Fee</h3>
-        <p>We accept credit/debit card or cash. We do not accept personal checks. Our adoption fee is $380.00. There is an additional $15 credit/debit card fee. If using cash, please bring the exact amount as we do not keep change onsite. Otherwise, we would be happy to accept the extra as a donation. This fee covers the medical costs and expenses which ensure that your dog comes to you altered, microchipped, up to date on all vaccinations, on preventatives for fleas, ticks, and heartworms, and having received a baseline wellness exam.</p>
-        <h3>Training</h3>
-        <p>Many of our dogs have crate experience, but please have realistic expectations. We cannot guarantee any dog to be entirely housetrained. A transition period is to be expected for any new dog as they get used to your home. Remember your lifestyle and routine will be new to your dog and it will be your responsibility to acclimate them to your home.</p>
-        <h3>Bringing Your Dog</h3>
-        <p>You are welcome to bring your dog, but we do want to let you know that we do not have any off leash meet and greet areas and so all meetings take place on leash in the parking lot. In the warmer seasons, your dog will need to wait in the parking lot with a family member. If it is cool enough, they may wait in the car while you meet potential buddies.</p>
-        <h3>Canceling and Rescheduling</h3>
-        <p>If you can no longer make your scheduled appointment, please give us the courtesy of 24 hours’ notice (or as soon as possible, if scheduled within 24 hours) so we may offer the slot to another adopter. If you wish to reschedule within two weeks, please provide at least three specific alternate dates and times so that we have options to work with. As a reminder, our hours are noon to 6pm on Mondays/Tuesdays/Thursdays/Fridays and 1pm to 6pm on Wednesdays. We do not offer morning or weekend appointments and there is no flexibility in this regard.</p>
-        <h3>A Special Note for Renters</h3>
-        <p>We will assume you have standard breed restrictions unless you provide a written statement from your landlord or property manager that indicates otherwise. As the adopter, you should always do your own due diligence in communicating directly with your landlord or property manager and verifying if they have restrictions (size, weight, age, breeds, maximum number of pets, etc.) before your visit as the lease is between you and them.</p>
-      </body>
-    </html>
-    """
+    text = strip_tags(html, adopter, appt)
 
     send_email(text, html, "default", subject, email)
-    print("done")
 
-def adoption_paperwork(time, date, adopter, appt, hw_status):
+def adoption_paperwork(adopter, appt, hw_status):
     if hw_status == False:
         subject = "Your final adoption appointment has been confirmed: " + adopter.adopter_full_name().upper()
-        appt_type = "adoption"
     else:
         subject = "Your FTA appointment has been confirmed: " + adopter.adopter_full_name().upper()
-        appt_type = "foster-to-adopt (FTA)"
+
     email = adopter.adopter_email
-    name = adopter.adopter_first_name
-    dog = appt.dog
-    time, date = clean_time_and_date(time, date)
+    template = EmailTemplate.objects.get(template_name="Paperwork Appointment")
 
-    text = """\
-    Appointment Confirmation\n
-    Hi """ + name + """,\n
-    You have been added to our schedule for """ + time + """ on """ + date + """ to complete the """ + appt_type + """ paperwork for """ + dog + """.\n
-    Please review the Visiting Instructions included below before you arrive for your appointment.\n
-    We are continuing to follow CDC Guidelines for COVID. All visits take place outdoors, and we are a mask-optional venue that will respect your decisions based on your comfort level. Please know that our Adoptions Team has been vaccinated. We look forward to seeing you soon.\n
-    All the best, \n
-    The Adoptions Team
-    Saving Grace Animals for Adoption
-    \n\n
-    Visitor Instructions\n\n
-    Directions:\n
-    Our address is 13400 Old Creedmoor Rd, Wake Forest, NC, located behind Harris Teeter at the intersection of NC-98 and Old Creedmoor Rd. We are just under a mile west of the NC-98 and NC-50 intersection. You will see a teal shed with butterflies at the end of our driveway. Once parked, enter through the gate located in the far back left corner of the parking lot and check in with the greeter. Please do not pull into the driveway with the closed wooden gate or use the neighbor’s driveway to turn around. We request you go down to the next street to make your U-turn. We appreciate your help in respecting our neighbor's privacy and property.\n\n
-    Dress for the Occasion:\n
-    Be prepared to meet a friendly furry welcoming committee! Everyone is well behaved, but they get very excited and may jump on you. All our meeting areas are outside, so dress for comfort according to the weather. We continue with appointments even if it is raining, so dress appropriately.\n\n
-    Hydration:\n
-    It can be quite hot on the farm, so please make sure to bring water with you. We want you to enjoy your time while meeting dogs and staying hydrated will help with that.</p>
-    Restrooms:\n
-    We have a port-a-potty available for use at the farm. There are also public facilities available at Harris Teeter.\n\n
-    Supplies:\n
-    When you adopt one of our dogs, they will go home with a collar and a slip leash. Most new owners find it best to take their new dog shopping with them to find the appropriately sized items. Our Saving Grace Supply Co. store, located at the intersection of NC-98 and Six Forks Rd (about two miles east of our farm), carries many essential supplies.\n\n
-    Adoption Fee:\n
-    We accept credit/debit card or cash. We do not accept personal checks. Our adoption fee is $380.00. There is an additional $15 credit/debit card fee. If using cash, please bring the exact amount as we do not keep change onsite. Otherwise, we would be happy to accept the extra as a donation. This fee covers the medical costs and expenses which ensure that your dog comes to you altered, microchipped, up to date on all vaccinations, on preventatives for fleas, ticks, and heartworms, and having received a baseline wellness exam.\n\n
-    Training:\n
-    Many of our dogs have crate experience, but please have realistic expectations. We cannot guarantee any dog to be entirely housetrained. A transition period is to be expected for any new dog as they get used to your home. Remember your lifestyle and routine will be new to your dog and it will be your responsibility to acclimate them to your home.\n\n
-    """
+    html = replacer(template.text, adopter, appt)
 
-    html = """\
-    <html>
-      <body>
-        <h2>Appointment Confirmation</h2>
-        <p>Hi """ + name + """,</p>
-        <p>You have been added to our schedule for """ + time + """ on """ + date + """ to complete the """ + appt_type + """ paperwork for """ + dog + """.</p>
-        <p>Please review the Visiting Instructions included below before you arrive for your appointment.</p>
-        <p>We are continuing to follow CDC Guidelines for COVID. All visits take place outdoors, and we are a mask-optional venue that will respect your decisions based on your comfort level. Please know that our Adoptions Team has been vaccinated. We look forward to seeing you soon.</p>
-        <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
-        <h2>Visitor Instructions</h2>
-        <h3>Directions</h3>
-        <p>Our address is 13400 Old Creedmoor Rd, Wake Forest, NC, located behind Harris Teeter at the intersection of NC-98 and Old Creedmoor Rd. We are just under a mile west of the NC-98 and NC-50 intersection. You will see a teal shed with butterflies at the end of our driveway. Once parked, enter through the gate located in the far back left corner of the parking lot and check in with the greeter. Please do not pull into the driveway with the closed wooden gate or use the neighbor’s driveway to turn around. We request you go down to the next street to make your U-turn. We appreciate your help in respecting our neighbor's privacy and property.</p>
-        <h3>Dress for the Occasion</h3>
-        <p>Be prepared to meet a friendly furry welcoming committee! Everyone is well behaved, but they get very excited and may jump on you. All our meeting areas are outside, so dress for comfort according to the weather. We continue with appointments even if it is raining, so dress appropriately.</p>
-        <h3>Hydration</h3>
-        <p>It can be quite hot on the farm, so please make sure to bring water with you. We want you to enjoy your time while meeting dogs and staying hydrated will help with that.</p>
-        <h3>Restrooms</h3>
-        <p>We have a port-a-potty available for use at the farm. There are also public facilities available at Harris Teeter.</p>
-        <h3>Supplies</h3>
-        <p>When you adopt one of our dogs, they will go home with a collar and a slip leash. Most new owners find it best to take their new dog shopping with them to find the appropriately sized items. Our Saving Grace Supply Co. store, located at the intersection of NC-98 and Six Forks Rd (about two miles east of our farm), carries many essential supplies.</p>
-        <h3>Adoption Fee</h3>
-        <p>We accept credit/debit card or cash. We do not accept personal checks. Our adoption fee is $380.00. There is an additional $15 credit/debit card fee. If using cash, please bring the exact amount as we do not keep change onsite. Otherwise, we would be happy to accept the extra as a donation. This fee covers the medical costs and expenses which ensure that your dog comes to you altered, microchipped, up to date on all vaccinations, on preventatives for fleas, ticks, and heartworms, and having received a baseline wellness exam.</p>
-        <h3>Training</h3>
-        <p>Many of our dogs have crate experience, but please have realistic expectations. We cannot guarantee any dog to be entirely housetrained. A transition period is to be expected for any new dog as they get used to your home. Remember your lifestyle and routine will be new to your dog and it will be your responsibility to acclimate them to your home.</p>
-      </body>
-    </html>
-    """
+    text = strip_tags(html, adopter, appt)
 
     send_email(text, html, "default", subject, email)
-    print("done")
 
-def cancel(time, date, adopter):
+def cancel(adopter, appt):
     subject = "Your appointment has been cancelled"
     email = adopter.adopter_email
-    name = adopter.adopter_first_name
-    time, date = clean_time_and_date(time, date)
+    template = EmailTemplate.objects.get(template_name="Cancel Appointment")
 
-    plain_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
-    url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">If you wish to reschedule at any time, you may do so by clicking here.</a>'
+    html = replacer(template.text, adopter, appt)
 
-    text = """\
-    Appointment Cancelled\n
-    Hi """ + name + """,\n
-    Your appointment for """ + time + """ on """ + date + """ has been cancelled.\n
-    Your adoption request is valid for one year. If you wish to reschedule at any time, you may do so using this website: """ + url + """\n
-    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you set up an appointment.\n
-    All the best, \n
-    The Adoptions Team
-    Saving Grace Animals for Adoption
-    """
+    text = strip_tags(html, adopter, appt)
 
-    html = """\
-    <html>
-      <body>
-        <h2>Appointment Cancelled</h2>
-        <p>Hi """ + name + """,</p>
-        <p>Your appointment for """ + time + """ on """ + date + """ has been cancelled.</p>
-        <p>Your adoption request is valid for one year. """ + url + """</p>
-        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this if you set up an appointment.</p>
-        <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
-      </body>
-    </html>
-    """
+    print(html)
+    print(text)
 
     send_email(text, html, "default", subject, email)
 

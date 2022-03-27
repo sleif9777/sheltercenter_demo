@@ -4,7 +4,7 @@ from tinymce.widgets import TinyMCE
 
 class EmailTemplateForm(forms.ModelForm):
 
-    # text = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
+    text = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
 
     class Meta:
         model = EmailTemplate

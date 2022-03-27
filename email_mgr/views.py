@@ -24,7 +24,33 @@ def strip_tags(html):
 
 def email_home(request):
 
-    return render(request, "email_mgr/email_home.html/")
+    e_templates = EmailTemplate.objects.all()
+
+    print(e_templates)
+
+    context = {
+        'e_templates': e_templates,
+    }
+
+    return render(request, "email_mgr/email_home.html/", context)
+
+def edit_template(request, template_id):
+#    dow_id -= 2
+    e_template = EmailTemplate.objects.get(pk=template_id)
+    #form = GenericTimeslotModelForm(request.POST or None, initial={"day_of_week": dow.day_of_week})
+    form = EmailTemplateForm(request.POST or None, instance=e_template)
+    if form.is_valid():
+        form.save()
+        return redirect('email_home')
+    else:
+        form = EmailTemplateForm(request.POST or None, instance=e_template)
+
+    context = {
+        'form': form,
+        'e_template': e_template,
+    }
+
+    return render(request, "email_mgr/add_template.html", context)
 
 def add_email_template(request):
 

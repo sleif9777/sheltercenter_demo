@@ -164,7 +164,7 @@
                 </table>
 
 
-                {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest %}
+                {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest and appt.appt_type in schedulable %}
 
                   <!-- if the appt has an adopter attached, there should be options for contact and other actions -->
                   {% if appt.appt_type in schedulable and appt.available == False %}
@@ -193,7 +193,7 @@
                     </tr>
                     {% endif %}
 
-                    {% if appt.adopter_choice.app_interest %}
+                    {% if appt.adopter_choice.app_interest and appt.appt_type not in scheduleable %}
                     <tr>
                       <td class="left"><b>From Shelterluv:</b></td>
                       <td class="left">{{appt.adopter_choice.app_interest|linebreaks}}</td>
