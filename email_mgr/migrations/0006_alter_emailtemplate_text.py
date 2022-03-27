@@ -7,7 +7,7 @@ import tinymce.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('email_mgr', '0004_alter_emailtemplate_text_alter_emailtemplate2_text'),
+        ('email_mgr', '0004_emailtemplate2'),
     ]
 
     operations = [
