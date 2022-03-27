@@ -38,8 +38,6 @@ urlpatterns = [
     path('emails/', include('email_mgr.urls')),
     path('', cal_views.calendar_home, name="home"),
     path('tinymce/', include('tinymce.urls')),
-    # path('editor/', include('django_summernote.urls')),
-    #path('', adopt_views.simple_add_form, name="home")
 ]
 
 if settings.DEBUG:

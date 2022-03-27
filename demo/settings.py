@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     'adopter.apps.AdopterConfig',
     'email_mgr.apps.EmailMgrConfig',
     'tinymce',
-    'django_summernote',
-    'ckeditor'
 ]
 
 MIDDLEWARE = [
