@@ -328,12 +328,20 @@ def calendar_date(request, role, date_year, date_month, date_day):
             if len(check_for_appts) <= 10 and d.weekday() < 5:
                 empty_dates += [[d, date_str(d)]]
 
-        print(system_settings.last_adopter_upload)
-
         if system_settings.last_adopter_upload in [today - datetime.timedelta(days=x) for x in range(2)]:
             upload_current = True
+
+        no_outcome_appts = []
+
+        for d in [today - datetime.timedelta(days=x) for x in range(7, 0, -1)]:
+            check_for_appts = list(Appointment.objects.filter(date = d, appt_type__lte=3, outcome=1, available=False))
+
+            for appt in check_for_appts:
+                no_outcome_appts += [appt]
+
     else:
         empty_dates = None
+        no_outcome_appts = []
 
     if delta_from_today <= 13:
         visible_to_adopters = True
@@ -374,6 +382,7 @@ def calendar_date(request, role, date_year, date_month, date_day):
         "role": role,
         "open_timeslots": open_timeslots,
         "today": today,
+        "no_outcome_appts": no_outcome_appts
     }
 
     if role == "admin":
@@ -860,6 +869,7 @@ def edit_appointment(request, role, date_year, date_month, date_day, appt_id):
 def enter_decision(request, role, appt_id, date_year, date_month, date_day):
     appt = Appointment.objects.get(pk=appt_id)
     form = ApptOutcomeForm(request.POST or None, instance=appt)
+    today = datetime.date.today()
 
     if form.is_valid():
         form.save()
@@ -878,7 +888,7 @@ def enter_decision(request, role, appt_id, date_year, date_month, date_day):
         adopter.save()
 
         if role == "admin":
-            return redirect('calendar_date', role, date_year, date_month, date_day)
+            return redirect('calendar_date', role, today.year, today.month, today.day)
         elif role == "greeter":
             return redirect('calendar', role)
 

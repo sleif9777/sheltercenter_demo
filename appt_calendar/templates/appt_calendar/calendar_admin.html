@@ -69,9 +69,20 @@
         </div>
       {% endif %}
 
-      {% if upload_current == False %}
+      {% if not upload_current %}
         <div class="outstanding_task">
           <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> <a href="{% url 'add_adopter' %}" class="datelink">An adopter upload was not completed yesterday. Please upload the most recent approved adopters.</a></p>
+        </div>
+      {% endif %}
+
+      {% if no_outcome_appts %}
+        <div class="outstanding_task">
+          <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> Some appointments in the past week do not have an outcome entered. Adopters cannot schedule a new appointment until their previous appointment has an outcome. Please update these appointments.</p>
+          <ul>
+            {% for appt in no_outcome_appts %}
+            <li><a class="datelink" href="{% url 'enter_decision' role appt.id appt.date.year appt.date.month appt.date.day%}">{{appt.adopter_choice.adopter_full_name}} - {{appt.date}}</a></li>
+            {% endfor %}
+          </ul>
         </div>
       {% endif %}
 

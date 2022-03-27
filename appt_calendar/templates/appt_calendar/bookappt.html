@@ -51,8 +51,13 @@
       {% csrf_token %}
       {{ form.as_p }}
       <br>
-      <label for="ready_to_adopt">I understand that dogs are not placed on hold for any non-medical reason. My entire family (including dogs) will be attending this appointment to ensure the match works for everyone. I will come into my appointment prepared to take a dog home immediately following, even if this is not the actual outcome. </label>
+      <h3>Please confirm the following:</h3><br>
+      <label for="dogs_not_held">I understand that dogs are not placed on hold for prospective adopters, and any dog I am interested may be adopted prior to my visit. Saving Grace does not have the capacity to keep track of wishlists, may not update me if a dog I express interest in is adopted prior, and emphasizes keeping options open instead of focusing on only one or two dogs from the website. </label>
+      <input type="checkbox" name="ready_to_adopt" value="dogs_not_held" required><br><br>
+      <label for="ready_to_adopt">I understand that the dog I select will not be placed on hold unless there are outstanding veterinary needs. Saving Grace cannot accept a deposit to care for a dog that is ready to leave the program. I will come into my appointment prepared to take a dog home immediately following, even if this is not the actual outcome. </label>
       <input type="checkbox" name="ready_to_adopt" value="ready_to_adopt" required><br><br>
+      <label for="children_attending">I understand that it is <b>extremely</b> important for any young children in the home to attend the appointment so that we may find a child-compatible match, or I acknowledge that there are no small children in the home. </label>
+      <input type="checkbox" name="ready_to_adopt" value="children_attending" required><br><br>
       {% if title != "Edit Appointment" %}
         <label for="auth_code">Please enter your six digit authorization code (included in the email we sent you):</label>
         <input type="number" name="auth_code" value="" min="{{adopter.auth_code}}" max="{{adopter.auth_code}}" onchange="this.setCustomValidity('')" oninvalid="this.setCustomValidity('This authorization code is incorrect.')" required><br>

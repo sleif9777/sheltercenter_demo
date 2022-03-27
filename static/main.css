@@ -70,7 +70,6 @@ body {
 
   .outstanding_task ul {
     column-count: 2;
-    padding: 0;
     padding-top: 10px;
   }
 
