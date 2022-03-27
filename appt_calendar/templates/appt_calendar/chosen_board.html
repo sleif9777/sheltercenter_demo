@@ -80,8 +80,8 @@
               <td class="chosenboard">
                 {% if appt.outcome == "3" %}
                   <div class="chosen_board_actions">
-                    <a href="{% url 'send_ready_to_roll_msg' role appt.id 'negative' %}">Heartworm Negative</a><br>
-                    <a href="{% url 'send_ready_to_roll_msg' role appt.id 'positive' %}">Heartworm Positive</a>
+                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_negative' %}">Heartworm Negative</a><br>
+                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_positive' %}">Heartworm Positive</a>
                   </div>
                 {% elif appt.outcome == "6" %}
                   Adopters Notified<br>

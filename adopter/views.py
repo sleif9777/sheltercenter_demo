@@ -7,6 +7,8 @@ from schedule_template.models import Daily_Schedule, TimeslotTemplate, Appointme
 import datetime, time, csv
 from random import randint
 from emails.email_template import *
+from email_mgr.models import EmailTemplate
+from email_mgr.dictionary import *
 from email_mgr.email_sender import *
 from .adopter_manager import *
 
@@ -99,7 +101,6 @@ def visitor_instructions(request, adopter_id):
     }
 
     return render(request, "adopter/visitor_instructions.html", context)
-
 
 def add(request):
     all_dows = Daily_Schedule.objects
@@ -286,67 +287,74 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     all_dows = Daily_Schedule.objects
     today = datetime.date.today()
     appt = Appointment.objects.get(pk=appt_id)
-    print(appt.adopter_choice)
     adopter = appt.adopter_choice
-    print(adopter.adopter_first_name)
-    form = ContactAdopterForm(request.POST or None)
+
+    if source in ["calendar", "update"]:
+        template = EmailTemplate.objects.get(template_name="Contact Adopter")
+    elif source == "ready_positive":
+        template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Positive)")
+    elif source == "ready_negative":
+        template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Negative)")
+    elif source == "limited_puppies":
+        template = EmailTemplate.objects.get(template_name="Limited Puppies")
+    elif source == "limited_small":
+        template = EmailTemplate.objects.get(template_name="Limited Small Dogs")
+    elif source == "limited_small_puppies":
+        template = EmailTemplate.objects.get(template_name="Limited Small Breed Puppies")
+    elif source == "limited_hypo":
+        template = EmailTemplate.objects.get(template_name="Limited Hypo")
+    elif source == 'dogs_were_adopted':
+        template = EmailTemplate.objects.get(template_name="Dogs Were Adopted")
+
+    template = replacer(template.text, adopter, appt)
+
+    form = ContactAdopterForm(request.POST or None, initial={'message': template})
+
     if form.is_valid():
-        print("form!")
         data = form.cleaned_data
         message = data['message']
-        include_links = data['include_links']
-        new_contact_adopter_msg(adopter, message, include_links)
+        new_contact_adopter_msg(adopter, message)
 
-        if source == "calendar":
-            return redirect('calendar_date', "admin", date_year, date_month, date_day)
-        elif source == "update":
+        if source in ["update", "ready_positive", "ready_negative"]:
 
             appt.last_update_sent = today
+
+            if source in ['ready_positive', 'ready_negative']:
+                appt.outcome = "6"
+
+            if source == 'ready_positive':
+                appt.heartworm = True
+
             appt.save()
 
             return redirect('chosen_board', 'admin')
 
+        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'calendar']:
+
+            if source == "limited_puppies":
+                appt.comm_limited_puppies = True
+            elif source == "limited_small":
+                appt.comm_limited_small = True
+            elif source == "limited_hypo":
+                appt.comm_limited_hypo = True
+            elif source == "limited_small_puppies":
+                appt.comm_limited_small_puppies = True
+            elif source == "dogs_were_adopted":
+                appt.comm_adopted_dogs = True
+
+            appt.save()
+
+            return redirect('calendar_date', "admin", date_year, date_month, date_day)
+
     context = {
         'form': form,
         'dows': all_dows,
-        'adopter_first_name': adopter.adopter_first_name,
         'today': today,
         'role': 'admin',
+        'appt': appt
     }
 
     return render(request, "adopter/contactadopter.html", context)
-
-def send_dogs_were_adopted_msg(request, appt_id):
-    appt = Appointment.objects.get(pk=appt_id)
-    adopter = appt.adopter_choice
-
-    appt.comm_adopted_dogs = True
-    appt.save()
-
-    dogs_were_adopted(adopter, appt)
-
-    return redirect('calendar', "admin")
-
-def send_limited_matches_msg(request, appt_id, description, date_year, date_month, date_day):
-    appt = Appointment.objects.get(pk=appt_id)
-    adopter = appt.adopter_choice
-
-    if description == "puppies":
-        appt.comm_limited_puppies = True
-    elif description == "small dogs":
-        appt.comm_limited_small = True
-    elif description == "lowshed":
-        appt.comm_limited_hypo = True
-        print("hypo")
-    else:
-        appt.comm_limited_other = True
-        print("other")
-
-    appt.save()
-
-    limited_matches(adopter, appt, description)
-
-    return redirect('calendar_date', "admin", date_year, date_month, date_day)
 
 def home(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)

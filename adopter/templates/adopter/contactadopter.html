@@ -6,6 +6,8 @@
   <title></title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
   <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script>tinymce.init({selector:'textarea',height:'512px'});</script>
 </head>
 <body>
 
@@ -43,15 +45,10 @@
     </div>
 
     <h1 class="page_header">Contact Adopter</h1>
-
-    <p>Hi {{adopter_first_name}},</p>
     <br>
     <form class="" action="" method="post">
       {% csrf_token %}
       {{ form.as_p }}
-      <br>
-      <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
-      <br>
       <input class="submitform" type="submit" name="" value="Send Message">
     </form>
 

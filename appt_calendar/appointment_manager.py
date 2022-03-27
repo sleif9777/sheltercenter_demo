@@ -17,6 +17,7 @@ def reset_appt(appt):
     appt.comm_limited_small = False
     appt.comm_limited_hypo = False
     appt.comm_limited_other = False
+    appt.comm_limited_small_puppies = False
     appt.save()
 
 def delist_appt(appt):

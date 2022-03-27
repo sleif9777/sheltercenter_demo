@@ -1,6 +1,7 @@
 from django import forms
 import datetime
 from .models import Adopter
+from tinymce.widgets import TinyMCE
 
 class AdopterForm(forms.ModelForm):
     class Meta:
@@ -46,11 +47,10 @@ class AdopterForm(forms.ModelForm):
 #     session_adopter = forms.ChoiceField(choices = ALL_ADOPTERS)
 
 class ContactUsForm(forms.Form):
-    message = forms.CharField(widget=forms.Textarea(attrs={"rows":5, "cols":20}))
+    message = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
 
 class AdopterCSVForm(forms.Form):
     file = forms.FileField(label = "Upload a CSV file to add adopters", required = True)
 
 class ContactAdopterForm(forms.Form):
-    message = forms.CharField(label = "", widget=forms.Textarea(attrs={"rows":5, "cols":20}))
-    include_links = forms.BooleanField(label = "Include personalized ShelterCenter link?", required = False)
+    message = forms.CharField(label = "", widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))

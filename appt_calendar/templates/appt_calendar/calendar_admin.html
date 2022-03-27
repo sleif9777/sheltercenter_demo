@@ -218,7 +218,7 @@
                     <tr>
                       <td>
                         {% if appt.comm_adopted_dogs == False %}
-                          <a href="{% url 'dogs_were_adopted' appt.id %}" class="contact_adopter_quickbutton_links" style="margin: 0;">Dogs Were Adopted</a>
+                          <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dogs_were_adopted' %}">Dogs Were Adopted</a>
                         {% else %}
                           <p class="completed_appt_action">Dogs Were Adopted</p>
                         {% endif %}
@@ -226,7 +226,7 @@
 
                       <td class="right">
                         {% if appt.comm_limited_puppies == False %}
-                          <a href="{% url 'limited_matches' appt.id 'puppies' date.year date.month date.day %}">Limited Puppies</a>
+                          <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_puppies' %}">Limited Puppies</a>
                         {% else %}
                           <p class="completed_appt_action">Limited Puppies</p>
                         {% endif %}
@@ -236,7 +236,7 @@
                     <tr>
                       <td>
                         {% if appt.comm_limited_small == False %}
-                          <a href="{% url 'limited_matches' appt.id 'small dogs' date.year date.month date.day %}">Limited Small Dogs</a></td>
+                          <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_small' %}">Limited Small Dogs</a></td>
                         {% else %}
                           <p class="completed_appt_action">Limited Small Dogs</p></td>
                         {% endif %}
@@ -244,10 +244,23 @@
 
                       <td class="right">
                         {% if appt.comm_limited_hypo == False %}
-                          <a href="{% url 'limited_matches' appt.id 'lowshed' date.year date.month date.day %}">Limited Low-shed/Hypo</a>
+                          <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_hypo' %}">Limited Low-shed/Hypo</a>
                         {% else %}
                           <p class="completed_appt_action">Limited Low-shed/Hypo</p>
                         {% endif %}
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        {% if appt.comm_limited_small_puppies == False %}
+                          <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_small_puppies' %}">Limited Small Puppies</a>
+                        {% else %}
+                          <p class="completed_appt_action">Limited Small Puppies</p>
+                        {% endif %}
+                      </td>
+
+                      <td class="right">
                       </td>
                     </tr>
 

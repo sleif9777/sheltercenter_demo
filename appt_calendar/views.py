@@ -626,19 +626,6 @@ def chosen_board(request, role):
 
     return render(request, "appt_calendar/chosen_board.html/", context)
 
-def send_ready_to_roll_msg(request, role, appt_id, hw_status):
-    appt = Appointment.objects.get(pk=appt_id)
-
-    if hw_status == "positive":
-        appt.heartworm = True
-
-    appt.outcome = "6"
-    appt.save()
-
-    ready_to_roll(appt, hw_status)
-
-    return redirect('chosen_board', role)
-
 def daily_report_adopted_chosen_fta(request, role, date_year, date_month, date_day):
     all_dows = Daily_Schedule.objects
     date = datetime.date(date_year, date_month, date_day)
@@ -927,6 +914,7 @@ def remove_adopter(request, role, date_year, date_month, date_day, appt_id):
     appt.comm_limited_small = False
     appt.comm_limited_hypo = False
     appt.comm_limited_other = False
+    appt.comm_limited_small_puppies = False
     appt.save()
 
     return redirect('calendar_date', role, date.year, date.month, date.day)
@@ -1018,6 +1006,7 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
             current_appt.comm_limited_small = False
             current_appt.comm_limited_hypo = False
             current_appt.comm_limited_other = False
+            current_appt.comm_limited_small_puppies = False
             print("clear zzz")
             current_appt.save()
 

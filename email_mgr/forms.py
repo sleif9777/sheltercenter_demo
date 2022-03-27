@@ -9,7 +9,6 @@ class EmailTemplateForm(forms.ModelForm):
     class Meta:
         model = EmailTemplate
         fields = [
-            'template_name',
             'text',
         ]
         labels = {

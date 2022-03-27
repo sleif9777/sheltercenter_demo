@@ -30,8 +30,7 @@ urlpatterns = [
     path("<str:role>/<int:adopter_id>/", views.jump_to_date_adopter, name="jump_to_date_adopter"),
     path("<str:role>/enter_decision/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/", views.enter_decision, name="enter_decision"),
     path("<str:role>/chosen_board/", views.chosen_board, name="chosen_board"),
-    path('<str:role>/validate/<str:action>/adopter/<int:adopter_id>/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.validate_adopter_action, name="validate"),    
-    path("<str:role>/appt/<int:appt_id>/ready_to_roll/<str:hw_status>", views.send_ready_to_roll_msg, name="send_ready_to_roll_msg"),
+    path('<str:role>/validate/<str:action>/adopter/<int:adopter_id>/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.validate_adopter_action, name="validate"),
     path("<str:role>/paperwork/<int:date_year>/<int:date_month>/<int:date_day>/appt/<int:appt_id>/hw/<str:hw_status>/", views.paperwork_calendar, name="paperwork_calendar"),
     path("<str:role>/<int:adopter_id>/set_alert/date/<int:date_year>/<int:date_month>/<int:date_day>/", views.set_alert_date, name="set_alert_date"),
     ]

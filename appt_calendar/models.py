@@ -58,6 +58,7 @@ class Appointment(models.Model):
     comm_limited_small = models.BooleanField(default=False)
     comm_limited_hypo = models.BooleanField(default=False)
     comm_limited_other = models.BooleanField(default=False)
+    comm_limited_small_puppies = models.BooleanField(default=False)
     comm_followup = models.BooleanField(default=False)
     last_update_sent = models.DateField(default=timezone.now())
 

@@ -1,7 +1,9 @@
 from appt_calendar.date_time_strings import *
-import os
+import os, datetime
 
 def replacer(html, adopter, appt):
+    today = datetime.datetime.today()
+
     if os.environ.get('LOCALHOST'):
         base_name = 'localhost'
     else:
@@ -43,8 +45,19 @@ def replacer(html, adopter, appt):
 
     global_replacements = {
         '*HOST_URL*': '<a href="https://savinggracenc.org/host-a-dog/">If you would like to learn more about our Weekend Host program, please visit our website.</a>'
-
     }
+
+    if today.weekday() >= 4:
+        next_business_day = 0
+        global_replacements['*NEXT_BUS_DAY*'] = "Monday"
+    else:
+        next_business_day = today.weekday() + 1
+        global_replacements['*NEXT_BUS_DAY*'] = "tomorrow"
+
+    if next_business_day == 2:
+        global_replacements['*NEXT_BUS_DAY_OPEN*'] = next_bd_open(13, 0)
+    else:
+        global_replacements['*NEXT_BUS_DAY_OPEN*'] = next_bd_open(12, 0)
 
     replacements_master = {
         adopter: adp_replacements,

@@ -43,11 +43,7 @@
     <div class="main textpage">
       <h1 class="page_header">Email Template</h1>
 
-      <div class="calendar_actions">
-        <a href="{% url 'add_email_template' %}">Add New Template</a>
-      </div>
-
-      <ul>
+      <ul class="listpage">
         {% for e_temp in e_templates %}
           <li><a href="{% url 'edit_email_template' e_temp.id %}">{{e_temp.template_name}}</a></li>
         {% endfor %}

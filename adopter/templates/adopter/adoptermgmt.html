@@ -42,7 +42,7 @@
       </div>
 
       <h1 class="page_header">Manage Adopters</h1>
-        <ul id="adopter_list">
+        <ul class="listpage" id="adopter_list">
           {% for adopter in adopters %}
             <li><a href="{% url 'edit_adopter' adopter.id %}">{{adopter}}</a></li>
           {% endfor %}
