@@ -608,3 +608,7 @@ p.greeting {
 .listpage li {
   margin: 2px 0px;
 }
+
+#adopter_mgmt_appt {
+  width: 90%;
+}

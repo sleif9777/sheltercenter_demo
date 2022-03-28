@@ -65,19 +65,34 @@ def manage(request):
     return render(request, "adopter/adoptermgmt.html", context)
 
 def edit_adopter(request, adopter_id):
-#    dow_id -= 2
     adopter = Adopter.objects.get(pk=adopter_id)
-    #form = GenericTimeslotModelForm(request.POST or None, initial={"day_of_week": dow.day_of_week})
     form = AdopterForm(request.POST or None, instance=adopter)
+
+    try:
+        current_appt = Appointment.objects.filter(adopter_choice=adopter).latest('id')
+        current_appt_str = current_appt.date_and_time_string()
+    except:
+        current_appt = None
+        current_appt_str = None
+
     if form.is_valid():
         form.save()
         return redirect('adopter_manage')
     else:
         form = AdopterForm(request.POST or None, instance=adopter)
 
+    source = 'mgmt_' + str(adopter.id)
+
+    print(source)
+
     context = {
         'form': form,
         'adopter': adopter,
+        'appt': current_appt,
+        'appt_str': current_appt_str,
+        'role': 'admin',
+        'schedulable': ["1", "2", "3"],
+        'source': source
     }
 
     return render(request, "adopter/edit_adopter.html", context)
@@ -287,9 +302,14 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     all_dows = Daily_Schedule.objects
     today = datetime.date.today()
     appt = Appointment.objects.get(pk=appt_id)
-    adopter = appt.adopter_choice
 
-    if source in ["calendar", "update"]:
+    if 'mgmt' not in source:
+        adopter = appt.adopter_choice
+    else:
+        adopter_id = source.split('_')[1]
+        adopter = Adopter.objects.get(pk=adopter_id)
+
+    if source in ["calendar", "update"] or 'mgmt' in source:
         template = EmailTemplate.objects.get(template_name="Contact Adopter")
     elif source == "ready_positive":
         template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Positive)")
@@ -345,6 +365,8 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
             appt.save()
 
             return redirect('calendar_date', "admin", date_year, date_month, date_day)
+        elif 'mgmt' in source:
+            return redirect('edit_adopter', adopter.id)
 
     context = {
         'form': form,
