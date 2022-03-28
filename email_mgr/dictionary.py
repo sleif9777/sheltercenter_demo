@@ -17,6 +17,7 @@ def replacer(html, adopter, appt):
         adp_replacements = {
             '*ADP_AUTH*': str(adopter.auth_code),
             '*ADP_FNAME*': adopter.adopter_first_name,
+            '*ADP_DOG*': adopter.chosen_dog
         }
 
         if adopter.lives_with_parents == True:

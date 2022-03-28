@@ -20,39 +20,52 @@
       </nav>
     </div>
     <div class="activitymenu">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
+
       <nav>
         <div class="actmenu-center">
           <ul>
-            <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
+            <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
             <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
             <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
             <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
             <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
             <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
+            <li class="end"><a href="{% url 'email_home' %}">Email Templates</a></li>
           </ul>
         </div>
       </nav>
-    </div>
 
-    <div class="calendar_header">
-      <h1><a href="{% url 'daily_report_adopted_chosen_fta' role previous_day.year previous_day.month previous_day.day %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'daily_report_adopted_chosen_fta' role next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
-    </div>
-
-    <div class="calendar_actions">
-      <a href="{% url 'daily_report_adopted_chosen_fta' role today.year today.month today.day %}">Return to Today</a><br>
     </div>
 
     {% if empty_day == True %}
-    <div class="textpage">
+    <div class="main textpage">
+      <div class="page_header">
+        <h1><a href="{% url 'daily_report_adopted_chosen_fta' role previous_day.year previous_day.month previous_day.day %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'daily_report_adopted_chosen_fta' role next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
+      </div>
+
+      <div class="calendar_actions">
+        <a href="{% url 'daily_report_adopted_chosen_fta' role today.year today.month today.day %}">Return to Today</a><br>
+      </div>
+
+
       No appointments today.
     </div>
 
     {% else %}
 
-    <div class="textpage">
+    <div class="main textpage">
+      <div class="page_header">
+        <h1><a href="{% url 'daily_report_adopted_chosen_fta' role previous_day.year previous_day.month previous_day.day %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'daily_report_adopted_chosen_fta' role next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
+      </div>
+
+      <div class="calendar_actions">
+        <a href="{% url 'daily_report_adopted_chosen_fta' role today.year today.month today.day %}">Return to Today</a><br>
+      </div>
+
       <h2>Adopted</h2>
-        <table style="width:80%;">
-          <tr>
+        <table id="chosenboard" style="width: 95%;">
+          <tr class="no-border">
             <th style="width:15%;">Time</th>
             <th style="width:30%;">Adopter</th>
             <th style="width:30%;">Outcome</th>
@@ -73,9 +86,9 @@
           <br><br>
         </table>
 
-      <h2>Chosen</h2>
-        <table style="width:80%;">
-            <tr>
+        <h2>Chosen</h2>
+          <table id="chosenboard" style="width: 95%;">
+            <tr class="no-border">
               <th style="width:15%;">Time</th>
               <th style="width:30%;">Adopter</th>
               <th style="width:30%;">Outcome</th>
@@ -97,8 +110,8 @@
           </table>
 
         <h2>FTA</h2>
-          <table style="width:80%;">
-            <tr>
+          <table id="chosenboard" style="width: 95%;">
+            <tr class="no-border">
               <th style="width:15%;">Time</th>
               <th style="width:30%;">Adopter</th>
               <th style="width:30%;">Outcome</th>

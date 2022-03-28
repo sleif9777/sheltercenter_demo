@@ -37,14 +37,14 @@ class AppointmentTemplate(models.Model):
         render_time = self.time_string()
         render_appt_type = self.appt_string()
 
-        return render_dow + "s at " + render_time + " (" + render_appt_type + ")"
+        return render_dow + "s at " + render_time
 
     def __str__(self):
         render_dow = self.dow_string()
         render_time = self.time_string()
         render_appt_type = self.appt_string()
 
-        return render_dow + "s at " + render_time + " (" + render_appt_type + ")"
+        return render_dow + "s at " + render_time
 
     def dow_string(self):
         dows = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]

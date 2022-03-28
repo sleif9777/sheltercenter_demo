@@ -87,7 +87,13 @@ def clean_time_and_date(time, date):
 
     return time, date
 
-#def custom_msg(adopter, message, subject):
+def scrub_and_send(subject, template, adopter, appt):
+    email = adopter.adopter_email
+    html = replacer(template.text, adopter, appt)
+
+    text = strip_tags(html, adopter, appt)
+
+    send_email(text, html, "default", subject, email)
 
 def alert_date_set(adopter, date):
     subject = "We'll Be In Touch Soon!"
@@ -245,14 +251,9 @@ def new_contact_us_msg(adopter, message):
 
 def confirm_etemp(adopter, appt):
     subject = "Your appointment has been confirmed: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
     template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
 
-    html = replacer(template.text, adopter, appt)
-
-    text = strip_tags(html, adopter, appt)
-
-    send_email(text, html, "default", subject, email)
+    scrub_and_send(subject, template, adopter, appt)
 
 def adoption_paperwork(adopter, appt, hw_status):
     if hw_status == False:
@@ -260,189 +261,63 @@ def adoption_paperwork(adopter, appt, hw_status):
     else:
         subject = "Your FTA appointment has been confirmed: " + adopter.adopter_full_name().upper()
 
-    email = adopter.adopter_email
     template = EmailTemplate.objects.get(template_name="Paperwork Appointment")
 
-    html = replacer(template.text, adopter, appt)
-
-    text = strip_tags(html, adopter, appt)
-
-    send_email(text, html, "default", subject, email)
+    scrub_and_send(subject, template, adopter, appt)
 
 def cancel(adopter, appt):
     subject = "Your appointment has been cancelled"
-    email = adopter.adopter_email
     template = EmailTemplate.objects.get(template_name="Cancel Appointment")
 
-    html = replacer(template.text, adopter, appt)
-
-    text = strip_tags(html, adopter, appt)
-
-    send_email(text, html, "default", subject, email)
+    scrub_and_send(subject, template, adopter, appt)
 
 def reschedule(adopter, appt):
-    print("hit it!")
     subject = "Your appointment has been rescheduled: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
-
     template = EmailTemplate.objects.get(template_name="Appointment Rescheduled")
 
-    html = replacer(template.text, adopter, appt)
-
-    text = strip_tags(html, adopter, appt)
-
-    send_email(text, html, "default", subject, email)
+    scrub_and_send(subject, template, adopter, appt)
 
 def greeter_reschedule_email(adopter, appt):
     subject = "Your follow-up appointment has been scheduled: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
-
     template = EmailTemplate.objects.get(template_name="Greeter Reschedule")
 
-    html = replacer(template.text, adopter, appt)
-
-    text = strip_tags(html, adopter, appt)
-
-    send_email(text, html, "default", subject, email)
+    scrub_and_send(subject, template, adopter, appt)
 
 def duplicate_app(adopter):
     subject = "We already have you in our database: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
-
     template = EmailTemplate.objects.get(template_name="Duplicate Application")
 
-    html = replacer(template.text, adopter, None)
-
-    text = strip_tags(html, adopter, None)
-
-    send_email(text, html, "default", subject, email)
+    scrub_and_send(subject, template, adopter, None)
 
 def follow_up(adopter):
     subject = "Thank you for visiting: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
-
     template = EmailTemplate.objects.get(template_name="Follow-Up (No Host Weekend Information)")
 
-    html = replacer(template.text, adopter, None)
-
-    text = strip_tags(html, adopter, None)
-
-    send_email(text, html, "default", subject, email)
+    scrub_and_send(subject, template, adopter, None)
 
 def follow_up_w_host(adopter):
     subject = "Thank you for visiting: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
-
     template = EmailTemplate.objects.get(template_name="Follow-Up (Host Weekend Information)")
 
-    html = replacer(template.text, adopter, None)
-
-    text = strip_tags(html, adopter, None)
-
-    send_email(text, html, "default", subject, email)
+    scrub_and_send(subject, template, adopter, None)
 
 def invite(adopter):
     subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
-
     template = EmailTemplate.objects.get(template_name="Add Adopter (inside NC, VA, SC)")
 
-    html = replacer(template.text, adopter, None)
-
-    text = strip_tags(html, adopter, None)
-
-    send_email(text, html, "default", subject, email)
+    scrub_and_send(subject, template, adopter, None)
 
 def invite_oos_etemp(adopter):
     subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
     template = EmailTemplate.objects.get(template_name="Add Adopter (outside NC, VA, SC)")
 
-    html = replacer(template.text, adopter, None)
+    scrub_and_send(subject, template, adopter, None)
 
-    text = strip_tags(html, adopter, None)
+def chosen(adopter, appt):
+    subject = "Congratulations on choosing " + appt.dog
+    template = EmailTemplate.objects.get(template_name="Chosen Dog")
 
-    print(html)
-    print(text)
-
-    send_email(text, html, "default", subject, email)
-
-def invite_friends_of_foster_adoption(adopter):
-    subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
-    name = adopter.adopter_first_name
-
-    text = """\
-Hi """ + name + """,\n
-Thank you for your interest and adoption request! It sounds like you have met """ + adopter.chosen_dog + """ at the foster's home, and you are committed to adopting this puppy. Can you confirm that this is the case? If so, we will put you in the reservation tablet to formally adopt """ + adopter.chosen_dog + """ once the vetting is complete.\n
-Thank you,
-The Adoptions Team\n
-Saving Grace Animals for Adoption
-"""
-
-    html = """\
-    <html>
-      <body>
-        <p>Hi """ + name + """,</p>
-        <p>Thank you for your interest and adoption request! It sounds like you have met """ + adopter.chosen_dog + """ at the foster's home, and you are committed to adopting this puppy. Can you confirm that this is the case? If so, we will put you in the reservation tablet to formally adopt """ + adopter.chosen_dog + """ once the vetting is complete.</p>
-        <p>Thank you,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
-      </body>
-    </html>
-    """
-
-    send_email(text, html, "default", subject, email)
-
-def invite_foster_adoption(adopter):
-    subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
-    name = adopter.adopter_first_name
-
-    text = """\
-Hi """ + name + """,\n
-Thank you for fostering with us! It sounds like you intend to adopt your foster """ + adopter.chosen_dog + """. Can you confirm that this is the case? If so, we will put you in the reservation tablet to formally adopt """ + adopter.chosen_dog + """ once the vetting is complete.\n
-Thank you,
-The Adoptions Team\n
-Saving Grace Animals for Adoption
-"""
-
-    html = """\
-    <html>
-      <body>
-        <p>Hi """ + name + """,</p>
-        <p>Thank you for fostering with us! It sounds like you intend to adopt your foster """ + adopter.chosen_dog + """. Can you confirm that this is the case? If so, we will put you in the reservation tablet to formally adopt """ + adopter.chosen_dog + """ once the vetting is complete.</p>
-        <p>Thank you,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
-      </body>
-    </html>
-    """
-
-    send_email(text, html, "default", subject, email)
-
-def invite_host_adoption(adopter):
-    subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
-    email = adopter.adopter_email
-    name = adopter.adopter_first_name
-
-    text = """\
-Hi """ + name + """,\n
-Thank you for your interest, and thank you for hosting with us! We're so glad that """ + adopter.chosen_dog + """ worked out so well for you. """ + adopter.chosen_dog + """, like all our dogs, was pulled from an animal shelter. I'm afraid we do not have much background or history. We wish they could talk!\n
-We will be in touch with you about next steps soon!\n
-Thank you,
-The Adoptions Team\n
-Saving Grace Animals for Adoption
-"""
-
-    html = """\
-    <html>
-      <body>
-        <p>Hi """ + name + """,</p>
-        <p>Thank you for your interest, and thank you for hosting with us! We're so glad that """ + adopter.chosen_dog + """ worked out so well for you. """ + adopter.chosen_dog + """, like all our dogs, was pulled from an animal shelter. I'm afraid we do not have much background or history. We wish they could talk!</p>
-        <p>We will be in touch with you about next steps soon!</p>
-        <p>Thank you,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
-      </body>
-    </html>
-    """
-
-    send_email(text, html, "default", subject, email)
+    scrub_and_send(subject, template, adopter, None)
 
 def notify_adoptions_cancel(appt, adopter):
     subject = "UPDATE FOR TODAY'S SCHEDULE"

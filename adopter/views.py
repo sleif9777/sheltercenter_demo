@@ -224,7 +224,7 @@ def add(request):
 
                 if adopter.out_of_state == True:
                     invite_oos_etemp(adopter)
-                elif adopter.adopting_foster == True:
+                elif adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host:
                     shellappt = Appointment()
                     shellappt.time = datetime.datetime.now()
                     shellappt.adopter_choice = adopter
@@ -234,36 +234,14 @@ def add(request):
                     shellappt.save()
 
                     adopter.has_current_appt = False
-
-                    invite_foster_adoption(adopter)
-                elif adopter.friend_of_foster == True:
-                    shellappt = Appointment()
-                    shellappt.time = datetime.datetime.now()
-                    shellappt.adopter_choice = adopter
-                    shellappt.dog = adopter.chosen_dog
-                    shellappt.outcome = "3"
-
-                    shellappt.save()
-
-                    adopter.has_current_appt = False
-
                     adopter.save()
 
-                    invite_friends_of_foster_adoption(adopter)
-                elif adopter.adopting_host == True:
-                    shellappt = Appointment()
-                    shellappt.time = datetime.datetime.now()
-                    shellappt.adopter_choice = adopter
-                    shellappt.dog = adopter.chosen_dog
-                    shellappt.outcome = "3"
-
-                    shellappt.save()
-
-                    adopter.has_current_appt = False
-
-                    adopter.save()
-
-                    invite_host_adoption(adopter)
+                    if adopter.adopting_foster:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
+                    elif adopter.friend_of_foster:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
+                    else:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
                 else:
                     invite(adopter)
             else:
@@ -325,6 +303,12 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         template = EmailTemplate.objects.get(template_name="Limited Hypo")
     elif source == 'dogs_were_adopted':
         template = EmailTemplate.objects.get(template_name="Dogs Were Adopted")
+    elif source == 'add_form_adopting_foster':
+        template = EmailTemplate.objects.get(template_name="Add Adopter (Adopting Foster)")
+    elif source == 'add_form_friend_of_foster':
+        template = EmailTemplate.objects.get(template_name="Add Adopter (Friend of Foster)")
+    elif source == 'add_form_adopting_host':
+        template = EmailTemplate.objects.get(template_name="Add Adopter (Host Weekend)")
 
     template = replacer(template.text, adopter, appt)
 
@@ -365,8 +349,12 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
             appt.save()
 
             return redirect('calendar_date', "admin", date_year, date_month, date_day)
+
         elif 'mgmt' in source:
             return redirect('edit_adopter', adopter.id)
+
+        elif 'add_form' in source:
+            return redirect('add_adopter')
 
     context = {
         'form': form,

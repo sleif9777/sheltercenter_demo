@@ -8,42 +8,50 @@
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">
   </head>
   <body>
-    <div class="roleselector">
-      <nav>
-        <div class="roleselector-center">
-          <ul>
-            <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
-            <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
-            <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
     <div class="activitymenu">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
+
       <nav>
         <div class="actmenu-center">
           <ul>
-            <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
+            <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
             <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
             <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
             <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
             <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-            <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
+            <li><a href="{% url 'chosen_board' 'admin' %}">Chosen Board</a></li>
+            <li class="end"><a href="{% url 'email_home' %}">Email Templates</a></li>
           </ul>
         </div>
       </nav>
+
     </div>
-    <div class="calendar_header">
-      <h1>Weekly Template</h1>
-    </div>
-    <div class="week">
-      {% for dow in dows.all %}
-        <div class="day">
-          <div class="day_link">
-            <a href="{% url 'daily' dow.id %}">{{dow}}</a>
+
+    <div class="main textpage">
+      <div class="roleselector">
+        <nav>
+          <div class="roleselector-center">
+            <ul>
+              <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+              <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+              <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+            </ul>
           </div>
-        </div>
-      {% endfor %}
+        </nav>
+      </div>
+
+      <div class="page_header">
+        <h1>Weekly Template</h1>
+      </div>
+      <div class="week">
+        {% for dow in dows.all %}
+          <form class="" action="{% url 'daily' dow.id %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <input class="copytemplate" type="submit" name="" value="{{dow}}" style="margin: 0px 5px;">
+          </form>
+        {% endfor %}
+      </div>
+
     </div>
   </body>
 </html>
