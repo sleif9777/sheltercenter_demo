@@ -18,6 +18,7 @@ from django.urls import path, include
 from appt_calendar import views as cal_views
 from adopter import views as adopt_views
 from . import settings
+import adopter
 from django.conf.urls.static import static
 
 #import scheduleconfig.views
@@ -36,7 +37,7 @@ urlpatterns = [
     path('calendar/', include('appt_calendar.urls')),
     path('adopter/', include('adopter.urls')),
     path('emails/', include('email_mgr.urls')),
-    path('', cal_views.calendar_home, name="home"),
+    path('', adopter.views.home_page, name="home_page"),
     path('tinymce/', include('tinymce.urls')),
 ]
 

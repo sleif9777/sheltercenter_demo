@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'adopter.apps.AdopterConfig',
     'email_mgr.apps.EmailMgrConfig',
     'tinymce',
+    'dashboard.apps.DashboardConfig'
 ]
 
 MIDDLEWARE = [
@@ -182,7 +183,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') #in prod we want cdn
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles-cdn') #in prod we want cdn
 
 from .cdn.conf import * # noqa
 

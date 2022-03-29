@@ -54,3 +54,6 @@ class AdopterCSVForm(forms.Form):
 
 class ContactAdopterForm(forms.Form):
     message = forms.CharField(label = "", widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
+
+class AdopterLoginField(forms.Form):
+    email = forms.EmailField(label='Please enter the email attached to your application', widget=forms.EmailInput(attrs={'class':'special', 'size': '40'}))

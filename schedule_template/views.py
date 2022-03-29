@@ -1,7 +1,25 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import GenericTimeslotModelFormPrefilled, GenericAppointmentModelFormPrefilled, NewTimeslotModelForm
+from .forms import *
 from .models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
 import datetime
+
+def home(request):
+
+    if form.is_valid():
+        try:
+            data = form.cleaned_data
+            adopter = Adopter.objects.get(adopter_email=data['email'])
+
+            return redirect('adopter_home', adopter.id)
+        except:
+            pass
+
+
+    context = {
+        'form': AdopterLoginField
+    }
+
+    return render(request, 'schedule_template/index.html', context)
 
 def weekly(request):
     dows = Daily_Schedule.objects

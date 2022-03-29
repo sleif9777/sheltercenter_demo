@@ -366,6 +366,29 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
     return render(request, "adopter/contactadopter.html", context)
 
+def home_page(request):
+
+    form = AdopterLoginField(request.POST or None)
+
+    if form.is_valid():
+        try:
+            data = form.cleaned_data
+            adopter = Adopter.objects.get(adopter_email=data['email'])
+
+            print(adopter)
+
+            return redirect('adopter_home', adopter.id)
+        except:
+            print('nope')
+
+            return redirect('home_page')
+
+    context = {
+        'form': AdopterLoginField
+    }
+
+    return render(request, 'adopter/index.html', context)
+
 def home(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)
 
