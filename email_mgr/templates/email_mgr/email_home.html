@@ -1,56 +1,14 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    {% load static %}
-    <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-    <!-- {{form.media}} -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-    <!-- <script>tinymce.init({selector:'textarea', height:"480px";});</script> -->
+{% extends 'dashboard/base.html' %}
+{% load static %}
 
-    <script language="javascript" type="text/javascript">
-      tinyMCE.init({
-      theme : "advanced",
-      mode : "textareas",
-      height : "600px"
-      });
-    </script>
+{% block content %}
+  <div class="main textpage">
+    <h1 class="page_header">Email Template</h1>
 
-  </head>
-  <body>
-
-    <div class="activitymenu">
-      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
-
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
-            <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
-            <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
-            <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
-            <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-            <li><a href="{% url 'chosen_board' 'admin' %}">Chosen Board</a></li>
-            <li class="end"><a href="{% url 'email_home' %}">Email Templates</a></li>
-          </ul>
-        </div>
-      </nav>
-
-    </div>
-
-    <div class="main textpage">
-      <h1 class="page_header">Email Template</h1>
-
-      <ul class="listpage">
-        {% for e_temp in e_templates %}
-          <li><a href="{% url 'edit_email_template' e_temp.id %}">{{e_temp.template_name}}</a></li>
-        {% endfor %}
-      </ul>
-
-
-    </div>
-
-  </body>
-</html>
+    <ul class="listpage">
+      {% for e_temp in e_templates %}
+        <li><a href="{% url 'edit_email_template' e_temp.id %}">{{e_temp.template_name}}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

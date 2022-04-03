@@ -59,7 +59,8 @@ def manage(request):
     adopters = Adopter.objects.all()
 
     context = {
-        'adopters': adopters
+        'adopters': adopters,
+        'role': 'admin'
     }
 
     return render(request, "adopter/adoptermgmt.html", context)
@@ -112,7 +113,7 @@ def visitor_instructions(request, adopter_id):
 
     context = {
         'adopter': adopter,
-
+        'role': 'adopter'
     }
 
     return render(request, "adopter/visitor_instructions.html", context)
@@ -242,6 +243,8 @@ def add(request):
                         return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
                     else:
                         return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
+                elif adopter.carryover_shelterluv:
+                    carryover_temp(adopter)
                 else:
                     invite(adopter)
             else:
@@ -271,7 +274,8 @@ def contact(request, adopter_id):
     context = {
         'form': form,
         'all_dows': all_dows,
-        'adopter': Adopter.objects.get(pk=adopter_id)
+        'adopter': Adopter.objects.get(pk=adopter_id),
+        'role': 'adopter'
     }
 
     return render(request, "adopter/contactteam.html", context)
@@ -396,11 +400,14 @@ def home(request, adopter_id):
         'adopter': adopter,
         'full_name': full_name(adopter),
         'first_name': adopter.adopter_first_name,
+        'role': 'adopter'
     }
 
     if adopter.status == "2":
         return HttpResponse("<h1>Page Not Found</h1>")
     elif adopter.acknowledged_faq == False:
+        print(adopter.acknowledged_faq)
+        print(context)
         return render(request, "adopter/decision.html", context)
 
     today = datetime.date.today()

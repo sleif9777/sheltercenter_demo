@@ -20,6 +20,7 @@ class Adopter(models.Model):
     adopting_host = models.BooleanField(default = False)
     adopting_foster = models.BooleanField(default = False)
     friend_of_foster = models.BooleanField(default = False)
+    carryover_shelterluv = models.BooleanField(default = False)
     chosen_dog = models.CharField(default="", max_length=200, blank=True)
     has_current_appt = models.BooleanField(default = False)
     alert_date = models.DateField(default=datetime.date(2000,1,1), blank=True)

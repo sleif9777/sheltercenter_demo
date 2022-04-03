@@ -1,4 +1,5 @@
 from adopter.adopter_manager import *
+from copy import copy
 
 def reset_appt(appt):
     # clears all information out of an appointment and republishes it for booking
@@ -9,6 +10,8 @@ def reset_appt(appt):
     appt.outcome = "1"
     appt.internal_notes = ""
     appt.adopter_notes = ""
+    appt.dog = ""
+    appt.dog_fka = ""
     appt.bringing_dog = False
     appt.has_cat = False
     appt.mobility = False
@@ -18,6 +21,7 @@ def reset_appt(appt):
     appt.comm_limited_hypo = False
     appt.comm_limited_other = False
     appt.comm_limited_small_puppies = False
+    appt.visits_to_date = 0
     appt.save()
 
 def delist_appt(appt):
@@ -25,4 +29,8 @@ def delist_appt(appt):
 
     appt.available = False
     appt.published = False
+
+    if appt.adopter_choice != None:
+        appt.visits_to_date = copy(appt.adopter_choice.visits_to_date)
+
     appt.save()

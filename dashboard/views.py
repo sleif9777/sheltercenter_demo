@@ -63,6 +63,8 @@ def generate_calendar(role, load, adopter_id, date_year, date_month, date_day):
         current_appt_str = current_appt.date_and_time_string()
     except:
         adopter = None
+        current_appt = None
+        current_appt_str = None
 
     #set the date from the integers, create a formatted string
     date = datetime.date(date_year, date_month, date_day)

@@ -313,6 +313,12 @@ def invite_oos_etemp(adopter):
 
     scrub_and_send(subject, template, adopter, None)
 
+def carryover_temp(adopter):
+    subject = "Saving Grace Scheduling Update: " + adopter.adopter_full_name().upper()
+    template = EmailTemplate.objects.get(template_name="Invitation to ShelterCenter (Already in Shelterluv)")
+
+    scrub_and_send(subject, template, adopter, None)
+
 def chosen(adopter, appt):
     subject = "Congratulations on choosing " + appt.dog
     template = EmailTemplate.objects.get(template_name="Chosen Dog")

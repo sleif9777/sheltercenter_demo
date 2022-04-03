@@ -17,7 +17,8 @@ def replacer(html, adopter, appt):
         adp_replacements = {
             '*ADP_AUTH*': str(adopter.auth_code),
             '*ADP_FNAME*': adopter.adopter_first_name,
-            '*ADP_DOG*': adopter.chosen_dog
+            '*ADP_DOG*': adopter.chosen_dog,
+            '*ADP_HOME_URL*': home_url.format(base_name, adopter.id)
         }
 
         if adopter.lives_with_parents == True:
@@ -26,7 +27,7 @@ def replacer(html, adopter, appt):
             adp_replacements['<p>*ADP_LIVES_W_PARENTS*</p>'] = ""
 
         if adopter.has_current_appt:
-            adp_replacements['*ADP_HOME_URL*'] = home_url.format(base_name, adopter.id)
+            adp_replacements['<p>You can reschedule your appointment here: *ADP_HOME_URL*</p>'] = home_url.format(base_name, adopter.id)
         else:
             adp_replacements['<p>You can reschedule your appointment here: *ADP_HOME_URL*</p>'] = ""
 

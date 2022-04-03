@@ -1,47 +1,8 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-  {% load static %}
-  <meta charset="utf-8">
-  <title></title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-  <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-</head>
-<body>
+{% extends 'dashboard/base.html' %}
+{% load static %}
 
-  <div class="activitymenu">
-    <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
-
-    <nav>
-      <div class="actmenu-center">
-        <ul>
-          <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
-          <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
-          <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
-          <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
-          <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-          <li><a href="{% url 'chosen_board' 'admin' %}">Chosen Board</a></li>
-          <li class="end"><a href="{% url 'email_home' %}">Email Templates</a></li>
-        </ul>
-      </div>
-    </nav>
-
-  </div>
-
-
+{% block content %}
   <div class="main textpage">
-
-    <div class="roleselector">
-      <nav>
-        <div class="roleselector-center">
-          <ul>
-            <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
-            <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
-            <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
 
     <h1 class="page_header">{{adopter.adopter_full_name}}</h1>
 
@@ -230,7 +191,7 @@
                   {% endif %}
                 </td>
 
-                <td class="right"><a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id appt.date.year appt.date.month appt.date.day%}">Reschedule Adopter</a></td>
+                <td class="right"><a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id appt.date.year appt.date.month appt.date.day 'calendar' %}">Reschedule Adopter</a></td>
               </tr>
 
               <tr>
@@ -305,6 +266,4 @@
     </form>
 
   </div>
-
-  </body>
-</html>
+{% endblock %}

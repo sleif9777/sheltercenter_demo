@@ -25,8 +25,8 @@
     </tr>
 
     <tr>
-      <td class="left"><b>({{appt.appt_string}})</b></td>
-      <td class="right">
+      <td class="left" style="width: 50%;"><b>({{appt.appt_string}})</b></td>
+      <td class="right" style="width: 50%;">
         <!-- displays bringing dog if applicable, bumps up has a cat if applicable -->
         {% if appt.bringing_dog %}
           <b>Bringing dog!<br></b>
@@ -37,13 +37,13 @@
     </tr>
 
     <tr>
-      <td class="left">
+      <td class="left" style="width: 50%;">
         <!-- displays number_of_visits if second visit or greater -->
-        {% if appt.adopter_choice.visits_to_date > 1 %}
-          <b>{{appt.adopter_choice.number_of_visits}}</b>
+        {% if appt.visits_to_date > 1 %}
+          <b>{{appt.number_of_visits}}</b>
         {% endif %}
       </td>
-      <td class="right">
+      <td class="right" style="width: 50%;">
         <!-- displays has a cat if applicable and bringing dog -->
         {% if appt.bringing_dog and appt.has_cat %}
           <b>Has a cat!</b>
@@ -102,7 +102,7 @@
 
       <tr class="info_block_subheader">
         <th>Follow-Ups</th>
-        <th class="right">&#128498;&#xFE0E;</th>
+        <th class="right">&#8635;&#xFE0E;</th>
       </tr>
 
       <tr>
@@ -118,13 +118,13 @@
           {% endif %}
         </td>
 
-        <td class="right"><a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id date.year date.month date.day %}">Schedule Next Appointment</a></td>
+        <td class="right"><a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a></td>
       </tr>
 
       <tr>
         {% if appt.comm_followup == False %}
-          <td><a href="{% url 'send_followup' role appt.id date.year date.month date.day %}">Send Follow-Up Email</a><br></td>
-          <td class="right"><a href="{% url 'send_followup_w_host' role appt.id date.year date.month date.day %}">Send Follow-Up Email (with Host Info)</a><br></td>
+          <td><a href="{% url 'send_followup' role appt.id date.year date.month date.day 0 %}">Send Follow-Up Email</a><br></td>
+          <td class="right"><a href="{% url 'send_followup' role appt.id date.year date.month date.day 1 %}">Send Follow-Up Email (with Host Info)</a><br></td>
         {% else %}
           <td><p class="completed_appt_action">Send Follow-Up Email</p></td>
           <td class="right"><p class="completed_appt_action">Send Follow-Up Email (with Host Info)</p></td>

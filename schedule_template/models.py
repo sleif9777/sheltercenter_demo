@@ -27,7 +27,6 @@ class AppointmentTemplate(models.Model):
         ("5", "Saturday"),
     )
 
-    #date = models.CharField(default=datetime.date.today)
     day_of_week = models.CharField(default="0", max_length=1, choices=DAYS_OF_WEEK)
     time = models.TimeField(default=datetime.time(12,00))
     appt_type = models.CharField(default="1", max_length=1, choices=APPT_TYPES)

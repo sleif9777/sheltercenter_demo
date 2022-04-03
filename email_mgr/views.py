@@ -30,14 +30,13 @@ def email_home(request):
 
     context = {
         'e_templates': e_templates,
+        'role': 'admin'
     }
 
     return render(request, "email_mgr/email_home.html/", context)
 
 def edit_template(request, template_id):
-#    dow_id -= 2
     e_template = EmailTemplate.objects.get(pk=template_id)
-    #form = GenericTimeslotModelForm(request.POST or None, initial={"day_of_week": dow.day_of_week})
     form = EmailTemplateForm(request.POST or None, instance=e_template)
     if form.is_valid():
         form.save()
@@ -48,6 +47,7 @@ def edit_template(request, template_id):
     context = {
         'form': form,
         'e_template': e_template,
+        'role': 'admin'
     }
 
     return render(request, "email_mgr/add_template.html", context)
@@ -71,35 +71,7 @@ def add_email_template(request):
 
     context = {
         'form': form,
+        'role': 'admin'
     }
 
     return render(request, "email_mgr/add_template.html/", context)
-
-# def add_timeslot(request, dow_id):
-#     dow = Daily_Schedule.objects.get(pk=dow_id)
-#
-#     form = NewTimeslotModelForm(request.POST or None, initial={'daypart': "1"})
-#
-#     if form.is_valid():
-#         data = form.cleaned_data
-#         hour = int(data['hour'])
-#         print(hour)
-#         minute = int(data['minute'])
-#         daypart = data['daypart']
-#
-#         if daypart == "1" and hour < 12:
-#             hour += 12
-#
-#         new_ts = TimeslotTemplate.objects.create(day_of_week = dow.day_of_week, time = datetime.time(hour, minute))
-#         dow.timeslots.add(TimeslotTemplate.objects.latest('id'))
-#
-#         return redirect('daily', dow_id)
-#     else:
-#         form = NewTimeslotModelForm(request.POST or None, initial={'daypart': "1"})
-#
-#     context = {
-#         'form': form,
-#         'dow': dow,
-#     }
-#
-#     return render(request, "schedule_template/timeslot_form.html", context)

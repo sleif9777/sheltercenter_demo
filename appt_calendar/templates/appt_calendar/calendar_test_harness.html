@@ -50,7 +50,7 @@
       {% include 'appt_calendar/calendar_messages_adopter.html' %}
     {% endif %}
 
-    {% if empty_day == True and role == 'admin' %}
+    {% if empty_day == True and role == 'admin' and date.weekday < 5 %}
       <div class="copy_template_button">
         <br>
         <form class="" action="{% url 'copy_temp_to_cal' role date.year date.month date.day %}" method="post">
@@ -94,7 +94,7 @@
         </div>
       {% endfor %}
 
-      {% if role == 'admin' %}
+      {% if role == 'admin' and date.weekday < 5 %}
         <div class="timeslot">
             <!-- two-column table displaying timeslot and timeslot-level actions -->
             <table style = "width:100%; padding: 10px; margin: 0;">
