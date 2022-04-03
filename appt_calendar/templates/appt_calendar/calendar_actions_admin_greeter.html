@@ -1,0 +1,6 @@
+<a href="{% url 'jump_to_date_admin' role %}">Jump To Date</a>
+<a href="{% url 'calendar' role %}">Return to Today</a>
+{% if role == 'admin' %}
+  <a href="{% url 'calendar_print' role date.year date.month date.day %}" target="_blank">Print View</a>
+  <a href="{% url 'add_timeslot' role date.year date.month date.day %}">Add Timeslot</a>
+{% endif %}

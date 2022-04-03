@@ -1,34 +1,8 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    {% load static %}
-    <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-  </head>
-  <body>
+{% extends 'dashboard/base.html' %}
+{% load static %}
 
-    <div class="activitymenu">
-      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
-
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
-            <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
-            <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
-            <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
-            <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-            <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
-            <li class="end"><a href="{% url 'email_home' %}">Email Templates</a></li>
-          </ul>
-        </div>
-      </nav>
-
-    </div>
-
-    <div class="main">
+{% block content %}
+  <div class="main">
 
     <div class="page_header">
       <h1><a href="{% url 'paperwork_calendar' role previous_day.year previous_day.month previous_day.day appt.id hw_status %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'paperwork_calendar' role next_day.year next_day.month next_day.day appt.id hw_status %}">&#9654;</a></h1>
@@ -116,11 +90,10 @@
         <!-- endfor and /ul for appointments -->
         {% endfor %}
         </ul>
-
       </div>
+      
     {% endfor %}
     <br><br>
     {% endif %}
   </div>
-  </body>
-</html>
+{% endblock %}

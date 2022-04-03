@@ -1,35 +1,8 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    {% load static %}
-    <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-  </head>
-  <body>
+{% extends 'dashboard/base.html' %}
+{% load static %}
 
-    <div class="activitymenu">
-      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
-
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li><a href="{% url 'adopter_home' adopter.id %}">Calendar</a></li>
-            <li><a href="{% url 'faq' adopter.id %}">FAQ</a></li>
-            {% if adopter.has_current_appt == True %}
-              <li><a href="{% url 'visitor_instructions' adopter.id %}">Visitor Instructions</a></li>
-            {% endif %}
-            <li class="end"><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
-          </ul>
-        </div>
-      </nav>
-
-    </div>
-
-    <div class="main textpage">
-      Your appointment for {{appt_str}} has been cancelled. <a class="standalone" href="{% url 'adopter_home' adopter.id %}">Click here to return to the calendar.</a>
-    </div>
-
-  </body>
-</html>
+{% block content %}
+  <div class="main textpage">
+    Your appointment for {{appt_str}} has been cancelled. <a class="standalone" href="{% url 'adopter_home' adopter.id %}">Click here to return to the calendar.</a>
+  </div>
+{% endblock %}

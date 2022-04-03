@@ -1,33 +1,7 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-  {% load static %}
-  <meta charset="utf-8">
-  <title></title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-  <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-</head>
+{% extends 'dashboard/base.html' %}
+{% load static %}
 
-<body>
-
-  <div class="activitymenu">
-    <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
-
-    <nav>
-      <div class="actmenu-center">
-        <ul>
-          <li><a href="{% url 'adopter_home' adopter.id %}">Calendar</a></li>
-          <li><a href="{% url 'faq' adopter.id %}">FAQ</a></li>
-          {% if adopter.has_current_appt == True %}
-            <li><a href="{% url 'visitor_instructions' adopter.id %}">Visitor Instructions</a></li>
-          {% endif %}
-          <li class="end"><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
-        </ul>
-      </div>
-    </nav>
-
-  </div>
-
+{% block content %}
   <div class="main textpage">
 
     <div class="roleselector">
@@ -56,7 +30,7 @@
       <input type="checkbox" name="ready_to_adopt" value="dogs_not_held" required><br><br>
       <label for="ready_to_adopt">I understand that the dog I select will not be placed on hold unless there are outstanding veterinary needs. Saving Grace cannot accept a deposit to care for a dog that is ready to leave the program. I will come into my appointment prepared to take a dog home immediately following, even if this is not the actual outcome. </label>
       <input type="checkbox" name="ready_to_adopt" value="ready_to_adopt" required><br><br>
-      <label for="children_attending">I understand that it is <b>extremely</b> important for any young children in the home to attend the appointment so that we may find a child-compatible match, or I acknowledge that there are no small children in the home. </label>
+      <label for="children_attending">I understand that it is <b>extremely</b> important for any young children in the home to attend the appointment so that we may find a child-compatible match, or I acknowledge that there are no young children in the home. </label>
       <input type="checkbox" name="ready_to_adopt" value="children_attending" required><br><br>
       {% if title != "Edit Appointment" %}
         <label for="auth_code">Please enter your six digit authorization code (included in the email we sent you):</label>
@@ -66,6 +40,4 @@
     </form>
 
   </div>
-
-  </body>
-</html>
+{% endblock %}

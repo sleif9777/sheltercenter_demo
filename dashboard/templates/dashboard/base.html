@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  </head>
+  <body>
+    <div class="activitymenu">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
+
+      {% block nav %}
+
+        {% if role == 'admin' %}
+          {% include 'dashboard/admin_navbar.html' %}
+
+        {% elif role == 'adopter' %}
+          {% include 'dashboard/adopter_navbar.html' %}
+
+        {% elif role == 'greeter' %}
+          {% include 'dashboard/greeter_navbar.html' %}
+
+        {% endif %}
+
+      {% endblock %}
+
+    </div>
+
+    {% block content %} {% endblock %}
+    
+  </body>
+</html>

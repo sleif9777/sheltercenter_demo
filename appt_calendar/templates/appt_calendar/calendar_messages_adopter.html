@@ -1,0 +1,99 @@
+<div class="adopter_messages">
+  <p class="greeting"><b>Hello, {{adopter.adopter_first_name}}!</b></p><br>
+
+  {% if adopter.has_current_appt %}
+    Your appointment is currently set for {{current_appt_str}}.<br>
+
+    <div class="appointment">
+      <!-- header grid, has a bottom border unless it is the only section -->
+      <!-- it will be the only section when the appointment has no notes -->
+      {% if current_appt.adopter_notes %}
+        <table class="appt_info_block" id="appt_header_block">
+      {% else %}
+        <table class="appt_info_block appt_end_block" id="appt_header_block">
+      {% endif %}
+
+        <tr>
+          <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' 'adopter' current_appt.id date.year date.month date.day %}">{{current_appt_str}} - {{current_appt}}</a>
+
+          {% if current_appt.mobility %}
+            &#9855;&#xFE0E;
+          {% endif %}
+          {% if current_appt.bringing_dog %}
+            &#128021;&#xFE0E;
+          {% endif %}
+          {% if current_appt.has_cat %}
+            &#128008;&#xFE0E;
+          {% endif %}
+          </td>
+
+          <td class="appt_description right"><a href="{% url 'book_cal_appointment' 'adopter' adopter.id current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a><a href="{% url 'validate' 'adopter' 'cancel' adopter.id current_appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
+
+        </tr>
+
+        <tr>
+          <td class="left" style="vertical-align: top;"><b>({{current_appt.appt_string}})</b></td>
+          <td class="right">
+            {% if current_appt.bringing_dog %}
+              <b>Bringing dog!<br></b>
+            {% endif %}
+            {% if current_appt.has_cat %}
+              <b>Has a cat!</b>
+            {% endif %}
+          </td>
+        </tr>
+
+      </table>
+
+      {% if current_appt.adopter_notes %}
+        <table class="appt_subblock appt_info_block">
+
+          <tr class="info_block_subheader">
+            <th class="left"><a href="{% url 'edit_cal_appointment' role current_appt.id date.year date.month date.day %}">Notes</a></th>
+            <th class="right"><a href="{% url 'edit_cal_appointment' role current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
+          </tr>
+
+          <tr>
+            <td class="left">{{current_appt.adopter_notes|linebreaks}}</td>
+            <td></td>
+          </tr>
+
+        </table>
+      {% endif %}
+
+      <table class="appt_subblock appt_info_block appt_end_block">
+
+        <tr>
+          <td class="left"><a href="{% url 'validate' 'adopter' 'cancel' adopter.id current_appt.id date.year date.month date.day %}">Cancel My Appointment</a></td>
+          <td></td>
+        </tr>
+
+      </table>
+    </div>
+
+    {% if visible == True %}
+      <br><br>Click any open slot below to reschedule your appointment. We only book one appointment per adopter at a time. By booking any appointment below, you will forfeit your current appointment slot.
+      <br><br><b><a class="standalone" href="{% url 'validate' 'adopter' 'cancel' adopter.id current_appt.id date.year date.month date.day %}">Click here to cancel your appointment.</a></b>
+    {% endif %}
+  {% else %}
+    You do not currently have an appointment. Click any open slot below to schedule your appointment.
+  {% endif %}
+
+  {% if date.weekday == 5 or date.weekday == 6 %}
+    <br><br>
+    <p><b>We are not open on weekends.</b></p>
+  {% endif %}
+
+  {% if visible == False %}
+    {% if date.weekday < 5 %}
+      <br><br>
+      <p>We only schedule two weeks in advance, and are not scheduling for this date yet.
+      {% if adopter.alert_date == date %}
+        We will alert you when appointments for this date are open.
+      {% else %}
+        <a class="standalone" href="{% url 'set_alert_date' role adopter.id date.year date.month date.day %}">Please click here to be alerted when we have opened appointments for this date.</a>
+      {% endif %}
+      </p>
+    {% endif %}
+  {% endif %}
+</div>

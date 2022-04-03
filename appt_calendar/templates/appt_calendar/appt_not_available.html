@@ -1,60 +1,7 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-  {% load static %}
-  <meta charset="utf-8">
-  <title></title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-  <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-</head>
-<body>
+{% extends 'dashboard/base.html' %}
+{% load static %}
 
-  <div class="activitymenu">
-    <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
-
-    {% if role == 'adopter' %}
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li><a href="{% url 'adopter_home' adopter.id %}">Calendar</a></li>
-            <li><a href="{% url 'faq' adopter.id %}">FAQ</a></li>
-            {% if adopter.has_current_appt == True %}
-              <li><a href="{% url 'visitor_instructions' adopter.id %}">Visitor Instructions</a></li>
-            {% endif %}
-            <li class="end"><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
-          </ul>
-        </div>
-      </nav>
-
-    {% elif role == 'admin' %}
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
-            <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
-            <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
-            <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
-            <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-            <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
-            <li class="end"><a href="{% url 'email_home' %}">Email Templates</a></li>
-          </ul>
-        </div>
-      </nav>
-
-    {% elif role == 'greeter'%}
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li class="end"><a href="{% url 'calendar' 'greeter' %}">Calendar</a> </li>
-          </ul>
-        </div>
-      </nav>
-
-    {% endif %}
-
-  </div>
-
-
+{% block content %}
   <div class="main textpage">
     <h1 class="page_header">Book Appointment</h1>
 
@@ -79,6 +26,4 @@
     {% endif %}
 
   </div>
-
-  </body>
-</html>
+{% endblock %}

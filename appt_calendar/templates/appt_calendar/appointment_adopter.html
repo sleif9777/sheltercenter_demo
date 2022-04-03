@@ -1,0 +1,34 @@
+<div class="appointment">
+  <!-- header grid, has a bottom border unless it is the only section -->
+  <!-- it will be the only section when the appointment is not booked and has no notes -->
+  {% if appt.adopter_notes %}
+    <table class="appt_info_block" id="appt_header_block">
+  {% else %}
+    <table class="appt_info_block appt_end_block" id="appt_header_block">
+  {% endif %}
+
+    <tr>
+      {% if appt.available == True and appt.appt_type in schedulable %}
+        {% if not has_current_appt %}
+          <td class="appt_description left upper"><b><a href="{% url 'book_cal_appointment' 'adopter' adopter.id appt.id date.year date.month date.day %}">CLICK TO BOOK</a></b></td>
+        {% else %}
+          <td class="appt_description left upper"><b><a href="{% url 'adopter_reschedule' 'adopter' adopter.id appt.id date.year date.month date.day %}">CLICK TO RESCHEDULE</a></b></td>
+        {% endif %}
+      {% endif %}
+    </tr>
+
+    <tr>
+      <td class="left"><b>({{appt.appt_string}})</b></td>
+      <td class="right"></td>
+    </tr>
+
+    {% if appt.available and appt.appt_type in schedulable and has_current_appt %}
+      <tr>
+        <td class="left" style="font-size: 10pt; padding-top: 5px;">By scheduling this appointment, you will forfeit your current appt for {{current_appt_str}}.</td>
+        <td></td>
+      </tr>
+
+    {% endif %}
+
+  </table>
+</div>

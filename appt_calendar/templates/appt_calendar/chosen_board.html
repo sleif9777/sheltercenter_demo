@@ -1,112 +1,69 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    {% load static %}
-    <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-  </head>
+{% extends 'dashboard/base.html' %}
+{% load static %}
 
-  <body>
+{% block content %}
+  <div class="main textpage">
 
-    <div class="activitymenu">
-      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
+    <h1 class="page_header">Chosen Board</h1>
 
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
-            <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
-            <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
-            <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
-            <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-            <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
-            <li class="end"><a href="{% url 'email_home' %}">Email Templates</a></li>
-          </ul>
-        </div>
-      </nav>
+    <table id="chosenboard" style="width: 95%;">
 
-    </div>
+      <tr class="no-border" style="margin-bottom: 5px;">
+        <th style="width:15%;">Date</th>
+        <th style="width:10%;">Time</th>
+        <th style="width:17%;">Adopter</th>
+        <th style="width:10%;">Outcome</th>
+        <th style="width:15%;">Dog</th>
+        <th style="width:15%;">Last Update Sent</th>
+        <th style="width:18%;">Ready To Roll?</th>
+      </tr>
 
-    <div class="main textpage">
+      {% for appt in appointments %}
+        <!-- appts with chosen or paperwork status -->
+        {% if appt.outcome == "3" or appt.outcome == "6" or appt.outcome == "7" %}
 
-      <!-- need to get rid of before live -->
-      <div class="roleselector">
-        <nav>
-          <div class="roleselector-center">
-            <ul>
-              <li style="color: white;">FOR TEST PURPOSES ONLY</li>
-              <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
-              <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
-              <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
+          <tr>
+            <td>{{appt.date}}</td>
+            <td>{{appt.time}}</td>
+            <td>{{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}</td>
+            <td>{{appt.get_outcome_display}}</td>
+            <td>{{appt.dog}}</td>
 
-      <h1 class="page_header">Chosen Board</h1>
+            <td>
+              <div class="chosen_board_actions">
+                {{appt.last_update_sent}}<br>
+                <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a>
+              </div>
+            </td>
 
-      <table id="chosenboard" style="width: 95%;">
-
-        <tr class="no-border" style="margin-bottom: 5px;">
-          <th style="width:15%;">Date</th>
-          <th style="width:10%;">Time</th>
-          <th style="width:17%;">Adopter</th>
-          <th style="width:10%;">Outcome</th>
-          <th style="width:15%;">Dog</th>
-          <th style="width:15%;">Last Update Sent</th>
-          <th style="width:18%;">Ready To Roll?</th>
-        </tr>
-
-        {% for appt in appointments %}
-          <!-- appts with chosen or paperwork status -->
-          {% if appt.outcome == "3" or appt.outcome == "6" or appt.outcome == "7" %}
-
-            <tr>
-              <td>{{appt.date}}</td>
-              <td>{{appt.time}}</td>
-              <td>{{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}</td>
-              <td>{{appt.get_outcome_display}}</td>
-              <td>{{appt.dog}}</td>
-
-              <td>
+            <td class="chosenboard">
+              {% if appt.outcome == "3" %}
                 <div class="chosen_board_actions">
-                  {{appt.last_update_sent}}<br>
-                  <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a>
+                  <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_negative' %}">Heartworm Negative</a><br>
+                  <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_positive' %}">Heartworm Positive</a>
                 </div>
-              </td>
-
-              <td class="chosenboard">
-                {% if appt.outcome == "3" %}
+              {% elif appt.outcome == "6" %}
+                Adopters Notified<br>
+                {% if appt.heartworm == True %}
                   <div class="chosen_board_actions">
-                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_negative' %}">Heartworm Negative</a><br>
-                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_positive' %}">Heartworm Positive</a>
+                    <a class="chosen_board_actions" href="{% url 'paperwork_calendar' role today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
                   </div>
-                {% elif appt.outcome == "6" %}
-                  Adopters Notified<br>
-                  {% if appt.heartworm == True %}
-                    <div class="chosen_board_actions">
-                      <a class="chosen_board_actions" href="{% url 'paperwork_calendar' role today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
-                    </div>
-                  {% else %}
-                    <div class="chosen_board_actions">
-                      <a class="chosen_board_actions" href="{% url 'paperwork_calendar' role today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
-                    </div>
-                  {% endif %}
-                {% elif appt.outcome == "7" %}
-                  Adopters Notified<br>
-                  Paperwork Scheduled
+                {% else %}
+                  <div class="chosen_board_actions">
+                    <a class="chosen_board_actions" href="{% url 'paperwork_calendar' role today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
+                  </div>
                 {% endif %}
-              </td>
+              {% elif appt.outcome == "7" %}
+                Adopters Notified<br>
+                Paperwork Scheduled
+              {% endif %}
+            </td>
 
-            </tr>
-          {% endif %}
+          </tr>
+        {% endif %}
 
-        {% endfor %}
-      </table>
+      {% endfor %}
+    </table>
 
-    </div>
-
-  </body>
-</html>
+  </div>
+{% endblock %}
