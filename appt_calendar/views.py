@@ -22,7 +22,6 @@ def calendar_home(request):
 
 def calendar(request, role):
     today = datetime.date.today()
-
     return redirect('calendar_date', role, today.year, today.month, today.day)
 
 def copy_temp_to_cal(request, date_year, date_month, date_day, role):
@@ -94,9 +93,6 @@ def adopter_calendar_date(request, role, adopter_id, date_year, date_month, date
     }
 
     calendar = gc(role, 'full', adopter_id, date_year, date_month, date_day)
-
-    for t in calendar['timeslots']:
-        print(t)
 
     context.update(calendar)
 

@@ -59,11 +59,7 @@ def add_email_template(request):
     if form.is_valid():
         data = form.cleaned_data
 
-        plain = strip_tags(data['text'])
-
         new_template = EmailTemplate.objects.create(template_name = data['template_name'], text = data['text'], plain = plain)
-
-        send_email(plain, data['text'], 'sheltercenterdev@gmail.com', data['template_name'], 'sheltercenterdev@gmail.com')
 
         return redirect('email_home')
     else:
