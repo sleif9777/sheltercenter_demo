@@ -1,0 +1,5 @@
+<a href="{% url 'jump_to_date_adopter' role adopter.id %}">Jump To Date</a>
+
+{% if date != today %}
+  <a href="{% url 'adopter_calendar_date' 'adopter' adopter.id today.year today.month today.day %}">Return to Today</a>
+{% endif %}

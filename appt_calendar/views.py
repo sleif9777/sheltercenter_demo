@@ -1,14 +1,20 @@
 from django.shortcuts import render, get_object_or_404, redirect
 import datetime, time
-from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
+from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
 from .models import Timeslot, Appointment
 from adopter.models import Adopter
 from .forms import *
 from emails.email_template import *
+from email_mgr.email_sender import *
 from .date_time_strings import *
+from .appointment_manager import *
+from dashboard.views import generate_calendar as gc
+
 #
 # # Create your views here.
 #
+
+system_settings = SystemSettings.objects.get(pk=1)
 
 def calendar_home(request):
     today = datetime.date.today()
@@ -18,7 +24,7 @@ def calendar(request, role):
     today = datetime.date.today()
 
     return redirect('calendar_date', role, today.year, today.month, today.day)
-#
+
 def copy_temp_to_cal(request, date_year, date_month, date_day, role):
     date = datetime.date(date_year, date_month, date_day)
     daily_sched_temp = get_object_or_404(Daily_Schedule, day_of_week=date.weekday())
@@ -50,157 +56,51 @@ def set_alert_date(request, role, adopter_id, date_year, date_month, date_day):
 
     return redirect('adopter_calendar_date', role, adopter_id, date.year, date.month, date.day)
 
-def greeter_reschedule(request, role, adopter_id, appt_id, date_year, date_month, date_day):
-    all_dows = Daily_Schedule.objects
-    date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date_str(date)
-    next_day = date + datetime.timedelta(days=1)
-    previous_day = date - datetime.timedelta(days=1)
-    today = datetime.date.today()
-    weekday = weekday_str(date)
-    timeslots_query = Timeslot.objects.filter(date = date)
-    timeslots = {}
-    open_timeslots = []
-    delta_from_today = (date - datetime.date.today()).days
+def greeter_reschedule(request, role, adopter_id, appt_id, date_year, date_month, date_day, source):
     old_appt = Appointment.objects.get(pk=appt_id)
-
     old_appt.outcome = "1"
     old_appt.save()
 
     adopter = Adopter.objects.get(pk=adopter_id)
     full_name = adopter.adopter_full_name()
 
-    print(adopter)
-
-    if delta_from_today <= 13:
-        visible_to_adopters = True
-    else:
-        visible_to_adopters = False
-
-    for time in timeslots_query.iterator():
-        get_appts = time.appointments.filter(date = date, time = time.time)
-        appts_for_time = []
-        add_to_open_timeslots = False
-        for appointment in get_appts:
-            appts_for_time += [appointment]
-            if appointment.available == True:
-                add_to_open_timeslots = True
-        timeslots[time] = appts_for_time
-        if add_to_open_timeslots == True:
-            open_timeslots += [time]
-
-    if timeslots == {}:
-        empty_day = True
-    else:
-        empty_day = False
-
     context = {
-        "date": date,
-        "date_pretty": date_pretty,
-        "next_day": next_day,
-        "previous_day": previous_day,
-        "weekday": weekday,
-        "timeslots": timeslots,
-        "empty_day": empty_day,
-        "schedulable": ["1", "2", "3"],
-        "all_dows": all_dows,
-        "visible": visible_to_adopters,
-        "delta": delta_from_today,
-        "role": role,
-        "open_timeslots": open_timeslots,
         "full_name": full_name,
-        "today": today,
         "adopter": adopter,
         "appt": old_appt,
+        "source": source,
     }
+
+    calendar = gc(role, 'reschedule', None, date_year, date_month, date_day)
+
+    context.update(calendar)
 
     return render(request, "appt_calendar/calendar_greeter_reschedule.html/", context)
 #
 def adopter_calendar_date(request, role, adopter_id, date_year, date_month, date_day):
     adopter = Adopter.objects.get(pk=adopter_id)
-    all_dows = Daily_Schedule.objects
-    date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date_str(date)
-    today = datetime.date.today()
-    next_day = date + datetime.timedelta(days=1)
-    previous_day = date - datetime.timedelta(days=1)
-    weekday = weekday_str(date)
-    timeslots_query = Timeslot.objects.filter(date = date)
-    timeslots = {}
-    open_timeslots = []
-    schedulable = ["1", "2", "3"]
-    delta_from_today = (date - datetime.date.today()).days
 
     try:
-        current_appt = Appointment.objects.filter(adopter_choice=adopter).latest('id')
+        current_appt = Appointment.objects.filter(adopter_choice=adopter).latest('id') #.exclude(date__lt = today)
         current_appt_str = current_appt.date_and_time_string()
     except:
         current_appt = None
         current_appt_str = None
 
-    has_current_appt = adopter.has_current_appt
-
-    if delta_from_today <= 13:
-        visible_to_adopters = True
-    else:
-        visible_to_adopters = False
-
-    for time in timeslots_query.iterator():
-        now = datetime.datetime.now().time()
-        if date == today:
-            if time.time > now:
-                get_appts = time.appointments.filter(date = date, time = time.time)
-                appts_for_time = []
-                add_to_open_timeslots = False
-                for appointment in get_appts:
-                    appts_for_time += [appointment]
-                    if appointment.available == True and appointment.appt_type in schedulable:
-                        add_to_open_timeslots = True
-                timeslots[time] = appts_for_time
-                if add_to_open_timeslots == True:
-                    open_timeslots += [time]
-        else:
-            get_appts = time.appointments.filter(date = date, time = time.time)
-            appts_for_time = []
-            add_to_open_timeslots = False
-            for appointment in get_appts:
-                print(appointment.appt_type)
-                appts_for_time += [appointment]
-                if appointment.available == True and appointment.appt_type in schedulable:
-                    add_to_open_timeslots = True
-                    print("eligible")
-            timeslots[time] = appts_for_time
-            if add_to_open_timeslots == True:
-                open_timeslots += [time]
-                print(time)
-
-    if timeslots == {}:
-        empty_day = True
-    else:
-        empty_day = False
-
     context = {
-        "adopter": adopter,
-        "current_appt": current_appt,
-        "current_appt_str": current_appt_str,
-        "has_current_appt": has_current_appt,
-        "date": date,
-        "date_pretty": date_pretty,
-        "next_day": next_day,
-        "previous_day": previous_day,
-        "weekday": weekday,
-        "timeslots": timeslots,
-        "empty_day": empty_day,
-        "schedulable": schedulable,
-        "all_dows": all_dows,
-        "visible": visible_to_adopters,
-        "delta": delta_from_today,
-        "role": role,
-        "open_timeslots": open_timeslots,
-        "today": today,
+        'adopter': adopter,
+        'current_appt': current_appt,
+        'current_appt_str': current_appt_str
     }
 
-    return render(request, "appt_calendar/calendar_adopter.html/", context)
+    calendar = gc(role, 'full', adopter_id, date_year, date_month, date_day)
+
+    for t in calendar['timeslots']:
+        print(t)
+
+    context.update(calendar)
+
+    return render(request, 'appt_calendar/calendar_test_harness.html', context)
 
 def book_appointment(request, role, adopter_id, appt_id, date_year, date_month, date_day):
     date = datetime.date(date_year, date_month, date_day)
@@ -217,23 +117,24 @@ def book_appointment(request, role, adopter_id, appt_id, date_year, date_month, 
         return render(request, "appt_calendar/appt_not_available.html", context)
 
     else:
-        adopter.has_current_appt = True
-        adopter.save()
-
-        appt.adopter_choice = adopter
-        appt.available = False
-        appt.published = False
-        appt.save()
-
         form = BookAppointmentForm(request.POST or None, instance=appt)
 
         if form.is_valid():
             form.save()
 
+            adopter.has_current_appt = True
+            adopter.save()
+
+            appt.adopter_choice = adopter
+            delist_appt(appt)
+
+            confirm_etemp(adopter, appt)
+
+            if appt.date == datetime.date.today():
+                notify_adoptions_add(adopter, appt)
+
             return redirect('adopter_calendar_date', role, adopter_id, date.year, date.month, date.day)
         else:
-
-            confirm(appt.time, appt.date, appt.adopter_choice, appt)
 
             form = BookAppointmentForm(request.POST or None, instance=appt, initial={'adopter_choice': adopter})
 
@@ -300,97 +201,11 @@ def jump_to_date_adopter(request, role, adopter_id):
     return render(request, "appt_calendar/jump_to_date.html", context)
 
 def calendar_date(request, role, date_year, date_month, date_day):
-    all_dows = Daily_Schedule.objects
-    date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date_str(date)
-    today = datetime.date.today()
-    next_day = date + datetime.timedelta(days=1)
-    previous_day = date - datetime.timedelta(days=1)
-    weekday = weekday_str(date)
-    timeslots_query = Timeslot.objects.filter(date = date)
-    timeslots = {}
-    open_timeslots = []
-    delta_from_today = (date - datetime.date.today()).days
+    context = gc(role, 'full', None, date_year, date_month, date_day)
 
-    if delta_from_today <= 13:
-        visible_to_adopters = True
-    else:
-        visible_to_adopters = False
-
-    for time in timeslots_query.iterator():
-        get_appts = time.appointments.filter(date = date, time = time.time)
-        appts_for_time = []
-        add_to_open_timeslots = False
-        for appointment in get_appts:
-            appts_for_time += [appointment]
-            if appointment.available == True:
-                add_to_open_timeslots = True
-        timeslots[time] = appts_for_time
-        if add_to_open_timeslots == True:
-            open_timeslots += [time]
-
-    if timeslots == {}:
-        empty_day = True
-    else:
-        empty_day = False
-
-    context = {
-        "date": date,
-        "date_pretty": date_pretty,
-        "next_day": next_day,
-        "previous_day": previous_day,
-        "weekday": weekday,
-        "timeslots": timeslots,
-        "empty_day": empty_day,
-        "schedulable": ["1", "2", "3"],
-        "all_dows": all_dows,
-        "visible": visible_to_adopters,
-        "delta": delta_from_today,
-        "role": role,
-        "open_timeslots": open_timeslots,
-        "today": today,
-    }
-
-    if role == "admin":
-        return render(request, "appt_calendar/calendar_admin.html/", context)
-    elif role == "greeter":
-        return render(request, "appt_calendar/calendar_greeter.html/", context)
+    return render(request, "appt_calendar/calendar_test_harness.html", context)
 
 def paperwork_calendar(request, role, date_year, date_month, date_day, appt_id, hw_status):
-    all_dows = Daily_Schedule.objects
-    date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date_str(date)
-    today = datetime.date.today()
-    next_day = date + datetime.timedelta(days=1)
-    previous_day = date - datetime.timedelta(days=1)
-    weekday = weekday_str(date)
-    timeslots_query = Timeslot.objects.filter(date = date)
-    timeslots = {}
-    open_timeslots = []
-    delta_from_today = (date - datetime.date.today()).days
-
-    if delta_from_today <= 13:
-        visible_to_adopters = True
-    else:
-        visible_to_adopters = False
-
-    for time in timeslots_query.iterator():
-        get_appts = time.appointments.filter(date = date, time = time.time)
-        appts_for_time = []
-        add_to_open_timeslots = False
-        for appointment in get_appts:
-            appts_for_time += [appointment]
-            if appointment.available == True:
-                add_to_open_timeslots = True
-        timeslots[time] = appts_for_time
-        if add_to_open_timeslots == True:
-            open_timeslots += [time]
-
-    if timeslots == {}:
-        empty_day = True
-    else:
-        empty_day = False
-
     appt = Appointment.objects.get(pk=appt_id)
 
     if hw_status == 'positive':
@@ -398,187 +213,34 @@ def paperwork_calendar(request, role, date_year, date_month, date_day, appt_id, 
     else:
         fta_or_adoption = "Adoption"
 
+    calendar = gc(role, 'full', None, date_year, date_month, date_day)
+
     context = {
-        "date": date,
-        "date_pretty": date_pretty,
-        "next_day": next_day,
-        "previous_day": previous_day,
-        "weekday": weekday,
-        "timeslots": timeslots,
-        "empty_day": empty_day,
-        "schedulable": ["1", "2", "3"],
-        "all_dows": all_dows,
-        "visible": visible_to_adopters,
-        "delta": delta_from_today,
-        "role": role,
-        "open_timeslots": open_timeslots,
-        "today": today,
         "appt": appt,
         "hw_status": hw_status,
         "fta_or_adoption": fta_or_adoption,
     }
 
+    context.update(calendar)
+
     return render(request, "appt_calendar/paperwork_calendar.html/", context)
 
-
 def calendar_print(request, role, date_year, date_month, date_day):
-    all_dows = Daily_Schedule.objects
-    date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date_str(date)
-    today = datetime.date.today()
-    next_day = date + datetime.timedelta(days=1)
-    previous_day = date - datetime.timedelta(days=1)
-    weekday = weekday_str(date)
-    timeslots_query = Timeslot.objects.filter(date = date)
-    timeslots = {}
-    open_timeslots = []
-    delta_from_today = (date - datetime.date.today()).days
-
-    if delta_from_today <= 13:
-        visible_to_adopters = True
-    else:
-        visible_to_adopters = False
-
-    for time in timeslots_query.iterator():
-        get_appts = time.appointments.filter(date = date, time = time.time)
-        appts_for_time = []
-        add_to_open_timeslots = False
-        for appointment in get_appts:
-            appts_for_time += [appointment]
-            if appointment.available == True:
-                add_to_open_timeslots = True
-        timeslots[time] = appts_for_time
-        if add_to_open_timeslots == True:
-            open_timeslots += [time]
-
-    if timeslots == {}:
-        empty_day = True
-    else:
-        empty_day = False
-
-    context = {
-        "date": date,
-        "date_pretty": date_pretty,
-        "next_day": next_day,
-        "previous_day": previous_day,
-        "weekday": weekday,
-        "timeslots": timeslots,
-        "empty_day": empty_day,
-        "schedulable": ["1", "2", "3"],
-        "all_dows": all_dows,
-        "visible": visible_to_adopters,
-        "delta": delta_from_today,
-        "role": role,
-        "open_timeslots": open_timeslots,
-        "today": today,
-    }
+    context = gc(role, 'full', None, date_year, date_month, date_day)
 
     return render(request, "appt_calendar/calendar_print.html/", context)
 
 def daily_report_all_appts(request, role, date_year, date_month, date_day):
-    all_dows = Daily_Schedule.objects
-    date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date_str(date)
-    today = datetime.date.today()
-    next_day = date + datetime.timedelta(days=1)
-    previous_day = date - datetime.timedelta(days=1)
-    weekday = weekday_str(date)
-    timeslots_query = Timeslot.objects.filter(date = date)
-    timeslots = {}
-    open_timeslots = []
-    delta_from_today = (date - datetime.date.today()).days
-
-    if delta_from_today <= 13:
-        visible_to_adopters = True
-    else:
-        visible_to_adopters = False
-
-    for time in timeslots_query.iterator():
-        get_appts = time.appointments.filter(date = date, time = time.time)
-        appts_for_time = []
-        add_to_open_timeslots = False
-        for appointment in get_appts:
-            appts_for_time += [appointment]
-            if appointment.available == True:
-                add_to_open_timeslots = True
-        timeslots[time] = appts_for_time
-        if add_to_open_timeslots == True:
-            open_timeslots += [time]
-
-    if timeslots == {}:
-        empty_day = True
-    else:
-        empty_day = False
-
-    context = {
-        "date": date,
-        "date_pretty": date_pretty,
-        "next_day": next_day,
-        "previous_day": previous_day,
-        "weekday": weekday,
-        "timeslots": timeslots,
-        "empty_day": empty_day,
-        "schedulable": ["1", "2", "3"],
-        "all_dows": all_dows,
-        "visible": visible_to_adopters,
-        "delta": delta_from_today,
-        "role": role,
-        "open_timeslots": open_timeslots,
-        "today": today,
-    }
+    context = gc(role, 'full', None, date_year, date_month, date_day)
 
     return render(request, "appt_calendar/daily_report_all_appts.html/", context)
 
 def daily_reports_home(request, role):
-    all_dows = Daily_Schedule.objects
     date = datetime.date.today()
-    date_pretty = date_str(date)
-    today = datetime.date.today()
-    next_day = date + datetime.timedelta(days=1)
-    previous_day = date - datetime.timedelta(days=1)
-    weekday = weekday_str(date)
-    timeslots_query = Timeslot.objects.filter(date = date)
-    timeslots = {}
-    open_timeslots = []
-    delta_from_today = (date - datetime.date.today()).days
-
-    if delta_from_today <= 13:
-        visible_to_adopters = True
-    else:
-        visible_to_adopters = False
-
-    for time in timeslots_query.iterator():
-        get_appts = time.appointments.filter(date = date, time = time.time)
-        appts_for_time = []
-        add_to_open_timeslots = False
-        for appointment in get_appts:
-            appts_for_time += [appointment]
-            if appointment.available == True:
-                add_to_open_timeslots = True
-        timeslots[time] = appts_for_time
-        if add_to_open_timeslots == True:
-            open_timeslots += [time]
-
-    if timeslots == {}:
-        empty_day = True
-    else:
-        empty_day = False
 
     context = {
         "date": date,
-        "date_pretty": date_pretty,
-        "next_day": next_day,
-        "previous_day": previous_day,
-        "weekday": weekday,
-        "timeslots": timeslots,
-        "empty_day": empty_day,
-        "schedulable": ["1", "2", "3"],
-        "all_dows": all_dows,
-        "visible": visible_to_adopters,
-        "delta": delta_from_today,
         "role": role,
-        "open_timeslots": open_timeslots,
-        "today": today,
     }
 
     return render(request, "appt_calendar/daily_report_home.html/", context)
@@ -601,74 +263,12 @@ def chosen_board(request, role):
 
     return render(request, "appt_calendar/chosen_board.html/", context)
 
-def send_ready_to_roll_msg(request, role, appt_id, hw_status):
-    appt = Appointment.objects.get(pk=appt_id)
-
-    if hw_status == "positive":
-        appt.heartworm = True
-
-    appt.outcome = "6"
-    appt.save()
-
-    ready_to_roll(appt, hw_status)
-
-    return redirect('chosen_board', role)
-
 def daily_report_adopted_chosen_fta(request, role, date_year, date_month, date_day):
-    all_dows = Daily_Schedule.objects
-    date = datetime.date(date_year, date_month, date_day)
-    date_pretty = date_str(date)
-    today = datetime.date.today()
-    next_day = date + datetime.timedelta(days=1)
-    previous_day = date - datetime.timedelta(days=1)
-    weekday = weekday_str(date)
-    timeslots_query = Timeslot.objects.filter(date = date)
-    timeslots = {}
-    open_timeslots = []
-    delta_from_today = (date - datetime.date.today()).days
-
-    if delta_from_today <= 13:
-        visible_to_adopters = True
-    else:
-        visible_to_adopters = False
-
-    for time in timeslots_query.iterator():
-        get_appts = time.appointments.filter(date = date, time = time.time)
-        appts_for_time = []
-        add_to_open_timeslots = False
-        for appointment in get_appts:
-            appts_for_time += [appointment]
-            if appointment.available == True:
-                add_to_open_timeslots = True
-        timeslots[time] = appts_for_time
-        if add_to_open_timeslots == True:
-            open_timeslots += [time]
-
-    if timeslots == {}:
-        empty_day = True
-    else:
-        empty_day = False
-
-    context = {
-        "date": date,
-        "date_pretty": date_pretty,
-        "next_day": next_day,
-        "previous_day": previous_day,
-        "weekday": weekday,
-        "timeslots": timeslots,
-        "empty_day": empty_day,
-        "schedulable": ["1", "2", "3"],
-        "all_dows": all_dows,
-        "visible": visible_to_adopters,
-        "delta": delta_from_today,
-        "role": role,
-        "open_timeslots": open_timeslots,
-        "today": today,
-    }
+    context = gc(role, 'full', None, date_year, date_month, date_day)
 
     return render(request, "appt_calendar/daily_report_adopted_chosen_fta.html/", context)
-#
-def send_followup(request, role, appt_id, date_year, date_month, date_day):
+
+def send_followup(request, role, appt_id, date_year, date_month, date_day, host):
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
 
@@ -678,7 +278,10 @@ def send_followup(request, role, appt_id, date_year, date_month, date_day):
 
     adopter = appt.adopter_choice
 
-    follow_up(adopter)
+    if host == 0:
+        follow_up(adopter)
+    else:
+        follow_up_w_host(adopter)
 
     adopter.has_current_appt = False
     adopter.visits_to_date += 1
@@ -710,7 +313,7 @@ def delete_timeslot(request, role, date_year, date_month, date_day, timeslot_id)
     deleted_timeslot.delete()
 
     return redirect('calendar_date', role, date.year, date.month, date.day)
-#
+
 def add_appointment(request, role, date_year, date_month, date_day, timeslot_id):
     date = datetime.date(date_year, date_month, date_day)
     timeslot = Timeslot.objects.get(pk=timeslot_id)
@@ -721,9 +324,7 @@ def add_appointment(request, role, date_year, date_month, date_day, timeslot_id)
         timeslot.appointments.add(appt)
 
         if int(appt.appt_type) > 3:
-            appt.available = False
-            appt.published = False
-            appt.save()
+            delist_appt(appt)
 
         if appt.adopter_choice != None:
 
@@ -731,11 +332,12 @@ def add_appointment(request, role, date_year, date_month, date_day, timeslot_id)
             adopter.has_current_appt = True
             adopter.save()
 
-            appt.available = False
-            appt.published = False
-            appt.save()
+            delist_appt(appt)
 
-            confirm(appt.time, appt.date, appt.adopter_choice, appt)
+            confirm_etemp(adopter, appt)
+
+            if appt.date == datetime.date.today():
+                notify_adoptions_add(adopter, appt)
 
         return redirect('calendar_date', role, date.year, date.month, date.day)
     else:
@@ -777,11 +379,9 @@ def add_paperwork_appointment(request, role, date_year, date_month, date_day, ti
             adopter.has_current_appt = False
             adopter.save()
 
-            appt.available = False
-            appt.published = False
-            appt.save()
+            delist_appt(appt)
 
-            adoption_paperwork(appt.time, appt.date, appt.adopter_choice, appt, original_appt.heartworm)
+            adoption_paperwork(adopter, appt, original_appt.heartworm)
 
         return redirect('chosen_board', role)
     else:
@@ -800,7 +400,11 @@ def add_paperwork_appointment(request, role, date_year, date_month, date_day, ti
 def edit_appointment(request, role, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
-    form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+
+    if role == 'adopter':
+        form = BookAppointmentForm(request.POST or None, instance=appt)
+    else:
+        form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
 
     if appt.adopter_choice != None:
         current_email = appt.adopter_choice.adopter_email
@@ -816,19 +420,29 @@ def edit_appointment(request, role, date_year, date_month, date_day, appt_id):
             post_save_email = None
         if appt.adopter_choice != None:
             if appt.appt_type in ["1", "2", "3"]:
-                confirm(appt.time, appt.date, appt.adopter_choice, appt)
-            appt.available = False
-            appt.published = False
-            appt.save()
+                confirm_etemp(appt.adopter_choice, appt)
+                # confirm(appt.time, appt.date, appt.adopter_choice, appt)
 
-        return redirect('calendar_date', role, date.year, date.month, date.day)
+                if appt.date == datetime.date.today():
+                    notify_adoptions_add(appt.adopter_choice, appt)
+
+            delist_appt(appt)
+
+        if role == 'adopter':
+            return redirect('adopter_calendar_date', role, appt.adopter_choice.id, date.year, date.month, date.day)
+        else:
+            return redirect('calendar_date', role, date.year, date.month, date.day)
     else:
-        form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+        if role == 'adopter':
+            form = BookAppointmentForm(request.POST or None, instance=appt)
+        else:
+            form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
 
     context = {
         'form': form,
         'title': "Edit Appointment",
         'role': role,
+        'adopter': appt.adopter_choice,
     }
 
     return render(request, "appt_calendar/add_edit_appt.html", context)
@@ -836,6 +450,7 @@ def edit_appointment(request, role, date_year, date_month, date_day, appt_id):
 def enter_decision(request, role, appt_id, date_year, date_month, date_day):
     appt = Appointment.objects.get(pk=appt_id)
     form = ApptOutcomeForm(request.POST or None, instance=appt)
+    today = datetime.date.today()
 
     if form.is_valid():
         form.save()
@@ -851,10 +466,13 @@ def enter_decision(request, role, appt_id, date_year, date_month, date_day):
         elif appt.outcome in ["2", "3", "4"]:
             adopter.visits_to_date = 0
 
+            if appt.outcome == "3":
+                chosen(adopter, appt)
+
         adopter.save()
 
         if role == "admin":
-            return redirect('calendar_date', role, date_year, date_month, date_day)
+            return redirect('calendar_date', role, today.year, today.month, today.day)
         elif role == "greeter":
             return redirect('calendar', role)
 
@@ -871,50 +489,47 @@ def enter_decision(request, role, appt_id, date_year, date_month, date_day):
 def remove_adopter(request, role, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
-    cancel(appt.time, appt.date, appt.adopter_choice)
-
     adopter = appt.adopter_choice
+
+    cancel(adopter, appt)
+
     adopter.has_current_appt = False
     adopter.save()
 
-    appt.adopter_choice = None
-    appt.available = True
-    appt.published = True
-    appt.outcome = "1"
-    appt.internal_notes = ""
-    appt.adopter_notes = ""
-    appt.bringing_dog = False
-    appt.comm_adopted_dogs = False
-    appt.comm_limited_puppies = False
-    appt.comm_limited_small = False
-    appt.comm_limited_hypo = False
-    appt.comm_limited_other = False
-    appt.save()
+    reset_appt(appt)
 
     return redirect('calendar_date', role, date.year, date.month, date.day)
 
-def adopter_self_cancel(request, role, adopter_id, date_year, date_month, date_day, appt_id):
+def validate_adopter_action(request, role, action, adopter_id, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
-    cancel(appt.time, appt.date, appt.adopter_choice)
+    adopter = Adopter.objects.get(pk=adopter_id)
 
+    context = {
+        'adopter': adopter,
+        'date': date,
+        'appt': appt,
+        'action': action
+    }
+
+    return render(request, "appt_calendar/adopter_validate_action.html", context)
+
+def adopter_self_cancel(request, role, adopter_id, date_year, date_month, date_day, appt_id):
+    complete = False
+
+    date = datetime.date(date_year, date_month, date_day)
+    appt = Appointment.objects.get(pk=appt_id)
     adopter = appt.adopter_choice
+
+    cancel(adopter, appt)
+
     adopter.has_current_appt = False
     adopter.save()
 
-    appt.adopter_choice = None
-    appt.available = True
-    appt.published = True
-    appt.outcome = "1"
-    appt.internal_notes = ""
-    appt.adopter_notes = ""
-    appt.bringing_dog = False
-    appt.comm_adopted_dogs = False
-    appt.comm_limited_puppies = False
-    appt.comm_limited_small = False
-    appt.comm_limited_hypo = False
-    appt.comm_limited_other = False
-    appt.save()
+    reset_appt(appt)
+
+    if appt.date == datetime.date.today():
+        notify_adoptions_cancel(appt, adopter)
 
     appt_str = appt.date_and_time_string()
 
@@ -925,7 +540,7 @@ def adopter_self_cancel(request, role, adopter_id, date_year, date_month, date_d
 
     return render(request, "appt_calendar/adopter_self_cancel.html", context)
 
-def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month, date_day):
+def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month, date_day, source):
     adopter = Adopter.objects.get(pk=adopter_id)
     date = datetime.date(date_year, date_month, date_day)
     appt_set = Appointment.objects.filter(adopter_choice=adopter.id).exclude(date__lt = datetime.date.today())
@@ -951,42 +566,50 @@ def adopter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
     else:
         new_appt.internal_notes = current_appt.internal_notes
         new_appt.adopter_notes = current_appt.adopter_notes
-
         new_appt.bringing_dog = current_appt.bringing_dog
+        new_appt.has_cat = current_appt.has_cat
+        new_appt.mobility = current_appt.mobility
 
-        if role == "adopter" or role == "admin":
-            current_appt.adopter_choice = None
-            current_appt.available = True
-            current_appt.published = True
-            current_appt.internal_notes = ""
-            current_appt.adopter_notes = ""
-            current_appt.bringing_dog = False
-            current_appt.comm_adopted_dogs = False
-            current_appt.comm_limited_puppies = False
-            current_appt.comm_limited_small = False
-            current_appt.comm_limited_hypo = False
-            current_appt.comm_limited_other = False
+        if role == "adopter" or (role == "admin" and source == "calendar"):
+            reset_appt(current_appt)
             current_appt.save()
 
         new_appt.adopter_choice = adopter
-        new_appt.adopter_choice.has_current_appt = True
-        new_appt.available = False
-        new_appt.published = False
+        adopter.has_current_appt = True
+        adopter.save()
+
         new_appt.save()
 
         if role == "adopter":
-            reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
+            delist_appt(new_appt)
+
+            reschedule(adopter, new_appt)
+
+            if current_appt.date == datetime.date.today():
+                notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+            elif new_appt.date == datetime.date.today():
+                notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+
             return redirect("adopter_calendar_date", role, adopter_id, date_year, date_month, date_day)
         else:
-            adopter.visits_to_date += 1
-            adopter.save()
             today = datetime.date.today()
-            if role == "greeter":
+
+            if role == "greeter" or (role == 'admin' and source == "followup"):
                 current_appt.outcome = "5"
                 current_appt.save()
-                greeter_reschedule_email(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
+                adopter.visits_to_date += 1
+                adopter.save()
+                greeter_reschedule_email(adopter, new_appt)
             elif role == "admin":
-                reschedule(new_appt.time, new_appt.date, new_appt.adopter_choice, new_appt)
+
+                if current_appt.date == datetime.date.today():
+                    notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+                elif new_appt.date == datetime.date.today():
+                    notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+
+                reschedule(adopter, new_appt)
+
+            delist_appt(new_appt)
             return redirect("calendar_date", role, today.year, today.month, today.day)
 
 def delete_appointment(request, role, date_year, date_month, date_day, appt_id):

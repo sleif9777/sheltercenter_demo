@@ -29,10 +29,21 @@
       </tr>
       {% for timeslot, appointments in timeslots.items %}
         {% for appt in appointments %}
-          {% if appt.appt_type in schedulable %}
+          {% if appt.appt_type in schedulable and appt.adopter_choice %}
             <tr class="appt_row">
-              <td style="">{{appt.time}}</td>
-              <td>{{appt}}</td>
+              <td style="">{{appt.time_string}}</td>
+              <td>
+                {{appt}}
+                {% if appt.mobility %}
+                  &#9855;&#xFE0E;
+                {% endif %}
+                {% if appt.bringing_dog %}
+                  &#128021;&#xFE0E;
+                {% endif %}
+                {% if appt.has_cat %}
+                  &#128008;&#xFE0E;
+                {% endif %}
+              </td>
               <td>{{appt.adopter_notes}}</td>
               <td>{{appt.internal_notes}}</td>
               <td>

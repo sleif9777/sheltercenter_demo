@@ -4,6 +4,9 @@ from appt_calendar.date_time_strings import *
 
 # Create your models here.
 
+class SystemSettings(models.Model):
+    last_adopter_upload = models.DateField(default=datetime.date.today())
+
 class AppointmentTemplate(models.Model):
     APPT_TYPES = [
         ("1", "Adults"),
@@ -24,7 +27,6 @@ class AppointmentTemplate(models.Model):
         ("5", "Saturday"),
     )
 
-    #date = models.CharField(default=datetime.date.today)
     day_of_week = models.CharField(default="0", max_length=1, choices=DAYS_OF_WEEK)
     time = models.TimeField(default=datetime.time(12,00))
     appt_type = models.CharField(default="1", max_length=1, choices=APPT_TYPES)
@@ -34,14 +36,14 @@ class AppointmentTemplate(models.Model):
         render_time = self.time_string()
         render_appt_type = self.appt_string()
 
-        return render_dow + "s at " + render_time + " (" + render_appt_type + ")"
+        return render_dow + "s at " + render_time
 
     def __str__(self):
         render_dow = self.dow_string()
         render_time = self.time_string()
         render_appt_type = self.appt_string()
 
-        return render_dow + "s at " + render_time + " (" + render_appt_type + ")"
+        return render_dow + "s at " + render_time
 
     def dow_string(self):
         dows = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]

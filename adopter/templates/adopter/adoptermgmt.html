@@ -1,0 +1,16 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="main textpage">
+
+    <h1 class="page_header">Manage Adopters</h1>
+
+    <ul class="listpage" id="adopter_list">
+      {% for adopter in adopters %}
+        <li><a href="{% url 'edit_adopter' adopter.id %}">{{adopter}}</a></li>
+      {% endfor %}
+    </ul>
+
+  </div>
+{% endblock %}

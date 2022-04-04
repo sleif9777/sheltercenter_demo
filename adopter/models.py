@@ -1,23 +1,34 @@
 from django.db import models
 import datetime
 from num2words import num2words
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 
 class Adopter(models.Model):
-    adopter_first_name = models.CharField(default="", max_length=200, blank=True)
-    adopter_last_name = models.CharField(default="", max_length=200, blank=True)
-    adopter_email = models.EmailField(default="", blank=True)
+    STATUSES = [
+        ("1", "Approved"),
+        ("2", "Blocked"),
+    ]
+
+    adopter_first_name = models.CharField(default="", max_length=200, blank=True) #need to refactor and add verbose
+    adopter_last_name = models.CharField(default="", max_length=200, blank=True) #""
+    adopter_email = models.EmailField(default="", blank=True) #""
     acknowledged_faq = models.BooleanField(default = False)
     out_of_state = models.BooleanField(default = False)
     lives_with_parents = models.BooleanField(default = False)
     adopting_host = models.BooleanField(default = False)
     adopting_foster = models.BooleanField(default = False)
     friend_of_foster = models.BooleanField(default = False)
+    carryover_shelterluv = models.BooleanField(default = False)
     chosen_dog = models.CharField(default="", max_length=200, blank=True)
     has_current_appt = models.BooleanField(default = False)
     alert_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
     visits_to_date = models.IntegerField(default=0)
+    app_interest = models.CharField(default="", max_length=500, blank=True)
+    accept_date = models.DateField(default=datetime.date.today(), blank=True)
+    status = models.CharField(default="1", max_length=1, choices=STATUSES)
+    auth_code = models.IntegerField(default = 100000, validators = [MinValueValidator(100000), MaxValueValidator(999999)])
 
     def number_of_visits(self):
         ordinal = num2words(self.visits_to_date + 1, to='ordinal')
@@ -51,4 +62,4 @@ class Adopter(models.Model):
         return self.adopter_full_name()
 
     class Meta:
-        ordering = ('adopter_last_name', 'adopter_first_name')
+        ordering = ('adopter_first_name', 'adopter_last_name')

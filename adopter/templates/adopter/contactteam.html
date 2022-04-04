@@ -1,40 +1,9 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-  {% load static %}
-  <meta charset="utf-8">
-  <title></title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-  <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-</head>
-<body>
-  <div class="roleselector">
-    <nav>
-      <div class="roleselector-center">
-        <ul>
-          <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
-          <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
-          <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
-        </ul>
-      </div>
-    </nav>
-  </div>
-  <div class="activitymenu">
-    <nav>
-      <div class="actmenu-center">
-        <ul>
-          <li><a href="{% url 'adopter_home' adopter.id %}">Calendar</a></li>
-          <li><a href="{% url 'faq' adopter.id %}">FAQ</a></li>
-          {% if adopter.has_current_appt == True %}
-            <li><a href="{% url 'visitor_instructions' adopter.id %}">Visitor Instructions</a></li>
-          {% endif %}
-          <li><a href="{% url 'contact_us' adopter.id %}">Contact Us</a></li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+{% extends 'dashboard/base.html' %}
+{% load static %}
 
-  <div class="textpage">
+{% block content %}
+  <div class="main textpage">
+
     <h1 class="page_header">Contact Us</h1>
 
     <p class="standalone">You can use the message field below to submit a message directly to our Adoptions team.</p>
@@ -48,6 +17,4 @@
     </form>
 
   </div>
-
-  </body>
-</html>
+{% endblock %}

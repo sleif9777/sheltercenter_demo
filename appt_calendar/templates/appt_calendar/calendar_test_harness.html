@@ -1,0 +1,109 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="main">
+
+    <!-- need to get rid of before live -->
+    <div class="roleselector">
+      <nav>
+        <div class="roleselector-center">
+          <ul>
+            <li style="color: white;">FOR TEST PURPOSES ONLY</li>
+            <li><a href="{% url 'calendar' 'admin' %}">Admin</a></li>
+            <li><a href="{% url 'select_adopter' %}">Adopter</a></li>
+            <li><a href="{% url 'calendar' 'greeter' %}">Greeter</a> </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+  <!-- displays a calendar date and arrows to move back and forth -->
+    <div class="page_header">
+      <h1>
+        {% if role == 'adopter' %}
+          <!-- display left arrow only if date is in future -->
+          {% if delta > 0 %}
+            <a href="{% url 'adopter_calendar_date' 'adopter' adopter.id previous_day.year previous_day.month previous_day.day %}">&#9664;&#xFE0E;</a>
+          {% endif %}
+
+          &#160;&#xFE0E;{{date_pretty}}
+          <a href="{% url 'adopter_calendar_date' 'adopter' adopter.id next_day.year next_day.month next_day.day %}">&#9654;&#xFE0E;</a>
+        {% else %}
+          <a href="{% url 'calendar_date' role previous_day.year previous_day.month previous_day.day %}">&#9664;&#xFE0E;</a>  {{date_pretty}}  <a href="{% url 'calendar_date' role next_day.year next_day.month next_day.day %}">&#9654;&#xFE0E;</a>
+        {% endif %}
+      </h1>
+    </div>
+
+  <!-- displays actions underneath the date -->
+    <div class="calendar_actions">
+      {% if role == 'adopter' %}
+        {% include 'appt_calendar/calendar_actions_adopter.html' %}
+      {% else %}
+        {% include 'appt_calendar/calendar_actions_admin_greeter.html' %}
+      {% endif %}
+    </div>
+
+    {% if role == 'admin' %}
+      {% include 'appt_calendar/calendar_messages_admin.html' %}
+    {% elif role == 'adopter' %}
+      {% include 'appt_calendar/calendar_messages_adopter.html' %}
+    {% endif %}
+
+    {% if empty_day == True and role == 'admin' and date.weekday < 5 %}
+      <div class="copy_template_button">
+        <br>
+        <form class="" action="{% url 'copy_temp_to_cal' role date.year date.month date.day %}" method="post">
+          {% csrf_token %}
+          <input class="copytemplate" type="submit" name="" value="Copy From My {{weekday}} Template">
+        </form>
+      </div>
+    {% else %}
+      {% for timeslot, appointments in timeslots.items %}
+        <div class="timeslot">
+
+          {% if role == 'admin' %}
+            {% include 'appt_calendar/calendar_timeslot_toolbar_admin.html' %}
+          {% elif role == 'adopter' %}
+            {% include 'appt_calendar/calendar_timeslot_toolbar.html' %}
+          {% endif %}
+
+          <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment -->
+          {% if appointments|length <= 1 %}
+          <ul class="appt_solo">
+          <!-- else use appt_list for two-column responsive layout  -->
+          {% else %}
+          <ul class="appt_list">
+          {% endif %}
+
+          {% for appt in appointments %}
+            <!-- create a list item -->
+            <li class="appt_slot">
+              {% if role == 'admin' %}
+                {% include 'appt_calendar/appointment_admin.html' %}
+              {% elif role == 'adopter' %}
+                {% include 'appt_calendar/appointment_adopter.html' %}
+              {% elif role == 'greeter' %}
+                {% include 'appt_calendar/appointment_greeter.html' %}
+              {% endif %}
+            </li>
+          <!-- endfor and /ul for appointments -->
+          {% endfor %}
+          </ul>
+        <!-- /div and endfor for timeslot   -->
+        </div>
+      {% endfor %}
+
+      {% if role == 'admin' and date.weekday < 5 %}
+        <div class="timeslot">
+            <!-- two-column table displaying timeslot and timeslot-level actions -->
+            <table style = "width:100%; padding: 10px; margin: 0;">
+              <th style="font-size: 18pt; text-align: left;" class="timeslotheader"></th>
+              <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
+              <a class="timeslot_action" href="{% url 'add_timeslot' role date.year date.month date.day %}">Add Timeslot</a>
+            </table>
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+{% endblock %}

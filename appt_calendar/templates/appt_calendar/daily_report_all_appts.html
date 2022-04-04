@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    {% load static %}
-    <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-  </head>
-  <body>
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="main textpage">
     <div class="roleselector">
       <nav>
         <div class="roleselector-center">
@@ -19,21 +14,8 @@
         </div>
       </nav>
     </div>
-    <div class="activitymenu">
-      <nav>
-        <div class="actmenu-center">
-          <ul>
-            <li><a href="{% url 'weekly_schedule' %}">Edit Weekly Template</a></li>
-            <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
-            <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
-            <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Report</a></li>
-            <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
-          </ul>
-        </div>
-      </nav>
-    </div>
 
-    <div class="calendar_header">
+    <div class="page_header">
       <h1><a href="{% url 'daily_report_all_appts' role previous_day.year previous_day.month previous_day.day %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'daily_report_all_appts' role next_day.year next_day.month next_day.day %}">&#9654;</a></h1>
     </div>
 
@@ -47,8 +29,8 @@
     </div>
     {% else %}
 
-    <table style="width:80%;">
-      <tr>
+    <table id="chosenboard" style="width: 95%;">
+      <tr class="no-border">
         <th style="width:15%;">Time</th>
         <th style="width:30%;">Adopter</th>
         <th style="width:30%;">Outcome</th>
@@ -70,5 +52,5 @@
     </table>
     {% endif %}
 
-  </body>
-</html>
+  </div>
+{% endblock %}
