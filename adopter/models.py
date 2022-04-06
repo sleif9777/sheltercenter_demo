@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 from num2words import num2words
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -14,6 +15,8 @@ class Adopter(models.Model):
     adopter_first_name = models.CharField(default="", max_length=200, blank=True) #need to refactor and add verbose
     adopter_last_name = models.CharField(default="", max_length=200, blank=True) #""
     adopter_email = models.EmailField(default="", blank=True) #""
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    secondary_email = models.EmailField(default="", blank=True)
     acknowledged_faq = models.BooleanField(default = False)
     out_of_state = models.BooleanField(default = False)
     lives_with_parents = models.BooleanField(default = False)

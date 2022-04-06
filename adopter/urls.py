@@ -10,9 +10,6 @@ urlpatterns = [
     path("acknowledged/<int:adopter_id>", views.acknowledged_faq, name="acknowledged_faq"),
     path("<int:adopter_id>/instructions/", views.visitor_instructions, name="visitor_instructions"),
     path('contact_adopter/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/<str:source>/', views.contact_adopter, name="contact_adopter"),
-    path('simple_add', views.simple_add_form, name="simple_add_form"),
-    path('simple_add/submit/', views.simple_add_form_submit, name="saf_submit"),
-    path('simple_add/oos/', views.simple_add_form_oos, name="saf_sub_oos"),
     path('edit/<int:adopter_id>/', views.edit_adopter, name="edit_adopter"),
     path('manage/', views.manage, name="adopter_manage"),
 ]

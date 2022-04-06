@@ -4,7 +4,7 @@ import os, datetime
 def replacer(html, adopter, appt):
     today = datetime.datetime.today()
 
-    if os.environ.get('LOCALHOST'):
+    if str(os.environ.get('LOCALHOST')) == "1":
         base_name = 'localhost'
     else:
         base_name = 'sheltercenter.dog'
@@ -78,12 +78,9 @@ def replacer(html, adopter, appt):
     }
 
     for item in replacements_master:
-        print(replacements_master[item])
         if item != None:
-            print(item)
             for key in replacements_master[item]:
                 if key in html:
-                    print(key)
                     html = html.replace(key, replacements_master[item][key])
 
     return html

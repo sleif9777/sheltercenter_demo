@@ -4,47 +4,159 @@ from .models import Adopter
 from appt_calendar.models import Appointment
 from .forms import *
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-import datetime, time, csv
+import datetime, time, csv, os
 from random import randint
 from emails.email_template import *
 from email_mgr.models import EmailTemplate
 from email_mgr.dictionary import *
 from email_mgr.email_sender import *
 from .adopter_manager import *
+from django.contrib.auth.models import Group, User
 
 system_settings = SystemSettings.objects.get(pk=1)
 
 # Create your views here.
 
-def simple_add_form(request):
-
-    return render(request, "adopter/simple_add_form.html")
-
-def simple_add_form_submit(request):
-
-    fname = request.POST['fname']
-    lname = request.POST['lname']
-    email = request.POST['email']
+def add(request):
+    all_dows = Daily_Schedule.objects
+    today = datetime.date.today()
+    form = AdopterForm(request.POST or None)
+    g = Group.objects.get(name='adopter')
 
     try:
-        subjnotes = request.POST['subjnotes']
+        if request.method == 'POST' and request.FILES['app_file']:
+            file = request.FILES['app_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = list(csv.reader(decoded_file))
+            errors = []
+
+            for row in reader[1:]:
+                new_adopter = Adopter()
+
+                try:
+                    existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
+                    if existing_adopter.status == "2":
+                        errors += [existing_adopter.adopter_full_name()]
+                    elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
+                        existing_adopter.accept_date = datetime.date.today()
+                        existing_adopter.save()
+
+                        if existing_adopter.out_of_state == True:
+                            invite_oos_etemp(existing_adopter)
+                        else:
+                            invite(existing_adopter)
+                    elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
+                        duplicate_app(existing_adopter)
+                except:
+                    if row[13].islower() or row[13].isupper():
+                        row[13] = clean_name(row[13])
+
+                    if row[14].islower() or row[14].isupper():
+                        row[14] = clean_name(row[14])
+
+                    new_adopter.adopter_first_name = row[13]
+                    new_adopter.adopter_last_name = row[14]
+                    new_adopter.app_interest = row[11]
+
+                    if str(os.environ.get('SANDBOX')) == "1":
+                        print("sandbox")
+                        new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "") + new_adopter.adopter_last_name.replace(" ", "") + "@gmail.com"
+                    else:
+                        print("prod")
+                        new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "") + new_adopter.adopter_last_name.replace(" ", "") + "@gmail.com"
+                        # new_adopter.adopter_email = row[28]
+                        # new_adopter.secondary_email = row[29]
+
+                    if row[35] == "Live with Parents":
+                        new_adopter.lives_with_parents = True
+
+                    if row[19] not in ["NC", "SC", "VA"]:
+                        new_adopter.out_of_state = True
+
+                    auth_code = randint(100000, 999999)
+
+                    while auth_code % 100 == 0:
+                        auth_code = randint(100000, 999999)
+
+                    new_adopter.auth_code = auth_code
+
+                    new_user = User.objects.create_user(username=new_adopter.adopter_email, email=new_adopter.adopter_email, password=str(auth_code))
+
+                    new_adopter.user = new_user
+
+                    g.user_set.add(new_user)
+
+                    new_adopter.save()
+
+                    if new_adopter.out_of_state == True:
+                        invite_oos_etemp(new_adopter)
+                    else:
+                        invite(new_adopter)
+
+            system_settings.last_adopter_upload = today
+            system_settings.save()
+
+            upload_errors(errors)
     except:
-        subjnotes = None
+        if form.is_valid():
+            form.save()
+            adopter = Adopter.objects.latest('id')
 
-    simple_invite(fname, lname, email, subjnotes)
+            #for testing purposes, do not put into prod
+            adopter.adopter_email = "sheltercenterdev+" + adopter.adopter_first_name + adopter.adopter_last_name + "@gmail.com"
+            adopter.save()
 
-    return redirect('simple_add_form')
+            if adopter.status != "2":
+                auth_code = randint(100000, 999999)
 
-def simple_add_form_oos(request):
+                while auth_code % 10 == 0:
+                    auth_code = randint(100000, 999999)
 
-    fname = request.POST['fname']
-    lname = request.POST['lname']
-    email = request.POST['email']
-    subjnotes = request.POST['subjnotes']
+                print(auth_code)
 
-    simple_invite_oos(fname, lname, email, subjnotes)
+                adopter.auth_code = auth_code
 
-    return redirect('simple_add_form')
+                adopter.save()
+
+                print(adopter.auth_code)
+
+                if adopter.out_of_state == True:
+                    invite_oos_etemp(adopter)
+                elif adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host:
+                    shellappt = Appointment()
+                    shellappt.time = datetime.datetime.now()
+                    shellappt.adopter_choice = adopter
+                    shellappt.dog = adopter.chosen_dog
+                    shellappt.outcome = "3"
+
+                    shellappt.save()
+
+                    adopter.has_current_appt = False
+                    adopter.save()
+
+                    if adopter.adopting_foster:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
+                    elif adopter.friend_of_foster:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
+                    else:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
+                elif adopter.carryover_shelterluv:
+                    carryover_temp(adopter)
+                else:
+                    invite(adopter)
+            else:
+                print("blocked")
+
+            form = AdopterForm()
+
+    context = {
+        'form': form,
+        'dows': all_dows,
+        'today': today,
+        'role': 'admin',
+    }
+
+    return render(request, "adopter/addadopterform.html", context)
 
 def login(request):
     adopters = Adopter.objects.all()
@@ -117,149 +229,6 @@ def visitor_instructions(request, adopter_id):
     }
 
     return render(request, "adopter/visitor_instructions.html", context)
-
-def add(request):
-    all_dows = Daily_Schedule.objects
-    today = datetime.date.today()
-    form = AdopterForm(request.POST or None)
-
-    try:
-        if request.method == 'POST' and request.FILES['app_file']:
-            file = request.FILES['app_file']
-            decoded_file = file.read().decode('utf-8').splitlines()
-            reader = list(csv.reader(decoded_file))
-            print([today - datetime.timedelta(days = x) for x in range(2)])
-            print(today - datetime.timedelta(days = 365))
-            errors = []
-
-            for row in reader[1:]:
-                new_adopter = Adopter()
-
-                try:
-                    existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
-                    print("Adopter " + existing_adopter.adopter_full_name() + " already in system as adopter #" + str(existing_adopter.id))
-                    if existing_adopter.status == "2":
-                        print("blocked")
-                        errors += [existing_adopter.adopter_full_name()]
-                    elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
-                        print("renewal")
-                        existing_adopter.accept_date = datetime.date.today()
-                        existing_adopter.save()
-
-                        if existing_adopter.out_of_state == True:
-                            invite_oos_etemp(existing_adopter)
-                        else:
-                            invite(existing_adopter)
-                    elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
-                        duplicate_app(existing_adopter)
-                    else:
-                        print("added today")
-                except:
-                    print("added now")
-                    if row[13].islower() or row[13].isupper():
-                        row[13] = clean_name(row[13])
-
-                    if row[14].islower() or row[14].isupper():
-                        row[14] = clean_name(row[14])
-                    #
-                    # print(row[3])
-                    # print(type(row[3]))
-
-                    new_adopter.adopter_first_name = row[13]
-                    new_adopter.adopter_last_name = row[14]
-                    new_adopter.app_interest = row[11]
-                    new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "") + new_adopter.adopter_last_name.replace(" ", "") + "@gmail.com"
-                    print(new_adopter.adopter_email)
-
-                    if row[35] == "Live with Parents":
-                        new_adopter.lives_with_parents = True
-
-                    if row[19] not in ["NC", "SC", "VA"]:
-                        new_adopter.out_of_state = True
-
-                    auth_code = randint(100000, 999999)
-
-                    while auth_code % 10 == 0:
-                        auth_code = randint(100000, 999999)
-
-                    print(row[13] + " " + row[14])
-                    print(auth_code)
-
-                    new_adopter.auth_code = auth_code
-
-                    new_adopter.save()
-
-                    print(new_adopter.auth_code)
-
-                    if new_adopter.out_of_state == True:
-                        invite_oos_etemp(new_adopter)
-                    else:
-                        invite(new_adopter)
-
-            system_settings.last_adopter_upload = today
-            system_settings.save()
-
-            upload_errors(errors)
-    except:
-        if form.is_valid():
-            form.save()
-            adopter = Adopter.objects.latest('id')
-
-            #for testing purposes, do not put into prod
-            adopter.adopter_email = "sheltercenterdev+" + adopter.adopter_first_name + adopter.adopter_last_name + "@gmail.com"
-            adopter.save()
-
-            if adopter.status != "2":
-                auth_code = randint(100000, 999999)
-
-                while auth_code % 10 == 0:
-                    auth_code = randint(100000, 999999)
-
-                print(auth_code)
-
-                adopter.auth_code = auth_code
-
-                adopter.save()
-
-                print(adopter.auth_code)
-
-                if adopter.out_of_state == True:
-                    invite_oos_etemp(adopter)
-                elif adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host:
-                    shellappt = Appointment()
-                    shellappt.time = datetime.datetime.now()
-                    shellappt.adopter_choice = adopter
-                    shellappt.dog = adopter.chosen_dog
-                    shellappt.outcome = "3"
-
-                    shellappt.save()
-
-                    adopter.has_current_appt = False
-                    adopter.save()
-
-                    if adopter.adopting_foster:
-                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
-                    elif adopter.friend_of_foster:
-                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
-                    else:
-                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
-                elif adopter.carryover_shelterluv:
-                    carryover_temp(adopter)
-                else:
-                    invite(adopter)
-            else:
-                print("blocked")
-
-            form = AdopterForm()
-
-    context = {
-        'form': form,
-        'dows': all_dows,
-        'today': today,
-        'role': 'admin',
-    }
-
-    return render(request, "adopter/addadopterform.html", context)
 
 def contact(request, adopter_id):
     all_dows = Daily_Schedule.objects
