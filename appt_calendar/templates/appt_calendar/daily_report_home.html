@@ -9,12 +9,12 @@
     </div>
 
     <div class="week">
-      <form class="" action="{% url 'daily_report_all_appts' role date.year date.month date.day %}" method="post" style="display: inline;">
+      <form class="" action="{% url 'daily_report_all_appts' date.year date.month date.day %}" method="post" style="display: inline;">
         {% csrf_token %}
         <input class="copytemplate" type="submit" name="" value="All Appointment Outcomes" style="margin: 0px 5px;">
       </form>
 
-      <form class="" action="{% url 'daily_report_adopted_chosen_fta' role date.year date.month date.day %}" method="post" style="display: inline;">
+      <form class="" action="{% url 'daily_report_adopted_chosen_fta' date.year date.month date.day %}" method="post" style="display: inline;">
         {% csrf_token %}
         <input class="copytemplate" type="submit" name="" value="Adopted/Chosen/FTA" style="margin: 0px 5px;">
       </form>

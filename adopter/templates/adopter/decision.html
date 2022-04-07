@@ -15,7 +15,7 @@
 
     {% include 'adopter/faq.html' %}
 
-    <form class="" action="{% url 'acknowledged_faq' adopter.id %}" method="post">
+    <form class="" action="{% url 'acknowledged_faq' %}" method="post">
       {% csrf_token %}
       <input type="checkbox" name="read_faq" value="read_faq" required>
       <label for="read_faq"> I have read the Frequently Asked Questions and am ready to schedule my appointment.</label><br><br>

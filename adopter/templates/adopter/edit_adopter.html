@@ -115,8 +115,8 @@
             <table class="appt_subblock appt_info_block">
 
               <tr class="info_block_subheader">
-                <th><a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'calendar' %}">Contact {{appt.adopter_choice.adopter_first_name}}</a></th>
-                <th class="right"><a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'calendar' %}">&#9993;&#xFE0E;</a></th>
+                <th><a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day source %}">Contact {{appt.adopter_choice.adopter_first_name}}</a></th>
+                <th class="right"><a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day source %}">&#9993;&#xFE0E;</a></th>
               </tr>
 
               <tr>

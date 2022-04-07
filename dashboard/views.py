@@ -4,7 +4,6 @@ from schedule_template.models import Daily_Schedule, TimeslotTemplate, Appointme
 from appt_calendar.models import Timeslot, Appointment
 from adopter.models import Adopter
 from appt_calendar.forms import *
-from emails.email_template import *
 from email_mgr.email_sender import *
 from appt_calendar.date_time_strings import *
 from appt_calendar.appointment_manager import *
@@ -37,14 +36,25 @@ def login_page(request):
     today = datetime.date.today()
 
     if request.method == "POST":
-        username = request.POST.get('username')
+        username = request.POST.get('username').lower()
         password = request.POST.get('password')
 
         user = authenticate(username=username, password=password)
 
         if user is not None:
             login(request, user)
-            return redirect('calendar_date', 'admin', today.year, today.month, today.day)
+
+            try:
+                user_groups = set(group.name for group in request.user.groups.all().iterator())
+            except:
+                user_groups = set()
+
+            if 'superuser' in user_groups or 'admin' in user_groups:
+                return redirect('calendar', 'admin')
+            elif 'greeter' in user_groups:
+                return redirect('calendar', 'greeter')
+            else:
+                return redirect('adopter_home')
 
     context = {}
 

@@ -4,15 +4,12 @@ from schedule_template.models import Daily_Schedule, TimeslotTemplate, Appointme
 from .models import Timeslot, Appointment
 from adopter.models import Adopter
 from .forms import *
-from emails.email_template import *
 from email_mgr.email_sender import *
 from .date_time_strings import *
 from .appointment_manager import *
 from dashboard.views import generate_calendar as gc
-
-#
-# # Create your views here.
-#
+from django.contrib.auth.models import Group, User
+from dashboard.decorators import *
 
 system_settings = SystemSettings.objects.get(pk=1)
 
@@ -75,7 +72,7 @@ def greeter_reschedule(request, role, adopter_id, appt_id, date_year, date_month
     context.update(calendar)
 
     return render(request, "appt_calendar/calendar_greeter_reschedule.html/", context)
-#
+
 def adopter_calendar_date(request, role, adopter_id, date_year, date_month, date_day):
     adopter = Adopter.objects.get(pk=adopter_id)
 
@@ -221,28 +218,34 @@ def paperwork_calendar(request, role, date_year, date_month, date_day, appt_id, 
 
     return render(request, "appt_calendar/paperwork_calendar.html/", context)
 
-def calendar_print(request, role, date_year, date_month, date_day):
-    context = gc(role, 'full', None, date_year, date_month, date_day)
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def calendar_print(request, date_year, date_month, date_day):
+    context = gc('admin', 'full', None, date_year, date_month, date_day)
 
     return render(request, "appt_calendar/calendar_print.html/", context)
 
-def daily_report_all_appts(request, role, date_year, date_month, date_day):
-    context = gc(role, 'full', None, date_year, date_month, date_day)
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def daily_report_all_appts(request, date_year, date_month, date_day):
+    context = gc('admin', 'full', None, date_year, date_month, date_day)
 
     return render(request, "appt_calendar/daily_report_all_appts.html/", context)
 
-def daily_reports_home(request, role):
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def daily_reports_home(request):
     date = datetime.date.today()
 
     context = {
         "date": date,
-        "role": role,
     }
 
     return render(request, "appt_calendar/daily_report_home.html/", context)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def chosen_board(request, role):
-    all_dows = Daily_Schedule.objects
     today = datetime.date.today()
     appointments = Appointment.objects
     appt_list = []
@@ -251,16 +254,16 @@ def chosen_board(request, role):
         appt_list += [appt]
 
     context = {
-        "all_dows": all_dows,
-        "role": role,
         "today": today,
         "appointments": appt_list,
     }
 
     return render(request, "appt_calendar/chosen_board.html/", context)
 
-def daily_report_adopted_chosen_fta(request, role, date_year, date_month, date_day):
-    context = gc(role, 'full', None, date_year, date_month, date_day)
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def daily_report_adopted_chosen_fta(request, date_year, date_month, date_day):
+    context = gc('admin', 'full', None, date_year, date_month, date_day)
 
     return render(request, "appt_calendar/daily_report_adopted_chosen_fta.html/", context)
 
@@ -278,24 +281,6 @@ def send_followup(request, role, appt_id, date_year, date_month, date_day, host)
         follow_up(adopter)
     else:
         follow_up_w_host(adopter)
-
-    adopter.has_current_appt = False
-    adopter.visits_to_date += 1
-    adopter.save()
-
-    return redirect('calendar_date', role, date.year, date.month, date.day)
-
-def send_followup_w_host(request, role, appt_id, date_year, date_month, date_day):
-    date = datetime.date(date_year, date_month, date_day)
-    appt = Appointment.objects.get(pk=appt_id)
-
-    appt.outcome = "5"
-    appt.comm_followup = True
-    appt.save()
-
-    adopter = appt.adopter_choice
-
-    follow_up_w_host(adopter)
 
     adopter.has_current_appt = False
     adopter.visits_to_date += 1
