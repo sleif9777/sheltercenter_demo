@@ -5,11 +5,11 @@
   <div class="main">
 
     <div class="page_header">
-      <h1><a href="{% url 'greeter_reschedule' role adopter.id appt.id previous_day.year previous_day.month previous_day.day source %}">&#9664;&#xFE0E;</a>  {{date_pretty}}  <a href="{% url 'greeter_reschedule' role adopter.id appt.id next_day.year next_day.month next_day.day source %}">&#9654;</a></h1>
+      <h1><a href="{% url 'greeter_reschedule' adopter.id appt.id previous_day.year previous_day.month previous_day.day source %}">&#9664;&#xFE0E;</a>  {{date_pretty}}  <a href="{% url 'greeter_reschedule' adopter.id appt.id next_day.year next_day.month next_day.day source %}">&#9654;</a></h1>
     </div>
 
     <div class="calendar_actions">
-      <a href="{% url 'greeter_reschedule' role adopter.id appt.id today.year today.month today.day source %}">Return to Today</a>
+      <a href="{% url 'greeter_reschedule' adopter.id appt.id today.year today.month today.day source %}">Return to Today</a>
     </div>
 
     <h2 style="text-align: center; margin: 10px 0px;">Rescheduling for {{full_name}}</h2>
@@ -48,7 +48,7 @@
                   {% endif %}
 
                     <tr>
-                      <td class="appt_description left upper"><b><a href="{% url 'adopter_reschedule' role adopter.id appt.id date.year date.month date.day source %}">CLICK TO BOOK</a></b></td>
+                      <td class="appt_description left upper"><b><a href="{% url 'adopter_reschedule' adopter.id appt.id date.year date.month date.day source %}">CLICK TO BOOK</a></b></td>
                     </tr>
 
                     <tr>

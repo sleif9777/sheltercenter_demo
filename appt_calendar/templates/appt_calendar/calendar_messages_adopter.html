@@ -1,7 +1,7 @@
 <div class="adopter_messages">
-  <p class="greeting"><b>Hello, {{adopter.adopter_first_name}}!</b></p><br>
+  <p class="greeting"><b>Hello, {{request.user.adopter.adopter_first_name}}!</b></p><br>
 
-  {% if adopter.has_current_appt %}
+  {% if request.user.adopter.has_current_appt %}
     Your appointment is currently set for {{current_appt_str}}.<br>
 
     <div class="appointment">
@@ -14,7 +14,7 @@
       {% endif %}
 
         <tr>
-          <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' 'adopter' current_appt.id date.year date.month date.day %}">{{current_appt_str}} - {{current_appt}}</a>
+          <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">{{current_appt_str}} - {{current_appt}}</a>
 
           {% if current_appt.mobility %}
             &#9855;&#xFE0E;
@@ -27,7 +27,7 @@
           {% endif %}
           </td>
 
-          <td class="appt_description right"><a href="{% url 'book_cal_appointment' 'adopter' adopter.id current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a><a href="{% url 'validate' 'adopter' 'cancel' adopter.id current_appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
+          <td class="appt_description right"><a href="{% url 'book_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a><a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
 
         </tr>
 
@@ -49,8 +49,8 @@
         <table class="appt_subblock appt_info_block">
 
           <tr class="info_block_subheader">
-            <th class="left"><a href="{% url 'edit_cal_appointment' role current_appt.id date.year date.month date.day %}">Notes</a></th>
-            <th class="right"><a href="{% url 'edit_cal_appointment' role current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
+            <th class="left"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">Notes</a></th>
+            <th class="right"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
           </tr>
 
           <tr>
@@ -64,7 +64,7 @@
       <table class="appt_subblock appt_info_block appt_end_block">
 
         <tr>
-          <td class="left"><a href="{% url 'validate' 'adopter' 'cancel' adopter.id current_appt.id date.year date.month date.day %}">Cancel My Appointment</a></td>
+          <td class="left"><a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">Cancel My Appointment</a></td>
           <td></td>
         </tr>
 
@@ -73,7 +73,7 @@
 
     {% if visible == True %}
       <br><br>Click any open slot below to reschedule your appointment. We only book one appointment per adopter at a time. By booking any appointment below, you will forfeit your current appointment slot.
-      <br><br><b><a class="standalone" href="{% url 'validate' 'adopter' 'cancel' adopter.id current_appt.id date.year date.month date.day %}">Click here to cancel your appointment.</a></b>
+      <br><br><b><a class="standalone" href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">Click here to cancel your appointment.</a></b>
     {% endif %}
   {% else %}
     You do not currently have an appointment. Click any open slot below to schedule your appointment.
@@ -91,7 +91,7 @@
       {% if adopter.alert_date == date %}
         We will alert you when appointments for this date are open.
       {% else %}
-        <a class="standalone" href="{% url 'set_alert_date' role adopter.id date.year date.month date.day %}">Please click here to be alerted when we have opened appointments for this date.</a>
+        <a class="standalone" href="{% url 'set_alert_date' date.year date.month date.day %}">Please click here to be alerted when we have opened appointments for this date.</a>
       {% endif %}
       </p>
     {% endif %}

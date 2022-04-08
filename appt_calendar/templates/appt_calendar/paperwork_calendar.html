@@ -5,7 +5,7 @@
   <div class="main">
 
     <div class="page_header">
-      <h1><a href="{% url 'paperwork_calendar' role previous_day.year previous_day.month previous_day.day appt.id hw_status %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'paperwork_calendar' role next_day.year next_day.month next_day.day appt.id hw_status %}">&#9654;</a></h1>
+      <h1><a href="{% url 'paperwork_calendar' previous_day.year previous_day.month previous_day.day appt.id hw_status %}">&#9664;</a>  {{date_pretty}}  <a href="{% url 'paperwork_calendar' next_day.year next_day.month next_day.day appt.id hw_status %}">&#9654;</a></h1>
     </div>
 
     {% if empty_day == True %}
@@ -19,7 +19,7 @@
         <!-- two-column table displaying timeslot and timeslot-level actions -->
         <table style = "width:100%; padding: 10px; margin: 0;">
           <th style="font-size: 18pt; text-align: left;" class="timeslotheader">{{timeslot}}</th>
-          <th style="font-size: 18pt; text-align: right;" class="timeslotheader"><a class="timeslot_action" href="{% url 'add_paperwork_appointment' role timeslot.id date.year date.month date.day appt.id %}">Add {{fta_or_adoption}} Paperwork Appointment</a></th>
+          <th style="font-size: 18pt; text-align: right;" class="timeslotheader"><a class="timeslot_action" href="{% url 'add_paperwork_appointment' timeslot.id date.year date.month date.day appt.id %}">Add {{fta_or_adoption}} Paperwork Appointment</a></th>
         </table>
 
         <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment -->
@@ -38,7 +38,7 @@
               <table class="appt_info_block appt_end_block" id="appt_header_block">
 
                 <tr>
-                  <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">{{appt}}</a>
+                  <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">{{appt}}</a>
                   {% if appt.mobility %}
                     &#9855;&#xFE0E;
                   {% endif %}
@@ -50,7 +50,7 @@
                   {% endif %}
                   </td>
 
-                  <td class="appt_description right"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a> <a href="{% url 'delete_cal_appointment' role appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
+                  <td class="appt_description right"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a> <a href="{% url 'delete_cal_appointment' appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
                 </tr>
 
                 <tr>
@@ -91,7 +91,7 @@
         {% endfor %}
         </ul>
       </div>
-      
+
     {% endfor %}
     <br><br>
     {% endif %}

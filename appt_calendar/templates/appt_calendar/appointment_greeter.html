@@ -42,6 +42,9 @@
         {% if appt.visits_to_date > 1 %}
           <b>{{appt.number_of_visits}}</b>
         {% endif %}
+        {% if appt.adopter_choice.lives_with_parents and appt.visits_to_date == 0 %}
+          <b>Must bring a parent!</b>
+        {% endif %}
       </td>
       <td class="right" style="width: 50%;">
         <!-- displays has a cat if applicable and bringing dog -->
@@ -73,7 +76,7 @@
       {% if appt.internal_notes %}
       <tr>
         <td class="left"><b>From Adoptions:</b></td>
-        <td class="left"><a href="{% url 'edit_cal_appointment' role appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
+        <td class="left"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
       </tr>
       {% endif %}
 
@@ -108,23 +111,23 @@
       <tr>
         <td>
           {% if appt.outcome == "1" %}
-            <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">Enter Decision</a>
+            <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
           {% else %}
             {% if appt.outcome == "5" %}
-              <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
+              <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
             {% else %}
-              <a href="{% url 'enter_decision' role appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog.upper}}</a>
+              <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog.upper}}</a>
             {% endif %}
           {% endif %}
         </td>
 
-        <td class="right"><a href="{% url 'greeter_reschedule' role appt.adopter_choice.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a></td>
+        <td class="right"><a href="{% url 'greeter_reschedule' appt.adopter_choice.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a></td>
       </tr>
 
       <tr>
         {% if appt.comm_followup == False %}
-          <td><a href="{% url 'send_followup' role appt.id date.year date.month date.day 0 %}">Send Follow-Up Email</a><br></td>
-          <td class="right"><a href="{% url 'send_followup' role appt.id date.year date.month date.day 1 %}">Send Follow-Up Email (with Host Info)</a><br></td>
+          <td><a href="{% url 'send_followup' appt.id date.year date.month date.day 0 %}">Send Follow-Up Email</a><br></td>
+          <td class="right"><a href="{% url 'send_followup' appt.id date.year date.month date.day 1 %}">Send Follow-Up Email (with Host Info)</a><br></td>
         {% else %}
           <td><p class="completed_appt_action">Send Follow-Up Email</p></td>
           <td class="right"><p class="completed_appt_action">Send Follow-Up Email (with Host Info)</p></td>

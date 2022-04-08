@@ -337,7 +337,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
             appt.save()
 
-            return redirect('calendar_date', "admin", date_year, date_month, date_day)
+            return redirect('calendar_date', date_year, date_month, date_day)
 
         elif 'mgmt' in source:
             return redirect('edit_adopter', adopter.id)
@@ -394,7 +394,7 @@ def home(request):
 
     today = datetime.date.today()
 
-    return redirect("adopter_calendar_date", "adopter", adopter.id, today.year, today.month, today.day)
+    return redirect("calendar_date", adopter.id, today.year, today.month, today.day)
 
 def full_name(adopter_obj):
     return adopter_obj.adopter_first_name + " " + adopter_obj.adopter_last_name

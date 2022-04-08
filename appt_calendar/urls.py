@@ -2,34 +2,36 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # path("", views.calendar_home, name="calendar_home"),
-    path("", views.calendar_home, name="calendar_home"),
-    path("<str:role>/", views.calendar, name="calendar"),
-    path("<str:role>/date/<int:date_year>/<int:date_month>/<int:date_day>/", views.calendar_date, name="calendar_date"),
+    #calendar view pages
+    path("", views.calendar, name="calendar"),
+    path("<int:date_year>/<int:date_month>/<int:date_day>/", views.calendar_date, name="calendar_date"),
+    path("<int:date_year>/<int:date_month>/<int:date_day>/copy/", views.copy_temp_to_cal, name="copy_temp_to_cal"),
+    path("<int:date_year>/<int:date_month>/<int:date_day>/print/", views.calendar_print, name="calendar_print"),
+    path('schedule_next/adopter/<int:adopter_id>/appt/<int:appt_id>/jump_to_date/', views.jump_to_date_greeter, name="jump_to_date_greeter"), #to be maintained for reschedules
+    path("jump_to_date/", views.jump_to_date, name="jump_to_date"),
+
+    #calendar admin pages
+    path('edit_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.edit_appointment, name="edit_cal_appointment"),
+    path('book_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.book_appointment, name="book_cal_appointment"),
+    path('delete_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.delete_appointment, name="delete_cal_appointment"),
+    path('add_appt/<int:timeslot_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.add_appointment, name="add_cal_appointment"),
+    path('add_appt/paperwork/<int:timeslot_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/source/<int:originalappt_id>/', views.add_paperwork_appointment, name="add_paperwork_appointment"),
+    path('delete_timeslot/<int:timeslot_id>/<int:date_year>/<int:date_month>/<int:date_day>/', views.delete_timeslot, name="delete_cal_timeslot"),
+    path('add_timeslot/<int:date_year>/<int:date_month>/<int:date_day>/', views.add_timeslot, name="add_timeslot"),
+    path('cancel/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.remove_adopter, name="remove_adopter"),
+    # path('<str:role>/cancel/adopter/<int:adopter_id>/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.adopter_self_cancel, name="adopter_self_cancel"),
+    path('reschedule_adopter/<int:adopter_id>/new_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/<str:source>/', views.adopter_reschedule, name="adopter_reschedule"),
+    path('schedule_next/adopter/<int:adopter_id>/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/<str:source>/', views.greeter_reschedule, name="greeter_reschedule"),
+    path("enter_decision/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/", views.enter_decision, name="enter_decision"),
+    path('followup/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/<int:host>/', views.send_followup, name="send_followup"),
+    path("paperwork/<int:date_year>/<int:date_month>/<int:date_day>/appt/<int:appt_id>/hw/<str:hw_status>/", views.paperwork_calendar, name="paperwork_calendar"),
+    path("set_alert/<int:date_year>/<int:date_month>/<int:date_day>/", views.set_alert_date, name="set_alert_date"),
+
+    #report pages
     path("reports/home/", views.daily_reports_home, name="daily_reports_home"),
-    path("date/<int:date_year>/<int:date_month>/<int:date_day>/print/", views.calendar_print, name="calendar_print"),
     path("reports/all/<int:date_year>/<int:date_month>/<int:date_day>/", views.daily_report_all_appts, name="daily_report_all_appts"),
     path("reports/adoption_chosen_fta/<int:date_year>/<int:date_month>/<int:date_day>/", views.daily_report_adopted_chosen_fta, name="daily_report_adopted_chosen_fta"),
-    path("<str:role>/<int:adopter_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/", views.adopter_calendar_date, name="adopter_calendar_date"),
-    path("<str:role>/date/<int:date_year>/<int:date_month>/<int:date_day>/copy/", views.copy_temp_to_cal, name="copy_temp_to_cal"),
-    path('<str:role>/edit/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.edit_appointment, name="edit_cal_appointment"),
-    path('<str:role>/book/<int:adopter_id>/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.book_appointment, name="book_cal_appointment"),
-    path('<str:role>/delete/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.delete_appointment, name="delete_cal_appointment"),
-    path('<str:role>/add/appt/<int:timeslot_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.add_appointment, name="add_cal_appointment"),
-    path('<str:role>/add/paperwork/<int:timeslot_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/original_appt/<int:originalappt_id>/', views.add_paperwork_appointment, name="add_paperwork_appointment"),
-    path('<str:role>/delete/timeslot/<int:timeslot_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.delete_timeslot, name="delete_cal_timeslot"),
-    path('<str:role>/add/timeslot/<int:date_year>/<int:date_month>/<int:date_day>/', views.add_timeslot, name="add_timeslot"),
-    path('<str:role>/remove/adopter/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.remove_adopter, name="remove_adopter"),
-    path('<str:role>/cancel/adopter/<int:adopter_id>/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.adopter_self_cancel, name="adopter_self_cancel"),
-    path('<str:role>/reschedule/adopter/<int:adopter_id>/new_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/<str:source>/', views.adopter_reschedule, name="adopter_reschedule"),
-    path('<str:role>/followup/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/<int:host>/', views.send_followup, name="send_followup"),
-    path('<str:role>/greeter_reschedule/adopter/<int:adopter_id>/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/<str:source>/', views.greeter_reschedule, name="greeter_reschedule"),
-    path('<str:role>/greeter_reschedule/adopter/<int:adopter_id>/appt/<int:appt_id>/jump_to_date/', views.jump_to_date_greeter, name="jump_to_date_greeter"),
-    path("<str:role>/jump_to_date/", views.jump_to_date_admin, name="jump_to_date_admin"),
-    path("<str:role>/<int:adopter_id>/", views.jump_to_date_adopter, name="jump_to_date_adopter"),
-    path("<str:role>/enter_decision/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/", views.enter_decision, name="enter_decision"),
+
+    #communications
     path("chosen_board/", views.chosen_board, name="chosen_board"),
-    path('<str:role>/validate/<str:action>/adopter/<int:adopter_id>/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.validate_adopter_action, name="validate"),
-    path("<str:role>/paperwork/<int:date_year>/<int:date_month>/<int:date_day>/appt/<int:appt_id>/hw/<str:hw_status>/", views.paperwork_calendar, name="paperwork_calendar"),
-    path("<str:role>/<int:adopter_id>/set_alert/date/<int:date_year>/<int:date_month>/<int:date_day>/", views.set_alert_date, name="set_alert_date"),
     ]

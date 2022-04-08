@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load auth_extras %}
 
 {% block content %}
   <div class="main textpage">
@@ -7,10 +8,10 @@
 
     <p class="standalone">Oops! It appears someone else booked this appointment already and it is no longer available.</p>
 
-    {% if role == 'adopter' %}
+    {% if request.user|has_group:"adopter" %}
       <div class="copy_template_button">
         <br>
-        <form class="" action="{% url 'adopter_home' adopter.id %}" method="post">
+        <form class="" action="{% url 'calendar' %}" method="post">
           {% csrf_token %}
           <input class="copytemplate" type="submit" name="" value="Return to Calendar">
         </form>
@@ -18,7 +19,7 @@
     {% else %}
       <div class="copy_template_button">
         <br>
-        <form class="" action="{% url 'greeter_reschedule' role adopter.id appt.id date.year date.month date.day %}" method="post">
+        <form class="" action="{% url 'greeter_reschedule' adopter.id appt.id date.year date.month date.day %}" method="post">
           {% csrf_token %}
           <input class="copytemplate" type="submit" name="" value="Return to Calendar">
         </form>

@@ -1,5 +1,5 @@
 {% if user.adopter.acknowledged_faq %}
-  <li><a href="{% url 'adopter_home' %}">Calendar</a></li>
+  <li><a href="{% url 'calendar' %}">Calendar</a></li>
   <li><a href="{% url 'faq' %}">FAQ</a></li>
 
   {% if user.adopter.has_current_appt %}
