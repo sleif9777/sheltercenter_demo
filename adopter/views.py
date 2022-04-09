@@ -185,6 +185,36 @@ def manage(request):
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})
+def resend_invite(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+
+    invite(adopter)
+
+    return redirect('adopter_manage')
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
+def set_alert_mgr(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+    form = SetAlertDateForm(request.POST or None, instance=adopter)
+
+    if form.is_valid():
+        form.save()
+        alert_date_set(adopter, adopter.alert_date)
+
+        return redirect('adopter_manage')
+    else:
+        form = SetAlertDateForm(request.POST or None, instance=adopter)
+
+    context = {
+        'adopter': adopter,
+        'form': form,
+    }
+
+    return render(request, "adopter/set_alert_date.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
 def edit_adopter(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)
     form = AdopterForm(request.POST or None, instance=adopter)

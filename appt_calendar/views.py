@@ -14,24 +14,15 @@ from dashboard.decorators import *
 system_settings = SystemSettings.objects.get(pk=1)
 
 def get_groups(user_obj):
+    print(user_obj)
+    print(user_obj.groups.all())
+
     try:
-        user_groups = set(group.name for group in request.user.groups.all().iterator())
+        user_groups = set(group.name for group in user_obj.groups.all().iterator())
     except:
         user_groups = set()
 
     return user_groups
-
-def determine_security(user_obj):
-    hierarchy = ['superuser', 'admin', 'greeter', 'adopter']
-
-    try:
-        user_groups = set(group.name for group in request.user.groups.all().iterator())
-    except:
-        user_groups = set()
-
-    for role in hierarchy:
-        if role in user_groups:
-            return role
 
 def calendar(request):
     today = datetime.date.today()
@@ -53,9 +44,10 @@ def copy_temp_to_cal(request, date_year, date_month, date_day):
             new_appt_for_cal.save()
             new_timeslot_for_cal.appointments.add(Appointment.objects.latest('id'))
 
-    for adopter in all_adopters.iterator():
-        if adopter.alert_date == date:
-            dates_are_open(adopter, date)
+    adopters_to_alert = [adopter for adopter in Adopter.objects.filter(alert_date = date)]
+
+    for adopter in adopters_to_alert:
+        dates_are_open(adopter, date)
 
     return redirect('calendar_date', date.year, date.month, date.day)
 
@@ -86,6 +78,8 @@ def greeter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
         "appt": old_appt,
         "source": source,
     }
+
+    print(source)
 
     calendar = gc(request.user, 'reschedule', None, date_year, date_month, date_day)
 
@@ -494,7 +488,7 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
 
     reset_appt(appt)
 
-    if 'adopter' in get_groups(request.user):
+    if get_groups(request.user) == {'adopter'}:
         if appt.date == datetime.date.today():
             notify_adoptions_cancel(appt, adopter)
 
@@ -509,44 +503,6 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
 
     else:
         return redirect('calendar_date', date.year, date.month, date.day)
-#
-# def validate_adopter_action(request, role, action, adopter_id, date_year, date_month, date_day, appt_id):
-#     date = datetime.date(date_year, date_month, date_day)
-#     appt = Appointment.objects.get(pk=appt_id)
-#     adopter = Adopter.objects.get(pk=adopter_id)
-#
-#     context = {
-#         'adopter': adopter,
-#         'date': date,
-#         'appt': appt,
-#         'action': action
-#     }
-#
-#     return render(request, "appt_calendar/adopter_validate_action.html", context)
-
-# def adopter_self_cancel(request, role, adopter_id, date_year, date_month, date_day, appt_id):
-#     date = datetime.date(date_year, date_month, date_day)
-#     appt = Appointment.objects.get(pk=appt_id)
-#     adopter = appt.adopter_choice
-#
-#     cancel(adopter, appt)
-#
-#     adopter.has_current_appt = False
-#     adopter.save()
-#
-#     reset_appt(appt)
-#
-#     if appt.date == datetime.date.today():
-#         notify_adoptions_cancel(appt, adopter)
-#
-#     appt_str = appt.date_and_time_string()
-#
-#     context = {
-#         'adopter': adopter,
-#         'appt_str': appt_str,
-#     }
-#
-#     return render(request, "appt_calendar/adopter_self_cancel.html", context)
 
 def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date_day, source):
     adopter = Adopter.objects.get(pk=adopter_id)
@@ -554,12 +510,7 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
     appt_set = Appointment.objects.filter(adopter_choice=adopter.id).exclude(date__lt = datetime.date.today())
     user_groups = get_groups(request.user)
 
-    current_appt_set = Appointment.objects.filter(adopter_choice=adopter.id).exclude(date__lt = datetime.date.today())
-
-    current_appt = None
-
-    for a in current_appt_set.iterator():
-        current_appt = a
+    current_appt = [appt for appt in Appointment.objects.filter(adopter_choice=adopter.id).exclude(date__lt = datetime.date.today())][0]
 
     new_appt = Appointment.objects.get(pk=appt_id)
 
@@ -578,17 +529,21 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
         new_appt.has_cat = current_appt.has_cat
         new_appt.mobility = current_appt.mobility
 
-        if "adopter" in user_groups or ("admin" in user_groups and source == "calendar"):
+        print("admin" in user_groups and source == "calendar")
+        print(user_groups, source)
+
+        if user_groups == {"adopter"} or ("admin" in user_groups and source == "calendar"):
             reset_appt(current_appt)
             current_appt.save()
+            print('reset')
 
         new_appt.adopter_choice = adopter
         adopter.has_current_appt = True
-        adopter.save()
 
+        adopter.save()
         new_appt.save()
 
-        if 'adopter' in user_groups:
+        if user_groups == {"adopter"}:
             delist_appt(new_appt)
 
             reschedule(adopter, new_appt)
@@ -601,6 +556,9 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
             return redirect("calendar_date", date_year, date_month, date_day)
         else:
             today = datetime.date.today()
+
+            print('greeter' in user_groups or ('admin' in user_groups and source == "followup"))
+            print('greeter' in user_groups, ('admin' in user_groups and source == "followup"))
 
             if 'greeter' in user_groups or ('admin' in user_groups and source == "followup"):
                 current_appt.outcome = "5"

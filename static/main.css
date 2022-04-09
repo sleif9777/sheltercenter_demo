@@ -184,6 +184,10 @@ body {
   padding-top: 5px;
 }
 
+.no_actions {
+  padding-bottom: 15px;
+}
+
 .calendar_actions {
   text-align: center;
 }
