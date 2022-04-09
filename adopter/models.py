@@ -70,7 +70,16 @@ class Adopter(models.Model):
 class FAQ(models.Model):
     question = models.CharField(default="", max_length=500)
     answer = models.TextField(default="", blank=False)
+    order = models.IntegerField(default=1)
+
+    class Meta:
+        ordering = ('order', 'question')
 
 class FAQSection(models.Model):
     name = models.CharField(default="", max_length=200)
     questions = models.ManyToManyField(FAQ, blank=True)
+    order = models.IntegerField(default=1)
+
+
+    class Meta:
+        ordering = ('order', 'name')
