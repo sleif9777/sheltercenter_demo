@@ -66,3 +66,11 @@ class Adopter(models.Model):
 
     class Meta:
         ordering = ('adopter_first_name', 'adopter_last_name')
+
+class FAQ(models.Model):
+    question = models.CharField(default="", max_length=500)
+    answer = models.TextField(default="", blank=False)
+
+class FAQSection(models.Model):
+    name = models.CharField(default="", max_length=200)
+    questions = models.ManyToManyField(FAQ, blank=True)
