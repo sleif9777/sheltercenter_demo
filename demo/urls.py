@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from appt_calendar import views #as cal_views
 from adopter import views #as adopt_views
-from dashboard import views as dash_views
+from dashboard import views as views
 from . import settings
 import adopter
 from django.conf.urls.static import static
@@ -39,10 +39,11 @@ urlpatterns = [
     path('adopter/', include('adopter.urls')),
     path('emails/', include('email_mgr.urls')),
     path('', adopter.views.home_page, name="home_page"),
-    path('register/', dash_views.register, name="register"),
-    path('login/', dash_views.login_page, name="login"),
-    path('logout/', dash_views.logout_user, name="logout"),
-    path('test/', dash_views.test_harness, name="test_harness"),
+    path('register/', views.register, name="register"),
+    path('login/', views.login_page, name="login"),
+    path('logout/', views.logout_user, name="logout"),
+    path('test/', views.test_harness, name="test_harness"),
+    path('login/staff/', views.staff_login, name="staff_login"),
     path('tinymce/', include('tinymce.urls')),
 ]
 

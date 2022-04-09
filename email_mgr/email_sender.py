@@ -49,7 +49,7 @@ def strip_anchors(html, adopter, appt):
     return html
 
 def strip_tags(html, adopter, appt):
-    html = strip_anchors(html, adopter, appt)
+    # html = strip_anchors(html, adopter, appt)
 
     s = MLStripper()
     s.feed(html)
@@ -149,8 +149,8 @@ def dates_are_open(adopter, date):
     name = adopter.adopter_first_name
     email = adopter.adopter_email
 
-    plain_url = 'http://sheltercenter.dog/calendar/adopter/' + str(adopter.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-    url = '<a href="http://sheltercenter.dog/calendar/adopter/' + str(adopter.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Click here to schedule your appointment.</a>'
+    plain_url = 'http://sheltercenter.dog/' + str(date.day) + '/'
+    url = '<a href="http://sheltercenter.dog/">Click here to schedule your appointment.</a>'
 
     date_string = date_str(date)
 
@@ -192,60 +192,18 @@ def new_contact_us_msg(adopter, message):
     reply_to = adopter.adopter_email
     email = "sheltercenterdev@gmail.com"
 
-    try:
-        appt = Appointment.objects.get(adopter_choice=adopter.id)
-        date = appt.date
-    except:
-        appt = None
+    text = """\
+    Adopter: """ + adopter.adopter_full_name() + """\n
+    \n""" + message
 
-    print(appt)
-
-    if appt != None:
-        header_appt = appt.date_and_time_string()
-        plain_cancel_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/'
-        cancel_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/calendar/adopter/cancel/adopter/' + str(adopter.id) + '/appt/' + str(appt.id) + '/date/' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + '/">Cancel Appointment</a>'
-        plain_reschedule_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
-        reschedule_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">Reschedule Appointment</a>'
-
-        text = """\
-        Adopter: """ + adopter.adopter_full_name() + """\n
-        Current Appointment: """ + header_appt + """\n
-        Reschedule Appointment Here: """ + plain_reschedule_url + """\n
-        Cancel Appointment Here: """ + plain_cancel_url + """\n
-        \n""" + message
-
-        html = """\
-        <html>
-          <body>
-            <h2>New Message from """ + adopter.adopter_full_name() + """</h2>
-            <p><b>Current Appointment:</b> """ + header_appt + """</p>
-            <p>""" + reschedule_url + """</p>
-            <p>""" + cancel_url + """</p>
-            <p><b>Message:</b> """ + message + """</p>
-          </body>
-        </html>
-        """
-    else:
-        header_appt = "None Scheduled"
-        plain_schedule_url = 'http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/'
-        schedule_url = '<a href="http://sheltercenter-v2l7h.ondigitalocean.app/adopter/' + str(adopter.id) + '/">Schedule Appointment</a>'
-
-        text = """\
-        Adopter: """ + adopter.adopter_full_name() + """\n
-        Current Appointment: """ + header_appt + """\n
-        Schedule Appointment Here: """ + plain_schedule_url + """\n
-        \n""" + message
-
-        html = """\
-        <html>
-          <body>
-            <h2>New Message from """ + adopter.adopter_full_name() + """</h2>
-            <p><b>Current Appointment:</b> """ + header_appt + """</p>
-            <p>""" + schedule_url + """</p>
-            <p><b>Message:</b> """ + message + """</p>
-          </body>
-        </html>
-        """
+    html = """\
+    <html>
+      <body>
+        <h2>New Message from """ + adopter.adopter_full_name() + """</h2>
+        <p><b>Message:</b> """ + message + """</p>
+      </body>
+    </html>
+    """
 
     send_email(text, html, reply_to, subject, email)
 

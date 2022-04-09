@@ -4,8 +4,11 @@
 
 {% block content %}
   <div class="main textpage">
-    <h1 class="page_header no_actions">Email Template</h1>
-
+    {% if request.user|has_group:"superuser" %}
+      <h1 class="page_header">Email Templates</h1>
+    {% else %}
+      <h1 class="page_header no_actions">Email Template</h1>
+    {% endif %}
 
     {% if request.user|has_group:"superuser" %}
       <div class="calendar_actions">

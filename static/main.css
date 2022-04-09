@@ -133,6 +133,7 @@ body {
 
 .main {
   margin-left: 220px;
+  width: calc(100% - 220px);
 }
 
 .activitymenu li {

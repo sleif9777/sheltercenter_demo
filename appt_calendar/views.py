@@ -14,9 +14,6 @@ from dashboard.decorators import *
 system_settings = SystemSettings.objects.get(pk=1)
 
 def get_groups(user_obj):
-    print(user_obj)
-    print(user_obj.groups.all())
-
     try:
         user_groups = set(group.name for group in user_obj.groups.all().iterator())
     except:
@@ -78,8 +75,6 @@ def greeter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
         "appt": old_appt,
         "source": source,
     }
-
-    print(source)
 
     calendar = gc(request.user, 'reschedule', None, date_year, date_month, date_day)
 
@@ -529,13 +524,9 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
         new_appt.has_cat = current_appt.has_cat
         new_appt.mobility = current_appt.mobility
 
-        print("admin" in user_groups and source == "calendar")
-        print(user_groups, source)
-
         if user_groups == {"adopter"} or ("admin" in user_groups and source == "calendar"):
             reset_appt(current_appt)
             current_appt.save()
-            print('reset')
 
         new_appt.adopter_choice = adopter
         adopter.has_current_appt = True
@@ -556,9 +547,6 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
             return redirect("calendar_date", date_year, date_month, date_day)
         else:
             today = datetime.date.today()
-
-            print('greeter' in user_groups or ('admin' in user_groups and source == "followup"))
-            print('greeter' in user_groups, ('admin' in user_groups and source == "followup"))
 
             if 'greeter' in user_groups or ('admin' in user_groups and source == "followup"):
                 current_appt.outcome = "5"
