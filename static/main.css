@@ -173,6 +173,7 @@ body {
 
 .textpage {
   padding: 10px;
+  width: calc(100% - 240px);
 }
 
 .timeslot, .week, #allreports {

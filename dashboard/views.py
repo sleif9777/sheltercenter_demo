@@ -40,10 +40,15 @@ def login_page(request):
         password = request.POST.get('password')
 
         user = authenticate(username=username, password=password)
+        user_groups = set(group.name for group in user.groups.iterator())
 
         if user is not None:
             login(request, user)
-            return redirect('calendar')
+
+            if 'adopter' in user_groups and not user.adopter.acknowledged_faq:
+                return redirect('adopter_home')
+            else:
+                return redirect('calendar')
 
     context = {
         'cred_placeholder': 'adopter@sheltercenter.dog',

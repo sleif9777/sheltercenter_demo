@@ -20,10 +20,6 @@
       <input type="checkbox" name="ready_to_adopt" value="ready_to_adopt" required><br><br>
       <label for="children_attending">I understand that it is <b>extremely</b> important for any young children in the home to attend the appointment so that we may find a child-compatible match, or I acknowledge that there are no young children in the home. </label>
       <input type="checkbox" name="ready_to_adopt" value="children_attending" required><br><br>
-      {% if title != "Edit Appointment" %}
-        <label for="auth_code">Please enter your six digit authorization code (included in the email we sent you):</label>
-        <input type="number" name="auth_code" value="" min="{{adopter.auth_code}}" max="{{adopter.auth_code}}" onchange="this.setCustomValidity('')" oninvalid="this.setCustomValidity('This authorization code is incorrect.')" required><br>
-      {% endif %}
       <input class="submitform" type="submit" name="" value="Submit">
     </form>
 

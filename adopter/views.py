@@ -82,7 +82,7 @@ def add(request):
 
                     new_adopter.auth_code = auth_code
 
-                    new_user = User.objects.create_user(username=new_adopter.adopter_email, email=new_adopter.adopter_email, password=str(auth_code))
+                    new_user = User.objects.create_user(username=new_adopter.adopter_email.lower(), email=new_adopter.adopter_email, password=str(auth_code))
 
                     new_adopter.user = new_user
 
@@ -98,7 +98,8 @@ def add(request):
             system_settings.last_adopter_upload = today
             system_settings.save()
 
-            upload_errors(errors)
+            if errors != []:
+                upload_errors(errors)
     except:
         if form.is_valid():
             form.save()
