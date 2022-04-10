@@ -136,6 +136,7 @@ def add(request):
                     shellappt.save()
 
                     adopter.has_current_appt = False
+                    adopter.acknowledged_faq = True
                     adopter.save()
 
                     if adopter.adopting_foster:
@@ -184,6 +185,17 @@ def manage(request):
     }
 
     return render(request, "adopter/adoptermgmt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
+def send_to_inactive(request):
+    add_date = datetime.date.today() - datetime.timedelta(days = 5)
+    adopters = Adopter.objects.filter(accept_date=add_date, acknowledged_faq=False)
+
+    for adopter in adopters:
+        inactive_invite(adopter)
+
+    return redirect('adopter_manage')
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})

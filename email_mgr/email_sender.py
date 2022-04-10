@@ -21,36 +21,7 @@ class MLStripper(HTMLParser):
     def get_data(self):
         return self.text.getvalue()
 
-def strip_anchors(html, adopter, appt):
-    if os.environ.get('LOCALHOST'):
-        base_name = 'localhost'
-    else:
-        base_name = 'sheltercenter.dog'
-
-    try:
-        cancel_url = '<a href="http://{0}/calendar/adopter/cancel/adopter/{1}/appt/{2}/date/{3}/{4}/{5}/">Click here to cancel your appointment.</a>'.format(base_name, adopter.id, appt.id, appt.date.year, appt.date.month, appt.date.day)
-
-        plain_cancel_url = 'http://{0}/calendar/adopter/cancel/adopter/{1}/appt/{2}/date/{3}/{4}/{5}/'.format(base_name, adopter.id, appt.id, appt.date.year, appt.date.month, appt.date.day)
-
-        home_url = '<a href="http://{0}/adopter/{1}/">Click here to schedule your appointment.</a>'.format(base_name, adopter.id)
-
-        plain_home_url = 'http://{0}/adopter/{1}/'.format(base_name, adopter.id)
-
-        html = html.replace(cancel_url, plain_cancel_url)
-        html = html.replace(home_url, plain_home_url)
-    except:
-        pass
-
-    host_url = '<a href="https://savinggracenc.org/host-a-dog/">If you would like to learn more about our Weekend Host program, please visit our website.</a>'
-    plain_host_url = 'https://savinggracenc.org/host-a-dog/'
-
-    html = html.replace(host_url, plain_host_url)
-
-    return html
-
 def strip_tags(html, adopter, appt):
-    # html = strip_anchors(html, adopter, appt)
-
     s = MLStripper()
     s.feed(html)
     return s.get_data()
@@ -293,6 +264,12 @@ def follow_up_w_host(adopter):
 def invite(adopter):
     subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
     template = EmailTemplate.objects.get(template_name="Add Adopter (inside NC, VA, SC)")
+
+    scrub_and_send(subject, template, adopter, None)
+
+def inactive_invite(adopter):
+    subject = "Are you ready to schedule your appointment?"
+    template = EmailTemplate.objects.get(template_name="Are you ready to schedule your appointment?")
 
     scrub_and_send(subject, template, adopter, None)
 

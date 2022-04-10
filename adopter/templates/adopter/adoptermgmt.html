@@ -3,8 +3,11 @@
 
 {% block content %}
   <div class="main textpage">
+    <h1 class="page_header">Manage Adopters</h1>
 
-    <h1 class="page_header no_actions">Manage Adopters</h1>
+    <div class="calendar_actions" style="margin-bottom: 15px;">
+      <a href="{% url 'send_to_inactive' %}">Send Follow-Up Emails</a>
+    </div>
 
     <ul class="listpage" id="adopter_list">
       {% for adopter in adopters %}
