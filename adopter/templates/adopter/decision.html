@@ -4,7 +4,7 @@
 {% block content %}
   <div class="main textpage">
 
-    <h1 class="page_header">Your Adoption Request Has Been Reviewed</h1>
+    <h1 class="page_header no_actions">Your Adoption Request Has Been Reviewed</h1>
 
     <p>Hi {{first_name}},</p>
     <br>
@@ -13,9 +13,9 @@
     <p><br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
     <br>
 
-    {% include 'adopter/faq.html' %}
+    {% include 'adopter/faq_content.html' %}
 
-    <form class="" action="{% url 'acknowledged_faq' adopter.id %}" method="post">
+    <form class="" action="{% url 'acknowledged_faq' %}" method="post">
       {% csrf_token %}
       <input type="checkbox" name="read_faq" value="read_faq" required>
       <label for="read_faq"> I have read the Frequently Asked Questions and am ready to schedule my appointment.</label><br><br>

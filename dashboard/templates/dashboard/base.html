@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     {% load static %}
+    {% load auth_extras %}
     <meta charset="utf-8">
     <title></title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
@@ -13,16 +14,24 @@
 
       {% block nav %}
 
-        {% if role == 'admin' %}
-          {% include 'dashboard/admin_navbar.html' %}
+        <nav>
+          <div class="actmenu-center">
+            <ul>
 
-        {% elif role == 'adopter' %}
-          {% include 'dashboard/adopter_navbar.html' %}
+              {% if request.user|has_group:"admin" %}
+                {% include 'dashboard/admin_navbar.html' %}
 
-        {% elif role == 'greeter' %}
-          {% include 'dashboard/greeter_navbar.html' %}
+              {% elif request.user|has_group:"greeter" %}
+                {% include 'dashboard/greeter_navbar.html' %}
 
-        {% endif %}
+              {% elif request.user|has_group:"adopter" %}
+                {% include 'dashboard/adopter_navbar.html' %}
+              {% endif %}
+
+              <li class="end"><a href="{% url 'logout' %}">Log Out</a></li>
+            </ul>
+          </div>
+        </nav>
 
       {% endblock %}
 

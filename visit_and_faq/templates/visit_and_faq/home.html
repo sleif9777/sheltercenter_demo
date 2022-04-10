@@ -1,0 +1,17 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="main textpage">
+    <div class="page_header no_actions">
+      <h1>FAQ and Visit Instructions Setup</h1>
+    </div>
+
+    <a href="{% url 'add_faq' %}">Add FAQ</a><br>
+    <a href="{% url 'add_faq_section' %}">Add FAQ Section</a><br>
+    <a href="{% url 'faq_test' %}">View FAQ</a>
+
+
+  </div>
+
+{% endblock %}

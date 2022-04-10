@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 from num2words import num2words
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -14,6 +15,8 @@ class Adopter(models.Model):
     adopter_first_name = models.CharField(default="", max_length=200, blank=True) #need to refactor and add verbose
     adopter_last_name = models.CharField(default="", max_length=200, blank=True) #""
     adopter_email = models.EmailField(default="", blank=True) #""
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    secondary_email = models.EmailField(default="", blank=True)
     acknowledged_faq = models.BooleanField(default = False)
     out_of_state = models.BooleanField(default = False)
     lives_with_parents = models.BooleanField(default = False)
@@ -23,7 +26,7 @@ class Adopter(models.Model):
     carryover_shelterluv = models.BooleanField(default = False)
     chosen_dog = models.CharField(default="", max_length=200, blank=True)
     has_current_appt = models.BooleanField(default = False)
-    alert_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
+    alert_date = models.DateField(default=datetime.date(datetime.date.today().year,1,1), blank=True)
     visits_to_date = models.IntegerField(default=0)
     app_interest = models.CharField(default="", max_length=500, blank=True)
     accept_date = models.DateField(default=datetime.date.today(), blank=True)

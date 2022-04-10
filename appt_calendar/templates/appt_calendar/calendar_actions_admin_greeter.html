@@ -1,6 +1,12 @@
-<a href="{% url 'jump_to_date_admin' role %}">Jump To Date</a>
-<a href="{% url 'calendar' role %}">Return to Today</a>
-{% if role == 'admin' %}
-  <a href="{% url 'calendar_print' role date.year date.month date.day %}" target="_blank">Print View</a>
-  <a href="{% url 'add_timeslot' role date.year date.month date.day %}">Add Timeslot</a>
+{% load auth_extras %}
+
+<a href="{% url 'jump_to_date' %}">Jump To Date</a>
+
+{% if date != today %}
+  <a href="{% url 'calendar' %}">Return to Today</a>
+{% endif %}
+
+{% if request.user|has_group:"admin" %}
+  <a href="{% url 'calendar_print' date.year date.month date.day %}" target="_blank">Print View</a>
+  <a href="{% url 'add_timeslot' date.year date.month date.day %}">Add Timeslot</a>
 {% endif %}

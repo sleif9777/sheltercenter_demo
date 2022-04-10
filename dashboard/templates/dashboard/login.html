@@ -1,13 +1,44 @@
-<h3>Login</h3>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  </head>
+  <body>
+    <div class="login_form" style="width: 400px; margin:auto; padding-top: 15px;">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt="" style="display:block; margin: auto;"></a>
 
-<form class="" action="" method="post">
-  {% csrf_token %}
+      <h3 class="page_header">Scheduling Portal</h3>
+      <div class="page_header" style="padding-top: 0; font-size: 10px;">Powered by ShelterCenter</div>
 
-  <label for="username">Username: </label>
-  <input type="text" name="username" value=""><br>
+      <form class="" action="" method="post" style="margin-top: 10px;">
+        {% csrf_token %}
 
-  <label for="password">Password: </label>
-  <input type="password" name="password" value="">
+        <div style="margin: auto; width: 70%;">
+          <p>
+            <label for="username">Enter your {{login_cred}}:</label><br>
+            <input type="text" placeholder="{{cred_placeholder}}" style="width: 100%; box-sizing: border-box;" name="username" value="">
+          </p>
+        <br>
 
-  <input type="submit" name="" value="Log In">
-</form>
+          <p>
+            <label for="password">Enter your {{pw_cred}}:</label><br>
+            <input type="password" placeholder="{{pw_placeholder}}" name="password" style="width: 100%; box-sizing: border-box;" value="">
+          </p>
+        </div>
+
+        <input class="submitform" style="display: block; margin: 15px auto; width: 50%; font-size: 90%; font-weight: bold;" type="submit" name="" value="Log In">
+
+      </form>
+      {% if other_role == 'Greeters and staff' %}
+        <a class="standalone" style="display: block; margin: auto; text-align: center;" href="{% url 'staff_login' %}">{{other_role}} - click here to log in</a>
+      {% else %}
+        <a class="standalone" style="display: block; margin: auto; text-align: center;" href="{% url 'login' %}">{{other_role}} - click here to log in</a>
+      {% endif %}
+
+    </div>
+  </body>
+</html>

@@ -4,12 +4,12 @@ from schedule_template.models import Daily_Schedule, TimeslotTemplate, Appointme
 from appt_calendar.models import Timeslot, Appointment
 from adopter.models import Adopter
 from appt_calendar.forms import *
-from emails.email_template import *
 from email_mgr.email_sender import *
 from appt_calendar.date_time_strings import *
 from appt_calendar.appointment_manager import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
+from .decorators import *
 
 system_settings = SystemSettings.objects.get(pk=1)
 
@@ -33,36 +33,74 @@ def register(request):
 
     return render(request, 'dashboard/register.html', context)
 
+@unauthenticated_user
 def login_page(request):
-    today = datetime.date.today()
-
     if request.method == "POST":
-        username = request.POST.get('username')
+        username = request.POST.get('username').lower()
         password = request.POST.get('password')
 
         user = authenticate(username=username, password=password)
+        user_groups = set(group.name for group in user.groups.iterator())
 
         if user is not None:
             login(request, user)
-            return redirect('calendar_date', 'admin', today.year, today.month, today.day)
 
-    context = {}
+            if 'adopter' in user_groups and not user.adopter.acknowledged_faq:
+                return redirect('adopter_home')
+            else:
+                return redirect('calendar')
+
+    context = {
+        'cred_placeholder': 'adopter@sheltercenter.dog',
+        'login_cred': 'email address',
+        'other_login': '{% url "staff_login" %}',
+        'other_role': 'Greeters and staff',
+        'pw_cred': 'authorization code',
+        'pw_placeholder': '123456 (This is in the email we sent you)',
+    }
 
     return render(request, 'dashboard/login.html', context)
 
+@unauthenticated_user
+def staff_login(request):
+    if request.method == "POST":
+        username = request.POST.get('username').lower()
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+        user_groups = set(group.name for group in user.groups.iterator())
+
+        if user is not None and user_groups != {'adopter'}:
+            login(request, user)
+            return redirect('calendar')
+        else:
+            return redirect('login')
+
+    context = {
+        'cred_placeholder': 'Username',
+        'login_cred': 'username',
+        'other_login': '{% url "login" %}',
+        'other_role': 'Adopters',
+        'pw_cred': 'password',
+        'pw_placeholder': 'Password',
+    }
+
+    return render(request, 'dashboard/login.html', context)
+
+@authenticated_user
 def logout_user(request):
 
     logout(request)
 
     return redirect('login')
 
-def generate_calendar(role, load, adopter_id, date_year, date_month, date_day):
+def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
+    user_groups = set(group.name for group in user.groups.all().iterator())
+
     try:
-        adopter = Adopter.objects.get(pk = adopter_id)
-        current_appt = Appointment.objects.filter(adopter_choice=adopter).latest('id')
+        current_appt = Appointment.objects.filter(adopter_choice=user.adopter).latest('id')
         current_appt_str = current_appt.date_and_time_string()
     except:
-        adopter = None
         current_appt = None
         current_appt_str = None
 
@@ -85,7 +123,7 @@ def generate_calendar(role, load, adopter_id, date_year, date_month, date_day):
     weekday = weekday_str(date)
 
     #if admin, generate the following info for messages
-    if role == 'admin':
+    if 'admin' in user_groups:
 
         #check for empty dates in next 14 days
         for d in [today + datetime.timedelta(days=x) for x in range(14)]:
@@ -117,7 +155,7 @@ def generate_calendar(role, load, adopter_id, date_year, date_month, date_day):
     timeslots = {}
 
     #admins and greeters should see all appointments
-    if role in ['admin', 'greeter']:
+    if 'greeter' in user_groups or 'admin' in user_groups:
         if load == 'full':
             for time in timeslots_query:
                 timeslots[time] = list(time.appointments.filter(date = date, time = time.time))
@@ -132,7 +170,7 @@ def generate_calendar(role, load, adopter_id, date_year, date_month, date_day):
 
     #adopters should only see open appointments or their own
     #for the timeslot they currently are in, they should only see their own appointment
-    elif role in ['adopter']:
+    elif 'adopter' in user_groups:
         for time in timeslots_query:
             timeslots[time] = list(time.appointments.filter(date = date, time = time.time, appt_type__in = ["1", "2", "3"]))
 
@@ -165,7 +203,6 @@ def generate_calendar(role, load, adopter_id, date_year, date_month, date_day):
         "schedulable": ["1", "2", "3"],
         "visible": visible_to_adopters,
         "delta": delta_from_today,
-        "role": role,
         "today": today,
         "no_outcome_appts": no_outcome_appts
     }

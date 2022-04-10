@@ -2,75 +2,56 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import *
 from .models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
 import datetime
+from django.contrib.auth.models import Group, User
+from dashboard.decorators import *
 
-def home(request):
-
-    if form.is_valid():
-        try:
-            data = form.cleaned_data
-            adopter = Adopter.objects.get(adopter_email=data['email'])
-
-            return redirect('adopter_home', adopter.id)
-        except:
-            pass
-
-
-    context = {
-        'form': AdopterLoginField
-    }
-
-    return render(request, 'schedule_template/index.html', context)
-
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def weekly(request):
     dows = Daily_Schedule.objects
-    today = datetime.date.today()
 
     context = {
         'dows': dows,
-        'today': today,
-        'role': 'admin',
     }
 
     return render(request, "schedule_template/weekly_schedule.html", context)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def daily(request, dow_id):
     daily_sched = get_object_or_404(Daily_Schedule, pk=dow_id)
-    daily_sched_timeslots = daily_sched.timeslots.all()
+    daily_sched_timeslots = [time for time in daily_sched.timeslots.all()]
     daily_sched_appts = {}
-    all_dows = Daily_Schedule.objects
-    today = datetime.date.today()
 
-    for time in daily_sched_timeslots.iterator():
-        get_appts = time.appointments.all()
-        appts_for_time = []
-        for appointment in get_appts:
-            appts_for_time += [appointment]
-        daily_sched_appts[time] = appts_for_time
-        #print(daily_sched_appts)
+    for time in daily_sched_timeslots:
+        daily_sched_appts[time] = [appt for appt in time.appointments.all()]
 
     context = {
         'daily_sched': daily_sched,
         'timeslots': daily_sched_timeslots,
         'appointments': daily_sched_appts,
-        'all_dows': all_dows,
-        'today': today,
-        'role': 'admin',
     }
 
     return render(request, "schedule_template/daily_schedule.html", context)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def delete_timeslot(request, dow_id, timeslot_id):
     deleted_timeslot = get_object_or_404(TimeslotTemplate, pk=timeslot_id)
     deleted_timeslot.delete()
 
     return redirect('daily', dow_id)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def delete_appointment(request, dow_id, appt_id):
     deleted_appt = get_object_or_404(AppointmentTemplate, pk=appt_id)
     deleted_appt.delete()
 
     return redirect('daily', dow_id)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def add_timeslot(request, dow_id):
     dow = Daily_Schedule.objects.get(pk=dow_id)
 
@@ -79,7 +60,6 @@ def add_timeslot(request, dow_id):
     if form.is_valid():
         data = form.cleaned_data
         hour = int(data['hour'])
-        print(hour)
         minute = int(data['minute'])
         daypart = data['daypart']
 
@@ -100,11 +80,11 @@ def add_timeslot(request, dow_id):
 
     return render(request, "schedule_template/timeslot_form.html", context)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def add_appointment(request, dow_id, timeslot_id):
-#    dow_id -= 2
     dow = Daily_Schedule.objects.get(pk=dow_id)
     timeslot = TimeslotTemplate.objects.get(pk=timeslot_id)
-    #form = GenericTimeslotModelForm(request.POST or None, initial={"day_of_week": dow.day_of_week})
     form = GenericAppointmentModelFormPrefilled(request.POST or None, initial={'day_of_week': dow.day_of_week, 'time': timeslot.time})
     if form.is_valid():
         form.save()
@@ -121,10 +101,10 @@ def add_appointment(request, dow_id, timeslot_id):
 
     return render(request, "schedule_template/render_form.html", context)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def edit_appointment(request, dow_id, appt_id):
-#    dow_id -= 2
     appt = AppointmentTemplate.objects.get(pk=appt_id)
-    #form = GenericTimeslotModelForm(request.POST or None, initial={"day_of_week": dow.day_of_week})
     form = GenericAppointmentModelFormPrefilled(request.POST or None, instance=appt)
     if form.is_valid():
         form.save()
@@ -137,9 +117,3 @@ def edit_appointment(request, dow_id, appt_id):
     }
 
     return render(request, "schedule_template/render_form.html", context)
-
-# def detail(request, blog_id):
-#     detailblog = get_object_or_404(Blog, pk=blog_id)
-#     return render(request, 'blog/detail.html', {'blog': detailblog})
-
-# Create your views here.

@@ -4,14 +4,14 @@ import os, datetime
 def replacer(html, adopter, appt):
     today = datetime.datetime.today()
 
-    if os.environ.get('LOCALHOST'):
+    if str(os.environ.get('LOCALHOST')) == "1":
         base_name = 'localhost'
     else:
         base_name = 'sheltercenter.dog'
 
-    cancel_url = '<a href="http://{0}/calendar/adopter/cancel/adopter/{1}/appt/{2}/date/{3}/{4}/{5}/">Click here to cancel your appointment.</a>'
+    cancel_url = '<a href="http://{0}/">Click here to cancel your appointment.</a>'
 
-    home_url = '<a href="http://{0}/adopter/{1}/">Click here to schedule or reschedule your appointment.</a>'
+    home_url = '<a href="http://{0}/">Click here to schedule or reschedule your appointment.</a>'
 
     try:
         adp_replacements = {
@@ -30,7 +30,6 @@ def replacer(html, adopter, appt):
             adp_replacements['<p>You can reschedule your appointment here: *ADP_HOME_URL*</p>'] = home_url.format(base_name, adopter.id)
         else:
             adp_replacements['<p>You can reschedule your appointment here: *ADP_HOME_URL*</p>'] = ""
-
     except:
         adp_replacements = {}
 
@@ -50,8 +49,6 @@ def replacer(html, adopter, appt):
             apt_replacements['*ADP_CANCEL_URL*'] = cancel_url.format(base_name, adopter.id, appt.id, appt.date.year, appt.date.month, appt.date.day)
         else:
             apt_replacements['<p>You can cancel your appointment here: *ADP_CANCEL_URL*</p>'] = ""
-
-
     except:
         apt_replacements = {}
 
@@ -74,16 +71,13 @@ def replacer(html, adopter, appt):
     replacements_master = {
         adopter: adp_replacements,
         appt: apt_replacements,
-        'global': global_replacements
+        'global': global_replacements,
     }
 
     for item in replacements_master:
-        print(replacements_master[item])
         if item != None:
-            print(item)
             for key in replacements_master[item]:
                 if key in html:
-                    print(key)
                     html = html.replace(key, replacements_master[item][key])
 
     return html

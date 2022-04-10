@@ -4,7 +4,7 @@
 {% block content %}
   <div class="main textpage">
 
-    <h1 class="page_header">Chosen Board</h1>
+    <h1 class="page_header no_actions">Chosen Board</h1>
 
     <table id="chosenboard" style="width: 95%;">
 
@@ -46,11 +46,11 @@
                 Adopters Notified<br>
                 {% if appt.heartworm == True %}
                   <div class="chosen_board_actions">
-                    <a class="chosen_board_actions" href="{% url 'paperwork_calendar' role today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
+                    <a class="chosen_board_actions" href="{% url 'paperwork_calendar' 'admin' today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
                   </div>
                 {% else %}
                   <div class="chosen_board_actions">
-                    <a class="chosen_board_actions" href="{% url 'paperwork_calendar' role today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
+                    <a class="chosen_board_actions" href="{% url 'paperwork_calendar' 'admin' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
                   </div>
                 {% endif %}
               {% elif appt.outcome == "7" %}

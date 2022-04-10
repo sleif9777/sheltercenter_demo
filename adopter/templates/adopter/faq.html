@@ -1,101 +1,11 @@
-<h1 class="page_header">Frequently Asked Questions</h1>
+{% extends 'dashboard/base.html' %}
+{% load static %}
 
-<div class="faq_section_div">
-<h2 class="faq_section">Getting Ready To Visit</h2>
+{% block content %}
 
-<h3 class="faq_question" id="location">Where are you located?</h3>
-<p class="faq_answer">Saving Grace is located in Wake Forest, NC. All adoption appointments are held at this location.</p>
+<div class="main textpage" style="box-sizing: border-box;">
 
-<h3 class="faq_question" id="shipping">I live a considerable distance away. Will you transport the dog to me?</h3>
-<p class="faq_answer">Adopting a rescue dog is a very personal decision. We require all adopters to meet a dog at our location before committing to them. We do not transport or ship dogs.</p>
-
-<h3 class="faq_question" id="third_party">Do you offer video appointments? Can a relative or friend visit on my behalf? Can I adopt on behalf of a relative or friend?</h3>
-<p class="faq_answer">As mentioned above, adopting a rescue dog is a very personal decision that needs to be satisfactory for both the to-be owner and the dog. We require the to-be owner to meet dogs in-person before making a decision. We will not work through a third party.</p>
+  {% include 'adopter/faq_content.html' %}
 
 </div>
-
-<div class="faq_section_div">
-<h2 class="faq_section">Scheduling the Appointment</h2>
-<h3 class="faq_question" id="weekends_mornings">I noticed there are no morning or weekend appointments. Can you make an exception?</h3>
-<p class="faq_answer">We are closed at those times. The appointment times available to you are what we have to offer.</p>
-
-<h3 class="faq_question" id="bring_kids">Should I bring my kids?</h3>
-<p class="faq_answer">We strongly encourage you to bring your whole family. It is best if all members who will be active in the dog’s life be present, especially our youngest family members who have the potential to be the most unpredictable. Your new dog must feel comfortable with everyone.</p>
-
-<h3 class="faq_question" id="bring_parents">Should I bring my parents?</h3>
-<p class="faq_answer">If you are an non-homeowning adult living with homeowning parents or other family, we require at least one to attend the appointment so they can approve the choice of dog living on their property. While the choice of dog is ultimately up to the adopter, it is ideal to bring both parents to see how comfortable your potential new pet will be with them, as they are members of your home.</p>
-
-<h3 class="faq_question" id="bring_dog">Should I bring my current dog?</h3>
-<p class="faq_answer">You are welcome to bring your current dog, but we do want to let you know that we do not have any off-leash meet-and-greet areas. All meetings take place on leash in the parking lot. During the warmer seasons, your dog will need to wait in the parking lot with a family member. If it is cool enough, you may have your dog wait in the car while you meet potential pets. You know your dog best and we are willing to assist you, but please let us know prior to your appointment so we can provide you further details on how this will be facilitated.</p>
-
-<h3 class="faq_question" id="sbr">I am a renter and am interested in a <a class="standaone" href="https://www.rent.com/blog/breed-restrictions-101/">restricted breed</a>. How can I prepare?</h3>
-<p class="faq_answer">Please bring documentation from your property manager granting their permission for you to adopt a dog of these breeds.</p>
-
-<h3 class="faq_question" id="two_weeks">The calendar only goes two weeks into the future. Can I schedule for later than that?</h3>
-<p class="faq_answer">We only accept appointments up to two weeks in advance. Please keep your email handy and schedule an appointment once closer to that time.</p>
-
-<h3 class="faq_question" id="upcoming_travel">We have upcoming travel and don't want to disrupt our new dog's transition period. Can I reserve a dog now and take them home later?</h3>
-<p class="faq_answer">Shelter environments are loud and stressful, and any dog you choose would like to settle in at home as soon as they are cleared to go home. We will not hold a dog unless they have not been cleared by our vets yet. If you have upcoming travel, we request that you plan to come in after you have returned home.</p>
-</div>
-
-<div class="faq_section_div">
-<h2 class="faq_section">What to Expect During The Appointment</h2>
-
-<h3 class="faq_question" id="multiple_dogs">Can I meet more than one dog at a time?</h3>
-<p class="faq_answer">Yes, our appointments are structured to let you meet multiple potential matches.</p>
-
-<h3 class="faq_question" id="specific_dogs">Can I meet this specific dog from your website during this appointment?</h3>
-<p class="faq_answer">Our appointments are set up for you to meet several compatible matches that are available at that time. Please know that dogs are not placed on hold for appointments. With ongoing adoptions, we cannot guarantee that a specific dog will remain available at the time of your appointment.</p>
-
-<h3 class="faq_question" id="appt_length">How long will my appointment be?</h3>
-<p class="faq_answer">Expect your appointment to take up to one hour.</p>
-</div>
-
-<div class="faq_section_div">
-<h2 class="faq_section">Adopting a Puppy</h2>
-
-<h3 class="faq_question" id="puppy_size">How big do your puppies get?</h3>
-<p class="faq_answer">We are a rescue organization, not a breeder. We don't know the lineage of the puppies in our care and cannot guarantee them to be any particular size.</p>
-
-<h3 class="faq_question" id="puppies_no_weds_thurs">I can't come on a Wednesday or Thursday. Can I meet puppies outside of these days?</h3>
-<p class="faq_answer">Our puppies arrive on these days and stay with us until they find homes. You can meet any available at the time of your appointment, though there may not be many.</p>
-</div>
-
-<div class="faq_section_div">
-<h2 class="faq_section">Selecting A Dog</h2>
-
-<h3 class="faq_question" id="info_on_dog">Can you give me more information about this dog before I come?</h3>
-<p class="faq_answer">The adoption counselor you meet in-person during your appointment is the best person to direct these questions to. Please hold your onto your question until your appointment. Our email/scheduling team members are off-site and are not the most familiar with the dogs. We do not make recommendations for dogs ahead of appointments as their availability can change in the meantime.</p>
-
-<h3 class="faq_question" id="hold_a_dog">Can I place a dog on hold for my appointment?</h3>
-<p class="faq_answer">To maintain a fair process for all adopters, <b>we do not hold dogs for appointments.</b> Any dog you express interest in may be adopted prior to your appointment. To have the best experience possible with our program, we recommend you come on site with an open mind and the fewest prerequisites possible for your new friend. The more open you are to just engage in the process, the more potential options for dogs you will have. Please understand that puppies, small dogs, long-haired dogs, and low-shedding dogs are sought out by many adopters and these dogs tend to be adopted quickly. If you narrow your focus to only one dog from the website, you may be disappointed if they are adopted prior to your appointment.</p>
-<p class="faq_answer">We understand that it is easy to fall in love with a picture and want to make a decision right away. It is <b>very important</b> to experience an animal's personality and energy in person before making that decision. <b>A picture and short bio can certainly be an introduction but should not be the entire basis of your final decision.</b></p>
-
-<h3 class="faq_question" id="littermates">This litter of puppies is too cute! Can I adopt two of them?</h3>
-<p class="faq_answer">Having littermates grow up together can be detrimental to their social development, as they can become more bonded to each other, and much less so to their humans and other household pets. With this in mind, we do not place littermates in the same home. We do not have a policy against adopting two unrelated puppies to the same home at the same time.</p>
-
-<h3 class="faq_question" id="hold_during_appt">Can I place a dog on hold during my appointment and take them home later?</h3>
-<p class="faq_answer">Shelter environments are loud and stressful, and any dog you choose would appreciate the chance to settle in at home as soon as possible. We will not hold a dog unless they have not been cleared by our vets yet. If your dog was already cleared, they will need to leave with you that same day. If you choose a dog that has not been cleared by our vets yet, we will be happy to place them on hold until they are ready to go home.</p>
-
-<h3 class="faq_question" id="about_fta">What happens if the dog I select has heartworm disease?</h3>
-<p class="faq_answer">Our foster-to-adopt (FTA) program helps us treat numerous dogs with heartworm disease while allowing them to establish their next chapter with you. Heartworm disease is mosquito-borne and common throughout the Carolinas. It is not contagious to other dogs. If your chosen dog is heartworm-positive, they will be able to go home with you as a foster until the treatments are complete. We still need to legally own the dog in order to administer treatments, and so transfer of final adoption occurs after the third treatment. The process takes approximately 8-10 weeks. Adoptions Team members will discuss heartworm treatment with you and provide you further information during your appointment.</p>
-
-<h3 class="faq_question" id="dog_removed_from_website">A dog I was interested in is no longer posted online. Were they adopted?</h3>
-<p class="faq_answer">Dogs are removed from our website upon being adopted. <b>Please know that we always have more dogs available to meet in person than posted online and your match may be in that group. We encourage you to keep your appointment, even if your first choice is no longer available.</b> You never know who you'll meet or miss out on!</p>
-</div>
-
-<div class="faq_section_div">
-<h2 class="faq_section">Communicating With The Scheduling Team</h2>
-
-<h3 class="faq_question" id="delayed_email_response">I sent an email and haven't heard back. Why is your response delayed?</h3>
-<p class="faq_answer">Our Adoptions Managers actively engage with dogs and on-site adopters during working hours. Our email/schedule team members are off-site volunteers donating their spare time for our cause and may not have all the answers about specific dogs you are seeking. As a result, our response time to emails may be limited. Your patience is appreciated.</p>
-
-<h3 class="faq_question" id="phone_calls">Can you call me with more information?</h3>
-<p class="faq_answer">Multiple team members moderate our email when there is down time. Having a written record allows all of us to be on the same page as you. We do not make phone calls to prospective adopters.</p>
-
-<h3 class="faq_question" id="adopted_dog_notification">Can you let me know if a dog I am interested in is adopted before my appointment?</h3>
-<p class="faq_answer">We work with over 100 adopters at a time and are a small team. At this time, we do not have the capacity to keep track of requests or maintain wishlists. We stress that keeping an open mind is the best means to adopt through our organization.</p>
-
-<h3 class="faq_question" id="bug_in_system">I noticed a bug or error in the scheduling system. Should I contact you?</h3>
-<p class="faq_answer">Please do! This scheduling system is a custom project created by one of our volunteers. It is likely not perfect, but any feedback to make it easier for you to use is welcome.</p>
-</div>
+{% endblock %}

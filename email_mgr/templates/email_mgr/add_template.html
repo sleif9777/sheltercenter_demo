@@ -1,36 +1,23 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    {% load static %}
-    <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
-    <!-- {{form.media}} -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>tinymce.init({selector:'textarea',height:'512px'});</script>
+{% extends 'dashboard/base.html' %}
+{% load static %}
 
-  </head>
-  <body>
-
-    <div class="activitymenu">
-      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
-
-      {% block nav %}
-        {% include 'dashboard/admin_navbar.html' %}
-      {% endblock %}
-
-    </div>
-
-    <div class="main textpage">
-      <h1 class="page_header">Email Template</h1>
-      <form class="" action="" method="post">
-        {% csrf_token %}
-        {{form.as_p | safe}}
-        <input class="submitform" type="submit" name="" value="Submit">
-      </form>
-
-    </div>
-
-  </body>
-</html>
+{% block content %}
+  <div class="main textpage">
+    <h1 class="page_header  no_actions">Email Template</h1>
+    <form class="" action="" method="post">
+      <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+      <script>
+        tinymce.init({
+          selector:'textarea',
+          height:'512px',
+          plugins:'link textcolor',
+          menubar: 'file edit insert view format table tools help',
+          toolbar: 'undo redo | styleselect | bold italic forecolor fontsizeselect | alignleft aligncenter alignright alignjustify | outdent indent | link',
+        });
+      </script>
+      {% csrf_token %}
+      {{form.as_p | safe}}
+      <input class="submitform" type="submit" name="" value="Submit">
+    </form>
+  </div>
+{% endblock %}

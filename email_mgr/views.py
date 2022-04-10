@@ -4,6 +4,7 @@ from .forms import *
 from io import StringIO
 from html.parser import HTMLParser
 from .email_sender import *
+from dashboard.decorators import *
 
 class MLStripper(HTMLParser):
     def __init__(self):
@@ -22,11 +23,11 @@ def strip_tags(html):
     s.feed(html)
     return s.get_data()
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def email_home(request):
 
     e_templates = EmailTemplate.objects.all()
-
-    print(e_templates)
 
     context = {
         'e_templates': e_templates,
@@ -35,6 +36,8 @@ def email_home(request):
 
     return render(request, "email_mgr/email_home.html/", context)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def edit_template(request, template_id):
     e_template = EmailTemplate.objects.get(pk=template_id)
     form = EmailTemplateForm(request.POST or None, instance=e_template)
@@ -52,6 +55,8 @@ def edit_template(request, template_id):
 
     return render(request, "email_mgr/add_template.html", context)
 
+@authenticated_user
+@allowed_users(allowed_roles={'superuser'})
 def add_email_template(request):
 
     form = EmailTemplateForm(request.POST or None)
@@ -59,11 +64,7 @@ def add_email_template(request):
     if form.is_valid():
         data = form.cleaned_data
 
-        plain = strip_tags(data['text'])
-
         new_template = EmailTemplate.objects.create(template_name = data['template_name'], text = data['text'], plain = plain)
-
-        send_email(plain, data['text'], 'sheltercenterdev@gmail.com', data['template_name'], 'sheltercenterdev@gmail.com')
 
         return redirect('email_home')
     else:

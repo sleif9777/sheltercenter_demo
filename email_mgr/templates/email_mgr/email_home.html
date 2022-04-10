@@ -1,9 +1,20 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load auth_extras %}
 
 {% block content %}
   <div class="main textpage">
-    <h1 class="page_header">Email Template</h1>
+    {% if request.user|has_group:"superuser" %}
+      <h1 class="page_header">Email Templates</h1>
+    {% else %}
+      <h1 class="page_header no_actions">Email Template</h1>
+    {% endif %}
+
+    {% if request.user|has_group:"superuser" %}
+      <div class="calendar_actions">
+        <a href="{% url 'add_email_template' %}">Add Template</a>
+      </div>
+    {% endif %}
 
     <ul class="listpage">
       {% for e_temp in e_templates %}

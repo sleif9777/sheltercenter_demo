@@ -1,14 +1,9 @@
-<nav>
-  <div class="actmenu-center">
-    <ul>
-      <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
-      <li><a href="{% url 'calendar' 'admin' %}">Calendar</a></li>
-      <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
-      <li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
-      <li><a href="{% url 'daily_reports_home' 'admin' %}">Daily Reports</a></li>
-      <li><a href="{% url 'chosen_board' role %}">Chosen Board</a></li>
-      <li><a href="{% url 'email_home' %}">Email Templates</a></li>
-      <li class="end"><a href="{% url 'logout' %}">Log Out</a></li>
-    </ul>
-  </div>
-</nav>
+<li><a href="{% url 'calendar' %}">Calendar</a></li>
+<li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
+<li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
+<li><a href="{% url 'adopter_manage' %}">Manage Adopters</a></li>
+<li><a href="{% url 'daily_reports_home' %}">Daily Reports</a></li>
+<li><a href="{% url 'chosen_board' %}">Chosen Board</a></li>
+<li><a href="{% url 'email_home' %}">Email Templates</a></li>
+<li><a href="{% url 'faq' %}">FAQ</a></li>
+<li><a href="{% url 'visitor_instructions' %}">Visit Instructions</a></li>

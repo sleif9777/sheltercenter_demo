@@ -4,132 +4,33 @@ from .models import Adopter
 from appt_calendar.models import Appointment
 from .forms import *
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-import datetime, time, csv
+import datetime, time, csv, os
 from random import randint
-from emails.email_template import *
 from email_mgr.models import EmailTemplate
 from email_mgr.dictionary import *
 from email_mgr.email_sender import *
 from .adopter_manager import *
+from visit_and_faq.models import *
+from django.contrib.auth.models import Group, User
+from dashboard.decorators import *
 
 system_settings = SystemSettings.objects.get(pk=1)
 
 # Create your views here.
 
-def simple_add_form(request):
-
-    return render(request, "adopter/simple_add_form.html")
-
-def simple_add_form_submit(request):
-
-    fname = request.POST['fname']
-    lname = request.POST['lname']
-    email = request.POST['email']
-
-    try:
-        subjnotes = request.POST['subjnotes']
-    except:
-        subjnotes = None
-
-    simple_invite(fname, lname, email, subjnotes)
-
-    return redirect('simple_add_form')
-
-def simple_add_form_oos(request):
-
-    fname = request.POST['fname']
-    lname = request.POST['lname']
-    email = request.POST['email']
-    subjnotes = request.POST['subjnotes']
-
-    simple_invite_oos(fname, lname, email, subjnotes)
-
-    return redirect('simple_add_form')
-
-def login(request):
-    adopters = Adopter.objects.all()
-
-    context = {
-        'adopters': adopters
-    }
-
-    return render(request, "adopter/login.html", context)
-
-def manage(request):
-    adopters = Adopter.objects.all()
-
-    context = {
-        'adopters': adopters,
-        'role': 'admin'
-    }
-
-    return render(request, "adopter/adoptermgmt.html", context)
-
-def edit_adopter(request, adopter_id):
-    adopter = Adopter.objects.get(pk=adopter_id)
-    form = AdopterForm(request.POST or None, instance=adopter)
-
-    try:
-        current_appt = Appointment.objects.filter(adopter_choice=adopter).latest('id')
-        current_appt_str = current_appt.date_and_time_string()
-    except:
-        current_appt = None
-        current_appt_str = None
-
-    if form.is_valid():
-        form.save()
-        return redirect('adopter_manage')
-    else:
-        form = AdopterForm(request.POST or None, instance=adopter)
-
-    source = 'mgmt_' + str(adopter.id)
-
-    print(source)
-
-    context = {
-        'form': form,
-        'adopter': adopter,
-        'appt': current_appt,
-        'appt_str': current_appt_str,
-        'role': 'admin',
-        'schedulable': ["1", "2", "3"],
-        'source': source
-    }
-
-    return render(request, "adopter/edit_adopter.html", context)
-
-def faq(request, adopter_id):
-    adopter = Adopter.objects.get(pk=adopter_id)
-
-    context = {
-        'adopter': adopter,
-
-    }
-
-    return render(request, "adopter/faq.html", context)
-
-def visitor_instructions(request, adopter_id):
-    adopter = Adopter.objects.get(pk=adopter_id)
-
-    context = {
-        'adopter': adopter,
-        'role': 'adopter'
-    }
-
-    return render(request, "adopter/visitor_instructions.html", context)
-
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
 def add(request):
     all_dows = Daily_Schedule.objects
     today = datetime.date.today()
     form = AdopterForm(request.POST or None)
+    g = Group.objects.get(name='adopter')
 
     try:
         if request.method == 'POST' and request.FILES['app_file']:
             file = request.FILES['app_file']
             decoded_file = file.read().decode('utf-8').splitlines()
             reader = list(csv.reader(decoded_file))
-            print([today - datetime.timedelta(days = x) for x in range(2)])
-            print(today - datetime.timedelta(days = 365))
             errors = []
 
             for row in reader[1:]:
@@ -137,12 +38,9 @@ def add(request):
 
                 try:
                     existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
-                    print("Adopter " + existing_adopter.adopter_full_name() + " already in system as adopter #" + str(existing_adopter.id))
                     if existing_adopter.status == "2":
-                        print("blocked")
                         errors += [existing_adopter.adopter_full_name()]
                     elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
-                        print("renewal")
                         existing_adopter.accept_date = datetime.date.today()
                         existing_adopter.save()
 
@@ -152,24 +50,25 @@ def add(request):
                             invite(existing_adopter)
                     elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
                         duplicate_app(existing_adopter)
-                    else:
-                        print("added today")
                 except:
-                    print("added now")
                     if row[13].islower() or row[13].isupper():
                         row[13] = clean_name(row[13])
 
                     if row[14].islower() or row[14].isupper():
                         row[14] = clean_name(row[14])
-                    #
-                    # print(row[3])
-                    # print(type(row[3]))
 
                     new_adopter.adopter_first_name = row[13]
                     new_adopter.adopter_last_name = row[14]
                     new_adopter.app_interest = row[11]
-                    new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "") + new_adopter.adopter_last_name.replace(" ", "") + "@gmail.com"
-                    print(new_adopter.adopter_email)
+
+                    if str(os.environ.get('SANDBOX')) == "1":
+                        print("sandbox")
+                        new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "").lower() + new_adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
+                    else:
+                        print("prod")
+                        new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "").lower() + new_adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
+                        # new_adopter.adopter_email = row[28].lower()
+                        # new_adopter.secondary_email = row[29].lower()
 
                     if row[35] == "Live with Parents":
                         new_adopter.lives_with_parents = True
@@ -179,17 +78,18 @@ def add(request):
 
                     auth_code = randint(100000, 999999)
 
-                    while auth_code % 10 == 0:
+                    while auth_code % 100 == 0:
                         auth_code = randint(100000, 999999)
-
-                    print(row[13] + " " + row[14])
-                    print(auth_code)
 
                     new_adopter.auth_code = auth_code
 
-                    new_adopter.save()
+                    new_user = User.objects.create_user(username=new_adopter.adopter_email.lower(), email=new_adopter.adopter_email, password=str(auth_code))
 
-                    print(new_adopter.auth_code)
+                    new_adopter.user = new_user
+
+                    g.user_set.add(new_user)
+
+                    new_adopter.save()
 
                     if new_adopter.out_of_state == True:
                         invite_oos_etemp(new_adopter)
@@ -199,7 +99,8 @@ def add(request):
             system_settings.last_adopter_upload = today
             system_settings.save()
 
-            upload_errors(errors)
+            if errors != []:
+                upload_errors(errors)
     except:
         if form.is_valid():
             form.save()
@@ -261,29 +162,160 @@ def add(request):
 
     return render(request, "adopter/addadopterform.html", context)
 
-def contact(request, adopter_id):
+@authenticated_user
+@allowed_users(allowed_roles={'superuser'})
+def login(request):
+    adopters = Adopter.objects.all()
+
+    context = {
+        'adopters': adopters
+    }
+
+    return render(request, "adopter/login.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
+def manage(request):
+    adopters = Adopter.objects.all()
+
+    context = {
+        'adopters': adopters,
+        'role': 'admin'
+    }
+
+    return render(request, "adopter/adoptermgmt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
+def resend_invite(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+
+    invite(adopter)
+
+    return redirect('adopter_manage')
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
+def set_alert_mgr(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+    form = SetAlertDateForm(request.POST or None, instance=adopter)
+
+    if form.is_valid():
+        form.save()
+        alert_date_set(adopter, adopter.alert_date)
+
+        return redirect('adopter_manage')
+    else:
+        form = SetAlertDateForm(request.POST or None, instance=adopter)
+
+    context = {
+        'adopter': adopter,
+        'form': form,
+    }
+
+    return render(request, "adopter/set_alert_date.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
+def edit_adopter(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+    form = AdopterForm(request.POST or None, instance=adopter)
+
+    try:
+        current_appt = Appointment.objects.filter(adopter_choice=adopter).latest('id')
+        current_appt_str = current_appt.date_and_time_string()
+    except:
+        current_appt = None
+        current_appt_str = None
+
+    if form.is_valid():
+        form.save()
+        return redirect('adopter_manage')
+    else:
+        form = AdopterForm(request.POST or None, instance=adopter)
+
+    source = 'mgmt_' + str(adopter.id)
+
+    print(source)
+
+    context = {
+        'form': form,
+        'adopter': adopter,
+        'appt': current_appt,
+        'appt_str': current_appt_str,
+        'role': 'admin',
+        'schedulable': ["1", "2", "3"],
+        'source': source
+    }
+
+    return render(request, "adopter/edit_adopter.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
+def faq(request):
+    faq_dict = {}
+
+    for sec in FAQSection.objects.all().iterator():
+        faq_dict[sec] = [q for q in sec.questions.iterator()]
+
+    context = {
+        'faq_dict': faq_dict,
+    }
+
+    return render(request, "adopter/faq.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
+def faq_test(request):
+    faq_dict = {}
+
+    for sec in FAQSection.objects.all().iterator():
+        faq_dict[sec] = [q for q in sec.questions.iterator()]
+
+    context = {
+        'faq_dict': faq_dict,
+    }
+
+    return render(request, "adopter/faq_test_harness.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
+def visitor_instructions(request):
+    all_instrs = VisitorInstruction.objects.all()
+
+    context = {
+        'all_instrs': all_instrs
+    }
+
+    return render(request, "adopter/visitor_instructions.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'adopter'})
+def contact(request):
     all_dows = Daily_Schedule.objects
     form = ContactUsForm(request.POST or None)
     if form.is_valid():
         data = form.cleaned_data
-        adopter = Adopter.objects.get(pk=adopter_id)
+        adopter = request.user.adopter
         message = data['message']
         new_contact_us_msg(adopter, message)
-        return redirect('adopter_home', adopter_id)
+        return redirect('adopter_home')
 
     context = {
         'form': form,
         'all_dows': all_dows,
-        'adopter': Adopter.objects.get(pk=adopter_id),
-        'role': 'adopter'
     }
 
     return render(request, "adopter/contactteam.html", context)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
 def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
-    all_dows = Daily_Schedule.objects
     today = datetime.date.today()
-    appt = Appointment.objects.get(pk=appt_id)
+    try:
+        appt = Appointment.objects.get(pk=appt_id)
+    except:
+        appt = None
 
     if 'mgmt' not in source:
         adopter = appt.adopter_choice
@@ -352,7 +384,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
             appt.save()
 
-            return redirect('calendar_date', "admin", date_year, date_month, date_day)
+            return redirect('calendar_date', date_year, date_month, date_day)
 
         elif 'mgmt' in source:
             return redirect('edit_adopter', adopter.id)
@@ -362,64 +394,49 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
     context = {
         'form': form,
-        'dows': all_dows,
-        'today': today,
-        'role': 'admin',
         'appt': appt
     }
 
     return render(request, "adopter/contactadopter.html", context)
 
 def home_page(request):
+    return redirect('login')
 
-    form = AdopterLoginField(request.POST or None)
+@authenticated_user
+@allowed_users(allowed_roles={'adopter'})
+def home(request):
+    adopter = request.user.adopter
 
-    if form.is_valid():
-        try:
-            data = form.cleaned_data
-            adopter = Adopter.objects.get(adopter_email=data['email'])
+    faq_dict = {}
 
-            print(adopter)
-
-            return redirect('adopter_home', adopter.id)
-        except:
-            print('nope')
-
-            return redirect('home_page')
-
-    context = {
-        'form': AdopterLoginField
-    }
-
-    return render(request, 'adopter/index.html', context)
-
-def home(request, adopter_id):
-    adopter = Adopter.objects.get(pk=adopter_id)
+    for sec in FAQSection.objects.all().iterator():
+        faq_dict[sec] = [q for q in sec.questions.iterator()]
 
     context = {
         'adopter': adopter,
         'full_name': full_name(adopter),
         'first_name': adopter.adopter_first_name,
-        'role': 'adopter'
+        'role': 'adopter',
+        'faq_dict': faq_dict,
     }
 
     if adopter.status == "2":
         return HttpResponse("<h1>Page Not Found</h1>")
     elif adopter.acknowledged_faq == False:
-        print(adopter.acknowledged_faq)
-        print(context)
         return render(request, "adopter/decision.html", context)
 
     today = datetime.date.today()
 
-    return redirect("adopter_calendar_date", "adopter", adopter.id, today.year, today.month, today.day)
+    return redirect("calendar_date", today.year, today.month, today.day)
 
 def full_name(adopter_obj):
     return adopter_obj.adopter_first_name + " " + adopter_obj.adopter_last_name
 
-def acknowledged_faq(request, adopter_id):
-    adopter = Adopter.objects.get(pk=adopter_id)
+@authenticated_user
+@allowed_users(allowed_roles={'adopter'})
+def acknowledged_faq(request):
+    adopter = request.user.adopter
 
     Adopter.objects.filter(pk=adopter.id).update(acknowledged_faq = True)
 
-    return redirect('adopter_home', adopter_id)
+    return redirect('adopter_home')

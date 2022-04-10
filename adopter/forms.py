@@ -31,22 +31,29 @@ class AdopterForm(forms.ModelForm):
             'adopting_host': 'Adopting their host dog',
             'adopting_foster': 'Adopting their foster dog',
             'friend_of_foster': "Adopting a friend's foster dog",
-            'chosen_dog': '(For foster/host adoptions) Chosen Dog:',
+            'chosen_dog': '(For foster/host adoptions) Chosen dog:',
             'app_interest': '(For general adoptions) Interested in:'
         }
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label_suffix', '')
         super(AdopterForm, self).__init__(*args, **kwargs)
 
-# class SelectAdopterForm(forms.Form):
-#     get_all_adopters = Adopter.objects
-#     print("Adopters: " + str(get_all_adopters))
-#     ALL_ADOPTERS = []
-#
-#     for adopter in get_all_adopters.iterator():
-#         ALL_ADOPTERS += [(str(adopter.id), adopter.adopter_list_name())]
-#
-#     session_adopter = forms.ChoiceField(choices = ALL_ADOPTERS)
+class SetAlertDateForm(forms.ModelForm):
+    class Meta:
+        model = Adopter
+        fields = [
+            'alert_date'
+        ]
+        labels = {
+            'alert_date': "",
+        }
+        widgets = {
+            'alert_date': forms.SelectDateWidget()
+        }
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label_suffix', '')
+        super(SetAlertDateForm, self).__init__(*args, **kwargs)
 
 class ContactUsForm(forms.Form):
     message = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
