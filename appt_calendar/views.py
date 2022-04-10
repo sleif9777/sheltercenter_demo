@@ -112,7 +112,7 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
             if appt.date == datetime.date.today():
                 notify_adoptions_add(adopter, appt)
 
-            return redirect('calendar', date.year, date.month, date.day)
+            return redirect('calendar')
         else:
 
             form = BookAppointmentForm(request.POST or None, instance=appt, initial={'adopter_choice': adopter})
@@ -177,7 +177,7 @@ def calendar_date(request, date_year, date_month, date_day):
     if 'adopter' in user_groups:
         # context['role'] = 'adopter'
         try:
-            current_appt = Appointment.objects.filter(adopter_choice=adopter).latest('id') #.exclude(date__lt = today)
+            current_appt = Appointment.objects.filter(adopter_choice=request.user.adopter).latest('id') #.exclude(date__lt = today)
             current_appt_str = current_appt.date_and_time_string()
         except:
             current_appt = None
@@ -486,8 +486,6 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
 
     return render(request, "appt_calendar/enter_decision_form.html", context)
 
-@authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
 def remove_adopter(request, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
