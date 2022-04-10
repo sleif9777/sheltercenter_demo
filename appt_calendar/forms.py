@@ -4,15 +4,6 @@ from .models import Timeslot, Appointment
 from adopter.models import Adopter
 import demo.settings as settings
 
-# class AdopterForm(forms.ModelForm):
-#     class Meta:
-#         model = Adopter
-#         fields = [
-#             'adopter_first_name',
-#             'adopter_last_name',
-#             'adopter_email',
-#         ]
-
 class AppointmentModelFormPrefilled(forms.ModelForm):
     class Meta:
         model = Appointment

@@ -7,7 +7,7 @@ urlpatterns = [
     path("<int:date_year>/<int:date_month>/<int:date_day>/", views.calendar_date, name="calendar_date"),
     path("<int:date_year>/<int:date_month>/<int:date_day>/copy/", views.copy_temp_to_cal, name="copy_temp_to_cal"),
     path("<int:date_year>/<int:date_month>/<int:date_day>/print/", views.calendar_print, name="calendar_print"),
-    path('schedule_next/adopter/<int:adopter_id>/appt/<int:appt_id>/jump_to_date/', views.jump_to_date_greeter, name="jump_to_date_greeter"), #to be maintained for reschedules
+    path('schedule_next/adopter/<int:adopter_id>/appt/<int:appt_id>/jump_to_date/', views.jump_to_date_greeter, name="jump_to_date_greeter"),
     path("jump_to_date/", views.jump_to_date, name="jump_to_date"),
 
     #calendar admin pages
@@ -19,7 +19,6 @@ urlpatterns = [
     path('delete_timeslot/<int:timeslot_id>/<int:date_year>/<int:date_month>/<int:date_day>/', views.delete_timeslot, name="delete_cal_timeslot"),
     path('add_timeslot/<int:date_year>/<int:date_month>/<int:date_day>/', views.add_timeslot, name="add_timeslot"),
     path('cancel/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.remove_adopter, name="remove_adopter"),
-    # path('<str:role>/cancel/adopter/<int:adopter_id>/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.adopter_self_cancel, name="adopter_self_cancel"),
     path('reschedule_adopter/<int:adopter_id>/new_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/<str:source>/', views.adopter_reschedule, name="adopter_reschedule"),
     path('schedule_next/adopter/<int:adopter_id>/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/<str:source>/', views.greeter_reschedule, name="greeter_reschedule"),
     path("enter_decision/appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/", views.enter_decision, name="enter_decision"),
@@ -32,6 +31,8 @@ urlpatterns = [
     path("reports/all/<int:date_year>/<int:date_month>/<int:date_day>/", views.daily_report_all_appts, name="daily_report_all_appts"),
     path("reports/adoption_chosen_fta/<int:date_year>/<int:date_month>/<int:date_day>/", views.daily_report_adopted_chosen_fta, name="daily_report_adopted_chosen_fta"),
 
-    #communications
+    #chosen_board
     path("chosen_board/", views.chosen_board, name="chosen_board"),
+    path("chosen_board/clear/<int:appt_id>/", views.remove_from_chosen_board, name="clear_from_cb"),
+    path("chosen_board/complete/<int:appt_id>/", views.mark_complete_on_chosen_board, name="mark_complete_cb"),
     ]

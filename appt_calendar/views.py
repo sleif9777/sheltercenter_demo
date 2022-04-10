@@ -243,18 +243,35 @@ def daily_reports_home(request):
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def chosen_board(request):
     today = datetime.date.today()
-    appointments = Appointment.objects
-    appt_list = []
-
-    for appt in appointments.iterator():
-        appt_list += [appt]
+    appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "6", "7"], paperwork_complete=False)]
 
     context = {
         "today": today,
-        "appointments": appt_list,
+        "appointments": appointments,
     }
 
     return render(request, "appt_calendar/chosen_board.html/", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def remove_from_chosen_board(request, appt_id):
+    appt = Appointment.objects.get(pk=appt_id)
+
+    appt.dog = ""
+    appt.outcome = "5"
+    appt.save()
+
+    return redirect('chosen_board')
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def mark_complete_on_chosen_board(request, appt_id):
+    appt = Appointment.objects.get(pk=appt_id)
+
+    appt.paperwork_complete = True
+    appt.save()
+
+    return redirect('chosen_board')
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})

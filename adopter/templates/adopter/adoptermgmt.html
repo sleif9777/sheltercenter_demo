@@ -12,7 +12,12 @@
     <ul class="listpage" id="adopter_list">
       {% for adopter in adopters %}
         <div class="" style="break-inside: avoid-column;">
-          <li><a class="standalone" href="{% url 'edit_adopter' adopter.id %}">{{adopter}}</a></li>
+          <li>
+            <a class="standalone" href="{% url 'edit_adopter' adopter.id %}">{{adopter}}</a>
+            {% if adopter.status != "2" %}
+              &#128683;&#xFE0E;
+            {% endif %}
+          </li>
           <ul style="padding-left: 10%; list-style-type: '&#10551;';">
             {% if adopter.status != "2" %}
               <li><a class="standalone" href="{% url 'resend_invite' adopter.id %}">Resend Invitation</a></li>

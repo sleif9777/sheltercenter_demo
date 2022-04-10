@@ -385,7 +385,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
             appt.save()
 
-            return redirect('chosen_board', 'admin')
+            return redirect('chosen_board')
 
         elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'calendar']:
 
