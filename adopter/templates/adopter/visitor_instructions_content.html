@@ -1,0 +1,12 @@
+{% load auth_extras %}
+
+{% for instr in all_instrs %}
+  <h2 class="visitor_instruction">
+    {{instr.header}}
+    {% if request.user|has_group:"admin" %}
+      <a class="timeslot_action" href="{% url 'edit_visitor_instr' instr.id %}">&#9998;&#xFE0E;</a>
+      <a class="timeslot_action" href="{% url 'delete_visitor_instr' instr.id %}">&#10006;&#xFE0E;</a>
+    {% endif %}
+  </h2>
+  <p>{{instr.text|safe}}</p>
+{% endfor %}

@@ -31,3 +31,18 @@ class FAQForm(forms.ModelForm):
         }
         labels = {
         }
+
+class VisitorInstructionForm(forms.ModelForm):
+    class Meta:
+        model = VisitorInstruction
+        fields = [
+            'header',
+            'text',
+            'order',
+        ]
+        widgets = {
+            'header': forms.TextInput(attrs={'size': 160}),
+            'text': TinyMCE(attrs={'cols': 80, 'rows': 30})
+        }
+        labels = {
+        }

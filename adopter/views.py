@@ -279,13 +279,12 @@ def faq_test(request):
     return render(request, "adopter/faq_test_harness.html", context)
 
 @authenticated_user
-@allowed_users(allowed_roles={'adopter'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
 def visitor_instructions(request):
-    adopter = request.user.adopter
+    all_instrs = VisitorInstruction.objects.all()
 
     context = {
-        'adopter': adopter,
-        'role': 'adopter'
+        'all_instrs': all_instrs
     }
 
     return render(request, "adopter/visitor_instructions.html", context)
