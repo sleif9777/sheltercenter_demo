@@ -358,7 +358,13 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     elif source == 'add_form_adopting_host':
         template = EmailTemplate.objects.get(template_name="Add Adopter (Host Weekend)")
 
-    template = replacer(template.text, adopter, appt)
+    try:
+        print('hit')
+        print(template.text)
+        print(request.user.profile)
+        template = replacer(template.text.replace('*SIGNATURE*', request.user.profile.signature), adopter, appt)
+    except:
+        template = replacer(template.text, adopter, appt)
 
     form = ContactAdopterForm(request.POST or None, initial={'message': template})
 

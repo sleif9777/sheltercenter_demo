@@ -10,6 +10,8 @@ from appt_calendar.appointment_manager import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .decorators import *
+from .models import *
+from .forms import *
 
 system_settings = SystemSettings.objects.get(pk=1)
 
@@ -40,10 +42,12 @@ def login_page(request):
         password = request.POST.get('password')
 
         user = authenticate(username=username, password=password)
-        user_groups = set(group.name for group in user.groups.iterator())
+        print(user)
 
         if user is not None:
             login(request, user)
+
+            user_groups = set(group.name for group in user.groups.iterator())
 
             if 'adopter' in user_groups and not user.adopter.acknowledged_faq:
                 return redirect('adopter_home')
@@ -213,3 +217,21 @@ def test_harness(request):
     context = generate_calendar('admin', 'full', None, 2022, 4, 4)
 
     return render(request, 'appt_calendar/calendar_test_harness.html', context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def edit_signature(request):
+    profile = Profile.objects.get(user=request.user)
+    form = EmailSigForm(request.POST or None, instance=profile)
+    if form.is_valid():
+        form.save()
+        return redirect('email_home')
+    else:
+        form = EmailSigForm(request.POST or None, instance=profile)
+
+    context = {
+        'form': form,
+        'e_template': profile,
+    }
+
+    return render(request, "email_mgr/add_template.html", context)

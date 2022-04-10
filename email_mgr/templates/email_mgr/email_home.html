@@ -4,17 +4,14 @@
 
 {% block content %}
   <div class="main textpage">
-    {% if request.user|has_group:"superuser" %}
-      <h1 class="page_header">Email Templates</h1>
-    {% else %}
-      <h1 class="page_header no_actions">Email Template</h1>
-    {% endif %}
+    <h1 class="page_header">Email Templates</h1>
 
-    {% if request.user|has_group:"superuser" %}
-      <div class="calendar_actions">
+    <div class="calendar_actions">
+      {% if request.user|has_group:"superuser" %}
         <a href="{% url 'add_email_template' %}">Add Template</a>
-      </div>
-    {% endif %}
+      {% endif %}
+      <a href="{% url 'edit_sig' %}">Edit Signature</a>
+    </div>
 
     <ul class="listpage">
       {% for e_temp in e_templates %}
