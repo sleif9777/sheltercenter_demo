@@ -56,15 +56,17 @@ def strip_tags(html, adopter, appt):
     return s.get_data()
 
 def send_email(text, html, reply_to, subject, receiver_email):
-    sender_email = "sheltercenterdev@gmail.com"
+    sender_email = "savinggracenc@sheltercenter.dog"
     password = os.environ.get('EMAIL_PASSWORD')
+
+    print(password)
 
     message = MIMEMultipart("alternative")
     message["From"] = sender_email
     message["To"] = receiver_email
 
     if reply_to == "default":
-        message['Reply-To'] = "sheltercenterdev@gmail.com"
+        message['Reply-To'] = "adoptions@savinggracenc.org"
     else:
         message['Reply-To'] = reply_to
     message['Subject'] = subject
@@ -80,6 +82,35 @@ def send_email(text, html, reply_to, subject, receiver_email):
         server.sendmail(
             sender_email, receiver_email, message.as_string()
         )
+
+# def send_email(text, html, reply_to, subject, receiver_email):
+#     sender_email = "adoptions@savinggracenc.org"
+#     password = os.environ.get('EMAIL_PASSWORD')
+#
+#     message = MIMEMultipart("alternative")
+#     message["From"] = sender_email
+#     message["To"] = receiver_email
+#
+#     if reply_to == "default":
+#         message['Reply-To'] = "sheltercenterdev@gmail.com"
+#     else:
+#         message['Reply-To'] = reply_to
+#     message['Subject'] = subject
+#
+#     part1 = MIMEText(text, "plain")
+#     part2 = MIMEText(html, "html")
+#     message.attach(part1)
+#     message.attach(part2)
+#
+#     context = ssl.create_default_context()
+#     with smtplib.SMTP("smtp.office365.com", 587) as server:
+#         server.ehlo()
+#         server.starttls(context=context)
+#         server.ehlo()
+#         server.login(sender_email, password)
+#         server.sendmail(
+#             sender_email, receiver_email, message.as_string()
+#         )
 
 def clean_time_and_date(time, date):
     time = time_str(time)

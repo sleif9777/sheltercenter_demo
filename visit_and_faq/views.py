@@ -86,7 +86,7 @@ def add_visitor_instr(request):
 
     if form.is_valid():
         form.save()
-        return redirect('faq_test')
+        return redirect('visitor_instructions')
     else:
         form = VisitorInstructionForm(request.POST or None)
 
