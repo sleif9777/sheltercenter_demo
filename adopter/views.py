@@ -253,8 +253,13 @@ def edit_adopter(request, adopter_id):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
 def faq(request):
-    context = {
+    faq_dict = {}
 
+    for sec in FAQSection.objects.all().iterator():
+        faq_dict[sec] = [q for q in sec.questions.iterator()]
+
+    context = {
+        'faq_dict': faq_dict,
     }
 
     return render(request, "adopter/faq.html", context)
@@ -403,11 +408,17 @@ def home_page(request):
 def home(request):
     adopter = request.user.adopter
 
+    faq_dict = {}
+
+    for sec in FAQSection.objects.all().iterator():
+        faq_dict[sec] = [q for q in sec.questions.iterator()]
+
     context = {
         'adopter': adopter,
         'full_name': full_name(adopter),
         'first_name': adopter.adopter_first_name,
-        'role': 'adopter'
+        'role': 'adopter',
+        'faq_dict': faq_dict,
     }
 
     if adopter.status == "2":

@@ -77,7 +77,7 @@ def staff_login(request):
             return redirect('login')
 
     context = {
-        'cred_placeholder': 'molly',
+        'cred_placeholder': 'Username',
         'login_cred': 'username',
         'other_login': '{% url "login" %}',
         'other_role': 'Adopters',

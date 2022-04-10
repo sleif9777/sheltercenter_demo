@@ -21,7 +21,7 @@ def add_faq_section(request):
 
     if form.is_valid():
         form.save()
-        return redirect('visit_comms')
+        return redirect('faq_test')
     else:
         form = FAQSectionForm(request.POST or None)
 
