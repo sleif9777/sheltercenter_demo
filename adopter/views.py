@@ -10,6 +10,7 @@ from email_mgr.models import EmailTemplate
 from email_mgr.dictionary import *
 from email_mgr.email_sender import *
 from .adopter_manager import *
+from visit_and_faq.models import *
 from django.contrib.auth.models import Group, User
 from dashboard.decorators import *
 
@@ -250,16 +251,27 @@ def edit_adopter(request, adopter_id):
     return render(request, "adopter/edit_adopter.html", context)
 
 @authenticated_user
-@allowed_users(allowed_roles={'adopter'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
 def faq(request):
-    adopter = request.user.adopter
-
     context = {
-        'adopter': adopter,
 
     }
 
     return render(request, "adopter/faq.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
+def faq_test(request):
+    faq_dict = {}
+
+    for sec in FAQSection.objects.all().iterator():
+        faq_dict[sec] = [q for q in sec.questions.iterator()]
+
+    context = {
+        'faq_dict': faq_dict,
+    }
+
+    return render(request, "adopter/faq_test_harness.html", context)
 
 @authenticated_user
 @allowed_users(allowed_roles={'adopter'})
@@ -405,7 +417,7 @@ def home(request):
 
     today = datetime.date.today()
 
-    return redirect("calendar_date", adopter.id, today.year, today.month, today.day)
+    return redirect("calendar_date", today.year, today.month, today.day)
 
 def full_name(adopter_obj):
     return adopter_obj.adopter_first_name + " " + adopter_obj.adopter_last_name

@@ -3,7 +3,7 @@
   <li><a href="{% url 'faq' %}">FAQ</a></li>
 
   {% if user.adopter.has_current_appt %}
-    <li><a href="{% url 'visitor_instructions' %}">Visitor Instructions</a></li>
+    <li><a href="{% url 'visitor_instructions' %}">Visit Instructions</a></li>
   {% endif %}
 
   <li><a href="{% url 'contact_us' %}">Contact Us</a></li>

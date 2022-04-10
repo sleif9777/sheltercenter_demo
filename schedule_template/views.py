@@ -85,7 +85,6 @@ def add_timeslot(request, dow_id):
 def add_appointment(request, dow_id, timeslot_id):
     dow = Daily_Schedule.objects.get(pk=dow_id)
     timeslot = TimeslotTemplate.objects.get(pk=timeslot_id)
-    #form = GenericTimeslotModelForm(request.POST or None, initial={"day_of_week": dow.day_of_week})
     form = GenericAppointmentModelFormPrefilled(request.POST or None, initial={'day_of_week': dow.day_of_week, 'time': timeslot.time})
     if form.is_valid():
         form.save()

@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'adopter.apps.AdopterConfig',
     'email_mgr.apps.EmailMgrConfig',
     'tinymce',
-    'dashboard.apps.DashboardConfig'
+    'dashboard.apps.DashboardConfig',
+    'visit_and_faq.apps.VisitAndFaqConfig'
 ]
 
 MIDDLEWARE = [
