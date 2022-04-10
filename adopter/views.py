@@ -359,12 +359,10 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         template = EmailTemplate.objects.get(template_name="Add Adopter (Host Weekend)")
 
     try:
-        print('hit')
-        print(template.text)
-        print(request.user.profile)
         template = replacer(template.text.replace('*SIGNATURE*', request.user.profile.signature), adopter, appt)
     except:
-        template = replacer(template.text, adopter, appt)
+        base_user = User.objects.get(username="base")
+        template = replacer(template.text.replace('*SIGNATURE*', base_user.profile.signature), adopter, appt)
 
     form = ContactAdopterForm(request.POST or None, initial={'message': template})
 
