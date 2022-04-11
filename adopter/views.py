@@ -37,11 +37,9 @@ def add(request):
             for row in reader[1:]:
                 new_adopter = Adopter()
 
-                print(row[4])
                 if row[4] == "Accepted":
                     try:
                         existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
-                        print(existing_adopter)
                         if existing_adopter.status == "2":
                             errors += [existing_adopter.adopter_full_name()]
                         elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
@@ -91,7 +89,6 @@ def add(request):
                         g.user_set.add(new_user)
 
                         new_adopter.save()
-                        print('added new')
 
                         if new_adopter.out_of_state == True:
                             invite_oos_etemp(new_adopter)
@@ -120,7 +117,6 @@ def add(request):
             if errors != []:
                 upload_errors(errors)
     except:
-        print('formvalid')
         if form.is_valid():
             form.save()
             adopter = Adopter.objects.latest('id')
