@@ -41,6 +41,7 @@ def add(request):
                 if row[4] == "Accepted":
                     try:
                         existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
+                        print(existing_adopter)
                         if existing_adopter.status == "2":
                             errors += [existing_adopter.adopter_full_name()]
                         elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
@@ -90,28 +91,28 @@ def add(request):
                         g.user_set.add(new_user)
 
                         new_adopter.save()
+                        print('added new')
 
                         if new_adopter.out_of_state == True:
                             invite_oos_etemp(new_adopter)
                         else:
                             invite(new_adopter)
                 elif row[4] == "Denied":
-                        new_adopter.adopter_first_name = row[13]
-                        new_adopter.adopter_last_name = row[14]
-                        new_adopter.app_interest = row[11]
+                    new_adopter.adopter_first_name = row[13]
+                    new_adopter.adopter_last_name = row[14]
+                    new_adopter.app_interest = row[11]
 
-                        if str(os.environ.get('SANDBOX')) == "1":
-                            new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "").lower() + new_adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
-                        else:
-                            new_adopter.adopter_email = row[28].lower()
-                            new_adopter.secondary_email = row[29].lower()
+                    if str(os.environ.get('SANDBOX')) == "1":
+                        new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "").lower() + new_adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
+                    else:
+                        new_adopter.adopter_email = row[28].lower()
+                        new_adopter.secondary_email = row[29].lower()
 
-                        new_adopter.status = "2"
+                    new_adopter.status = "2"
 
-                        new_adopter.save()
+                    new_adopter.save()
 
-                        errors += [new_adopter.adopter_full_name()]
-
+                    errors += [new_adopter.adopter_full_name()]
 
             system_settings.last_adopter_upload = today
             system_settings.save()
