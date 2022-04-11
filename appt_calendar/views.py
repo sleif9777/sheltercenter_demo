@@ -407,6 +407,7 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
 
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
+    original_adopter = appt.adopter_choice
 
     if user_groups == {'adopter'}:
         form = BookAppointmentForm(request.POST or None, instance=appt)
@@ -428,7 +429,9 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
         if appt.adopter_choice != None:
             if appt.appt_type in ["1", "2", "3"]:
                 confirm_etemp(appt.adopter_choice, appt)
-                # confirm(appt.time, appt.date, appt.adopter_choice, appt)
+
+                if original_adopter != appt.adopter_choice.id:
+                    cancel(original_adopter, appt)
 
                 if appt.date == datetime.date.today():
                     notify_adoptions_add(appt.adopter_choice, appt)

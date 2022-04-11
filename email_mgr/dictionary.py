@@ -1,5 +1,6 @@
 from appt_calendar.date_time_strings import *
 import os, datetime
+from django.contrib.auth.models import User
 
 def replacer(html, adopter, appt):
     today = datetime.datetime.today()
@@ -79,5 +80,11 @@ def replacer(html, adopter, appt):
             for key in replacements_master[item]:
                 if key in html:
                     html = html.replace(key, replacements_master[item][key])
+
+    try:
+        html = html.replace('*SIGNATURE*', request.user.profile.signature)
+    except:
+        base_user = User.objects.get(username='base')
+        html = html.replace('*SIGNATURE*', base_user.profile.signature)
 
     return html
