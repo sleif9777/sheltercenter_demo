@@ -36,65 +36,80 @@ def add(request):
             for row in reader[1:]:
                 new_adopter = Adopter()
 
-                try:
-                    existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
-                    if existing_adopter.status == "2":
-                        errors += [existing_adopter.adopter_full_name()]
-                    elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
-                        existing_adopter.accept_date = datetime.date.today()
-                        existing_adopter.save()
+                if row[4] == "Accepted":
+                    try:
+                        existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
+                        if existing_adopter.status == "2":
+                            errors += [existing_adopter.adopter_full_name()]
+                        elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
+                            existing_adopter.accept_date = datetime.date.today()
+                            existing_adopter.save()
 
-                        if existing_adopter.out_of_state == True:
-                            invite_oos_etemp(existing_adopter)
+                            if existing_adopter.out_of_state == True:
+                                invite_oos_etemp(existing_adopter)
+                            else:
+                                invite(existing_adopter)
+                        elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
+                            duplicate_app(existing_adopter)
+                    except:
+                        if row[13].islower() or row[13].isupper():
+                            row[13] = clean_name(row[13])
+
+                        if row[14].islower() or row[14].isupper():
+                            row[14] = clean_name(row[14])
+
+                        new_adopter.adopter_first_name = row[13]
+                        new_adopter.adopter_last_name = row[14]
+                        new_adopter.app_interest = row[11]
+
+                        if str(os.environ.get('SANDBOX')) == "1":
+                            new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "").lower() + new_adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
                         else:
-                            invite(existing_adopter)
-                    elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
-                        duplicate_app(existing_adopter)
-                except:
-                    if row[13].islower() or row[13].isupper():
-                        row[13] = clean_name(row[13])
+                            new_adopter.adopter_email = row[28].lower()
+                            new_adopter.secondary_email = row[29].lower()
 
-                    if row[14].islower() or row[14].isupper():
-                        row[14] = clean_name(row[14])
+                        if row[35] == "Live with Parents":
+                            new_adopter.lives_with_parents = True
 
-                    new_adopter.adopter_first_name = row[13]
-                    new_adopter.adopter_last_name = row[14]
-                    new_adopter.app_interest = row[11]
+                        if row[19] not in ["NC", "SC", "VA"]:
+                            new_adopter.out_of_state = True
 
-                    if str(os.environ.get('SANDBOX')) == "1":
-                        print("sandbox")
-                        new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "").lower() + new_adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
-                    else:
-                        print("prod")
-                        new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "").lower() + new_adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
-                        # new_adopter.adopter_email = row[28].lower()
-                        # new_adopter.secondary_email = row[29].lower()
-
-                    if row[35] == "Live with Parents":
-                        new_adopter.lives_with_parents = True
-
-                    if row[19] not in ["NC", "SC", "VA"]:
-                        new_adopter.out_of_state = True
-
-                    auth_code = randint(100000, 999999)
-
-                    while auth_code % 100 == 0:
                         auth_code = randint(100000, 999999)
 
-                    new_adopter.auth_code = auth_code
+                        while auth_code % 100 == 0:
+                            auth_code = randint(100000, 999999)
 
-                    new_user = User.objects.create_user(username=new_adopter.adopter_email.lower(), email=new_adopter.adopter_email, password=str(auth_code))
+                        new_adopter.auth_code = auth_code
 
-                    new_adopter.user = new_user
+                        new_user = User.objects.create_user(username=new_adopter.adopter_email.lower(), email=new_adopter.adopter_email, password=str(auth_code))
 
-                    g.user_set.add(new_user)
+                        new_adopter.user = new_user
 
-                    new_adopter.save()
+                        g.user_set.add(new_user)
 
-                    if new_adopter.out_of_state == True:
-                        invite_oos_etemp(new_adopter)
-                    else:
-                        invite(new_adopter)
+                        new_adopter.save()
+
+                        if new_adopter.out_of_state == True:
+                            invite_oos_etemp(new_adopter)
+                        else:
+                            invite(new_adopter)
+                elif row[4] == "Denied":
+                        new_adopter.adopter_first_name = row[13]
+                        new_adopter.adopter_last_name = row[14]
+                        new_adopter.app_interest = row[11]
+
+                        if str(os.environ.get('SANDBOX')) == "1":
+                            new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "").lower() + new_adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
+                        else:
+                            new_adopter.adopter_email = row[28].lower()
+                            new_adopter.secondary_email = row[29].lower()
+
+                        new_adopter.status = "2"
+
+                        new_adopter.save()
+
+                        errors += [new_adopter.adopter_full_name()]
+
 
             system_settings.last_adopter_upload = today
             system_settings.save()
