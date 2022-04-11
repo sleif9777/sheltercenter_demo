@@ -30,8 +30,6 @@ def send_email(text, html, reply_to, subject, receiver_email):
     sender_email = "savinggracenc@sheltercenter.dog"
     password = os.environ.get('EMAIL_PASSWORD')
 
-    print(password)
-
     message = MIMEMultipart("alternative")
     message["From"] = sender_email
     message["To"] = receiver_email

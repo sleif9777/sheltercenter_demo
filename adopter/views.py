@@ -27,6 +27,7 @@ def add(request):
     g = Group.objects.get(name='adopter')
 
     try:
+        print(request.method, request.FILES)
         if request.method == 'POST' and request.FILES['app_file']:
             file = request.FILES['app_file']
             decoded_file = file.read().decode('utf-8').splitlines()
@@ -36,6 +37,7 @@ def add(request):
             for row in reader[1:]:
                 new_adopter = Adopter()
 
+                print(row[4])
                 if row[4] == "Accepted":
                     try:
                         existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
@@ -117,6 +119,7 @@ def add(request):
             if errors != []:
                 upload_errors(errors)
     except:
+        print('formvalid')
         if form.is_valid():
             form.save()
             adopter = Adopter.objects.latest('id')
