@@ -27,31 +27,34 @@ def add(request):
     g = Group.objects.get(name='adopter')
 
     try:
-        print(request.method, request.FILES)
-        if request.method == 'POST' and request.FILES['app_file']:
-            file = request.FILES['app_file']
-            decoded_file = file.read().decode('utf-8').splitlines()
-            reader = list(csv.reader(decoded_file))
-            errors = []
+        try:
+            if request.method == 'POST' and request.FILES['app_file']:
+                file = request.FILES['app_file']
+                decoded_file = file.read().decode('utf-8').splitlines()
+                reader = list(csv.reader(decoded_file))
+                errors = []
 
-            for row in reader[1:]:
-                new_adopter = Adopter()
+                for row in reader[1:]:
+                    new_adopter = Adopter()
 
-                if row[4] == "Accepted":
                     try:
-                        existing_adopter = Adopter.objects.get(adopter_email = "sheltercenterdev+" + clean_name(row[13]).replace(" ", "") + clean_name(row[14]).replace(" ", "") + "@gmail.com")
-                        if existing_adopter.status == "2":
-                            errors += [existing_adopter.adopter_full_name()]
-                        elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
-                            existing_adopter.accept_date = datetime.date.today()
-                            existing_adopter.save()
+                        existing_user = User.objects.get(username = "sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com")
+                        existing_adopter = Adopter.objects.get(user=existing_user)
+                        try:
+                            if existing_adopter.status == "2":
+                                errors += [existing_adopter.adopter_full_name()]
+                            elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
+                                existing_adopter.accept_date = datetime.date.today()
+                                existing_adopter.save()
 
-                            if existing_adopter.out_of_state == True:
-                                invite_oos_etemp(existing_adopter)
-                            else:
-                                invite(existing_adopter)
-                        elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
-                            duplicate_app(existing_adopter)
+                                if existing_adopter.out_of_state == True:
+                                    invite_oos_etemp(existing_adopter)
+                                else:
+                                    invite(existing_adopter)
+                            elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
+                                duplicate_app(existing_adopter)
+                        except:
+                            pass
                     except:
                         if row[13].islower() or row[13].isupper():
                             row[13] = clean_name(row[13])
@@ -88,35 +91,31 @@ def add(request):
 
                         g.user_set.add(new_user)
 
+                        if row[4] == "Denied":
+                            new_adopter.status = "2"
+                            errors += [new_adopter.adopter_full_name()]
+                        elif row[4] == "Pending":
+                            new_adopter.status = "3"
+                            errors += [new_adopter.adopter_full_name()]
+
                         new_adopter.save()
 
-                        if new_adopter.out_of_state == True:
-                            invite_oos_etemp(new_adopter)
-                        else:
-                            invite(new_adopter)
-                elif row[4] == "Denied":
-                    new_adopter.adopter_first_name = row[13]
-                    new_adopter.adopter_last_name = row[14]
-                    new_adopter.app_interest = row[11]
+                        if str(os.environ.get('SANDBOX')) != "1":
+                            if row[4] == "Accepted":
+                                if new_adopter.out_of_state == True:
+                                    invite_oos_etemp(new_adopter)
+                                else:
+                                    invite(new_adopter)
 
-                    if str(os.environ.get('SANDBOX')) == "1":
-                        new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "").lower() + new_adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
-                    else:
-                        new_adopter.adopter_email = row[28].lower()
-                        new_adopter.secondary_email = row[29].lower()
+                system_settings.last_adopter_upload = today
+                system_settings.save()
 
-                    new_adopter.status = "2"
-
-                    new_adopter.save()
-
-                    errors += [new_adopter.adopter_full_name()]
-
-            system_settings.last_adopter_upload = today
-            system_settings.save()
-
-            if errors != []:
-                upload_errors(errors)
+                if errors != []:
+                    upload_errors(errors)
+        except Exception as e:
+            print(e)
     except:
+        print('except')
         if form.is_valid():
             form.save()
             adopter = Adopter.objects.latest('id')
@@ -248,6 +247,8 @@ def edit_adopter(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)
     form = AdopterForm(request.POST or None, instance=adopter)
 
+    adopter_curr_status = adopter.status[:]
+
     try:
         current_appt = Appointment.objects.filter(adopter_choice=adopter).latest('id')
         current_appt_str = current_appt.date_and_time_string()
@@ -257,13 +258,18 @@ def edit_adopter(request, adopter_id):
 
     if form.is_valid():
         form.save()
+
+        if adopter.status != adopter_curr_status and adopter.status == "1":
+            if adopter.out_of_state == True:
+                invite_oos_etemp(adopter)
+            else:
+                invite(adopter)
+
         return redirect('adopter_manage')
     else:
         form = AdopterForm(request.POST or None, instance=adopter)
 
     source = 'mgmt_' + str(adopter.id)
-
-    print(source)
 
     context = {
         'form': form,

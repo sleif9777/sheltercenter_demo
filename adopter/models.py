@@ -10,6 +10,7 @@ class Adopter(models.Model):
     STATUSES = [
         ("1", "Approved"),
         ("2", "Blocked"),
+        ("3", "Pending")
     ]
 
     adopter_first_name = models.CharField(default="", max_length=200, blank=True) #need to refactor and add verbose
@@ -28,7 +29,7 @@ class Adopter(models.Model):
     has_current_appt = models.BooleanField(default = False)
     alert_date = models.DateField(default=datetime.date(datetime.date.today().year,1,1), blank=True)
     visits_to_date = models.IntegerField(default=0)
-    app_interest = models.CharField(default="", max_length=500, blank=True)
+    app_interest = models.CharField(default="", max_length=2000, blank=True)
     accept_date = models.DateField(default=datetime.date.today(), blank=True)
     status = models.CharField(default="1", max_length=1, choices=STATUSES)
     auth_code = models.IntegerField(default = 100000, validators = [MinValueValidator(100000), MaxValueValidator(999999)])

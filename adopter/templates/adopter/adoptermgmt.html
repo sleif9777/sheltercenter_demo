@@ -17,6 +17,8 @@
               <span style="font-size: 14pt;">{{adopter}}
               {% if adopter.status == "2" %}
                 &#128683;&#xFE0E;</span><br>
+              {% elif adopter.status == "3" %}
+                &#x231B;&#xFE0E;</span><br>
               {% else %}
                 </span><br>
                 <span style="font-size: 8pt;">{{adopter.adopter_email}}</span>
@@ -25,7 +27,7 @@
 
           </li>
           <ul style="padding-left: 10%; list-style-type: '&#10551;';">
-            {% if adopter.status != "2" %}
+            {% if adopter.status != "2" and adopter.status != "3" %}
               <li><a class="standalone" href="{% url 'resend_invite' adopter.id %}">Resend Invitation</a></li>
               <li><a class="standalone" href="{% url 'set_alert_mgr' adopter.id %}">Set Reminder</a></li>
             {% endif %}
