@@ -16,6 +16,9 @@ class AppointmentModelFormPrefilled(forms.ModelForm):
             'dog',
             'dog_fka',
             'internal_notes',
+            'bringing_dog',
+            'has_cat',
+            'mobility'
         ]
         labels = {
             'date': 'Date:',
