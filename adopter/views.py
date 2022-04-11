@@ -39,19 +39,32 @@ def add(request):
                 try:
                     existing_user = User.objects.get(username = "sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com")
                     existing_adopter = Adopter.objects.get(user=existing_user)
+                    print(existing_adopter)
                     try:
-                        if existing_adopter.status == "2":
+                        if existing_adopter.status == "1":
+                            print('miss1')
+                            if existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
+                                existing_adopter.accept_date = datetime.date.today()
+                                existing_adopter.save()
+
+                                if existing_adopter.out_of_state == True:
+                                    invite_oos_etemp(existing_adopter)
+                                else:
+                                    invite(existing_adopter)
+                            elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
+                                duplicate_app(existing_adopter)
+                        elif existing_adopter.status == "2":
+                            print('miss2')
                             errors += [existing_adopter.adopter_full_name()]
-                        elif existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
-                            existing_adopter.accept_date = datetime.date.today()
+                        elif existing_adopter.status == "3" and row[4] == "Accepted":
+                            print('hit')
+                            existing_adopter.status = "1"
                             existing_adopter.save()
 
                             if existing_adopter.out_of_state == True:
                                 invite_oos_etemp(existing_adopter)
                             else:
                                 invite(existing_adopter)
-                        elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
-                            duplicate_app(existing_adopter)
                     except:
                         pass
                 except:
