@@ -22,6 +22,8 @@ def reset_appt(appt):
     appt.comm_limited_other = False
     appt.comm_limited_small_puppies = False
     appt.visits_to_date = 0
+    last_update_sent = None
+    paperwork_complete = False
     appt.save()
 
 def delist_appt(appt):

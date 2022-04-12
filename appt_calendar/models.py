@@ -49,7 +49,7 @@ class Appointment(models.Model):
     comm_limited_small_puppies = models.BooleanField(default=False)
     comm_followup = models.BooleanField(default=False)
     visits_to_date = models.IntegerField(default=0)
-    last_update_sent = models.DateField(default=timezone.now())
+    last_update_sent = models.DateField(default=timezone.now(), blank=True)
     paperwork_complete = models.BooleanField(default=False)
 
     def __repr__(self):

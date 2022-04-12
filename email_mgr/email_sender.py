@@ -287,7 +287,7 @@ def chosen(adopter, appt):
     subject = "Congratulations on choosing " + appt.dog
     template = EmailTemplate.objects.get(template_name="Chosen Dog")
 
-    scrub_and_send(subject, template, adopter, None)
+    scrub_and_send(subject, template, adopter, appt)
 
 def notify_adoptions_cancel(appt, adopter):
     subject = "UPDATE FOR TODAY'S SCHEDULE"

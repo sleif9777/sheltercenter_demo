@@ -42,7 +42,7 @@
         {% if appt.visits_to_date > 1 %}
           <b>{{appt.number_of_visits}}</b>
         {% endif %}
-        {% if appt.adopter_choice.lives_with_parents and appt.visits_to_date == 0 %}
+        {% if appt.adopter_choice.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}
           <b>Must bring a parent!</b>
         {% endif %}
       </td>

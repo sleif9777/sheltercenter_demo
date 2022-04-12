@@ -3,6 +3,7 @@ import os, datetime
 from django.contrib.auth.models import User
 
 def replacer(html, adopter, appt):
+    print(appt)
     today = datetime.datetime.today()
 
     if str(os.environ.get('LOCALHOST')) == "1":
@@ -10,47 +11,41 @@ def replacer(html, adopter, appt):
     else:
         base_name = 'sheltercenter.dog'
 
-    cancel_url = '<a href="http://{0}/">Click here to cancel your appointment.</a>'
-
-    home_url = '<a href="http://{0}/">Click here to schedule or reschedule your appointment.</a>'
-
     try:
         adp_replacements = {
             '*ADP_AUTH*': str(adopter.auth_code),
             '*ADP_FNAME*': adopter.adopter_first_name,
             '*ADP_DOG*': adopter.chosen_dog,
-            '*ADP_HOME_URL*': home_url.format(base_name, adopter.id)
         }
 
         if adopter.lives_with_parents == True:
             adp_replacements['*ADP_LIVES_W_PARENTS*'] = "You indicated on your application that you live with your family. It is our policy to require at least one parent attend your first appointment with you. While the choice of dog is ultimately your decision as the adopter, we do want to take due diligence and ensure that a homeowner approves of the dog that is to live on their property. It would be ideal to bring all family members in the home to the appointment, as the dog would be living alongside them and should demonstrate comfort with them prior to making a final decision."
         else:
             adp_replacements['<p>*ADP_LIVES_W_PARENTS*</p>'] = ""
-
-        if adopter.has_current_appt:
-            adp_replacements['<p>You can reschedule your appointment here: *ADP_HOME_URL*</p>'] = home_url.format(base_name, adopter.id)
-        else:
-            adp_replacements['<p>You can reschedule your appointment here: *ADP_HOME_URL*</p>'] = ""
-    except:
+    except Exception as e:
+        print("e", e)
         adp_replacements = {}
 
     try:
-        apt_replacements = {
-            '*APT_DATE*': date_str(appt.date),
-            '*APT_DOG*': appt.dog,
-            '*APT_TIME*': time_str(appt.time),
-        }
+        apt_replacements = {}
+
+        if appt != None:
+            apt_replacements = {
+                '*APT_DATE*': date_str(appt.date),
+                '*APT_DOG*': appt.dog,
+                '*APT_TIME*': time_str(appt.time),
+            }
+        else:
+            appt_replacements = {
+                '*APT_DOG*': appt.dog
+            }
 
         if appt.appt_type == "5":
             apt_replacements['*APT_TYPE*'] = "adoption"
         elif appt.appt_type == "6":
             apt_replacements['*APT_TYPE*'] = "foster-to-adopt (FTA)"
-
-        if adopter.has_current_appt:
-            apt_replacements['*ADP_CANCEL_URL*'] = cancel_url.format(base_name, adopter.id, appt.id, appt.date.year, appt.date.month, appt.date.day)
-        else:
-            apt_replacements['<p>You can cancel your appointment here: *ADP_CANCEL_URL*</p>'] = ""
-    except:
+    except Exception as f:
+        print("f", f)
         apt_replacements = {}
 
     global_replacements = {

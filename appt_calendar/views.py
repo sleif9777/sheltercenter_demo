@@ -488,6 +488,8 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
             adopter.visits_to_date = 0
 
             if appt.outcome == "3":
+                print(appt.dog)
+                print(appt.id)
                 chosen(adopter, appt)
 
         adopter.save()
@@ -591,8 +593,13 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                     current_appt.outcome = "5"
                     current_appt.save()
                     adopter.visits_to_date += 1
+                    adopter.has_current_appt = True
                     adopter.save()
+
+                    delist_appt(new_appt)
+
                     greeter_reschedule_email(adopter, new_appt)
+                    return redirect("calendar_date", today.year, today.month, today.day)
                 except:
                     pass
             elif 'admin' in user_groups:
