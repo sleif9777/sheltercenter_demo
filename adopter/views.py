@@ -314,7 +314,8 @@ def edit_adopter(request, adopter_id):
         'appt_str': current_appt_str,
         'schedulable': ["1", "2", "3"],
         'source': source,
-        'show_timestr': True
+        'show_timestr': True,
+        'today': datetime.date.today()
     }
 
     return render(request, "adopter/edit_adopter.html", context)

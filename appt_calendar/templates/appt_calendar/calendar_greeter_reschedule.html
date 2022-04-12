@@ -12,7 +12,7 @@
       <a href="{% url 'greeter_reschedule' adopter.id appt.id today.year today.month today.day source %}">Return to Today</a>
     </div>
 
-    <h2 style="text-align: center; margin: 10px 0px;">Rescheduling for {{full_name}}</h2>
+    <h2 style="text-align: center; margin: 10px 0px;">{{action}} for {{full_name}}</h2>
 
     {% for timeslot, appointments in timeslots.items %}
 
