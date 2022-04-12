@@ -428,10 +428,12 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
             post_save_email = None
         if appt.adopter_choice != None:
             if appt.appt_type in ["1", "2", "3"]:
-                confirm_etemp(appt.adopter_choice, appt)
 
-                if original_adopter != appt.adopter_choice.id and original_adopter != None:
-                    cancel(original_adopter, appt)
+                if original_adopter != appt.adopter_choice:
+                    confirm_etemp(appt.adopter_choice, appt)
+
+                    if original_adopter != None:
+                        cancel(original_adopter, appt)
 
                 if appt.date == datetime.date.today():
                     notify_adoptions_add(appt.adopter_choice, appt)

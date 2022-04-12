@@ -313,7 +313,8 @@ def edit_adopter(request, adopter_id):
         'date': date,
         'appt_str': current_appt_str,
         'schedulable': ["1", "2", "3"],
-        'source': source
+        'source': source,
+        'show_timestr': True
     }
 
     return render(request, "adopter/edit_adopter.html", context)

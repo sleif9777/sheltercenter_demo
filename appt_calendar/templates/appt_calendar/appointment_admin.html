@@ -9,7 +9,13 @@
   {% endif %}
 
       <tr>
-        <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">{{appt}}</a>
+        <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">
+          {% if show_timestr %}
+            {{appt_str}}
+          {% else %}
+            {{appt}}
+          {% endif %}
+        </a>
         {% if appt.mobility %}
           &#9855;&#xFE0E;
         {% endif %}
