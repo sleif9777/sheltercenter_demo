@@ -9,12 +9,30 @@
       <a href="{% url 'send_to_inactive' %}">Send Follow-Up Emails</a>
     </div>
 
+    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 5px;">
+      <span style="font-weight: bold;">First Name:</span>
+      {% for letter in alphabet %}
+      <a href="{% url 'manage_filter' 'fname' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
+      {% endfor %}
+    </div>
+    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 10px;">
+      <span style="font-weight: bold;">Last Name:</span>
+      {% for letter in alphabet %}
+      <a href="{% url 'manage_filter' 'lname' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
+      {% endfor %}
+    </div>
+
     <ul class="listpage" id="adopter_list">
       {% for adopter in adopters %}
         <div class="" style="break-inside: avoid-column; border-bottom: 1px solid #BF4580;"">
           <li>
             <a class="standalone" href="{% url 'edit_adopter' adopter.id %}">
-              <span style="font-size: 14pt;">{{adopter}}
+              <span style="font-size: 14pt;">
+              {% if lname_fname %}
+                {{adopter.adopter_last_name}}, {{adopter.adopter_first_name}}
+              {% else %}
+                {{adopter}}
+              {% endif %}
               {% if adopter.status == "2" %}
                 &#128683;&#xFE0E;</span><br>
               {% elif adopter.status == "3" %}

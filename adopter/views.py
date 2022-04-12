@@ -201,10 +201,34 @@ def login(request):
 @allowed_users(allowed_roles={'admin'})
 def manage(request):
     adopters = Adopter.objects.all()
+    alphabet = [chr(x) for x in range(65, 91)]
 
     context = {
         'adopters': adopters,
-        'role': 'admin'
+        'role': 'admin',
+        'alphabet': alphabet,
+        'lname_fname': False
+    }
+
+    return render(request, "adopter/adoptermgmt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
+def manage_filter(request, first_last, letter):
+    if first_last == 'fname':
+        adopters = Adopter.objects.filter(adopter_first_name__startswith=letter)
+        lname_fname = False
+    elif first_last == 'lname':
+        adopters = Adopter.objects.filter(adopter_last_name__startswith=letter).order_by('adopter_last_name')
+        lname_fname = True
+
+    alphabet = [chr(x) for x in range(65, 91)]
+
+    context = {
+        'adopters': adopters,
+        'role': 'admin',
+        'alphabet': alphabet,
+        'lname_fname': lname_fname
     }
 
     return render(request, "adopter/adoptermgmt.html", context)
