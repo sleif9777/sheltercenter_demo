@@ -436,6 +436,9 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
                 if appt.date == datetime.date.today():
                     notify_adoptions_add(appt.adopter_choice, appt)
 
+                appt.adopter_choice.has_current_appt = True
+                appt.adopter_choice.save()
+
             delist_appt(appt)
 
         return redirect('calendar_date', date.year, date.month, date.day)

@@ -285,9 +285,11 @@ def edit_adopter(request, adopter_id):
     try:
         current_appt = Appointment.objects.filter(adopter_choice=adopter).latest('id')
         current_appt_str = current_appt.date_and_time_string()
+        date = current_appt.date
     except:
         current_appt = None
         current_appt_str = None
+        date = None
 
     if form.is_valid():
         form.save()
@@ -308,8 +310,8 @@ def edit_adopter(request, adopter_id):
         'form': form,
         'adopter': adopter,
         'appt': current_appt,
+        'date': date,
         'appt_str': current_appt_str,
-        'role': 'admin',
         'schedulable': ["1", "2", "3"],
         'source': source
     }
