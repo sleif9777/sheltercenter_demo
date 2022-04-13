@@ -200,11 +200,13 @@ def login(request):
 def manage(request):
     adopters = Adopter.objects.all()
     alphabet = [chr(x) for x in range(65, 91)]
+    digits = [chr(x) for x in range(48, 58)]
 
     context = {
         'adopters': adopters,
         'role': 'admin',
         'alphabet': alphabet,
+        'digits': digits,
         'lname_fname': False,
         'page_title': "Manage Adopters",
     }
@@ -213,20 +215,26 @@ def manage(request):
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})
-def manage_filter(request, first_last, letter):
-    if first_last == 'fname':
-        adopters = Adopter.objects.filter(adopter_first_name__startswith=letter)
+def manage_filter(request, filter, char):
+    if filter == 'fname':
+        adopters = Adopter.objects.filter(adopter_first_name__startswith=char)
         lname_fname = False
-    elif first_last == 'lname':
-        adopters = Adopter.objects.filter(adopter_last_name__startswith=letter).order_by('adopter_last_name')
+    elif filter == 'lname':
+        adopters = Adopter.objects.filter(adopter_last_name__startswith=char).order_by('adopter_last_name')
         lname_fname = True
+    elif filter == "email":
+        char = char.lower()
+        adopters = Adopter.objects.filter(adopter_email__startswith=char)
+        lname_fname = False
 
     alphabet = [chr(x) for x in range(65, 91)]
+    digits = [chr(x) for x in range(48, 58)]
 
     context = {
         'adopters': adopters,
         'role': 'admin',
         'alphabet': alphabet,
+        'digits': digits,
         'lname_fname': lname_fname,
         'page_title': "Manage Adopters",
     }

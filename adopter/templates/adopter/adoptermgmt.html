@@ -15,10 +15,19 @@
       <a href="{% url 'manage_filter' 'fname' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
       {% endfor %}
     </div>
-    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 10px;">
+    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 5px;">
       <span style="font-weight: bold;">Last Name:</span>
       {% for letter in alphabet %}
       <a href="{% url 'manage_filter' 'lname' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
+      {% endfor %}
+    </div>
+    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 10px;">
+      <span style="font-weight: bold;">Email:</span>
+      {% for letter in alphabet %}
+      <a href="{% url 'manage_filter' 'email' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
+      {% endfor %}
+      {% for digit in digits %}
+      <a href="{% url 'manage_filter' 'email' digit %}" class="standalone" style="font-size: 16pt;">{{digit}}</a>
       {% endfor %}
     </div>
 
