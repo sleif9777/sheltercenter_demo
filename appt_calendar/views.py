@@ -83,6 +83,7 @@ def greeter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
         "appt": old_appt,
         "source": source,
         "action": action,
+        'page_title': "Reschedule {0}".format(full_name),
     }
 
     calendar = gc(request.user, 'reschedule', None, date_year, date_month, date_day)
@@ -100,6 +101,7 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
         context = {
             'adopter': adopter,
+            'page_title': "Appointment Not Available",
         }
 
         return render(request, "appt_calendar/appt_not_available.html", context)
@@ -129,6 +131,7 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
         context = {
             'form': form,
             'adopter': adopter,
+            'page_title': "Book Appointment",
         }
 
         return render(request, "appt_calendar/bookappt.html", context)
@@ -148,6 +151,7 @@ def jump_to_date_greeter(request, adopter_id, appt_id):
 
     context = {
         'form': form,
+        'page_title': "Jump To Date",
     }
 
     return render(request, "appt_calendar/jump_to_date.html", context)
@@ -165,6 +169,7 @@ def jump_to_date(request):
 
     context = {
         'form': form,
+        'page_title': "Jump To Date",
     }
 
     return render(request, "appt_calendar/jump_to_date.html", context)
@@ -176,13 +181,7 @@ def calendar_date(request, date_year, date_month, date_day):
         user_groups = set()
 
     context = gc(request.user, 'full', None, date_year, date_month, date_day)
-    #
-    # context['role'] = 'admin'
-    #
-    # if 'superuser' in user_groups or 'admin' in user_groups:
-    #     context['role'] = 'admin'
-    # elif 'greeter' in user_groups:
-    #     context['role'] = 'greeter'
+
     if 'adopter' in user_groups:
         # context['role'] = 'adopter'
         try:
@@ -194,7 +193,8 @@ def calendar_date(request, date_year, date_month, date_day):
 
         adopter_context = {
             'current_appt': current_appt,
-            'current_appt_str': current_appt_str
+            'current_appt_str': current_appt_str,
+            'page_title': "Calendar",
         }
 
         context.update(adopter_context)
@@ -217,6 +217,7 @@ def paperwork_calendar(request, date_year, date_month, date_day, appt_id, hw_sta
         "appt": appt,
         "hw_status": hw_status,
         "fta_or_adoption": fta_or_adoption,
+        'page_title': "Calendar",
     }
 
     context.update(calendar)
@@ -228,12 +229,16 @@ def paperwork_calendar(request, date_year, date_month, date_day, appt_id, hw_sta
 def calendar_print(request, date_year, date_month, date_day):
     context = gc('admin', 'full', None, date_year, date_month, date_day)
 
+    context['page_title'] = "Print Calendar"
+
     return render(request, "appt_calendar/calendar_print.html/", context)
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def daily_report_all_appts(request, date_year, date_month, date_day):
     context = gc('admin', 'full', None, date_year, date_month, date_day)
+
+    context['page_title'] = "All Appointments Report"
 
     return render(request, "appt_calendar/daily_report_all_appts.html/", context)
 
@@ -244,6 +249,7 @@ def daily_reports_home(request):
 
     context = {
         "date": date,
+        'page_title': "Daily Reports",
     }
 
     return render(request, "appt_calendar/daily_report_home.html/", context)
@@ -257,6 +263,7 @@ def chosen_board(request):
     context = {
         "today": today,
         "appointments": appointments,
+        'page_title': "Chosen Board",
     }
 
     return render(request, "appt_calendar/chosen_board.html/", context)
@@ -488,8 +495,6 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
             adopter.visits_to_date = 0
 
             if appt.outcome == "3":
-                print(appt.dog)
-                print(appt.id)
                 chosen(adopter, appt)
 
         adopter.save()
@@ -501,6 +506,7 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
 
     context = {
         'form': form,
+        'page_title': "Enter Decision",
     }
 
     return render(request, "appt_calendar/enter_decision_form.html", context)
@@ -526,6 +532,7 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
         context = {
             'adopter': adopter,
             'appt_str': appt_str,
+            'page_title': "Appointment Canceled",
         }
 
         return render(request, "appt_calendar/adopter_self_cancel.html", context)
@@ -551,6 +558,7 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
             'adopter': adopter,
             'appt': Appointment.objects.get(pk=appt_id),
             'date': date,
+            'page_title': "Appointment Not Available",
         }
 
         return render(request, "appt_calendar/appt_not_available.html", context)
@@ -657,6 +665,7 @@ def add_timeslot(request, date_year, date_month, date_day):
     context = {
         'form': form,
         'date': date,
+        'page_title': "Add Timeslot",
     }
 
     return render(request, "appt_calendar/new_timeslot_form.html", context)

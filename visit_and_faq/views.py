@@ -28,6 +28,7 @@ def add_faq_section(request):
     context = {
         'form': form,
         'title': "Add FAQ Section",
+        'page_title': "Add FAQ Section",
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
@@ -48,6 +49,7 @@ def add_faq(request, sec_id):
     context = {
         'form': form,
         'title': "Add FAQ",
+        'page_title': "Add FAQ",
         'section': section.name
     }
 
@@ -67,6 +69,8 @@ def edit_faq(request, faq_id):
     context = {
         'form': form,
         'title': "Edit FAQ",
+        'page_title': "Edit FAQ",
+
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
@@ -93,6 +97,7 @@ def add_visitor_instr(request):
     context = {
         'form': form,
         'title': "Add Visit Instruction",
+        'page_title': "Add Visit Instruction",
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
@@ -111,6 +116,7 @@ def edit_visitor_instr(request, instr_id):
     context = {
         'form': form,
         'title': "Edit Visit Instruction",
+        'page_title': "Edit Visit Instruction",
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)

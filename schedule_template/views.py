@@ -12,6 +12,7 @@ def weekly(request):
 
     context = {
         'dows': dows,
+        'page_title': "Weekly Template",
     }
 
     return render(request, "schedule_template/weekly_schedule.html", context)
@@ -30,6 +31,7 @@ def daily(request, dow_id):
         'daily_sched': daily_sched,
         'timeslots': daily_sched_timeslots,
         'appointments': daily_sched_appts,
+        'page_title': "Edit {0} Template".format(daily_sched.dow_string()),
     }
 
     return render(request, "schedule_template/daily_schedule.html", context)
@@ -76,6 +78,7 @@ def add_timeslot(request, dow_id):
     context = {
         'form': form,
         'dow': dow,
+        'page_title': "Add Timeslot",
     }
 
     return render(request, "schedule_template/timeslot_form.html", context)
@@ -97,6 +100,7 @@ def add_appointment(request, dow_id, timeslot_id):
         'form': form,
         'dow': dow,
         'timeslot': timeslot,
+        'page_title': "Add Appointment",
     }
 
     return render(request, "schedule_template/render_form.html", context)
@@ -114,6 +118,7 @@ def edit_appointment(request, dow_id, appt_id):
 
     context = {
         'form': form,
+        'page_title': "Edit Appointment",    
     }
 
     return render(request, "schedule_template/render_form.html", context)

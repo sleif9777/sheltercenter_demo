@@ -7,7 +7,7 @@
     {% if request.user|has_group:"admin" %}
       <h1 class="page_header">Visit Instructions</h1>
       <div class="calendar_actions">
-        <a href="{% url 'add_visitor_instr' %}">Add Visitor Instruction</a>
+        <a href="{% url 'add_visitor_instr' %}">Add Visit Instruction</a>
       </div>
     {% else %}
       <h1 class="page_header no_actions">Visit Instructions</h1>

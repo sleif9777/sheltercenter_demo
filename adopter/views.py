@@ -39,10 +39,8 @@ def add(request):
                 try:
                     existing_user = User.objects.get(username = "sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com")
                     existing_adopter = Adopter.objects.get(user=existing_user)
-                    print(existing_adopter)
                     try:
                         if existing_adopter.status == "1":
-                            print('miss1')
                             if existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
                                 existing_adopter.accept_date = datetime.date.today()
                                 existing_adopter.save()
@@ -54,10 +52,8 @@ def add(request):
                             elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
                                 duplicate_app(existing_adopter)
                         elif existing_adopter.status == "2":
-                            print('miss2')
                             errors += [existing_adopter.adopter_full_name()]
                         elif existing_adopter.status == "3" and row[4] == "Accepted":
-                            print('hit')
                             existing_adopter.status = "1"
                             existing_adopter.save()
 
@@ -182,6 +178,7 @@ def add(request):
         'dows': all_dows,
         'today': today,
         'role': 'admin',
+        'page_title': "Add Adopters",
     }
 
     return render(request, "adopter/addadopterform.html", context)
@@ -192,7 +189,8 @@ def login(request):
     adopters = Adopter.objects.all()
 
     context = {
-        'adopters': adopters
+        'adopters': adopters,
+        'page_title': "Log In",
     }
 
     return render(request, "adopter/login.html", context)
@@ -207,7 +205,8 @@ def manage(request):
         'adopters': adopters,
         'role': 'admin',
         'alphabet': alphabet,
-        'lname_fname': False
+        'lname_fname': False,
+        'page_title': "Manage Adopters",
     }
 
     return render(request, "adopter/adoptermgmt.html", context)
@@ -228,7 +227,8 @@ def manage_filter(request, first_last, letter):
         'adopters': adopters,
         'role': 'admin',
         'alphabet': alphabet,
-        'lname_fname': lname_fname
+        'lname_fname': lname_fname,
+        'page_title': "Manage Adopters",
     }
 
     return render(request, "adopter/adoptermgmt.html", context)
@@ -270,6 +270,7 @@ def set_alert_mgr(request, adopter_id):
     context = {
         'adopter': adopter,
         'form': form,
+        'page_title': "Set Reminder",
     }
 
     return render(request, "adopter/set_alert_date.html", context)
@@ -315,7 +316,8 @@ def edit_adopter(request, adopter_id):
         'schedulable': ["1", "2", "3"],
         'source': source,
         'show_timestr': True,
-        'today': datetime.date.today()
+        'today': datetime.date.today(),
+        'page_title': "Edit Adopter"
     }
 
     return render(request, "adopter/edit_adopter.html", context)
@@ -330,6 +332,7 @@ def faq(request):
 
     context = {
         'faq_dict': faq_dict,
+        'page_title': "FAQ",
     }
 
     return render(request, "adopter/faq.html", context)
@@ -344,6 +347,7 @@ def faq_test(request):
 
     context = {
         'faq_dict': faq_dict,
+        'page_title': "FAQ",
     }
 
     return render(request, "adopter/faq_test_harness.html", context)
@@ -354,7 +358,8 @@ def visitor_instructions(request):
     all_instrs = VisitorInstruction.objects.all()
 
     context = {
-        'all_instrs': all_instrs
+        'all_instrs': all_instrs,
+        'page_title': "Visit Instructions",
     }
 
     return render(request, "adopter/visitor_instructions.html", context)
@@ -374,6 +379,7 @@ def contact(request):
     context = {
         'form': form,
         'all_dows': all_dows,
+        'page_title': "Contact Us",
     }
 
     return render(request, "adopter/contactteam.html", context)
@@ -468,7 +474,8 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
     context = {
         'form': form,
-        'appt': appt
+        'appt': appt,
+        'page_title': "Contact {0}".format(adopter.adopter_full_name()),
     }
 
     return render(request, "adopter/contactadopter.html", context)
@@ -492,6 +499,7 @@ def home(request):
         'first_name': adopter.adopter_first_name,
         'role': 'adopter',
         'faq_dict': faq_dict,
+        'page_title': "Home",
     }
 
     if adopter.status == "2":

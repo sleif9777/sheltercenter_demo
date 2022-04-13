@@ -31,7 +31,8 @@ def email_home(request):
 
     context = {
         'e_templates': e_templates,
-        'role': 'admin'
+        'role': 'admin',
+        'page_title': "Email Templates",
     }
 
     return render(request, "email_mgr/email_home.html/", context)
@@ -50,7 +51,8 @@ def edit_template(request, template_id):
     context = {
         'form': form,
         'e_template': e_template,
-        'role': 'admin'
+        'role': 'admin',
+        'page_title': "Edit Email Template",
     }
 
     return render(request, "email_mgr/add_template.html", context)
@@ -72,7 +74,8 @@ def add_email_template(request):
 
     context = {
         'form': form,
-        'role': 'admin'
+        'role': 'admin',
+        'page_title': "Add Email Template",
     }
 
     return render(request, "email_mgr/add_template.html/", context)

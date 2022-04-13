@@ -31,8 +31,6 @@ def register(request):
         'form': form,
     }
 
-    print(context)
-
     return render(request, 'dashboard/register.html', context)
 
 @unauthenticated_user
@@ -42,7 +40,6 @@ def login_page(request):
         password = request.POST.get('password')
 
         user = authenticate(username=username, password=password)
-        print(user)
 
         if user is not None:
             login(request, user)
@@ -61,6 +58,7 @@ def login_page(request):
         'other_role': 'Greeters and staff',
         'pw_cred': 'authorization code',
         'pw_placeholder': '123456 (This is in the email we sent you)',
+        'page_title': "Log In",
     }
 
     return render(request, 'dashboard/login.html', context)
@@ -87,6 +85,7 @@ def staff_login(request):
         'other_role': 'Adopters',
         'pw_cred': 'password',
         'pw_placeholder': 'Password',
+        'page_title': "Log In",
     }
 
     return render(request, 'dashboard/login.html', context)
@@ -208,7 +207,8 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         "visible": visible_to_adopters,
         "delta": delta_from_today,
         "today": today,
-        "no_outcome_appts": no_outcome_appts
+        "no_outcome_appts": no_outcome_appts,
+        'page_title': "Calendar",
     }
 
     return context
@@ -232,6 +232,7 @@ def edit_signature(request):
     context = {
         'form': form,
         'e_template': profile,
+        'page_title': "Edit Signature",
     }
 
     return render(request, "email_mgr/add_template.html", context)

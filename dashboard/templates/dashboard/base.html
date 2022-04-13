@@ -4,7 +4,13 @@
     {% load static %}
     {% load auth_extras %}
     <meta charset="utf-8">
-    <title></title>
+
+    {% if page_title %}
+      <title>{{page_title}}</title>
+    {% else %}
+      <title></title>
+    {% endif %}
+    <link rel="icon" href="{% static 'media/logo.png' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">
   </head>
