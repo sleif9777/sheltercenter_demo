@@ -108,12 +108,12 @@ def add(request):
 
                     new_adopter.save()
 
-                    if str(os.environ.get('SANDBOX')) != "1":
-                        if row[4] == "Accepted":
-                            if new_adopter.out_of_state == True:
-                                invite_oos_etemp(new_adopter)
-                            else:
-                                invite(new_adopter)
+                    # if str(os.environ.get('SANDBOX')) != "1":
+                    if row[4] == "Accepted":
+                        if new_adopter.out_of_state == True:
+                            invite_oos_etemp(new_adopter)
+                        else:
+                            invite(new_adopter)
 
             system_settings.last_adopter_upload = today
             system_settings.save()

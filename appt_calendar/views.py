@@ -227,7 +227,7 @@ def paperwork_calendar(request, date_year, date_month, date_day, appt_id, hw_sta
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def calendar_print(request, date_year, date_month, date_day):
-    context = gc('admin', 'full', None, date_year, date_month, date_day)
+    context = gc(request.user, 'full', None, date_year, date_month, date_day)
 
     context['page_title'] = "Print Calendar"
 
@@ -236,7 +236,7 @@ def calendar_print(request, date_year, date_month, date_day):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def daily_report_all_appts(request, date_year, date_month, date_day):
-    context = gc('admin', 'full', None, date_year, date_month, date_day)
+    context = gc(request.user, 'full', None, date_year, date_month, date_day)
 
     context['page_title'] = "All Appointments Report"
 
@@ -292,7 +292,7 @@ def mark_complete_on_chosen_board(request, appt_id):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def daily_report_adopted_chosen_fta(request, date_year, date_month, date_day):
-    context = gc('admin', 'full', None, date_year, date_month, date_day)
+    context = gc(request.user, 'full', None, date_year, date_month, date_day)
 
     return render(request, "appt_calendar/daily_report_adopted_chosen_fta.html/", context)
 

@@ -43,13 +43,12 @@
                 {{adopter}}
               {% endif %}
               {% if adopter.status == "2" %}
-                &#128683;&#xFE0E;</span><br>
+                &#128683;&#xFE0E;
               {% elif adopter.status == "3" %}
-                &#x231B;&#xFE0E;</span><br>
-              {% else %}
-                </span><br>
-                <span style="font-size: 8pt;">{{adopter.adopter_email}}</span>
+                &#x231B;&#xFE0E;
               {% endif %}
+              </span><br>
+              <span style="font-size: 8pt;">{{adopter.adopter_email}}</span>
             </a>
 
           </li>
