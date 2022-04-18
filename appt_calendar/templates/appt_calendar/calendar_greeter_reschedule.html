@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load auth_extras %}
 
 {% block content %}
   <div class="main">
@@ -9,10 +10,18 @@
     </div>
 
     <div class="calendar_actions">
+      <a href="{% url 'jump_to_date_greeter' adopter.id appt.id source %}">Jump To Date</a>
       <a href="{% url 'greeter_reschedule' adopter.id appt.id today.year today.month today.day source %}">Return to Today</a>
     </div>
 
     <h2 style="text-align: center; margin: 10px 0px;">{{action}} for {{full_name}}</h2>
+
+    {% if date.weekday < 5 and not timeslots %}
+      <br><br>
+      <p style="margin-left: 10px;">Adoptions is not scheduling for this date yet.
+        <a class="standalone" href="{% url 'set_alert_date_greeter' adopter.id date.year date.month date.day %}">Email {{adopter.adopter_first_name}} when appointments open?</a>
+      </p>
+    {% endif %}
 
     {% for timeslot, appointments in timeslots.items %}
 
@@ -22,7 +31,11 @@
           <!-- two-column table displaying timeslot and timeslot-level actions -->
           <table style = "width:100%; padding: 10px; margin: 0;">
             <th style="font-size: 18pt; text-align: left;" class="timeslotheader">{{timeslot}}</th>
-            <th style="font-size: 18pt; text-align: right;" class="timeslotheader"></th>
+            <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
+              {% if request.user|has_group:"admin" %}
+                <a class="timeslot_action" href="{% url 'add_followup_appointment' adopter.id date.year date.month date.day timeslot.id %}">Add Appointment for {{adopter.adopter_first_name}}</a>
+              {% endif %}
+            </th>
           </table>
 
           <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment -->

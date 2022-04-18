@@ -236,3 +236,11 @@ def edit_signature(request):
     }
 
     return render(request, "email_mgr/add_template.html", context)
+
+def edit_help(request):
+
+    return render(request, "email_mgr/edit_help.html", context)
+
+def help(request):
+
+    return render(request, "email_mgr/help.html", context)

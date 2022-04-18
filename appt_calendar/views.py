@@ -59,6 +59,19 @@ def set_alert_date(request, date_year, date_month, date_day):
 
     return redirect('calendar_date', date.year, date.month, date.day)
 
+def set_alert_date_greeter(request, adopter_id, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    adopter = Adopter.objects.get(pk=adopter_id)
+
+    adopter.alert_date = date
+    adopter.save()
+
+    today = datetime.date.today()
+
+    alert_date_set(adopter, date)
+
+    return redirect('calendar_date', today.year, today.month, today.day)
+
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def greeter_reschedule(request, adopter_id, appt_id, date_year, date_month, date_day, source):
@@ -138,14 +151,14 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
-def jump_to_date_greeter(request, adopter_id, appt_id):
+def jump_to_date_greeter(request, adopter_id, appt_id, source):
     form = JumpToDateForm(request.POST or None)
 
     if form.is_valid():
         data = form.cleaned_data
         date = data['date']
 
-        return redirect('greeter_reschedule', adopter_id, appt_id, date.year, date.month, date.day)
+        return redirect('greeter_reschedule', adopter_id, appt_id, date.year, date.month, date.day, source)
     else:
         form = JumpToDateForm(request.POST or None, initial={'date': datetime.date.today()})
 
@@ -370,6 +383,18 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
+def add_followup_appointment(request, adopter_id, date_year, date_month, date_day, timeslot_id):
+    date = datetime.date(date_year, date_month, date_day)
+
+    timeslot = Timeslot.objects.get(pk=timeslot_id)
+    appt = Appointment.objects.create(date = date, time = timeslot.time)
+
+    timeslot.appointments.add(appt)
+
+    return redirect('adopter_reschedule', adopter_id, appt.id, date_year, date_month, date_day, 'followup')
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot_id, originalappt_id):
     date = datetime.date(date_year, date_month, date_day)
     timeslot = Timeslot.objects.get(pk=timeslot_id)
@@ -569,6 +594,10 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
             new_appt.bringing_dog = current_appt.bringing_dog
             new_appt.has_cat = current_appt.has_cat
             new_appt.mobility = current_appt.mobility
+
+            if source == "followup":
+                new_appt.appt_type = current_appt.appt_type
+
         except:
             pass
 
