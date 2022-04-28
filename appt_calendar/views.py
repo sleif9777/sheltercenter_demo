@@ -435,7 +435,7 @@ def add_followup_appointment(request, adopter_id, date_year, date_month, date_da
 
     timeslot.appointments.add(appt)
 
-    return redirect('adopter_reschedule', adopter_id, appt.id, date_year, date_month, date_day, 'followup')
+    return redirect('adopter_reschedule', adopter_id, appt.id, date_year, date_month, date_day, 'edit')
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -618,7 +618,7 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
     try:
         current_appt = [appt for appt in Appointment.objects.filter(adopter_choice=adopter.id).exclude(date__lt = datetime.date.today())][0]
     except:
-        pass
+        current_appt = None
 
     new_appt = Appointment.objects.get(pk=appt_id)
 
