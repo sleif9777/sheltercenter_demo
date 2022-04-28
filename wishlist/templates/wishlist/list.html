@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <strong>List of All Dogs</strong>
+    {% for i in dogs %}
+      <p><img src="{{i.CoverPhoto}}" height="100px" alt="">{{i.Name}}</p>
+    {% endfor %}
+  </body>
+</html>
