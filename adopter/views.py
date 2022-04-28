@@ -448,7 +448,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
             appt.last_update_sent = today
 
             if source in ['ready_positive', 'ready_negative']:
-                appt.outcome = "6"
+                appt.outcome = "7"
 
             if source == 'ready_positive':
                 appt.heartworm = True
