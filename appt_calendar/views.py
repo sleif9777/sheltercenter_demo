@@ -133,7 +133,7 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
             confirm_etemp(adopter, appt)
 
-            if appt.date == datetime.date.today():
+            if short_notice(appt):
                 notify_adoptions_add(adopter, appt)
 
             return redirect('calendar')
@@ -271,7 +271,7 @@ def daily_reports_home(request):
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def chosen_board(request):
     today = datetime.date.today()
-    appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "6", "7"], paperwork_complete=False)]
+    appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "7", "8"], paperwork_complete=False)]
 
     context = {
         "today": today,
@@ -409,7 +409,7 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
 
             confirm_etemp(adopter, appt)
 
-            if appt.date == datetime.date.today():
+            if short_notice(appt):
                 notify_adoptions_add(adopter, appt)
 
         return redirect('calendar_date', date.year, date.month, date.day)
@@ -456,7 +456,7 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
         appt = Appointment.objects.latest('id')
         timeslot.appointments.add(appt)
 
-        original_appt.outcome = "7"
+        original_appt.outcome = "8"
         original_appt.save()
 
         if appt.adopter_choice != None:
@@ -481,6 +481,17 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
     }
 
     return render(request, "appt_calendar/add_edit_appt.html", context)
+
+def short_notice(appt):
+    is_today = appt.date == datetime.date.today()
+    is_tomorrow = appt.date == datetime.date.today() + datetime.timedelta(days=1)
+    booked_after_close = datetime.datetime.now().time() > datetime.time(16,00)
+
+    if is_today or (is_tomorrow and booked_after_close):
+        return True
+
+    return False
+
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -520,7 +531,7 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
                     if original_adopter != None:
                         cancel(original_adopter, appt)
 
-                if appt.date == datetime.date.today():
+                if short_notice(appt):
                     notify_adoptions_add(appt.adopter_choice, appt)
 
                 appt.adopter_choice.has_current_appt = True
@@ -592,10 +603,10 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
 
     reset_appt(appt)
 
-    if get_groups(request.user) == {'adopter'}:
-        if appt.date == datetime.date.today():
-            notify_adoptions_cancel(appt, adopter)
+    if short_notice(appt):
+        notify_adoptions_cancel(appt, adopter)
 
+    if get_groups(request.user) == {'adopter'}:
         appt_str = appt.date_and_time_string()
 
         context = {
@@ -660,9 +671,11 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
             reschedule(adopter, new_appt)
 
-            if current_appt.date == datetime.date.today():
+            if short_notice(current_appt) and short_notice(new_appt):
+                notify_adoptions_time_change(adopter, current_appt, new_appt)
+            elif short_notice(current_appt):
                 notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
-            elif new_appt.date == datetime.date.today():
+            elif short_notice(new_appt):
                 notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
             return redirect("calendar_date", date_year, date_month, date_day)
@@ -685,12 +698,12 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                     pass
             elif 'admin' in user_groups:
 
-                try:
-                    if current_appt.date == datetime.date.today():
-                        notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
-                except:
-                    if new_appt.date == datetime.date.today():
-                        notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+                if short_notice(current_appt) and short_notice(new_appt):
+                    notify_adoptions_time_change(adopter, current_appt, new_appt)
+                elif short_notice(current_appt):
+                    notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+                elif short_notice(new_appt):
+                    notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
                 adopter.has_current_appt = True
                 adopter.save()

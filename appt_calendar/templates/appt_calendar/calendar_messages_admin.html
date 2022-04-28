@@ -4,7 +4,7 @@
   </div>
 {% else %}
   <div class="info_box">
-    <p><a class="datelink" href="{% url 'add_daily_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E;</div> Add a note for adopters.</a></p>
+    <p><a class="datelink" href="{% url 'add_daily_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E;</div> Add a notification for adopters. (Display only for {{date_pretty}})</a></p>
   </div>
 {% endif %}
 

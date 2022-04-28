@@ -26,8 +26,11 @@ class Appointment(models.Model):
         ("3", "Chosen"),
         ("4", "FTA"),
         ("5", "No Decision"),
-        ("6", "Ready To Roll"),
-        ("7", "Paperwork Scheduled")
+        ("6", "No Show"),
+        ("7", "Ready To Roll"),
+        ("8", "Paperwork Scheduled"),
+        ("9", "Chosen - needs vetting"),
+        ("10", "Chosen - needs well check")
     ]
 
     date = models.DateField(default = timezone.now())
@@ -40,7 +43,7 @@ class Appointment(models.Model):
     dog_fka = models.CharField(default="", max_length=200, blank=True)
     internal_notes = models.TextField(default="", blank=True)
     adopter_notes = models.TextField(default="", blank=True)
-    outcome = models.CharField(default="1", max_length = 1, choices=OUTCOME_TYPES)
+    outcome = models.CharField(default="1", max_length = 2, choices=OUTCOME_TYPES)
     heartworm = models.BooleanField(default=False)
     bringing_dog = models.BooleanField(default=False)
     has_cat = models.BooleanField(default=False)
