@@ -39,4 +39,5 @@ urlpatterns = [
     path("chosen_board/", views.chosen_board, name="chosen_board"),
     path("chosen_board/clear/<int:appt_id>/", views.remove_from_chosen_board, name="clear_from_cb"),
     path("chosen_board/complete/<int:appt_id>/", views.mark_complete_on_chosen_board, name="mark_complete_cb"),
+    path("chosen_board/update/<int:appt_id>/<str:outcome>/", views.cb_update_status, name="cb_update_status")
     ]

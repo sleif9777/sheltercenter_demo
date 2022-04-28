@@ -271,7 +271,7 @@ def daily_reports_home(request):
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def chosen_board(request):
     today = datetime.date.today()
-    appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "7", "8"], paperwork_complete=False)]
+    appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "7", "8", "9", "10"], paperwork_complete=False)]
 
     context = {
         "today": today,
@@ -288,6 +288,16 @@ def remove_from_chosen_board(request, appt_id):
 
     appt.dog = ""
     appt.outcome = "5"
+    appt.save()
+
+    return redirect('chosen_board')
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def cb_update_status(request, appt_id, outcome):
+    appt = Appointment.objects.get(pk=appt_id)
+
+    appt.outcome = outcome
     appt.save()
 
     return redirect('chosen_board')
