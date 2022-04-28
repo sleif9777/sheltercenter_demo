@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-import datetime, time
+import datetime, time, io
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
 from .models import Timeslot, Appointment
 from adopter.models import Adopter
