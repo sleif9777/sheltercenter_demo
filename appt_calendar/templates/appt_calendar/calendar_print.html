@@ -22,10 +22,10 @@
       <tr>
         <th style="width:5%;">Time</th>
         <th style="width:15%;">Adopter</th>
-        <th style="width:30%;">Notes from Adopter</th>
-        <th style="width:30%;">Notes from Adoptions Team</th>
-        <th style="width:10%;">Bringing dog?</th>
-        <th style="width:10%;">Number of Visits</th>
+        <th style="width:23%;">Notes from Adopter</th>
+        <th style="width:24%;">Notes from Adoptions Team</th>
+        <th style="width:23%;">Notes from Shelterluv</th>
+        <th style="width:10%;"># of Visits</th>
       </tr>
       {% for timeslot, appointments in timeslots.items %}
         {% for appt in appointments %}
@@ -46,11 +46,7 @@
               </td>
               <td>{{appt.adopter_notes}}</td>
               <td>{{appt.internal_notes}}</td>
-              <td>
-                {% if appt.bringing_dog %}
-                  Yes
-                {% endif %}
-              </td>
+              <td>{{appt.adopter_choice.app_interest}}</td>
               <td>
                 {% if appt.adopter_choice.visits_to_date > 1 %}
                   {{appt.adopter_choice.number_of_visits}}
