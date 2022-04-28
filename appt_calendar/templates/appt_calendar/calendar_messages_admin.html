@@ -1,3 +1,13 @@
+{% if daily_announcement %}
+  <div class="info_box">
+    <p><a class="datelink" href="{% url 'edit_daily_announcement' daily_announcement.id date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E;</div> {{daily_announcement.text|safe}}</a></p>
+  </div>
+{% else %}
+  <div class="info_box">
+    <p><a class="datelink" href="{% url 'add_daily_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E;</div> Add a note for adopters.</a></p>
+  </div>
+{% endif %}
+
 {% if empty_dates %}
   <div class="outstanding_task">
     <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> There are some dates in the next two weeks that have less appointments than usual (or none at all). Please check that a full schedule is set:</p>

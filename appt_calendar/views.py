@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-import datetime, time, io
+import datetime, time
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-from .models import Timeslot, Appointment
+from .models import Timeslot, Appointment, DailyAnnouncement
 from adopter.models import Adopter
 from .forms import *
 from email_mgr.email_sender import *
@@ -340,6 +340,50 @@ def delete_timeslot(request, date_year, date_month, date_day, timeslot_id):
     deleted_timeslot.delete()
 
     return redirect('calendar_date', date.year, date.month, date.day)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def add_daily_announcement(request, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    form = DailyAnnouncementForm(request.POST or None, initial = {'date': date})
+
+    if form.is_valid():
+        form.save()
+        return redirect('calendar_date', date.year, date.month, date.day)
+
+    else:
+        form = DailyAnnouncementForm(request.POST or None, initial = {'date': date})
+
+    context = {
+        'form': form,
+        'date': date,
+        'title': "Add Note for Adopters",
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def edit_daily_announcement(request, announcement_id, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    announcement = DailyAnnouncement.objects.get(pk = announcement_id)
+    print(announcement.id)
+    form = DailyAnnouncementForm(request.POST or None, instance=announcement)
+
+    if form.is_valid():
+        form.save()
+        return redirect('calendar_date', date.year, date.month, date.day)
+
+    else:
+        form = DailyAnnouncementForm(request.POST or None, instance=announcement)
+
+    context = {
+        'form': form,
+        'date': date,
+        'title': "Edit Note for Adopters",
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})

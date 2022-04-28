@@ -20,6 +20,16 @@ body {
   background-color: #ea9999;
 }
 
+.info_box {
+  border: 4px #A7396E solid;
+  width: 80%;
+  margin: auto;
+  margin-top: 10px;
+  padding: 10px;
+  color: #A7396E;
+  background-color: #F2D9E5;
+}
+
 .datelink {
   text-decoration: none;
   color: #990000
@@ -145,7 +155,7 @@ body {
   display: inline-block;
   list-style-type: none;
   padding: 5px 0;
-  border-bottom: #BF4580 1px solid;
+  border-bottom: #A7396E 1px solid;
   width: 100%;
 }
 
@@ -155,7 +165,7 @@ body {
 
 .activitymenu a {
   text-decoration: none;
-  color: #BF4580;
+  color: #A7396E;
   text-transform: uppercase;
   text-align: center;
   font-size: 18px;
@@ -206,7 +216,7 @@ body {
 }
 
 .page_header a:hover, .calendar_actions a:hover {
-  color: #BF4580;
+  color: #A7396E;
   text-decoration: underline;
 }
 
@@ -277,7 +287,7 @@ body {
 }
 
 .day_action a:hover {
-  color: #BF4580;
+  color: #A7396E;
   text-decoration: underline;
 }
 
@@ -439,7 +449,7 @@ p.standalone {
 }
 
 a.standalone {
-  color: #BF4580;
+  color: #A7396E;
   text-decoration: none;
 }
 
@@ -597,7 +607,7 @@ tr.info_block_subheader {
 }
 
 .chosen_board_actions a {
-  color: #BF4580;
+  color: #A7396E;
   text-decoration: none;
 }
 

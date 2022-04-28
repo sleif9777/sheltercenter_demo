@@ -1,6 +1,6 @@
 from django import forms
 import datetime
-from .models import Timeslot, Appointment
+from .models import Timeslot, Appointment, DailyAnnouncement
 from adopter.models import Adopter
 import demo.settings as settings
 
@@ -65,6 +65,17 @@ class BookAppointmentForm(forms.ModelForm):
 
 class JumpToDateForm(forms.Form):
     date = forms.DateField(widget = forms.SelectDateWidget())
+
+class DailyAnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = DailyAnnouncement
+        fields = [
+            'date',
+            'text'
+        ]
+        widgets = {
+            'date': forms.HiddenInput(),
+        }
 
 class ApptOutcomeForm(forms.ModelForm):
     class Meta:

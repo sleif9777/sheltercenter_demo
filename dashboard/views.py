@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 import datetime, time
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-from appt_calendar.models import Timeslot, Appointment
+from appt_calendar.models import Timeslot, Appointment, DailyAnnouncement
 from adopter.models import Adopter
 from appt_calendar.forms import *
 from email_mgr.email_sender import *
@@ -147,6 +147,12 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
             for appt in check_for_appts:
                 no_outcome_appts += [appt]
 
+    #retrieve the daily announcement if one exists
+    try:
+        daily_announcement = DailyAnnouncement.objects.get(date = date)
+    except:
+        daily_announcement = None
+
     #adopters should not see if more than two weeks into future
     if delta_from_today <= 13:
         visible_to_adopters = True
@@ -209,6 +215,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         "today": today,
         "no_outcome_appts": no_outcome_appts,
         'page_title': "Calendar",
+        'daily_announcement': daily_announcement,
     }
 
     return context

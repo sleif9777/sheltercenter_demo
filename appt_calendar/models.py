@@ -5,6 +5,10 @@ from .date_time_strings import *
 from adopter.models import Adopter
 from num2words import num2words
 
+class DailyAnnouncement(models.Model):
+    date = models.DateField(default = timezone.now())
+    text = models.TextField(default="", blank=True)
+
 class Appointment(models.Model):
     APPT_TYPES = [
         ("1", "Adults"),
