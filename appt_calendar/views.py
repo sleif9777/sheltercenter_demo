@@ -807,3 +807,31 @@ def add_timeslot(request, date_year, date_month, date_day):
     }
 
     return render(request, "appt_calendar/new_timeslot_form.html", context)
+
+def toggle_lock(request, appt_id, date_year, date_month, date_day):
+    appt = Appointment.objects.get(pk=appt_id)
+    appt.locked = not appt.locked
+    appt.save()
+
+    return redirect('calendar_date', date_year, date_month, date_day)
+
+def toggle_all(request, date_year, date_month, date_day, lock):
+    date = datetime.date(date_year, date_month, date_day)
+    appts = list(Appointment.objects.filter(date = date, appt_type__in = ["1", "2", "3"]))
+
+    for appt in appts:
+        appt.locked = bool(lock)
+        appt.save()
+
+    return redirect('calendar_date', date_year, date_month, date_day)
+
+def toggle_time(request, timeslot_id, date_year, date_month, date_day, lock):
+    date = datetime.date(date_year, date_month, date_day)
+    timeslot = Timeslot.objects.get(pk=timeslot_id)
+    appts = list(timeslot.appointments.filter(date = date, time = timeslot.time, appt_type__in = ["1", "2", "3"]))
+
+    for appt in appts:
+        appt.locked = bool(lock)
+        appt.save()
+
+    return redirect('calendar_date', date_year, date_month, date_day)

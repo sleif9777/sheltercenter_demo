@@ -31,6 +31,9 @@ urlpatterns = [
     path("paperwork/<int:date_year>/<int:date_month>/<int:date_day>/appt/<int:appt_id>/hw/<str:hw_status>/", views.paperwork_calendar, name="paperwork_calendar"),
     path("set_alert/<int:date_year>/<int:date_month>/<int:date_day>/", views.set_alert_date, name="set_alert_date"),
     path("set_alert_greeter/adopter/<int:adopter_id>/<int:date_year>/<int:date_month>/<int:date_day>/", views.set_alert_date_greeter, name="set_alert_date_greeter"),
+    path("toggle/<int:appt_id>/<int:date_year>/<int:date_month>/<int:date_day>/", views.toggle_lock, name="toggle_lock"),
+    path("toggle_all/<int:date_year>/<int:date_month>/<int:date_day>/<int:lock>/", views.toggle_all, name="toggle_all"),
+    path("toggle_time/<int:timeslot_id>/<int:date_year>/<int:date_month>/<int:date_day>/<int:lock>/", views.toggle_time, name="toggle_time"),
 
     #report pages
     path("reports/home/", views.daily_reports_home, name="daily_reports_home"),

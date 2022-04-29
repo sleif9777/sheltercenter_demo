@@ -42,6 +42,7 @@ class Appointment(models.Model):
     adopter_choice = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL)
     available = models.BooleanField(default = True) #is not filled
     published = models.BooleanField(default = True) #can be seen by public
+    locked = models.BooleanField(default = False) #when published = True, if locked, public can see but not interact
     dog = models.CharField(default="", max_length=200, blank=True)
     dog_fka = models.CharField(default="", max_length=200, blank=True)
     internal_notes = models.TextField(default="", blank=True)
