@@ -1,6 +1,6 @@
 from django import forms
 import datetime
-from .models import Timeslot, Appointment, DailyAnnouncement
+from .models import *
 from adopter.models import Adopter
 import demo.settings as settings
 
@@ -76,6 +76,13 @@ class DailyAnnouncementForm(forms.ModelForm):
         widgets = {
             'date': forms.HiddenInput(),
         }
+
+class CalendarAnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = CalendarAnnouncement
+        fields = [
+            'text'
+        ]
 
 class ApptOutcomeForm(forms.ModelForm):
     class Meta:

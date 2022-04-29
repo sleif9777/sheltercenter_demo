@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 import datetime, time
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-from appt_calendar.models import Timeslot, Appointment, DailyAnnouncement
+from appt_calendar.models import Timeslot, Appointment, DailyAnnouncement, CalendarAnnouncement
 from adopter.models import Adopter
 from appt_calendar.forms import *
 from email_mgr.email_sender import *
@@ -153,6 +153,12 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     except:
         daily_announcement = None
 
+    #retrieve the daily announcement if one exists
+    try:
+        calendar_announcement = CalendarAnnouncement.objects.get(pk = 1)
+    except:
+        calendar_announcement = None
+
     #adopters should not see if more than two weeks into future
     if delta_from_today <= 13:
         visible_to_adopters = True
@@ -181,17 +187,16 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     #for the timeslot they currently are in, they should only see their own appointment
     elif 'adopter' in user_groups:
         for time in timeslots_query:
+            #calculate the timeslots datetime, the current time, and the cutoff period (2 hours later)
             dt_time = datetime.datetime(time.date.year, time.date.month, time.date.day, time.time.hour, time.time.minute)
             now = datetime.datetime.now()
             cutoff = now + datetime.timedelta(hours=2)
 
-            print("dt_time", dt_time)
-            print("cutoff", cutoff)
-            print(cutoff >= dt_time)
-
+            #if past or less than two hours from now, show no appts
             if cutoff >= dt_time:
                 timeslots[time] = []
 
+            #else show appointments
             else:
                 timeslots[time] = list(time.appointments.filter(date = date, time = time.time, appt_type__in = ["1", "2", "3"]))
 
@@ -228,6 +233,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         "no_outcome_appts": no_outcome_appts,
         'page_title': "Calendar",
         'daily_announcement': daily_announcement,
+        'calendar_announcement': calendar_announcement,
     }
 
     return context

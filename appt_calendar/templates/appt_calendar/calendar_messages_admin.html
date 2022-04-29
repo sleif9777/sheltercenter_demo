@@ -1,10 +1,20 @@
-{% if daily_announcement %}
+{% if calendar_announcement %}
   <div class="info_box">
-    <p><a class="datelink" href="{% url 'edit_daily_announcement' daily_announcement.id date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E;</div> {{daily_announcement.text|safe}}</a></p>
+    <p><a class="datelink" href="{% url 'edit_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>{{calendar_announcement.text|safe}}</a></p>
   </div>
 {% else %}
   <div class="info_box">
-    <p><a class="datelink" href="{% url 'add_daily_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E;</div> Add a notification for adopters. (Display only for {{date_pretty}})</a></p>
+    <p><a class="datelink" href="{% url 'add_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>Add a notification for adopters. (Display for all dates)</a></p>
+  </div>
+{% endif %}
+
+{% if daily_announcement %}
+  <div class="info_box">
+    <p><a class="datelink" href="{% url 'edit_daily_announcement' daily_announcement.id date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>{{daily_announcement.text|safe}}</a></p>
+  </div>
+{% else %}
+  <div class="info_box">
+    <p><a class="datelink" href="{% url 'add_daily_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>Add a notification for adopters. (Display only for {{date_pretty}})</a></p>
   </div>
 {% endif %}
 
