@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 import datetime, time
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-from .models import Timeslot, Appointment
+from .models import *
 from adopter.models import Adopter
 from .forms import *
 from email_mgr.email_sender import *
@@ -133,7 +133,7 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
             confirm_etemp(adopter, appt)
 
-            if appt.date == datetime.date.today():
+            if short_notice(appt):
                 notify_adoptions_add(adopter, appt)
 
             return redirect('calendar')
@@ -271,7 +271,7 @@ def daily_reports_home(request):
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def chosen_board(request):
     today = datetime.date.today()
-    appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "6", "7"], paperwork_complete=False)]
+    appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "7", "8", "9", "10"], paperwork_complete=False)]
 
     context = {
         "today": today,
@@ -288,6 +288,16 @@ def remove_from_chosen_board(request, appt_id):
 
     appt.dog = ""
     appt.outcome = "5"
+    appt.save()
+
+    return redirect('chosen_board')
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def cb_update_status(request, appt_id, outcome):
+    appt = Appointment.objects.get(pk=appt_id)
+
+    appt.outcome = outcome
     appt.save()
 
     return redirect('chosen_board')
@@ -343,6 +353,92 @@ def delete_timeslot(request, date_year, date_month, date_day, timeslot_id):
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
+def add_daily_announcement(request, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    form = DailyAnnouncementForm(request.POST or None, initial = {'date': date})
+
+    if form.is_valid():
+        form.save()
+        return redirect('calendar_date', date.year, date.month, date.day)
+
+    else:
+        form = DailyAnnouncementForm(request.POST or None, initial = {'date': date})
+
+    context = {
+        'form': form,
+        'date': date,
+        'title': "Add Calendar Note for {0}".format(date_str(date)),
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def edit_daily_announcement(request, announcement_id, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    announcement = DailyAnnouncement.objects.get(pk = announcement_id)
+    form = DailyAnnouncementForm(request.POST or None, instance=announcement)
+
+    if form.is_valid():
+        form.save()
+        return redirect('calendar_date', date.year, date.month, date.day)
+
+    else:
+        form = DailyAnnouncementForm(request.POST or None, instance=announcement)
+
+    context = {
+        'form': form,
+        'date': date,
+        'title': "Edit Calendar Note for {0}".format(date_str(date)),
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def add_calendar_announcement(request, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    form = CalendarAnnouncementForm(request.POST or None, initial = {'date': date})
+
+    if form.is_valid():
+        form.save()
+        return redirect('calendar_date', date.year, date.month, date.day)
+
+    else:
+        form = CalendarAnnouncementForm(request.POST or None, initial = {'date': date})
+
+    context = {
+        'form': form,
+        'date': date,
+        'title': "Add Calendar Note for All Dates",
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def edit_calendar_announcement(request, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    announcement = CalendarAnnouncement.objects.get(pk = 1)
+    form = CalendarAnnouncementForm(request.POST or None, instance=announcement)
+
+    if form.is_valid():
+        form.save()
+        return redirect('calendar_date', date.year, date.month, date.day)
+
+    else:
+        form = CalendarAnnouncementForm(request.POST or None, instance=announcement)
+
+    context = {
+        'form': form,
+        'date': date,
+        'title': "Edit Calendar Note for All Dates",
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def add_appointment(request, date_year, date_month, date_day, timeslot_id):
     date = datetime.date(date_year, date_month, date_day)
     timeslot = Timeslot.objects.get(pk=timeslot_id)
@@ -365,7 +461,7 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
 
             confirm_etemp(adopter, appt)
 
-            if appt.date == datetime.date.today():
+            if short_notice(appt):
                 notify_adoptions_add(adopter, appt)
 
         return redirect('calendar_date', date.year, date.month, date.day)
@@ -391,7 +487,7 @@ def add_followup_appointment(request, adopter_id, date_year, date_month, date_da
 
     timeslot.appointments.add(appt)
 
-    return redirect('adopter_reschedule', adopter_id, appt.id, date_year, date_month, date_day, 'followup')
+    return redirect('adopter_reschedule', adopter_id, appt.id, date_year, date_month, date_day, 'edit')
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -412,7 +508,7 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
         appt = Appointment.objects.latest('id')
         timeslot.appointments.add(appt)
 
-        original_appt.outcome = "7"
+        original_appt.outcome = "8"
         original_appt.save()
 
         if appt.adopter_choice != None:
@@ -437,6 +533,17 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
     }
 
     return render(request, "appt_calendar/add_edit_appt.html", context)
+
+def short_notice(appt):
+    is_today = appt.date == datetime.date.today()
+    is_tomorrow = appt.date == datetime.date.today() + datetime.timedelta(days=1)
+    booked_after_close = datetime.datetime.now().time() > datetime.time(16,00)
+
+    if is_today or (is_tomorrow and booked_after_close):
+        return True
+
+    return False
+
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -476,7 +583,7 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
                     if original_adopter != None:
                         cancel(original_adopter, appt)
 
-                if appt.date == datetime.date.today():
+                if short_notice(appt):
                     notify_adoptions_add(appt.adopter_choice, appt)
 
                 appt.adopter_choice.has_current_appt = True
@@ -548,10 +655,10 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
 
     reset_appt(appt)
 
-    if get_groups(request.user) == {'adopter'}:
-        if appt.date == datetime.date.today():
-            notify_adoptions_cancel(appt, adopter)
+    if short_notice(appt):
+        notify_adoptions_cancel(appt, adopter)
 
+    if get_groups(request.user) == {'adopter'}:
         appt_str = appt.date_and_time_string()
 
         context = {
@@ -574,7 +681,7 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
     try:
         current_appt = [appt for appt in Appointment.objects.filter(adopter_choice=adopter.id).exclude(date__lt = datetime.date.today())][0]
     except:
-        pass
+        current_appt = None
 
     new_appt = Appointment.objects.get(pk=appt_id)
 
@@ -616,9 +723,11 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
             reschedule(adopter, new_appt)
 
-            if current_appt.date == datetime.date.today():
+            if short_notice(current_appt) and short_notice(new_appt):
+                notify_adoptions_time_change(adopter, current_appt, new_appt)
+            elif short_notice(current_appt):
                 notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
-            elif new_appt.date == datetime.date.today():
+            elif short_notice(new_appt):
                 notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
             return redirect("calendar_date", date_year, date_month, date_day)
@@ -641,12 +750,12 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                     pass
             elif 'admin' in user_groups:
 
-                try:
-                    if current_appt.date == datetime.date.today():
-                        notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
-                except:
-                    if new_appt.date == datetime.date.today():
-                        notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+                if short_notice(current_appt) and short_notice(new_appt):
+                    notify_adoptions_time_change(adopter, current_appt, new_appt)
+                elif short_notice(current_appt):
+                    notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+                elif short_notice(new_appt):
+                    notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
                 adopter.has_current_appt = True
                 adopter.save()
@@ -698,3 +807,31 @@ def add_timeslot(request, date_year, date_month, date_day):
     }
 
     return render(request, "appt_calendar/new_timeslot_form.html", context)
+
+def toggle_lock(request, appt_id, date_year, date_month, date_day):
+    appt = Appointment.objects.get(pk=appt_id)
+    appt.locked = not appt.locked
+    appt.save()
+
+    return redirect('calendar_date', date_year, date_month, date_day)
+
+def toggle_all(request, date_year, date_month, date_day, lock):
+    date = datetime.date(date_year, date_month, date_day)
+    appts = list(Appointment.objects.filter(date = date, appt_type__in = ["1", "2", "3"]))
+
+    for appt in appts:
+        appt.locked = bool(lock)
+        appt.save()
+
+    return redirect('calendar_date', date_year, date_month, date_day)
+
+def toggle_time(request, timeslot_id, date_year, date_month, date_day, lock):
+    date = datetime.date(date_year, date_month, date_day)
+    timeslot = Timeslot.objects.get(pk=timeslot_id)
+    appts = list(timeslot.appointments.filter(date = date, time = timeslot.time, appt_type__in = ["1", "2", "3"]))
+
+    for appt in appts:
+        appt.locked = bool(lock)
+        appt.save()
+
+    return redirect('calendar_date', date_year, date_month, date_day)

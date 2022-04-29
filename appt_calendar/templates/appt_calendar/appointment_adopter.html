@@ -9,10 +9,14 @@
 
     {% if appt.available == True and appt.appt_type in schedulable %}
       <tr>
-        {% if current_appt == None %}
-          <td class="appt_description left upper"><b><a href="{% url 'book_cal_appointment' appt.id date.year date.month date.day %}">CLICK TO BOOK</a></b></td>
+        {% if appt.locked %}
+          <td class="appt_description left upper"><b>&#128274;&#xFE0E; <a href="{% url 'contact_us' %}">CONTACT US TO BOOK</a></b></td>
         {% else %}
-          <td class="appt_description left upper"><b><a href="{% url 'adopter_reschedule' request.user.adopter.id appt.id date.year date.month date.day 'calendar' %}">CLICK TO RESCHEDULE</a></b></td>
+          {% if current_appt == None %}
+            <td class="appt_description left upper"><b><a href="{% url 'book_cal_appointment' appt.id date.year date.month date.day %}">CLICK TO BOOK</a></b></td>
+          {% else %}
+            <td class="appt_description left upper"><b><a href="{% url 'adopter_reschedule' request.user.adopter.id appt.id date.year date.month date.day 'calendar' %}">CLICK TO RESCHEDULE</a></b></td>
+          {% endif %}
         {% endif %}
       </tr>
 

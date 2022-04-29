@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 import datetime, time
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-from appt_calendar.models import Timeslot, Appointment
+from appt_calendar.models import Timeslot, Appointment, DailyAnnouncement, CalendarAnnouncement
 from adopter.models import Adopter
 from appt_calendar.forms import *
 from email_mgr.email_sender import *
@@ -147,6 +147,18 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
             for appt in check_for_appts:
                 no_outcome_appts += [appt]
 
+    #retrieve the daily announcement if one exists
+    try:
+        daily_announcement = DailyAnnouncement.objects.get(date = date)
+    except:
+        daily_announcement = None
+
+    #retrieve the daily announcement if one exists
+    try:
+        calendar_announcement = CalendarAnnouncement.objects.get(pk = 1)
+    except:
+        calendar_announcement = None
+
     #adopters should not see if more than two weeks into future
     if delta_from_today <= 13:
         visible_to_adopters = True
@@ -175,14 +187,25 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     #for the timeslot they currently are in, they should only see their own appointment
     elif 'adopter' in user_groups:
         for time in timeslots_query:
-            timeslots[time] = list(time.appointments.filter(date = date, time = time.time, appt_type__in = ["1", "2", "3"]))
+            #calculate the timeslots datetime, the current time, and the cutoff period (2 hours later)
+            dt_time = datetime.datetime(time.date.year, time.date.month, time.date.day, time.time.hour, time.time.minute)
+            now = datetime.datetime.now()
+            cutoff = now + datetime.timedelta(hours=2)
 
-            # if the adopter's appointment is in timeslot, only show that
-            if current_appt is not None and current_appt in timeslots[time]:
-                timeslots[time] = [current_appt]
-            # else show all open appts in scheduleable
+            #if past or less than two hours from now, show no appts
+            if cutoff >= dt_time:
+                timeslots[time] = []
+
+            #else show appointments
             else:
-                timeslots[time] = [appt for appt in timeslots[time] if appt.adopter_choice is None]
+                timeslots[time] = list(time.appointments.filter(date = date, time = time.time, appt_type__in = ["1", "2", "3"]))
+
+                # if the adopter's appointment is in timeslot, only show that
+                if current_appt is not None and current_appt in timeslots[time]:
+                    timeslots[time] = [current_appt]
+                # else show all open appts in scheduleable
+                else:
+                    timeslots[time] = [appt for appt in timeslots[time] if appt.adopter_choice is None]
 
             #delete unnecessary timeslots
             if timeslots[time] == []:
@@ -209,6 +232,8 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         "today": today,
         "no_outcome_appts": no_outcome_appts,
         'page_title': "Calendar",
+        'daily_announcement': daily_announcement,
+        'calendar_announcement': calendar_announcement,
     }
 
     return context

@@ -1,6 +1,6 @@
 from django import forms
 import datetime
-from .models import Timeslot, Appointment
+from .models import *
 from adopter.models import Adopter
 import demo.settings as settings
 
@@ -12,7 +12,7 @@ class AppointmentModelFormPrefilled(forms.ModelForm):
             'time',
             'appt_type',
             'adopter_choice',
-            'published',
+            'locked',
             'dog',
             'dog_fka',
             'internal_notes',
@@ -25,7 +25,7 @@ class AppointmentModelFormPrefilled(forms.ModelForm):
             'time': 'Time:',
             'appt_type': 'Appointment Type:',
             'adopter_choice': 'Select Adopter:',
-            'published': 'Publish to all adopters?',
+            'locked': 'Lock appointment?',
             'dog': '(For surrenders and paperwork appointments) Dog:',
             'dog_fka': '(For surrenders, if applicable) FKA:',
             'internal_notes': 'Notes:',
@@ -65,6 +65,24 @@ class BookAppointmentForm(forms.ModelForm):
 
 class JumpToDateForm(forms.Form):
     date = forms.DateField(widget = forms.SelectDateWidget())
+
+class DailyAnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = DailyAnnouncement
+        fields = [
+            'date',
+            'text'
+        ]
+        widgets = {
+            'date': forms.HiddenInput(),
+        }
+
+class CalendarAnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = CalendarAnnouncement
+        fields = [
+            'text'
+        ]
 
 class ApptOutcomeForm(forms.ModelForm):
     class Meta:

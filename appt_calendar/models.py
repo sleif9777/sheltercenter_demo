@@ -5,6 +5,13 @@ from .date_time_strings import *
 from adopter.models import Adopter
 from num2words import num2words
 
+class DailyAnnouncement(models.Model):
+    date = models.DateField(default = timezone.now())
+    text = models.TextField(default="", blank=True)
+
+class CalendarAnnouncement(models.Model):
+    text = models.TextField(default="", blank=True)
+
 class Appointment(models.Model):
     APPT_TYPES = [
         ("1", "Adults"),
@@ -22,8 +29,11 @@ class Appointment(models.Model):
         ("3", "Chosen"),
         ("4", "FTA"),
         ("5", "No Decision"),
-        ("6", "Ready To Roll"),
-        ("7", "Paperwork Scheduled")
+        ("6", "No Show"),
+        ("7", "Ready To Roll"),
+        ("8", "Paperwork Scheduled"),
+        ("9", "Chosen - needs vetting"),
+        ("10", "Chosen - needs well check")
     ]
 
     date = models.DateField(default = timezone.now())
@@ -32,11 +42,12 @@ class Appointment(models.Model):
     adopter_choice = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL)
     available = models.BooleanField(default = True) #is not filled
     published = models.BooleanField(default = True) #can be seen by public
+    locked = models.BooleanField(default = False) #when published = True, if locked, public can see but not interact
     dog = models.CharField(default="", max_length=200, blank=True)
     dog_fka = models.CharField(default="", max_length=200, blank=True)
     internal_notes = models.TextField(default="", blank=True)
     adopter_notes = models.TextField(default="", blank=True)
-    outcome = models.CharField(default="1", max_length = 1, choices=OUTCOME_TYPES)
+    outcome = models.CharField(default="1", max_length = 2, choices=OUTCOME_TYPES)
     heartworm = models.BooleanField(default=False)
     bringing_dog = models.BooleanField(default=False)
     has_cat = models.BooleanField(default=False)

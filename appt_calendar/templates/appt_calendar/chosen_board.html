@@ -16,7 +16,7 @@
         <th style="width:10%;">Outcome</th>
         <th style="width:15%;">Dog</th>
         <th style="width:15%;">Last Update Sent</th>
-        <th style="width:18%;">Ready To Roll?</th>
+        <th style="width:18%;">Update Status</th>
       </tr>
 
       {% for appt in appointments %}
@@ -50,13 +50,15 @@
             </td>
 
             <td class="chosenboard">
-              {% if appt.outcome == "3" %}
+              {% if appt|is_chosen %}
                 <div class="chosen_board_actions">
+                  <a href="{% url 'cb_update_status' appt.id 9 %}">Chosen - needs vetting</a><br>
+                  <a href="{% url 'cb_update_status' appt.id 10 %}">Chosen - needs well check</a><br>
                   <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_negative' %}">Heartworm Negative</a><br>
                   <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_positive' %}">Heartworm Positive</a>
                 </div>
-              {% elif appt.outcome == "6" %}
-                Adopters Notified<br>
+              {% elif appt.outcome == "7" %}
+                Adopter Notified<br>
                 {% if appt.heartworm == True %}
                   <div class="chosen_board_actions">
                     <a class="chosen_board_actions" href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
@@ -66,8 +68,8 @@
                     <a class="chosen_board_actions" href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
                   </div>
                 {% endif %}
-              {% elif appt.outcome == "7" %}
-                Adopters Notified<br>
+              {% elif appt.outcome == "8" %}
+                Adopter Notified<br>
                 Paperwork Scheduled
                 <div class="chosen_board_actions" style="display: inline;">
                   <a href="{% url 'mark_complete_cb' appt.id %}">(Complete)</a>

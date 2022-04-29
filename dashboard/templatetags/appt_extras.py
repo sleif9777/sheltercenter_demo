@@ -13,3 +13,10 @@ def alert_overdue(appt):
         return True
     else:
         return False
+
+@register.filter(name='is_chosen')
+def is_chosen(appt):
+    if appt.outcome in ["3", "9", "10"]:
+        return True
+
+    return False
