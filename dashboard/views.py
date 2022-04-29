@@ -181,14 +181,26 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     #for the timeslot they currently are in, they should only see their own appointment
     elif 'adopter' in user_groups:
         for time in timeslots_query:
-            timeslots[time] = list(time.appointments.filter(date = date, time = time.time, appt_type__in = ["1", "2", "3"]))
+            dt_time = datetime.datetime(time.date.year, time.date.month, time.date.day, time.time.hour, time.time.minute)
+            now = datetime.datetime.now()
+            cutoff = now + datetime.timedelta(hours=2)
 
-            # if the adopter's appointment is in timeslot, only show that
-            if current_appt is not None and current_appt in timeslots[time]:
-                timeslots[time] = [current_appt]
-            # else show all open appts in scheduleable
+            print("dt_time", dt_time)
+            print("cutoff", cutoff)
+            print(cutoff >= dt_time)
+
+            if cutoff >= dt_time:
+                timeslots[time] = []
+
             else:
-                timeslots[time] = [appt for appt in timeslots[time] if appt.adopter_choice is None]
+                timeslots[time] = list(time.appointments.filter(date = date, time = time.time, appt_type__in = ["1", "2", "3"]))
+
+                # if the adopter's appointment is in timeslot, only show that
+                if current_appt is not None and current_appt in timeslots[time]:
+                    timeslots[time] = [current_appt]
+                # else show all open appts in scheduleable
+                else:
+                    timeslots[time] = [appt for appt in timeslots[time] if appt.adopter_choice is None]
 
             #delete unnecessary timeslots
             if timeslots[time] == []:
