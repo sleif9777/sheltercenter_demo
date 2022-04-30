@@ -128,6 +128,8 @@ def create_invite_email(adopter):
     message.save()
 
 def handle_existing(existing_adopter):
+    today = datetime.date.today()
+
     #if the adopter is approved...
     if existing_adopter.status == "1":
         #...and was accepted over a year ago, send new invite
@@ -183,7 +185,7 @@ def add_from_file(file):
     system_settings.save()
 
     if errors != []:
-        upload_errors_split(errors)
+        upload_errors(errors)
 
     return redirect('outbox')
 
