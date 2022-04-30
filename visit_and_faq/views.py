@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import *
-from .models import FAQ, FAQSection
+from .models import *
 import datetime
 from django.contrib.auth.models import Group, User
 from dashboard.decorators import *
@@ -32,6 +32,14 @@ def add_faq_section(request):
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def delete_faq_section(request, sec_id):
+    sec = get_object_or_404(FAQSection, pk=sec_id)
+    sec.delete()
+
+    return redirect('faq_test')
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -128,3 +136,95 @@ def delete_visitor_instr(request, instr_id):
     instr.delete()
 
     return redirect('visitor_instructions')
+
+@authenticated_user
+@allowed_users(allowed_roles={'superuser'})
+def add_help_section(request):
+    form = HelpSectionForm(request.POST or None)
+
+    if form.is_valid():
+        form.save()
+        return redirect('help')
+    else:
+        form = HelpSectionForm(request.POST or None)
+
+    context = {
+        'form': form,
+        'title': "Add Help Section",
+        'page_title': "Add Help Section",
+    }
+
+    return render(request, "visit_and_faq/add_edit_comm.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'superuser'})
+def delete_help_section(request, sec_id):
+    sec = get_object_or_404(HelpSection, pk=sec_id)
+    sec.delete()
+
+    return redirect('help')
+
+@authenticated_user
+@allowed_users(allowed_roles={'superuser'})
+def add_helptopic(request, sec_id):
+    form = HelpTopicForm(request.POST or None)
+    section = HelpSection.objects.get(pk=sec_id)
+
+    if form.is_valid():
+        form.save()
+        section.topics.add(HelpTopic.objects.latest('id'))
+        return redirect('help')
+    else:
+        form = HelpTopicForm(request.POST or None)
+
+    context = {
+        'form': form,
+        'title': "Add Help Topic",
+        'page_title': "Add Help Topic",
+        'section': section.name
+    }
+
+    return render(request, "visit_and_faq/add_edit_comm.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'superuser'})
+def edit_helptopic(request, topic_id):
+    topic = HelpTopic.objects.get(pk=topic_id)
+    form = HelpTopicForm(request.POST or None, instance=topic)
+    if form.is_valid():
+        form.save()
+        return redirect('help')
+    else:
+        form = HelpTopicForm(request.POST or None, instance=topic)
+
+    context = {
+        'form': form,
+        'title': "Edit Help Topic",
+        'page_title': "Edit Help Topic",
+
+    }
+
+    return render(request, "visit_and_faq/add_edit_comm.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'superuser'})
+def delete_helptopic(request, topic_id):
+    topic = get_object_or_404(HelpTopic, pk=topic_id)
+    topic.delete()
+
+    return redirect('help')
+
+@authenticated_user
+@allowed_users(allowed_roles={'superuser'})
+def help(request):
+    help_dict = {}
+
+    for sec in HelpSection.objects.all().iterator():
+        help_dict[sec] = [t for t in sec.topics.iterator()]
+
+    context = {
+        'help_dict': help_dict,
+        'page_title': "Help",
+    }
+
+    return render(request, "visit_and_faq/help_content.html", context)

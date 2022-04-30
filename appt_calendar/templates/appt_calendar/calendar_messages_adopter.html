@@ -79,7 +79,7 @@
     You do not currently have an appointment. Click any open slot below to schedule your appointment.
   {% endif %}
 
-  {% if calendar_announcement %}
+  {% if calendar_announcement != "" %}
     <div class="info_box">
       <p class="datelink"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>{{calendar_announcement.text|safe}}</p>
     </div>

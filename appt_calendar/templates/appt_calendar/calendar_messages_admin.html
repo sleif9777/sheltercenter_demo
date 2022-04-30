@@ -1,13 +1,11 @@
-{% if calendar_announcement %}
-  <div class="info_box">
-    <p class="datelink"><b>DISPLAYS FOR ALL DATES</b></p>
+<div class="info_box">
+  <p class="datelink"><b>DISPLAYS FOR ALL DATES</b></p>
+  {% if calendar_announcement|length > 0 %}
     <p><a class="datelink" href="{% url 'edit_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>{{calendar_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
-  </div>
-{% else %}
-  <div class="info_box">
+  {% else %}
     <p><a class="datelink" href="{% url 'add_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>Add a notification for adopters. &#9998;&#xFE0E;</a></p>
-  </div>
-{% endif %}
+  {% endif %}
+</div>
 
 <div class="info_box">
   <p class="datelink"><b>DISPLAYS ONLY FOR {{date_pretty.upper}}</b></p>
