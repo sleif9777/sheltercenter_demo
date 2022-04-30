@@ -130,13 +130,11 @@ def add_from_file(file):
     decoded_file = file.read().decode('utf-8').splitlines()
     reader = list(csv.reader(decoded_file))
     errors = []
-    print('start')
 
     for row in reader[1:]:
         try:
             existing_user = User.objects.get(username = "sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com")
             existing_adopter = Adopter.objects.get(user=existing_user)
-            print('exist', existing_adopter.adopter_full_name)
 
             #if blocked, add to error report
             if existing_adopter.status == "2":
@@ -147,7 +145,6 @@ def add_from_file(file):
                 handle_existing(existing_adopter)
         except:
             adopter = create_adopter_from_row(row)
-            print(adopter, type(adopter))
 
             if adopter.status == "1":
                 #create Application
@@ -224,7 +221,6 @@ def add(request):
     #try adding from file
     try:
         if request.method == 'POST' and request.FILES['app_file']:
-            print('file')
             file = request.FILES['app_file']
             add_from_file(file)
     #except no file, add manually without application
