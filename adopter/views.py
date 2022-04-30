@@ -156,8 +156,11 @@ def add_from_file(file):
 
     for row in reader[1:]:
         try:
-            existing_user = User.objects.get(username = "sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com")
-            existing_adopter = Adopter.objects.get(user=existing_user)
+            try:
+                existing_user = User.objects.get(username = "sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com")
+                existing_adopter = Adopter.objects.get(user=existing_user)
+            except:
+                existing_adopter = Adopter.objects.filter(adopter_email="sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com").latest('id')
 
             #update to newest application
             existing_adopter.application_id = row[0]
@@ -165,7 +168,7 @@ def add_from_file(file):
 
             #if blocked, add to error report
             if existing_adopter.status == "2":
-                errors += [existing_adopter.adopter_full_name()]
+                errors += [existing_adopter]
 
             #else handle message
             else:
@@ -179,7 +182,7 @@ def add_from_file(file):
                 create_new_user_from_adopter(adopter)
                 create_invite_email(adopter)
             else:
-                errors += [adopter.adopter_full_name()]
+                errors += [adopter]
 
     system_settings.last_adopter_upload = datetime.date.today()
     system_settings.save()

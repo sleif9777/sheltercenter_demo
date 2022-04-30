@@ -19,7 +19,7 @@ from appt_calendar import views #as cal_views
 from adopter import views #as adopt_views
 from dashboard import views as views
 from . import settings
-import adopter
+import adopter, visit_and_faq
 from django.conf.urls.static import static
 
 #import scheduleconfig.views
@@ -45,8 +45,7 @@ urlpatterns = [
     path('logout/', views.logout_user, name="logout"),
     path('test/', views.test_harness, name="test_harness"),
     path('login/staff/', views.staff_login, name="staff_login"),
-    path('help/', views.help, name="help"),
-    path('help/edit/', views.edit_help, name="edit_help"),
+    path('help/', visit_and_faq.views.help, name="help"),
     path('tinymce/', include('tinymce.urls')),
 ]
 

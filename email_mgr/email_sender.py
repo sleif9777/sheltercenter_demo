@@ -134,8 +134,8 @@ def upload_errors(errors):
     """
 
     for e in errors:
-        text += e + "\n"
-        html += "{0}<br>".format(e)
+        text += "{0} - {1}\n".format(e.adopter_full_name(), "Blocked" if e.status == "2" else "Pending")
+        html += "{0} - {1}<br>".format(e.adopter_full_name(), "Blocked" if e.status == "2" else "Pending")
 
     html += """\
       </body>
