@@ -215,7 +215,6 @@ def delete_helptopic(request, topic_id):
     return redirect('help')
 
 @authenticated_user
-@allowed_users(allowed_roles={'superuser'})
 def help(request):
     help_dict = {}
 
