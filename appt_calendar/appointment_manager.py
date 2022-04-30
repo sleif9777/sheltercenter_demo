@@ -35,4 +35,8 @@ def delist_appt(appt):
     if appt.adopter_choice != None:
         appt.visits_to_date = copy(appt.adopter_choice.visits_to_date)
 
+    if appt.adopter_choice.acknowledged_faq == False:
+        appt.adopter_choice.acknowledged_faq = True
+        appt.adopter_choice.save()
+
     appt.save()

@@ -24,16 +24,25 @@ def create_adopter_from_row(row):
 
     #clean and set name
     if row[13].islower() or row[13].isupper():
-        row[13] = clean_name(row[13])
+        row[13] = row[13].title()
 
     if row[14].islower() or row[14].isupper():
-        row[14] = clean_name(row[14])
+        row[14] = row[14].title()
 
     new_adopter.adopter_first_name = row[13]
     new_adopter.adopter_last_name = row[14]
 
-    #interested line on application
+    #add application detais
+    new_adopter.city = row[18].title()
+    new_adopter.state = row[19]
+    new_adopter.housing_type = row[33]
+    new_adopter.housing = row[35]
+    new_adopter.activity_level = row[32]
+    new_adopter.has_fence = True if row[45] == "Yes" else False
     new_adopter.app_interest = row[11]
+
+    #application id
+    new_adopter.application_id = row[0]
 
     #if in sandbox assign shell email
     if str(os.environ.get('SANDBOX')) == "1":
@@ -81,12 +90,24 @@ def create_new_user_from_adopter(adopter):
 
     adopter_group.user_set.add(new_user)
 
-def create_new_outbox_message(adopter):
-    return 4
+#can be refactored for genericity
+def create_invite_inactive_email(adopter):
+    message = PendingMessage()
 
-def send_from_outbox(subject, template, adopter, appt):
-    return 4
+    message.subject = "Are you ready to schedule your appointment?"
+    message.email = adopter.adopter_email
 
+    template = EmailTemplate.objects.get(template_name="Are you ready to schedule your appointment?")
+
+    html = replacer(template.text, adopter, None)
+    text = strip_tags(html, adopter, None)
+
+    message.html = html
+    message.text = text
+
+    message.save()
+
+#can be refactored for genericity
 def create_invite_email(adopter):
     message = PendingMessage()
 
@@ -115,8 +136,8 @@ def handle_existing(existing_adopter):
             existing_adopter.save()
             create_invite_email(existing_adopter)
         #...and was accepted under a year ago, but more than two days ago, send push
-        elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)]:
-            duplicate_app(existing_adopter)
+        elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)] and not (adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host):
+                duplicate_app(existing_adopter)
 
     #if moved from pending to approved, send invite
     elif existing_adopter.status == "3" and row[4] == "Accepted":
@@ -130,13 +151,15 @@ def add_from_file(file):
     decoded_file = file.read().decode('utf-8').splitlines()
     reader = list(csv.reader(decoded_file))
     errors = []
-    print('start')
 
     for row in reader[1:]:
         try:
             existing_user = User.objects.get(username = "sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com")
             existing_adopter = Adopter.objects.get(user=existing_user)
-            print('exist', existing_adopter.adopter_full_name)
+
+            #update to newest application
+            existing_adopter.application_id = row[0]
+            existing_adopter.save()
 
             #if blocked, add to error report
             if existing_adopter.status == "2":
@@ -145,9 +168,9 @@ def add_from_file(file):
             #else handle message
             else:
                 handle_existing(existing_adopter)
-        except:
+        except Exception as f:
+            print('f', f)
             adopter = create_adopter_from_row(row)
-            print(adopter, type(adopter))
 
             if adopter.status == "1":
                 #create Application
@@ -224,11 +247,11 @@ def add(request):
     #try adding from file
     try:
         if request.method == 'POST' and request.FILES['app_file']:
-            print('file')
             file = request.FILES['app_file']
             add_from_file(file)
     #except no file, add manually without application
-    except:
+    except Exception as g:
+        print('g', g)
         if form.is_valid():
             form.save()
             adopter = Adopter.objects.latest('id')
@@ -307,10 +330,10 @@ def manage_filter(request, filter, char):
 @allowed_users(allowed_roles={'admin'})
 def send_to_inactive(request):
     add_date = datetime.date.today() - datetime.timedelta(days = 5)
-    adopters = Adopter.objects.filter(accept_date=add_date, acknowledged_faq=False)
+    adopters = Adopter.objects.filter(accept_date=add_date, acknowledged_faq=False, status="1")
 
     for adopter in adopters:
-        inactive_invite(adopter)
+        create_invite_inactive_email(adopter)
 
     return redirect('adopter_manage')
 
