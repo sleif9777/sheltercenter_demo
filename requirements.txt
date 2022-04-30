@@ -6,3 +6,4 @@ django-storages
 boto3
 num2words
 django-tinymce
+reportlab

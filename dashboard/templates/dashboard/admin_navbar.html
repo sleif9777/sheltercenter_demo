@@ -1,3 +1,5 @@
+{% load auth_extras %}
+
 <li><a href="{% url 'calendar' %}">Calendar</a></li>
 <li><a href="{% url 'weekly_schedule' %}">Weekly Template</a></li>
 <li><a href="{% url 'add_adopter' %}">Add Adopters</a></li>
@@ -5,6 +7,9 @@
 <li><a href="{% url 'daily_reports_home' %}">Daily Reports</a></li>
 <li><a href="{% url 'chosen_board' %}">Chosen Board</a></li>
 <li><a href="{% url 'email_home' %}">Email Templates</a></li>
+{% if s|outbox_count > 0 %}
+  <li><a href="{% url 'outbox' %}">Outbox ({{s|outbox_count}})</a></li>
+{% endif %}
 <li><a href="{% url 'faq' %}">FAQ</a></li>
 <li><a href="{% url 'visitor_instructions' %}">Visit Instructions</a></li>
 <!-- <li><a href="#">Help</a></li> -->

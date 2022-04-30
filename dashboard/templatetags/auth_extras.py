@@ -1,5 +1,6 @@
 from django import template
 from django.contrib.auth.models import Group
+from email_mgr.models import PendingMessage
 
 register = template.Library()
 
@@ -9,5 +10,9 @@ def has_group(user, group_name):
 
     if group in user.groups.all():
         return True
-    else:
-        return False
+
+    return False
+
+@register.filter(name='outbox_count')
+def outbox_count(s):
+    return len(list(PendingMessage.objects.all()))

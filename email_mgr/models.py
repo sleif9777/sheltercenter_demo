@@ -15,3 +15,18 @@ class EmailTemplate(models.Model):
 
     class Meta:
         ordering = ('template_name',)
+
+class PendingMessage(models.Model):
+    subject = models.CharField(default="", max_length=300)
+    text = models.TextField(default="", blank=True)
+    html = models.TextField(default="", blank=True)
+    email = models.EmailField(default="")
+
+    def __repr__(self):
+        return "{0} [{1}]".format(self.subject, self.email)
+
+    def __str__(self):
+        return "{0} [{1}]".format(self.subject, self.email)
+
+    class Meta:
+        ordering = ('id',)
