@@ -26,7 +26,7 @@
 </div>
 
 {% for sec, topics in help_dict.items %}
-  <div class="faq_section_div" id="s{{sec.id}}">
+  <div class="faq_section_div" style="border-top: 1px solid #1E6C80;" id="s{{sec.id}}">
     <table style = "padding: 0; width:100%; margin: 0;">
       <tr>
         {% if request.user|has_group:"superuser" %}
@@ -38,7 +38,7 @@
       </tr>
       {% for t in topics %}
         <tr>
-          <td colspan="2" style="border: none">
+          <td colspan="2" style="border: none;">
             <h3 class="faq_question" id="t{{t.id}}">
               {{t.header}}
               {% if request.user|has_group:"superuser" %}
@@ -49,7 +49,7 @@
           </td>
         </tr>
         <tr>
-          <td colspan="2" style="border: none; padding-bottom: 10px;">{{t.text|safe|linebreaks}}</td>
+          <td colspan="2" style="border-top: none; border-bottom: 1px dashed #1E6C80; padding-bottom: 10px;">{{t.text|safe|linebreaks}}</td>
         </tr>
       {% endfor %}
     </table>
