@@ -522,6 +522,9 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
 
             adoption_paperwork(adopter, appt, original_appt.heartworm)
 
+            if short_notice(appt):
+                notify_adoptions_paperwork(appt.adopter_choice, appt)
+
         return redirect('chosen_board')
     else:
         form = AppointmentModelFormPrefilled(initial={'date': date, 'time': timeslot.time, 'appt_type': paperwork_appt_type, 'adopter_choice': original_appt.adopter_choice, 'available': False, 'published': False, 'dog': original_appt.dog})
@@ -544,7 +547,6 @@ def short_notice(appt):
         return True
 
     return False
-
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -751,12 +753,14 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                     pass
             elif 'admin' in user_groups:
 
-                if short_notice(current_appt) and short_notice(new_appt):
-                    notify_adoptions_time_change(adopter, current_appt, new_appt)
-                elif short_notice(current_appt):
-                    notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
-                elif short_notice(new_appt):
-                    notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+                try:
+                    if short_notice(current_appt) and short_notice(new_appt):
+                        notify_adoptions_time_change(adopter, current_appt, new_appt)
+                    elif short_notice(current_appt):
+                        notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+                except:
+                    if short_notice(new_appt):
+                        notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
                 adopter.has_current_appt = True
                 adopter.save()

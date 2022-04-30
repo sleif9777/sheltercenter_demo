@@ -17,7 +17,14 @@ class Adopter(models.Model):
     adopter_last_name = models.CharField(default="", max_length=200, blank=True) #""
     adopter_email = models.EmailField(default="", blank=True) #""
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    application_id = models.CharField(default="", max_length=20, blank=True)
     secondary_email = models.EmailField(default="", blank=True)
+    city = models.CharField(default="", max_length=200)
+    state = models.CharField(default="", max_length=2)
+    housing_type = models.CharField(default="", max_length=200)
+    housing = models.CharField(default="", max_length=200)
+    activity_level = models.CharField(default="", max_length=200)
+    has_fence = models.BooleanField(default = False)
     acknowledged_faq = models.BooleanField(default = False)
     out_of_state = models.BooleanField(default = False)
     lives_with_parents = models.BooleanField(default = False)

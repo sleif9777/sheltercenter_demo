@@ -295,39 +295,12 @@ def notify_adoptions_cancel(appt, adopter):
     text = "Did not reschedule"
     html = text
 
-#     text = """\
-# {0} has cancelled their {1} appointment today.
-# """.format(adopter.adopter_full_name(), time_str(appt.time))
-#
-#     html = """\
-#     <html>
-#       <body>
-#         <p>{0} has cancelled their {1} appointment.</p>
-#       </body>
-#     </html>
-#     """.format(adopter.adopter_full_name(), time_str(appt.time))
-
     send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
 
 def notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt):
     subject = "CANCEL: {0} {1}".format(adopter.adopter_full_name().upper(), time_str(current_appt.time))
     text = "Rescheduled for {0} at {1}".format(date_str(new_appt.date), time_str(new_appt.time))
     html = text
-
-#     subject = "UPDATE FOR TODAY'S SCHEDULE"
-#
-#     text = """\
-# {0} has rescheduled their {1} appointment today for {2} at {3}.\n\n
-# The greeter and admin calendars have been updated with this change.
-# """.format(adopter.adopter_full_name(), time_str(current_appt.time), date_str(new_appt.date), time_str(new_appt.time))
-#
-#     html = """\
-#     <html>
-#       <body>
-#         <p>{0} has rescheduled their {1} appointment today for {2} at {3}.<br>The greeter and admin calendars have been updated with this change.</p>
-#       </body>
-#     </html>
-#     """.format(adopter.adopter_full_name(), time_str(current_appt.time), date_str(new_appt.date), time_str(new_appt.time))
 
     send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
 
@@ -344,44 +317,28 @@ def notify_adoptions_time_change(adopter, current_appt, new_appt):
 
     send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
 
+def notify_adoptions_paperwork(adopter, appt):
+    if appt.heartworm:
+        fta = " FTA"
+    else:
+        fta = ""
+
+    subject = "PAPERWORK{0}: {1} {2}".format(fta, appt.dog.upper(), time_str(appt.time))
+    text = ""
+    html = text
+
+    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+
 def notify_adoptions_reschedule_add(adopter, current_appt, new_appt):
     subject = "ADD: {0} {1}".format(adopter.adopter_full_name().upper(), time_str(current_appt.time))
-    text = "Rescheduled for {0} at {1}".format(is_today_or_tomorrow(new_appt), time_str(new_appt.time))
+    text = "Rescheduled for {0} at {1} | https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}".format(is_today_or_tomorrow(new_appt), time_str(new_appt.time))
     html = text
-#     subject = "UPDATE FOR TODAY'S SCHEDULE"
-#
-#     text = """\
-# {0} has rescheduled their appointment for {1} today.\n
-# The greeter and admin calendars have been updated with this change. Please print their application from Shelterluv as soon as possible.
-# """.format(adopter.adopter_full_name(), time_str(new_appt.time))
-#
-#     html = """\
-#     <html>
-#       <body>
-#         <p>{0} has rescheduled their appointment for {1} today.<br>The greeter and admin calendars have been updated with this change. Please print their application from Shelterluv as soon as possible.</p>
-#       </body>
-#     </html>
-#     """.format(adopter.adopter_full_name(), time_str(new_appt.time))
 
     send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
 
 def notify_adoptions_add(adopter, appt):
     subject = "ADD: {0} {1}".format(adopter.adopter_full_name().upper(), time_str(appt.time))
-    text = ""
+    text = "https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}"
     html = text
-#     subject = "UPDATE FOR TODAY'S SCHEDULE"
-#
-#     text = """\
-# {0} has booked their appointment for {1} today.\n
-# The greeter and admin calendars have been updated with this change. Please print their application from Shelterluv as soon as possible.
-# """.format(adopter.adopter_full_name(), time_str(appt.time))
-#
-#     html = """\
-#     <html>
-#       <body>
-#         <p>{0} has booked their appointment for {1} today.<br>The greeter and admin calendars have been updated with this change. Please print their application from Shelterluv as soon as possible.</p>
-#       </body>
-#     </html>
-#     """.format(adopter.adopter_full_name(), time_str(appt.time))
 
     send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")

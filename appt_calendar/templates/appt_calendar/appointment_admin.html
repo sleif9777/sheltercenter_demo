@@ -42,6 +42,7 @@
           <a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a>
 
           {% if appt.adopter_choice %}
+            <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter_choice.application_id}}" target="_blank">&#128438;&#xFE0E;</a>
             <a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">&#128100;&#xFE0E;<sub style="font-size: 8pt;">&#128683;&#xFE0E;</sub></a>
           {% endif %}
           <a href="{% url 'delete_cal_appointment' appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
@@ -83,8 +84,41 @@
 
   {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest and appt.appt_type in schedulable %}
 
-    <!-- if the appt has an adopter attached, there should be options for contact and other actions -->
+    <!-- if the appt has an adopter attached, there should be application info above notes and options for contact and other actions below notes -->
     {% if appt.appt_type in schedulable and appt.available == False %}
+      <table class="appt_subblock appt_info_block">
+
+        <tr class="info_block_subheader">
+          <th>About {{appt.adopter_choice.adopter_first_name}}</th>
+          <th class="right"></th>
+        </tr>
+
+        <tr>
+          <td>
+            Coming from {{appt.adopter_choice.city}}, {{appt.adopter_choice.state}}
+          </td>
+
+          <td class="right">
+            {{appt.adopter_choice.housing_type}} ({{appt.adopter_choice.housing}})
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            {{appt.adopter_choice.activity_level}} Activity Household
+          </td>
+
+          <td class="right">
+            {% if appt.adopter_choice.has_fence %}
+              Has Fence
+            {% else %}
+              No Fence
+            {% endif %}
+          </td>
+        </tr>
+
+      </table>
+
       <table class="appt_subblock appt_info_block">
     <!-- if not, it is an open appointment, paperwork, or surrender and could have notes at most -->
     {% else %}
@@ -208,7 +242,7 @@
 
       <tr>
         <td><a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">Cancel Adopter</a><br></td>
-        <td class="right"></td>
+        <td class="right"><a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter_choice.application_id}}" target="_blank">Print Application</a></td>
       </tr>
 
     </table>

@@ -46,7 +46,11 @@
           <table class="appt_subblock appt_info_block appt_end_block">
 
             <tr class="info_block_subheader">
-              <th><a href="{% url 'contact_adopter' 100 2021 1 1 source %}">Contact {{adopter.adopter_first_name}} &#9993;&#xFE0E;</a><br><a href="{% url 'greeter_reschedule' adopter.id 100 today.year today.month today.day 'edit' %}">Schedule {{adopter.adopter_first_name}}</a></th>
+              <th>
+                <a href="{% url 'contact_adopter' 100 2021 1 1 source %}">Contact {{adopter.adopter_first_name}} &#9993;&#xFE0E;</a><br>
+                <a href="{% url 'greeter_reschedule' adopter.id 100 today.year today.month today.day 'edit' %}">Schedule {{adopter.adopter_first_name}}</a><br>
+                <a href="https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}" target="_blank">Print Application</a>
+              </th>
             </tr>
           </table>
 
