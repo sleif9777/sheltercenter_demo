@@ -7,4 +7,6 @@ urlpatterns = [
     path("add/", views.add_email_template, name="add_email_template"),
     path("edit/<int:template_id>/", views.edit_template, name="edit_email_template"),
     path("edit/signature/", db_views.edit_signature, name="edit_sig"),
+    path("outbox/", views.outbox, name="outbox"),
+    path("outbox/send/", views.send_outbox, name="send_outbox")
 ]

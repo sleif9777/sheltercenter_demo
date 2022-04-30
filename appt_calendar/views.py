@@ -10,6 +10,7 @@ from .appointment_manager import *
 from dashboard.views import generate_calendar as gc
 from django.contrib.auth.models import Group, User
 from dashboard.decorators import *
+from reportlab.pdfgen import canvas
 
 system_settings = SystemSettings.objects.get(pk=1)
 
@@ -808,6 +809,8 @@ def add_timeslot(request, date_year, date_month, date_day):
 
     return render(request, "appt_calendar/new_timeslot_form.html", context)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def toggle_lock(request, appt_id, date_year, date_month, date_day):
     appt = Appointment.objects.get(pk=appt_id)
     appt.locked = not appt.locked
@@ -815,6 +818,8 @@ def toggle_lock(request, appt_id, date_year, date_month, date_day):
 
     return redirect('calendar_date', date_year, date_month, date_day)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def toggle_all(request, date_year, date_month, date_day, lock):
     date = datetime.date(date_year, date_month, date_day)
     appts = list(Appointment.objects.filter(date = date, appt_type__in = ["1", "2", "3"]))
@@ -825,6 +830,8 @@ def toggle_all(request, date_year, date_month, date_day, lock):
 
     return redirect('calendar_date', date_year, date_month, date_day)
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def toggle_time(request, timeslot_id, date_year, date_month, date_day, lock):
     date = datetime.date(date_year, date_month, date_day)
     timeslot = Timeslot.objects.get(pk=timeslot_id)
@@ -833,5 +840,17 @@ def toggle_time(request, timeslot_id, date_year, date_month, date_day, lock):
     for appt in appts:
         appt.locked = bool(lock)
         appt.save()
+
+    return redirect('calendar_date', date_year, date_month, date_day)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def gen_applications(request, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    filename = 'Applications{0}{1}{2}.pdf'.format(date_year, date_month, date_day)
+    pdf = canvas.Canvas(filename)
+
+    pdf.setTitle('Applications for {0}'.format(date_str(date)))
+    pdf.save()
 
     return redirect('calendar_date', date_year, date_month, date_day)

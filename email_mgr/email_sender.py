@@ -125,12 +125,12 @@ def alert_date_set(adopter, date):
 def upload_errors(errors):
     subject = "Some Adopters Were Not Uploaded"
 
-    text = "The following applicants have a status of Blocked and were not sent an invitation:"
+    text = "The following applicants have a status of Blocked or Pending and were not sent an invitation:"
 
     html = """\
     <html>
       <body>
-      <p>The following applicants have a status of Blocked and were not sent an invitation:</p>
+      <p>The following applicants have a status of Blocked or Pending and were not sent an invitation:</p>
     """
 
     for e in errors:

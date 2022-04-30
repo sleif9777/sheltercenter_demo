@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 import datetime, time
 from .forms import *
+from .models import *
 from io import StringIO
 from html.parser import HTMLParser
 from .email_sender import *
@@ -26,16 +27,60 @@ def strip_tags(html):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def email_home(request):
-
     e_templates = EmailTemplate.objects.all()
 
     context = {
         'e_templates': e_templates,
-        'role': 'admin',
-        'page_title': "Email Templates",
     }
 
     return render(request, "email_mgr/email_home.html/", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def outbox(request):
+    pending_messages = PendingMessage.objects.all()
+
+    context = {
+        'pending_messages': pending_messages,
+    }
+
+    return render(request, "email_mgr/outbox.html/", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def send_outbox(request):
+    pending_messages = list(PendingMessage.objects.all())
+
+    sender_email = os.environ.get('EMAIL_ADDRESS')
+    password = os.environ.get('EMAIL_PASSWORD')
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP("smtp.office365.com", 587) as server:
+        server.ehlo()
+        server.starttls(context=context)
+        server.ehlo()
+        server.login(sender_email, password)
+
+        for pm in pending_messages:
+            receiver_email = pm.email
+            message = MIMEMultipart("alternative")
+            message["From"] = sender_email
+            message["To"] = receiver_email
+            message['Reply-To'] = "adoptions@savinggracenc.com"
+            message['Subject'] = pm.subject
+
+            part1 = MIMEText(pm.text, "plain")
+            part2 = MIMEText(pm.html, "html")
+            message.attach(part1)
+            message.attach(part2)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+            pm.delete()
+
+    context = {
+        'pending_messages': pending_messages,
+    }
+
+    return redirect('add_adopter')
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
