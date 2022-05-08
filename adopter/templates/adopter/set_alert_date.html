@@ -3,9 +3,9 @@
 
 {% block content %}
   <div class="main textpage">
-    <h1 class="page_header no_actions">Set Reminder for {{adopter.adopter_full_name}}</h1>
+    <h1 class="page_header no_actions">Set Reminder for {{adopter.full_name}}</h1>
 
-    <p class="standalone">Select the date {{adopter.adopter_first_name}} would like to come in. They will be notified when we publish appointments for that date.</p>
+    <p class="standalone">Select the date {{adopter.f_name}} would like to come in. They will be notified when we publish appointments for that date.</p>
     <br>
     <form class="" action="" method="post">
       {% csrf_token %}

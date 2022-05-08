@@ -13,19 +13,24 @@ class Adopter(models.Model):
         ("3", "Pending")
     ]
 
-    adopter_first_name = models.CharField(default="", max_length=200, blank=True) #need to refactor and add verbose
-    adopter_last_name = models.CharField(default="", max_length=200, blank=True) #""
-    adopter_email = models.EmailField(default="", blank=True) #""
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    application_id = models.CharField(default="", max_length=20, blank=True)
+    #personal attributes
+    f_name = models.CharField(default="", max_length=200, blank=True) #need to refactor and add verbose
+    l_name = models.CharField(default="", max_length=200, blank=True) #""
+    primary_email = models.EmailField(default="", blank=True) #""
     secondary_email = models.EmailField(default="", blank=True)
     city = models.CharField(default="", max_length=200)
     state = models.CharField(default="", max_length=2)
+
+    #application attributes
+    application_id = models.CharField(default="", max_length=20, blank=True)
+    accept_date = models.DateField(default=datetime.date.today(), blank=True)
     housing_type = models.CharField(default="", max_length=200)
     housing = models.CharField(default="", max_length=200)
     activity_level = models.CharField(default="", max_length=200)
     has_fence = models.BooleanField(default = False)
-    acknowledged_faq = models.BooleanField(default = False)
+    app_interest = models.CharField(default="", max_length=2000, blank=True)
+
+    #adoption-related attributes
     out_of_state = models.BooleanField(default = False)
     lives_with_parents = models.BooleanField(default = False)
     adopting_host = models.BooleanField(default = False)
@@ -33,13 +38,15 @@ class Adopter(models.Model):
     friend_of_foster = models.BooleanField(default = False)
     carryover_shelterluv = models.BooleanField(default = False)
     chosen_dog = models.CharField(default="", max_length=200, blank=True)
+
+    #database-related attributes
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    auth_code = models.IntegerField(default = 100000, validators = [MinValueValidator(100000), MaxValueValidator(999999)])
+    acknowledged_faq = models.BooleanField(default = False)
     has_current_appt = models.BooleanField(default = False)
     alert_date = models.DateField(default=datetime.date(datetime.date.today().year,1,1), blank=True)
     visits_to_date = models.IntegerField(default=0)
-    app_interest = models.CharField(default="", max_length=2000, blank=True)
-    accept_date = models.DateField(default=datetime.date.today(), blank=True)
     status = models.CharField(default="1", max_length=1, choices=STATUSES)
-    auth_code = models.IntegerField(default = 100000, validators = [MinValueValidator(100000), MaxValueValidator(999999)])
 
     def number_of_visits(self):
         ordinal = num2words(self.visits_to_date + 1, to='ordinal')
@@ -55,22 +62,21 @@ class Adopter(models.Model):
 
         return ordinal
 
-    def adopter_full_name(self):
-        return self.adopter_first_name + " " + self.adopter_last_name
+    def full_name(self):
+        return self.f_name + " " + self.l_name
 
     def adopter_list_name(self):
-        return self.adopter_last_name + ", " + self.adopter_first_name
+        return self.l_name + ", " + self.f_name
 
-    def adopter_email_prefix(self):
-        split_email = self.adopter_email.split("@")
-
-        return split_email[0]
+    def chg_appt_status(self):
+        self.has_current_appt = not self.has_current_appt
+        self.save()
 
     def __repr__(self):
-        return self.adopter_full_name()
+        return self.full_name()
 
     def __str__(self):
-        return self.adopter_full_name()
+        return self.full_name()
 
     class Meta:
-        ordering = ('adopter_first_name', 'adopter_last_name')
+        ordering = ('f_name', 'l_name')

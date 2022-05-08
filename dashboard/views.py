@@ -101,7 +101,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     user_groups = set(group.name for group in user.groups.all().iterator())
 
     try:
-        current_appt = Appointment.objects.filter(adopter_choice=user.adopter).latest('id')
+        current_appt = Appointment.objects.filter(adopter=user.adopter).latest('id')
         current_appt_str = current_appt.date_and_time_string()
     except:
         current_appt = None
@@ -177,7 +177,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         elif load == 'reschedule':
             for time in timeslots_query:
                 timeslots[time] = list(time.appointments.filter(date = date, time = time.time, appt_type__in = ["1", "2", "3"]))
-                timeslots[time] = [appt for appt in timeslots[time] if appt.adopter_choice is None]
+                timeslots[time] = [appt for appt in timeslots[time] if appt.adopter is None]
 
                 #delete unnecessary timeslots
                 if timeslots[time] == []:
@@ -205,7 +205,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
                     timeslots[time] = [current_appt]
                 # else show all open appts in scheduleable
                 else:
-                    timeslots[time] = [appt for appt in timeslots[time] if appt.adopter_choice is None]
+                    timeslots[time] = [appt for appt in timeslots[time] if appt.adopter is None]
 
             #delete unnecessary timeslots
             if timeslots[time] == []:

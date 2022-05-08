@@ -84,7 +84,7 @@ def greeter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
         old_appt = Appointment.objects.create()
 
     adopter = Adopter.objects.get(pk=adopter_id)
-    full_name = adopter.adopter_full_name()
+    full_name = adopter.full_name()
 
     if 'source' == 'edit':
         action = "Scheduling"
@@ -111,7 +111,7 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
     appt = Appointment.objects.get(pk=appt_id)
     adopter = request.user.adopter
 
-    if appt.available == False and appt.adopter_choice != adopter:
+    if appt.available == False and appt.adopter != adopter:
 
         context = {
             'adopter': adopter,
@@ -129,8 +129,8 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
             adopter.has_current_appt = True
             adopter.save()
 
-            appt.adopter_choice = adopter
-            delist_appt(appt)
+            appt.adopter = adopter
+            appt.delist()
 
             confirm_etemp(adopter, appt)
 
@@ -140,7 +140,7 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
             return redirect('calendar')
         else:
 
-            form = BookAppointmentForm(request.POST or None, instance=appt, initial={'adopter_choice': adopter})
+            form = BookAppointmentForm(request.POST or None, instance=appt, initial={'adopter': adopter})
 
         context = {
             'form': form,
@@ -199,7 +199,7 @@ def calendar_date(request, date_year, date_month, date_day):
     if 'adopter' in user_groups:
         # context['role'] = 'adopter'
         try:
-            current_appt = Appointment.objects.filter(adopter_choice=request.user.adopter).latest('id') #.exclude(date__lt = today)
+            current_appt = Appointment.objects.filter(adopter=request.user.adopter).latest('id') #.exclude(date__lt = today)
             current_appt_str = current_appt.date_and_time_string()
         except:
             current_appt = None
@@ -330,7 +330,7 @@ def send_followup(request, appt_id, date_year, date_month, date_day, host):
     appt.comm_followup = True
     appt.save()
 
-    adopter = appt.adopter_choice
+    adopter = appt.adopter
 
     if host == 0:
         follow_up(adopter)
@@ -450,15 +450,15 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
         timeslot.appointments.add(appt)
 
         if int(appt.appt_type) > 3:
-            delist_appt(appt)
+            appt.delist()
 
-        if appt.adopter_choice != None:
+        if appt.adopter != None:
 
-            adopter = appt.adopter_choice
+            adopter = appt.adopter
             adopter.has_current_appt = True
             adopter.save()
 
-            delist_appt(appt)
+            appt.delist()
 
             confirm_etemp(adopter, appt)
 
@@ -502,7 +502,7 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
     else:
         paperwork_appt_type = "5"
 
-    form = AppointmentModelFormPrefilled(request.POST or None, initial = {'date': date, 'time': timeslot.time, 'appt_type': paperwork_appt_type, 'adopter_choice': original_appt.adopter_choice, 'available': False, 'published': False, 'dog': original_appt.dog})
+    form = AppointmentModelFormPrefilled(request.POST or None, initial = {'date': date, 'time': timeslot.time, 'appt_type': paperwork_appt_type, 'adopter': original_appt.adopter, 'available': False, 'published': False, 'dog': original_appt.dog})
 
     if form.is_valid():
         form.save()
@@ -512,22 +512,22 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
         original_appt.outcome = "8"
         original_appt.save()
 
-        if appt.adopter_choice != None:
+        if appt.adopter != None:
 
-            adopter = appt.adopter_choice
+            adopter = appt.adopter
             adopter.has_current_appt = False
             adopter.save()
 
-            delist_appt(appt)
+            appt.delist()
 
             adoption_paperwork(adopter, appt, original_appt.heartworm)
 
             if short_notice(appt):
-                notify_adoptions_paperwork(appt.adopter_choice, appt)
+                notify_adoptions_paperwork(appt.adopter, appt)
 
         return redirect('chosen_board')
     else:
-        form = AppointmentModelFormPrefilled(initial={'date': date, 'time': timeslot.time, 'appt_type': paperwork_appt_type, 'adopter_choice': original_appt.adopter_choice, 'available': False, 'published': False, 'dog': original_appt.dog})
+        form = AppointmentModelFormPrefilled(initial={'date': date, 'time': timeslot.time, 'appt_type': paperwork_appt_type, 'adopter': original_appt.adopter, 'available': False, 'published': False, 'dog': original_appt.dog})
 
     context = {
         'form': form,
@@ -558,15 +558,15 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
 
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
-    original_adopter = appt.adopter_choice
+    original_adopter = appt.adopter
 
     if user_groups == {'adopter'}:
         form = BookAppointmentForm(request.POST or None, instance=appt)
     else:
         form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
 
-    if appt.adopter_choice != None:
-        current_email = appt.adopter_choice.adopter_email
+    if appt.adopter != None:
+        current_email = appt.adopter.primary_email
     else:
         current_email = None
 
@@ -574,25 +574,25 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
         form.save()
 
         try:
-            post_save_email = appt.adopter_choice.adopter_email
+            post_save_email = appt.adopter.primary_email
         except:
             post_save_email = None
-        if appt.adopter_choice != None:
+        if appt.adopter != None:
             if appt.appt_type in ["1", "2", "3"]:
 
-                if original_adopter != appt.adopter_choice:
-                    confirm_etemp(appt.adopter_choice, appt)
+                if original_adopter != appt.adopter:
+                    confirm_etemp(appt.adopter, appt)
 
                     if original_adopter != None:
                         cancel(original_adopter, appt)
 
                 if short_notice(appt):
-                    notify_adoptions_add(appt.adopter_choice, appt)
+                    notify_adoptions_add(appt.adopter, appt)
 
-                appt.adopter_choice.has_current_appt = True
-                appt.adopter_choice.save()
+                appt.adopter.has_current_appt = True
+                appt.adopter.save()
 
-            delist_appt(appt)
+            appt.delist()
 
         return redirect('calendar_date', date.year, date.month, date.day)
     else:
@@ -604,7 +604,7 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
     context = {
         'form': form,
         'title': "Edit Appointment",
-        'adopter': appt.adopter_choice,
+        'adopter': appt.adopter,
     }
 
     return render(request, "appt_calendar/add_edit_appt.html", context)
@@ -619,7 +619,7 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
     if form.is_valid():
         form.save()
 
-        adopter = appt.adopter_choice
+        adopter = appt.adopter
 
         adopter.has_current_appt = False
 
@@ -649,14 +649,14 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
 def remove_adopter(request, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
-    adopter = appt.adopter_choice
+    adopter = appt.adopter
 
     cancel(adopter, appt)
 
     adopter.has_current_appt = False
     adopter.save()
 
-    reset_appt(appt)
+    appt.reset()
 
     if short_notice(appt):
         notify_adoptions_cancel(appt, adopter)
@@ -678,17 +678,17 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
 def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date_day, source):
     adopter = Adopter.objects.get(pk=adopter_id)
     date = datetime.date(date_year, date_month, date_day)
-    appt_set = Appointment.objects.filter(adopter_choice=adopter.id).exclude(date__lt = datetime.date.today())
+    appt_set = Appointment.objects.filter(adopter=adopter.id).exclude(date__lt = datetime.date.today())
     user_groups = get_groups(request.user)
 
     try:
-        current_appt = [appt for appt in Appointment.objects.filter(adopter_choice=adopter.id).exclude(date__lt = datetime.date.today())][0]
+        current_appt = [appt for appt in Appointment.objects.filter(adopter=adopter.id).exclude(date__lt = datetime.date.today())][0]
     except:
         current_appt = None
 
     new_appt = Appointment.objects.get(pk=appt_id)
 
-    if new_appt.available == False and new_appt.adopter_choice != adopter:
+    if new_appt.available == False and new_appt.adopter != adopter:
         context = {
             'adopter': adopter,
             'appt': Appointment.objects.get(pk=appt_id),
@@ -712,17 +712,17 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
             pass
 
         if user_groups == {"adopter"} or ("admin" in user_groups and source == "calendar"):
-            reset_appt(current_appt)
+            current_appt.reset()
             current_appt.save()
 
-        new_appt.adopter_choice = adopter
+        new_appt.adopter = adopter
         adopter.has_current_appt = True
 
         adopter.save()
         new_appt.save()
 
         if user_groups == {"adopter"}:
-            delist_appt(new_appt)
+            new_appt.delist()
 
             reschedule(adopter, new_appt)
 
@@ -745,7 +745,7 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                     adopter.has_current_appt = True
                     adopter.save()
 
-                    delist_appt(new_appt)
+                    new_appt.delist()
 
                     greeter_reschedule_email(adopter, new_appt)
                     return redirect("calendar_date", today.year, today.month, today.day)
@@ -765,7 +765,7 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                 adopter.has_current_appt = True
                 adopter.save()
 
-                delist_appt(new_appt)
+                new_appt.delist()
 
                 if source == "edit":
                     confirm_etemp(adopter, new_appt)

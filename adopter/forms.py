@@ -7,9 +7,9 @@ class AdopterForm(forms.ModelForm):
     class Meta:
         model = Adopter
         fields = [
-            'adopter_first_name',
-            'adopter_last_name',
-            'adopter_email',
+            'f_name',
+            'l_name',
+            'primary_email',
             'status',
             'carryover_shelterluv',
             'out_of_state',
@@ -21,9 +21,9 @@ class AdopterForm(forms.ModelForm):
             'app_interest'
         ]
         labels = {
-            'adopter_first_name': 'First Name:',
-            'adopter_last_name': 'Last Name:',
-            'adopter_email': 'Email:',
+            'f_name': 'First Name:',
+            'l_name': 'Last Name:',
+            'primary_email': 'Email:',
             'status': 'Status:',
             'carryover_shelterluv': 'Adopter was in Shelterluv before ShelterCenter went live',
             'out_of_state': 'Adopter from outside NC, SC, or VA',

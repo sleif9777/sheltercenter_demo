@@ -29,7 +29,7 @@
       </tr>
       {% for timeslot, appointments in timeslots.items %}
         {% for appt in appointments %}
-          {% if appt.appt_type in schedulable and appt.adopter_choice %}
+          {% if appt.appt_type in schedulable and appt.adopter %}
             <tr class="appt_row">
               <td style="">{{appt.time_string}}</td>
               <td>
@@ -46,10 +46,10 @@
               </td>
               <td>{{appt.adopter_notes}}</td>
               <td>{{appt.internal_notes}}</td>
-              <td>{{appt.adopter_choice.app_interest}}</td>
+              <td>{{appt.adopter.app_interest}}</td>
               <td>
-                {% if appt.adopter_choice.visits_to_date > 1 %}
-                  {{appt.adopter_choice.number_of_visits}}
+                {% if appt.adopter.visits_to_date > 1 %}
+                  {{appt.adopter.number_of_visits}}
                 {% endif %}
               </td>
             </tr>

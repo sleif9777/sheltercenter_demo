@@ -2,7 +2,7 @@
 
   <!-- header grid, has a bottom border unless it is the only section -->
   <!-- it will be the only section when the appointment is not booked and has no notes -->
-  {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest and appt.appt_type in schedulable %}
+  {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest and appt.appt_type in schedulable %}
     <table class="appt_info_block" id="appt_header_block">
   {% else %}
     <table class="appt_info_block appt_end_block" id="appt_header_block">
@@ -42,7 +42,7 @@
         {% if appt.visits_to_date > 1 %}
           <b>{{appt.number_of_visits}}</b>
         {% endif %}
-        {% if appt.adopter_choice.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}
+        {% if appt.adopter.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}
           <b>Must bring a parent!</b>
         {% endif %}
       </td>
@@ -58,7 +58,7 @@
   </table>
 
 
-  {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest and appt.appt_type in schedulable %}
+  {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest and appt.appt_type in schedulable %}
 
     <!-- if the appt has an adopter attached, there should be options for contact and other actions -->
     {% if appt.appt_type in schedulable and appt.available == False %}
@@ -82,15 +82,15 @@
 
       {% if appt.adopter_notes %}
       <tr>
-        <td class="left"><b>From {{appt.adopter_choice.adopter_first_name}}:</b></td>
+        <td class="left"><b>From {{appt.adopter.f_name}}:</b></td>
         <td class="left">{{appt.adopter_notes|linebreaks}}</td>
       </tr>
       {% endif %}
 
-      {% if appt.adopter_choice.app_interest and appt.appt_type in schedulable %}
+      {% if appt.adopter.app_interest and appt.appt_type in schedulable %}
       <tr>
         <td class="left"><b>From Shelterluv:</b></td>
-        <td class="left">{{appt.adopter_choice.app_interest|linebreaks}}</td>
+        <td class="left">{{appt.adopter.app_interest|linebreaks}}</td>
       </tr>
       {% endif %}
 
@@ -121,7 +121,7 @@
           {% endif %}
         </td>
 
-        <td class="right"><a href="{% url 'greeter_reschedule' appt.adopter_choice.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a></td>
+        <td class="right"><a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a></td>
       </tr>
 
       <tr>
