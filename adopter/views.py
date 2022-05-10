@@ -192,8 +192,6 @@ def add_from_file(file):
 
     return redirect('outbox')
 
-@authenticated_user
-@allowed_users(allowed_roles={'admin'})
 def add_from_form(adopter):
     #for testing purposes, do not put into prod
     if str(os.environ.get('SANDBOX')) == "1":
