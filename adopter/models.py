@@ -3,6 +3,7 @@ import datetime
 from num2words import num2words
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
+from wishlist.models import Dog
 
 # Create your models here.
 
@@ -29,6 +30,7 @@ class Adopter(models.Model):
     activity_level = models.CharField(default="", max_length=200)
     has_fence = models.BooleanField(default = False)
     app_interest = models.CharField(default="", max_length=2000, blank=True)
+    wishlist = models.ManyToManyField(Dog, null=True)
 
     #adoption-related attributes
     out_of_state = models.BooleanField(default = False)

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import Adopter
 from appt_calendar.models import Appointment
 from .forms import *
@@ -192,8 +192,6 @@ def add_from_file(file):
 
     return redirect('outbox')
 
-@authenticated_user
-@allowed_users(allowed_roles={'admin'})
 def add_from_form(adopter):
     #for testing purposes, do not put into prod
     if str(os.environ.get('SANDBOX')) == "1":
@@ -214,33 +212,33 @@ def add_from_form(adopter):
     adopter.save()
 
     if adopter.status == "1":
-        create_new_user_from_adopter(adopter)
-
-        if adopter.out_of_state == True:
-            invite_oos_etemp(adopter)
-        elif adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host:
-            shellappt = Appointment()
-            shellappt.time = datetime.datetime.now()
-            shellappt.adopter = adopter
-            shellappt.dog = adopter.chosen_dog
-            shellappt.outcome = "3"
-
-            shellappt.save()
-
-            adopter.has_current_appt = False
-            adopter.acknowledged_faq = True
-            adopter.save()
-
-            if adopter.adopting_foster:
-                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
-            elif adopter.friend_of_foster:
-                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
+        try:
+            create_new_user_from_adopter(adopter)
+            if adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host:
+                shellappt = create_shell_appt(adopter)
+                print(shellappt.id)
+                return shellappt
             else:
-                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
-        elif adopter.carryover_shelterluv:
-            carryover_temp(adopter)
-        else:
-            invite(adopter)
+                return None
+        except Exception as h:
+            print('h', h)
+            pass
+
+def create_shell_appt(adopter):
+    shellappt = Appointment()
+    shellappt.time = datetime.datetime.now()
+    shellappt.adopter = adopter
+    shellappt.dog = adopter.chosen_dog
+    shellappt.outcome = "3"
+
+    shellappt.save()
+
+    adopter.has_current_appt = False
+    adopter.acknowledged_faq = True
+    adopter.save()
+
+    print('done!', shellappt.id)
+    return shellappt
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})
@@ -260,7 +258,23 @@ def add(request):
         if form.is_valid():
             form.save()
             adopter = Adopter.objects.latest('id')
-            add_from_form(adopter)
+            shellappt = add_from_form(adopter)
+
+            if adopter.adopting_foster:
+                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
+            elif adopter.friend_of_foster:
+                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
+            elif adopter.adopting_host:
+                print('host')
+                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
+            elif adopter.out_of_state == True:
+                invite_oos_etemp(adopter)
+            elif adopter.carryover_shelterluv:
+                carryover_temp(adopter)
+            else:
+                print('invite')
+                invite(adopter)
+
 
     form = AdopterForm()
 
@@ -518,6 +532,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     elif source == 'add_form_friend_of_foster':
         template = EmailTemplate.objects.get(template_name="Add Adopter (Friend of Foster)")
     elif source == 'add_form_adopting_host':
+        print('fffff')
         template = EmailTemplate.objects.get(template_name="Add Adopter (Host Weekend)")
 
     try:
@@ -568,6 +583,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
             return redirect('edit_adopter', adopter.id)
 
         elif 'add_form' in source:
+            print('eeeee')
             return redirect('add_adopter')
 
     context = {
