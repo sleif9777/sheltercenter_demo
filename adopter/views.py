@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import Adopter
 from appt_calendar.models import Appointment
 from .forms import *
@@ -29,8 +29,8 @@ def create_adopter_from_row(row):
     if row[14].islower() or row[14].isupper():
         row[14] = row[14].title()
 
-    new_adopter.adopter_first_name = row[13]
-    new_adopter.adopter_last_name = row[14]
+    new_adopter.f_name = row[13]
+    new_adopter.l_name = row[14]
 
     #add application detais
     new_adopter.city = row[18].title()
@@ -46,10 +46,10 @@ def create_adopter_from_row(row):
 
     #if in sandbox assign shell email
     if str(os.environ.get('SANDBOX')) == "1":
-        new_adopter.adopter_email = "sheltercenterdev+" + new_adopter.adopter_first_name.replace(" ", "").lower() + new_adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
+        new_adopter.primary_email = "sheltercenterdev+" + new_adopter.f_name.replace(" ", "").lower() + new_adopter.l_name.replace(" ", "").lower() + "@gmail.com"
     #else use real email
     else:
-        new_adopter.adopter_email = row[28].lower()
+        new_adopter.primary_email = row[28].lower()
         new_adopter.secondary_email = row[29].lower()
 
     #set lives with parents attribute
@@ -82,7 +82,7 @@ def create_new_user_from_adopter(adopter):
     adopter_group = Group.objects.get(name='adopter')
 
     #initiate user object
-    new_user = User.objects.create_user(username=adopter.adopter_email.lower(), email=adopter.adopter_email, password=str(adopter.auth_code))
+    new_user = User.objects.create_user(username=adopter.primary_email.lower(), email=adopter.primary_email, password=str(adopter.auth_code))
 
     #assign to adopter and save
     adopter.user = new_user
@@ -95,7 +95,7 @@ def create_invite_inactive_email(adopter):
     message = PendingMessage()
 
     message.subject = "Are you ready to schedule your appointment?"
-    message.email = adopter.adopter_email
+    message.email = adopter.primary_email
 
     template = EmailTemplate.objects.get(template_name="Are you ready to schedule your appointment?")
 
@@ -111,8 +111,8 @@ def create_invite_inactive_email(adopter):
 def create_invite_email(adopter):
     message = PendingMessage()
 
-    message.subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
-    message.email = adopter.adopter_email
+    message.subject = "Your adoption request has been reviewed: " + adopter.full_name().upper()
+    message.email = adopter.primary_email
 
     if adopter.out_of_state == True:
         template = EmailTemplate.objects.get(template_name="Add Adopter (outside NC, VA, SC)")
@@ -160,7 +160,7 @@ def add_from_file(file):
                 existing_user = User.objects.get(username = "sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com")
                 existing_adopter = Adopter.objects.get(user=existing_user)
             except:
-                existing_adopter = Adopter.objects.filter(adopter_email="sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com").latest('id')
+                existing_adopter = Adopter.objects.filter(primary_email="sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com").latest('id')
 
             #update to newest application
             existing_adopter.application_id = row[0]
@@ -195,10 +195,10 @@ def add_from_file(file):
 def add_from_form(adopter):
     #for testing purposes, do not put into prod
     if str(os.environ.get('SANDBOX')) == "1":
-        adopter.adopter_email = "sheltercenterdev+" + adopter.adopter_first_name.replace(" ", "").lower() + adopter.adopter_last_name.replace(" ", "").lower() + "@gmail.com"
+        adopter.primary_email = "sheltercenterdev+" + adopter.f_name.replace(" ", "").lower() + adopter.l_name.replace(" ", "").lower() + "@gmail.com"
     #else use real email
     else:
-        adopter.adopter_email = row[28].lower()
+        adopter.primary_email = row[28].lower()
         adopter.secondary_email = row[29].lower()
 
     #set an auth code that isn't divisible by 100
@@ -212,33 +212,33 @@ def add_from_form(adopter):
     adopter.save()
 
     if adopter.status == "1":
-        create_new_user_from_adopter(adopter)
-
-        if adopter.out_of_state == True:
-            invite_oos_etemp(adopter)
-        elif adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host:
-            shellappt = Appointment()
-            shellappt.time = datetime.datetime.now()
-            shellappt.adopter_choice = adopter
-            shellappt.dog = adopter.chosen_dog
-            shellappt.outcome = "3"
-
-            shellappt.save()
-
-            adopter.has_current_appt = False
-            adopter.acknowledged_faq = True
-            adopter.save()
-
-            if adopter.adopting_foster:
-                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
-            elif adopter.friend_of_foster:
-                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
+        try:
+            create_new_user_from_adopter(adopter)
+            if adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host:
+                shellappt = create_shell_appt(adopter)
+                print(shellappt.id)
+                return shellappt
             else:
-                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
-        elif adopter.carryover_shelterluv:
-            carryover_temp(adopter)
-        else:
-            invite(adopter)
+                return None
+        except Exception as h:
+            print('h', h)
+            pass
+
+def create_shell_appt(adopter):
+    shellappt = Appointment()
+    shellappt.time = datetime.datetime.now()
+    shellappt.adopter = adopter
+    shellappt.dog = adopter.chosen_dog
+    shellappt.outcome = "3"
+
+    shellappt.save()
+
+    adopter.has_current_appt = False
+    adopter.acknowledged_faq = True
+    adopter.save()
+
+    print('done!', shellappt.id)
+    return shellappt
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})
@@ -258,7 +258,23 @@ def add(request):
         if form.is_valid():
             form.save()
             adopter = Adopter.objects.latest('id')
-            add_from_form(adopter)
+            shellappt = add_from_form(adopter)
+
+            if adopter.adopting_foster:
+                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
+            elif adopter.friend_of_foster:
+                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
+            elif adopter.adopting_host:
+                print('host')
+                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
+            elif adopter.out_of_state == True:
+                invite_oos_etemp(adopter)
+            elif adopter.carryover_shelterluv:
+                carryover_temp(adopter)
+            else:
+                print('invite')
+                invite(adopter)
+
 
     form = AdopterForm()
 
@@ -305,14 +321,14 @@ def manage(request):
 @allowed_users(allowed_roles={'admin'})
 def manage_filter(request, filter, char):
     if filter == 'fname':
-        adopters = Adopter.objects.filter(adopter_first_name__startswith=char)
+        adopters = Adopter.objects.filter(f_name__startswith=char)
         lname_fname = False
     elif filter == 'lname':
-        adopters = Adopter.objects.filter(adopter_last_name__startswith=char).order_by('adopter_last_name')
+        adopters = Adopter.objects.filter(l_name__startswith=char).order_by('l_name')
         lname_fname = True
     elif filter == "email":
         char = char.lower()
-        adopters = Adopter.objects.filter(adopter_email__startswith=char)
+        adopters = Adopter.objects.filter(primary_email__startswith=char)
         lname_fname = False
 
     alphabet = [chr(x) for x in range(65, 91)]
@@ -380,7 +396,7 @@ def edit_adopter(request, adopter_id):
     adopter_curr_status = adopter.status[:]
 
     try:
-        current_appt = Appointment.objects.filter(adopter_choice=adopter).latest('id')
+        current_appt = Appointment.objects.filter(adopter=adopter).latest('id')
         current_appt_str = current_appt.date_and_time_string()
         date = current_appt.date
     except:
@@ -490,7 +506,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         appt = None
 
     if 'mgmt' not in source:
-        adopter = appt.adopter_choice
+        adopter = appt.adopter
     else:
         adopter_id = source.split('_')[1]
         adopter = Adopter.objects.get(pk=adopter_id)
@@ -516,6 +532,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     elif source == 'add_form_friend_of_foster':
         template = EmailTemplate.objects.get(template_name="Add Adopter (Friend of Foster)")
     elif source == 'add_form_adopting_host':
+        print('fffff')
         template = EmailTemplate.objects.get(template_name="Add Adopter (Host Weekend)")
 
     try:
@@ -566,12 +583,13 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
             return redirect('edit_adopter', adopter.id)
 
         elif 'add_form' in source:
+            print('eeeee')
             return redirect('add_adopter')
 
     context = {
         'form': form,
         'appt': appt,
-        'page_title': "Contact {0}".format(adopter.adopter_full_name()),
+        'page_title': "Contact {0}".format(adopter.full_name()),
     }
 
     return render(request, "adopter/contactadopter.html", context)
@@ -591,8 +609,8 @@ def home(request):
 
     context = {
         'adopter': adopter,
-        'full_name': full_name(adopter),
-        'first_name': adopter.adopter_first_name,
+        'full_name': adopter.full_name(),
+        'first_name': adopter.f_name,
         'role': 'adopter',
         'faq_dict': faq_dict,
         'page_title': "Home",
@@ -606,9 +624,6 @@ def home(request):
     today = datetime.date.today()
 
     return redirect("calendar_date", today.year, today.month, today.day)
-
-def full_name(adopter_obj):
-    return adopter_obj.adopter_first_name + " " + adopter_obj.adopter_last_name
 
 @authenticated_user
 @allowed_users(allowed_roles={'adopter'})

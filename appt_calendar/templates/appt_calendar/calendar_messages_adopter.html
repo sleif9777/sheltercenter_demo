@@ -1,5 +1,5 @@
 <div class="adopter_messages">
-  <p class="greeting"><b>Hello, {{request.user.adopter.adopter_first_name}}!</b></p><br>
+  <p class="greeting"><b>Hello, {{request.user.adopter.f_name}}!</b></p><br>
 
   {% if request.user.adopter.has_current_appt %}
     Your appointment is currently set for {{current_appt_str}}.<br>

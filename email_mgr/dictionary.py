@@ -14,7 +14,7 @@ def replacer(html, adopter, appt):
     try:
         adp_replacements = {
             '*ADP_AUTH*': str(adopter.auth_code),
-            '*ADP_FNAME*': adopter.adopter_first_name,
+            '*ADP_FNAME*': adopter.f_name,
             '*ADP_DOG*': adopter.chosen_dog,
         }
 

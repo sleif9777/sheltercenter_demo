@@ -4,7 +4,7 @@ from copy import copy
 def reset_appt(appt):
     # clears all information out of an appointment and republishes it for booking
 
-    appt.adopter_choice = None
+    appt.adopter = None
     appt.available = True
     appt.published = True
     appt.outcome = "1"
@@ -22,8 +22,8 @@ def reset_appt(appt):
     appt.comm_limited_other = False
     appt.comm_limited_small_puppies = False
     appt.visits_to_date = 0
-    last_update_sent = None
-    paperwork_complete = False
+    appt.last_update_sent = None
+    appt.paperwork_complete = False
     appt.save()
 
 def delist_appt(appt):
@@ -32,11 +32,11 @@ def delist_appt(appt):
     appt.available = False
     appt.published = False
 
-    if appt.adopter_choice != None:
-        appt.visits_to_date = copy(appt.adopter_choice.visits_to_date)
+    if appt.adopter != None:
+        appt.visits_to_date = copy(appt.adopter.visits_to_date)
 
-    if appt.adopter_choice.acknowledged_faq == False:
-        appt.adopter_choice.acknowledged_faq = True
-        appt.adopter_choice.save()
+    if appt.adopter.acknowledged_faq == False:
+        appt.adopter.acknowledged_faq = True
+        appt.adopter.save()
 
     appt.save()

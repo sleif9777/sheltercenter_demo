@@ -38,7 +38,7 @@
             <a class="standalone" href="{% url 'edit_adopter' adopter.id %}">
               <span style="font-size: 14pt;">
               {% if lname_fname %}
-                {{adopter.adopter_last_name}}, {{adopter.adopter_first_name}}
+                {{adopter.l_name}}, {{adopter.f_name}}
               {% else %}
                 {{adopter}}
               {% endif %}
@@ -48,12 +48,12 @@
                 &#x231B;&#xFE0E;
               {% endif %}
               </span><br>
-              <span style="font-size: 8pt;">{{adopter.adopter_email}}</span>
+              <span style="font-size: 8pt;">{{adopter.primary_email}}</span>
             </a>
 
           </li>
           <ul style="padding-left: 10%; list-style-type: '&#10551;';">
-            {% if adopter.status != "2" and adopter.status != "3" %}
+            {% if adopter.status == "1" %}
               <li><a class="standalone" href="{% url 'resend_invite' adopter.id %}">Resend Invitation</a></li>
               <li><a class="standalone" href="{% url 'set_alert_mgr' adopter.id %}">Set Reminder</a></li>
             {% endif %}

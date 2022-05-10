@@ -26,7 +26,7 @@
             <td>{{appt.date}}</td>
             <td>{{appt.time}}</td>
             <td>
-              {{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}
+              {{appt.adopter.f_name}} {{appt.adopter.l_name}}
               <div class="chosen_board_actions" style="display: inline;">
                 <a href="{% url 'clear_from_cb' appt.id %}">(Clear)</a>
               </div>

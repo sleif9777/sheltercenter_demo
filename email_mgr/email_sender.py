@@ -88,7 +88,7 @@ def clean_time_and_date(time, date):
     return time, date
 
 def scrub_and_send(subject, template, adopter, appt):
-    email = adopter.adopter_email
+    email = adopter.primary_email
     html = replacer(template.text, adopter, appt)
 
     text = strip_tags(html, adopter, appt)
@@ -97,8 +97,8 @@ def scrub_and_send(subject, template, adopter, appt):
 
 def alert_date_set(adopter, date):
     subject = "We'll Be In Touch Soon!"
-    name = adopter.adopter_first_name
-    email = adopter.adopter_email
+    name = adopter.f_name
+    email = adopter.primary_email
 
     date_string = date_str(date)
 
@@ -134,8 +134,8 @@ def upload_errors(errors):
     """
 
     for e in errors:
-        text += "{0} - {1}\n".format(e.adopter_full_name(), "Blocked" if e.status == "2" else "Pending")
-        html += "{0} - {1}<br>".format(e.adopter_full_name(), "Blocked" if e.status == "2" else "Pending")
+        text += "{0} - {1}\n".format(e.full_name(), "Blocked" if e.status == "2" else "Pending")
+        html += "{0} - {1}<br>".format(e.full_name(), "Blocked" if e.status == "2" else "Pending")
 
     html += """\
       </body>
@@ -146,8 +146,8 @@ def upload_errors(errors):
 
 def dates_are_open(adopter, date):
     subject = "Let's Book Your Saving Grace Adoption Appointment!"
-    name = adopter.adopter_first_name
-    email = adopter.adopter_email
+    name = adopter.f_name
+    email = adopter.primary_email
 
     plain_url = 'http://sheltercenter.dog/' + str(date.day) + '/'
     url = '<a href="http://sheltercenter.dog/">Click here to schedule your appointment.</a>'
@@ -180,26 +180,26 @@ def dates_are_open(adopter, date):
 
 def new_contact_adopter_msg(adopter, message):
     subject = "New message from the Saving Grace adoptions team"
-    name = adopter.adopter_first_name
-    email = adopter.adopter_email
+    name = adopter.f_name
+    email = adopter.primary_email
 
     text = strip_tags(message, adopter, None)
 
     send_email(text, message, "default", subject, email)
 
 def new_contact_us_msg(adopter, message):
-    subject = "New message from " + adopter.adopter_full_name()
-    reply_to = adopter.adopter_email
+    subject = "New message from " + adopter.full_name()
+    reply_to = adopter.primary_email
     email = "sheltercenterdev@gmail.com"
 
     text = """\
-    Adopter: """ + adopter.adopter_full_name() + """\n
+    Adopter: """ + adopter.full_name() + """\n
     \n""" + message
 
     html = """\
     <html>
       <body>
-        <h2>New Message from """ + adopter.adopter_full_name() + """</h2>
+        <h2>New Message from """ + adopter.full_name() + """</h2>
         <p><b>Message:</b> """ + message + """</p>
       </body>
     </html>
@@ -208,16 +208,16 @@ def new_contact_us_msg(adopter, message):
     send_email(text, html, reply_to, subject, email)
 
 def confirm_etemp(adopter, appt):
-    subject = "Your appointment has been confirmed: " + adopter.adopter_full_name().upper()
+    subject = "Your appointment has been confirmed: " + adopter.full_name().upper()
     template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
 
     scrub_and_send(subject, template, adopter, appt)
 
 def adoption_paperwork(adopter, appt, hw_status):
     if hw_status == False:
-        subject = "Your final adoption appointment has been confirmed: " + adopter.adopter_full_name().upper()
+        subject = "Your final adoption appointment has been confirmed: " + adopter.full_name().upper()
     else:
-        subject = "Your FTA appointment has been confirmed: " + adopter.adopter_full_name().upper()
+        subject = "Your FTA appointment has been confirmed: " + adopter.full_name().upper()
 
     template = EmailTemplate.objects.get(template_name="Paperwork Appointment")
 
@@ -230,37 +230,37 @@ def cancel(adopter, appt):
     scrub_and_send(subject, template, adopter, appt)
 
 def reschedule(adopter, appt):
-    subject = "Your appointment has been rescheduled: " + adopter.adopter_full_name().upper()
+    subject = "Your appointment has been rescheduled: " + adopter.full_name().upper()
     template = EmailTemplate.objects.get(template_name="Appointment Rescheduled")
 
     scrub_and_send(subject, template, adopter, appt)
 
 def greeter_reschedule_email(adopter, appt):
-    subject = "Your follow-up appointment has been scheduled: " + adopter.adopter_full_name().upper()
+    subject = "Your follow-up appointment has been scheduled: " + adopter.full_name().upper()
     template = EmailTemplate.objects.get(template_name="Greeter Reschedule")
 
     scrub_and_send(subject, template, adopter, appt)
 
 def duplicate_app(adopter):
-    subject = "We already have you in our database: " + adopter.adopter_full_name().upper()
+    subject = "We already have you in our database: " + adopter.full_name().upper()
     template = EmailTemplate.objects.get(template_name="Duplicate Application")
 
     scrub_and_send(subject, template, adopter, None)
 
 def follow_up(adopter):
-    subject = "Thank you for visiting: " + adopter.adopter_full_name().upper()
+    subject = "Thank you for visiting: " + adopter.full_name().upper()
     template = EmailTemplate.objects.get(template_name="Follow-Up (No Host Weekend Information)")
 
     scrub_and_send(subject, template, adopter, None)
 
 def follow_up_w_host(adopter):
-    subject = "Thank you for visiting: " + adopter.adopter_full_name().upper()
+    subject = "Thank you for visiting: " + adopter.full_name().upper()
     template = EmailTemplate.objects.get(template_name="Follow-Up (Host Weekend Information)")
 
     scrub_and_send(subject, template, adopter, None)
 
 def invite(adopter):
-    subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
+    subject = "Your adoption request has been reviewed: " + adopter.full_name().upper()
     template = EmailTemplate.objects.get(template_name="Add Adopter (inside NC, VA, SC)")
 
     scrub_and_send(subject, template, adopter, None)
@@ -272,13 +272,13 @@ def inactive_invite(adopter):
     scrub_and_send(subject, template, adopter, None)
 
 def invite_oos_etemp(adopter):
-    subject = "Your adoption request has been reviewed: " + adopter.adopter_full_name().upper()
+    subject = "Your adoption request has been reviewed: " + adopter.full_name().upper()
     template = EmailTemplate.objects.get(template_name="Add Adopter (outside NC, VA, SC)")
 
     scrub_and_send(subject, template, adopter, None)
 
 def carryover_temp(adopter):
-    subject = "Saving Grace Scheduling Update: " + adopter.adopter_full_name().upper()
+    subject = "Saving Grace Scheduling Update: " + adopter.full_name().upper()
     template = EmailTemplate.objects.get(template_name="Invitation to ShelterCenter (Already in Shelterluv)")
 
     scrub_and_send(subject, template, adopter, None)
@@ -291,14 +291,14 @@ def chosen(adopter, appt):
 
 def notify_adoptions_cancel(appt, adopter):
     # subject = "UPDATE FOR TODAY'S SCHEDULE"
-    subject = "CANCEL: {0} {1}".format(adopter.adopter_full_name().upper(), time_str(appt.time))
+    subject = "CANCEL: {0} {1}".format(adopter.full_name().upper(), time_str(appt.time))
     text = "Did not reschedule"
     html = text
 
     send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
 
 def notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt):
-    subject = "CANCEL: {0} {1}".format(adopter.adopter_full_name().upper(), time_str(current_appt.time))
+    subject = "CANCEL: {0} {1}".format(adopter.full_name().upper(), time_str(current_appt.time))
     text = "Rescheduled for {0} at {1}".format(date_str(new_appt.date), time_str(new_appt.time))
     html = text
 
@@ -311,7 +311,7 @@ def is_today_or_tomorrow(appt):
     return "tomorrow"
 
 def notify_adoptions_time_change(adopter, current_appt, new_appt):
-    subject = "MOVED: {0} NOW AT {1}".format(adopter.adopter_full_name().upper(), time_str(new_appt.time))
+    subject = "MOVED: {0} NOW AT {1}".format(adopter.full_name().upper(), time_str(new_appt.time))
     text = "Moved from {0}".format(time_str(current_appt.time))
     html = text
 
@@ -330,14 +330,14 @@ def notify_adoptions_paperwork(adopter, appt):
     send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
 
 def notify_adoptions_reschedule_add(adopter, current_appt, new_appt):
-    subject = "ADD: {0} {1}".format(adopter.adopter_full_name().upper(), time_str(current_appt.time))
+    subject = "ADD: {0} {1}".format(adopter.full_name().upper(), time_str(current_appt.time))
     text = "Rescheduled for {0} at {1} | https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}".format(is_today_or_tomorrow(new_appt), time_str(new_appt.time))
     html = text
 
     send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
 
 def notify_adoptions_add(adopter, appt):
-    subject = "ADD: {0} {1}".format(adopter.adopter_full_name().upper(), time_str(appt.time))
+    subject = "ADD: {0} {1}".format(adopter.full_name().upper(), time_str(appt.time))
     text = "https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}"
     html = text
 

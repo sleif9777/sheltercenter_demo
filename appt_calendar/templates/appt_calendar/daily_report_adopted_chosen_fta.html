@@ -27,7 +27,7 @@
             {% if appt.appt_type in schedulable and appt.outcome == "2" %}
               <tr class="appt_row">
                 <td>{{appt.time}}</td>
-                <td>{{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}</td>
+                <td>{{appt.adopter.f_name}} {{appt.adopter.l_name}}</td>
                 <td>{{appt.get_outcome_display}}</td>
                 <td>{{appt.dog}}</td>
               </tr>
@@ -50,7 +50,7 @@
               {% if appt.appt_type in schedulable and appt.outcome == "3" %}
                 <tr class="appt_row">
                   <td>{{appt.time}}</td>
-                  <td>{{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}</td>
+                  <td>{{appt.adopter}}</td>
                   <td>{{appt.get_outcome_display}}</td>
                   <td>{{appt.dog}}</td>
                 </tr>
@@ -73,7 +73,7 @@
               {% if appt.appt_type in schedulable and appt.outcome == "4" %}
                 <tr class="appt_row">
                   <td>{{appt.time}}</td>
-                  <td>{{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}</td>
+                  <td>{{appt.adopter}}</td>
                   <td>{{appt.get_outcome_display}}</td>
                   <td>{{appt.dog}}</td>
                 </tr>

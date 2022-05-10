@@ -2,7 +2,7 @@
 
   <!-- header grid, has a bottom border unless it is the only section -->
   <!-- it will be the only section when the appointment is not booked and has no notes -->
-  {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest and appt.appt_type in schedulable %}
+  {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest and appt.appt_type in schedulable %}
     <table class="appt_info_block" id="appt_header_block">
   {% else %}
     <table class="appt_info_block appt_end_block" id="appt_header_block">
@@ -41,8 +41,8 @@
 
           <a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a>
 
-          {% if appt.adopter_choice %}
-            <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter_choice.application_id}}" target="_blank">&#128438;&#xFE0E;</a>
+          {% if appt.adopter %}
+            <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">&#128438;&#xFE0E;</a>
             <a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">&#128100;&#xFE0E;<sub style="font-size: 8pt;">&#128683;&#xFE0E;</sub></a>
           {% endif %}
           <a href="{% url 'delete_cal_appointment' appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
@@ -66,7 +66,7 @@
           {% if appt.visits_to_date >= 1 %}
             <b>{{appt.number_of_visits}}</b>
           {% endif %}
-          {% if appt.adopter_choice.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}
+          {% if appt.adopter.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}
             <b>Must bring a parent!</b>
           {% endif %}
         </td>
@@ -82,34 +82,34 @@
     </table>
 
 
-  {% if appt.internal_notes or appt.adopter_notes or appt.adopter_choice.app_interest and appt.appt_type in schedulable %}
+  {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest and appt.appt_type in schedulable %}
 
     <!-- if the appt has an adopter attached, there should be application info above notes and options for contact and other actions below notes -->
     {% if appt.appt_type in schedulable and appt.available == False %}
       <table class="appt_subblock appt_info_block">
 
         <tr class="info_block_subheader">
-          <th>About {{appt.adopter_choice.adopter_first_name}}</th>
+          <th>About {{appt.adopter.f_name}}</th>
           <th class="right"></th>
         </tr>
 
         <tr>
           <td>
-            Coming from {{appt.adopter_choice.city}}, {{appt.adopter_choice.state}}
+            Coming from {{appt.adopter.city}}, {{appt.adopter.state}}
           </td>
 
           <td class="right">
-            {{appt.adopter_choice.housing_type}} ({{appt.adopter_choice.housing}})
+            {{appt.adopter.housing_type}} ({{appt.adopter.housing}})
           </td>
         </tr>
 
         <tr>
           <td>
-            {{appt.adopter_choice.activity_level}} Activity Household
+            {{appt.adopter.activity_level}} Activity Household
           </td>
 
           <td class="right">
-            {% if appt.adopter_choice.has_fence %}
+            {% if appt.adopter.has_fence %}
               Has Fence
             {% else %}
               No Fence
@@ -139,15 +139,15 @@
 
       {% if appt.adopter_notes %}
       <tr>
-        <td class="left"><b>From {{appt.adopter_choice.adopter_first_name}}:</b></td>
+        <td class="left"><b>From {{appt.adopter.f_name}}:</b></td>
         <td class="left">{{appt.adopter_notes|linebreaks}}</td>
       </tr>
       {% endif %}
 
-      {% if appt.adopter_choice.app_interest and appt.appt_type in schedulable %}
+      {% if appt.adopter.app_interest and appt.appt_type in schedulable %}
       <tr>
         <td class="left"><b>From Shelterluv:</b></td>
-        <td class="left">{{appt.adopter_choice.app_interest|linebreaks}}</td>
+        <td class="left">{{appt.adopter.app_interest|linebreaks}}</td>
       </tr>
       {% endif %}
 
@@ -161,7 +161,7 @@
     <table class="appt_subblock appt_info_block">
 
       <tr class="info_block_subheader">
-        <th><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">Contact {{appt.adopter_choice.adopter_first_name}}</a></th>
+        <th><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">Contact {{appt.adopter.f_name}}</a></th>
         <th class="right"><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">&#9993;&#xFE0E;</a></th>
       </tr>
 
@@ -237,12 +237,12 @@
           {% endif %}
         </td>
 
-        <td class="right"><a href="{% url 'greeter_reschedule' appt.adopter_choice.id appt.id date.year date.month date.day 'calendar' %}">Reschedule Adopter</a></td>
+        <td class="right"><a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'calendar' %}">Reschedule Adopter</a></td>
       </tr>
 
       <tr>
         <td><a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">Cancel Adopter</a><br></td>
-        <td class="right"><a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter_choice.application_id}}" target="_blank">Print Application</a></td>
+        <td class="right"><a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">Print Application</a></td>
       </tr>
 
     </table>
@@ -262,7 +262,7 @@
           <td><p class="completed_appt_action">Send Follow-Up Email</p></td>
         {% endif %}
 
-        <td class="right"><a href="{% url 'greeter_reschedule' appt.adopter_choice.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a></td>
+        <td class="right"><a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a></td>
       </tr>
 
       <tr>

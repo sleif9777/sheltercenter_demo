@@ -11,7 +11,7 @@ class AppointmentModelFormPrefilled(forms.ModelForm):
             'date',
             'time',
             'appt_type',
-            'adopter_choice',
+            'adopter',
             'locked',
             'dog',
             'dog_fka',
@@ -24,7 +24,7 @@ class AppointmentModelFormPrefilled(forms.ModelForm):
             'date': 'Date:',
             'time': 'Time:',
             'appt_type': 'Appointment Type:',
-            'adopter_choice': 'Select Adopter:',
+            'adopter': 'Select Adopter:',
             'locked': 'Lock appointment?',
             'dog': '(For surrenders and paperwork appointments) Dog:',
             'dog_fka': '(For surrenders, if applicable) FKA:',
@@ -43,14 +43,14 @@ class BookAppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
         fields = [
-            'adopter_choice',
+            'adopter',
             'adopter_notes',
             'bringing_dog',
             'has_cat',
             'mobility'
         ]
         widgets = {
-            'adopter_choice': forms.HiddenInput(),
+            'adopter': forms.HiddenInput(),
         }
         labels = {
             'adopter_notes': "",

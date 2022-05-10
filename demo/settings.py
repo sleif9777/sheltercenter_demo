@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'email_mgr.apps.EmailMgrConfig',
     'tinymce',
     'dashboard.apps.DashboardConfig',
-    'visit_and_faq.apps.VisitAndFaqConfig'
+    'visit_and_faq.apps.VisitAndFaqConfig',
+    'wishlist.apps.WishlistConfig'
+
 ]
 
 MIDDLEWARE = [

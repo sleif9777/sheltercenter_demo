@@ -68,8 +68,8 @@
                 <tr>
                   <td class="left">
                     <!-- displays number_of_visits if second visit or greater -->
-                    {% if appt.adopter_choice.visits_to_date > 1 %}
-                      <b>{{appt.adopter_choice.number_of_visits}}</b>
+                    {% if appt.adopter.visits_to_date > 1 %}
+                      <b>{{appt.adopter.number_of_visits}}</b>
                     {% endif %}
                   </td>
                   <td class="right">
