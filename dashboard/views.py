@@ -70,13 +70,15 @@ def staff_login(request):
         password = request.POST.get('password')
 
         user = authenticate(username=username, password=password)
-        user_groups = set(group.name for group in user.groups.iterator())
 
-        if user is not None and user_groups != {'adopter'}:
-            login(request, user)
-            return redirect('calendar')
-        else:
-            return redirect('login')
+        if user is not None:
+            user_groups = set(group.name for group in user.groups.iterator())
+
+            if user_groups != {'adopter'}:
+                login(request, user)
+                return redirect('calendar')
+            else:
+                return redirect('login')
 
     context = {
         'cred_placeholder': 'Username',
