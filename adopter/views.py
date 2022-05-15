@@ -127,28 +127,6 @@ def create_invite_email(adopter):
 
     message.save()
 
-# def handle_existing(existing_adopter, row):
-#     today = datetime.date.today()
-#
-#     #if the adopter is approved...
-#     if existing_adopter.status == "1":
-#         existing_adopter.app_interest = row[11]
-#         existing_adopter.save()
-#         #...and was accepted over a year ago, send new invite
-#         if existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
-#             existing_adopter.accept_date = datetime.date.today()
-#             create_invite_email(existing_adopter)
-#         #...and was accepted under a year ago, but more than two days ago, send push
-#         elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)] and not (existing_adopter.adopting_foster or existing_adopter.friend_of_foster or existing_adopter.adopting_host):
-#                 duplicate_app(existing_adopter)
-#
-#     #if moved from pending to approved, send invite
-#     elif existing_adopter.status == "3" and row[4] == "Accepted":
-#         existing_adopter.status = "1"
-#         existing_adopter.save()
-#         create_invite_email(existing_adopter)
-
-
 def handle_existing(existing_adopter, status, app_interest):
     today = datetime.date.today()
     special_circumstances = (existing_adopter.adopting_foster or existing_adopter.friend_of_foster or existing_adopter.adopting_host)
@@ -180,6 +158,13 @@ def handle_existing(existing_adopter, status, app_interest):
         create_invite_email(existing_adopter)
 
 
+def get_email_from_row(row):
+    if str(os.environ.get('SANDBOX')) == "1":
+        return "sheltercenterdev+{0}{1}@gmail.com".format(row[13].replace(" ", "").lower(), row[14].replace(" ", "").lower())
+    else:
+        return row[28].lower()
+
+
 def add_from_file(file):
     errors = []
 
@@ -190,10 +175,10 @@ def add_from_file(file):
     for row in reader[1:]:
         try:
             try:
-                existing_user = User.objects.get(username = "sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com")
+                existing_user = User.objects.get(username = get_email_from_row(row))
                 existing_adopter = Adopter.objects.get(user=existing_user)
             except:
-                existing_adopter = Adopter.objects.filter(primary_email="sheltercenterdev+" + row[13].replace(" ", "").lower() + row[14].replace(" ", "").lower() + "@gmail.com").latest('id')
+                existing_adopter = Adopter.objects.filter(primary_email=get_email_from_row(row)).latest('id')
 
             #update to newest application
             existing_adopter.application_id = row[0]
@@ -228,11 +213,8 @@ def add_from_file(file):
 def add_from_form(adopter):
     #for testing purposes, do not put into prod
     if str(os.environ.get('SANDBOX')) == "1":
+        print('i')
         adopter.primary_email = "sheltercenterdev+" + adopter.f_name.replace(" ", "").lower() + adopter.l_name.replace(" ", "").lower() + "@gmail.com"
-    #else use real email
-    else:
-        adopter.primary_email = row[28].lower()
-        adopter.secondary_email = row[29].lower()
 
     #set an auth code that isn't divisible by 100
     auth_code = randint(100000, 999999)
@@ -273,6 +255,14 @@ def create_shell_appt(adopter):
     print('done!', shellappt.id)
     return shellappt
 
+
+def get_email_from_form(fname, lname, email):
+    if str(os.environ.get('SANDBOX')) == "1":
+        return "sheltercenterdev+{0}{1}@gmail.com".format(fname.replace(" ", "").lower(), lname.replace(" ", "").lower())
+    else:
+        return email.lower()
+
+
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})
 def add(request):
@@ -294,14 +284,15 @@ def add(request):
             try:
                 fname = form.cleaned_data["f_name"]
                 lname = form.cleaned_data["l_name"]
+                primary_email = form.cleaned_data["primary_email"]
                 status = form.cleaned_data["status"]
                 app_interest = form.cleaned_data["app_interest"]
 
                 try:
-                    existing_user = User.objects.get(username = "sheltercenterdev+" + fname.replace(" ", "").lower() + lname.replace(" ", "").lower() + "@gmail.com")
+                    existing_user = User.objects.get(username = get_email_from_form(fname, lname, primary_email))
                     existing_adopter = Adopter.objects.get(user=existing_user)
                 except:
-                    existing_adopter = Adopter.objects.filter(primary_email="sheltercenterdev+" + fname.replace(" ", "").lower() + lname.replace(" ", "").lower() + "@gmail.com").latest('id')
+                    existing_adopter = Adopter.objects.filter(primary_email = get_email_from_form(fname, lname, primary_email)).latest('id')
 
                 #if blocked, add to error report
                 if existing_adopter.status == "2":
