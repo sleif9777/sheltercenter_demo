@@ -21,9 +21,8 @@ def replacer(html, adopter, appt):
         if adopter.lives_with_parents == True:
             adp_replacements['*ADP_LIVES_W_PARENTS*'] = "You indicated on your application that you live with your family. It is our policy to require at least one parent attend your first appointment with you. While the choice of dog is ultimately your decision as the adopter, we do want to take due diligence and ensure that a homeowner approves of the dog that is to live on their property. It would be ideal to bring all family members in the home to the appointment, as the dog would be living alongside them and should demonstrate comfort with them prior to making a final decision."
         else:
-            adp_replacements['<p>*ADP_LIVES_W_PARENTS*</p>'] = ""
+            adp_replacements['*ADP_LIVES_W_PARENTS*'] = ""
     except Exception as e:
-        print("e", e)
         adp_replacements = {}
 
     try:
@@ -45,7 +44,6 @@ def replacer(html, adopter, appt):
         elif appt.appt_type == "6":
             apt_replacements['*APT_TYPE*'] = "foster-to-adopt (FTA)"
     except Exception as f:
-        print("f", f)
         apt_replacements = {}
 
     global_replacements = {

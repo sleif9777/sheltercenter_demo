@@ -336,7 +336,7 @@ def notify_adoptions_paperwork(adopter, appt):
     send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
 
 def notify_adoptions_reschedule_add(adopter, current_appt, new_appt):
-    subject = "ADD: {0} {1}".format(adopter.full_name().upper(), time_str(current_appt.time))
+    subject = "ADD: {0} {1}".format(adopter.full_name().upper(), time_str(new_appt.time))
     text = "Rescheduled for {0} at {1} | https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}".format(is_today_or_tomorrow(new_appt), time_str(new_appt.time))
     html = text
 
