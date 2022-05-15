@@ -20,3 +20,13 @@ def is_chosen(appt):
         return True
 
     return False
+
+@register.filter(name='notes_only')
+def notes_only(appt):
+    if appt.appt_type in ["1", "2", "3"]:
+        if appt.adopter:
+            return False
+        else:
+            return True    
+
+    return False
