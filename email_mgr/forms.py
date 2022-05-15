@@ -14,7 +14,7 @@ class EmailTemplateForm(forms.ModelForm):
         labels = {
         }
 
-class EmailTemplateForm(forms.ModelForm):
+class EmailTemplateAddForm(forms.ModelForm):
 
     text = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
 
@@ -22,6 +22,7 @@ class EmailTemplateForm(forms.ModelForm):
         model = EmailTemplate
         fields = [
             'template_name',
+            'description',
             'text',
         ]
         labels = {

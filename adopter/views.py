@@ -115,9 +115,9 @@ def create_invite_email(adopter):
     message.email = adopter.primary_email
 
     if adopter.out_of_state == True:
-        template = EmailTemplate.objects.get(template_name="Add Adopter (outside NC, VA, SC)")
+        template = EmailTemplate.objects.get(template_name="Application Accepted (outside NC, VA, SC)")
     else:
-        template = EmailTemplate.objects.get(template_name="Add Adopter (inside NC, VA, SC)")
+        template = EmailTemplate.objects.get(template_name="Application Accepted (inside NC, VA, SC)")
 
     html = replacer(template.text, adopter, None)
     text = strip_tags(html, adopter, None)
@@ -127,25 +127,58 @@ def create_invite_email(adopter):
 
     message.save()
 
-def handle_existing(existing_adopter):
+# def handle_existing(existing_adopter, row):
+#     today = datetime.date.today()
+#
+#     #if the adopter is approved...
+#     if existing_adopter.status == "1":
+#         existing_adopter.app_interest = row[11]
+#         existing_adopter.save()
+#         #...and was accepted over a year ago, send new invite
+#         if existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
+#             existing_adopter.accept_date = datetime.date.today()
+#             create_invite_email(existing_adopter)
+#         #...and was accepted under a year ago, but more than two days ago, send push
+#         elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)] and not (existing_adopter.adopting_foster or existing_adopter.friend_of_foster or existing_adopter.adopting_host):
+#                 duplicate_app(existing_adopter)
+#
+#     #if moved from pending to approved, send invite
+#     elif existing_adopter.status == "3" and row[4] == "Accepted":
+#         existing_adopter.status = "1"
+#         existing_adopter.save()
+#         create_invite_email(existing_adopter)
+
+
+def handle_existing(existing_adopter, status, app_interest):
     today = datetime.date.today()
+    special_circumstances = (existing_adopter.adopting_foster or existing_adopter.friend_of_foster or existing_adopter.adopting_host)
+
+    print(special_circumstances, existing_adopter.adopting_foster, existing_adopter.friend_of_foster, existing_adopter.adopting_host)
 
     #if the adopter is approved...
     if existing_adopter.status == "1":
+        print('hit')
+        if app_interest not in ["", "dogs", "Dogs", "Dog"]:
+            existing_adopter.app_interest = app_interest
+            existing_adopter.save()
+
         #...and was accepted over a year ago, send new invite
         if existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
+            print('swing')
             existing_adopter.accept_date = datetime.date.today()
-            existing_adopter.save()
             create_invite_email(existing_adopter)
         #...and was accepted under a year ago, but more than two days ago, send push
-        elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)] and not (adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host):
-                duplicate_app(existing_adopter)
+        # elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)] and not (existing_adopter.adopting_foster or existing_adopter.friend_of_foster or existing_adopter.adopting_host):
+        elif not special_circumstances:
+            print('miss')
+            duplicate_app(existing_adopter)
 
     #if moved from pending to approved, send invite
-    elif existing_adopter.status == "3" and row[4] == "Accepted":
+    elif existing_adopter.status == "3" and status in ["Accepted", "1"]:
         existing_adopter.status = "1"
         existing_adopter.save()
         create_invite_email(existing_adopter)
+
 
 def add_from_file(file):
     errors = []
@@ -172,7 +205,7 @@ def add_from_file(file):
 
             #else handle message
             else:
-                handle_existing(existing_adopter)
+                handle_existing(existing_adopter, row[4], row[11])
         except Exception as f:
             print('f', f)
             adopter = create_adopter_from_row(row)
@@ -256,24 +289,48 @@ def add(request):
     except Exception as g:
         print('g', g)
         if form.is_valid():
-            form.save()
-            adopter = Adopter.objects.latest('id')
-            shellappt = add_from_form(adopter)
+            print(form.cleaned_data)
 
-            if adopter.adopting_foster:
-                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
-            elif adopter.friend_of_foster:
-                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
-            elif adopter.adopting_host:
-                print('host')
-                return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
-            elif adopter.out_of_state == True:
-                invite_oos_etemp(adopter)
-            elif adopter.carryover_shelterluv:
-                carryover_temp(adopter)
-            else:
-                print('invite')
-                invite(adopter)
+            try:
+                fname = form.cleaned_data["f_name"]
+                lname = form.cleaned_data["l_name"]
+                status = form.cleaned_data["status"]
+                app_interest = form.cleaned_data["app_interest"]
+
+                try:
+                    existing_user = User.objects.get(username = "sheltercenterdev+" + fname.replace(" ", "").lower() + lname.replace(" ", "").lower() + "@gmail.com")
+                    existing_adopter = Adopter.objects.get(user=existing_user)
+                except:
+                    existing_adopter = Adopter.objects.filter(primary_email="sheltercenterdev+" + fname.replace(" ", "").lower() + lname.replace(" ", "").lower() + "@gmail.com").latest('id')
+
+                #if blocked, add to error report
+                if existing_adopter.status == "2":
+                    errors += [existing_adopter]
+
+                #else handle message
+                else:
+                    print('here')
+                    handle_existing(existing_adopter, status, app_interest)
+            except Exception as b:
+                print("b", b)
+                form.save()
+                adopter = Adopter.objects.latest('id')
+                shellappt = add_from_form(adopter)
+
+                if adopter.adopting_foster:
+                    return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
+                elif adopter.friend_of_foster:
+                    return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
+                elif adopter.adopting_host:
+                    print('host')
+                    return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
+                elif adopter.out_of_state == True:
+                    invite_oos_etemp(adopter)
+                elif adopter.carryover_shelterluv:
+                    carryover_temp(adopter)
+                else:
+                    print('invite')
+                    invite(adopter)
 
 
     form = AdopterForm()
@@ -528,12 +585,12 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     elif source == 'dogs_were_adopted':
         template = EmailTemplate.objects.get(template_name="Dogs Were Adopted")
     elif source == 'add_form_adopting_foster':
-        template = EmailTemplate.objects.get(template_name="Add Adopter (Adopting Foster)")
+        template = EmailTemplate.objects.get(template_name="Application Accepted (Adopting Foster)")
     elif source == 'add_form_friend_of_foster':
-        template = EmailTemplate.objects.get(template_name="Add Adopter (Friend of Foster)")
+        template = EmailTemplate.objects.get(template_name="Application Accepted (Friend of Foster)")
     elif source == 'add_form_adopting_host':
         print('fffff')
-        template = EmailTemplate.objects.get(template_name="Add Adopter (Host Weekend)")
+        template = EmailTemplate.objects.get(template_name="Application Accepted (Host Weekend)")
 
     try:
         template = replacer(template.text.replace('*SIGNATURE*', request.user.profile.signature), adopter, appt)
