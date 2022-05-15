@@ -2,7 +2,7 @@
 
   <!-- header grid, has a bottom border unless it is the only section -->
   <!-- it will be the only section when the appointment is not booked and has no notes -->
-  {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest and appt.appt_type in schedulable %}
+  {% if not appt.available %}
     <table class="appt_info_block" id="appt_header_block">
   {% else %}
     <table class="appt_info_block appt_end_block" id="appt_header_block">
@@ -81,44 +81,8 @@
     <!-- end header table -->
     </table>
 
-
-  {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest and appt.appt_type in schedulable %}
-
-    <!-- if the appt has an adopter attached, there should be application info above notes and options for contact and other actions below notes -->
-    {% if appt.appt_type in schedulable and appt.available == False %}
-      <table class="appt_subblock appt_info_block">
-
-        <tr class="info_block_subheader">
-          <th>About {{appt.adopter.f_name}}</th>
-          <th class="right"></th>
-        </tr>
-
-        <tr>
-          <td>
-            Coming from {{appt.adopter.city}}, {{appt.adopter.state}}
-          </td>
-
-          <td class="right">
-            {{appt.adopter.housing_type}} ({{appt.adopter.housing}})
-          </td>
-        </tr>
-
-        <tr>
-          <td>
-            {{appt.adopter.activity_level}} Activity Household
-          </td>
-
-          <td class="right">
-            {% if appt.adopter.has_fence %}
-              Has Fence
-            {% else %}
-              No Fence
-            {% endif %}
-          </td>
-        </tr>
-
-      </table>
-
+  {% if not appt.available %}
+    {% if appt.appt_type in schedulable and appt.adopter %}
       <table class="appt_subblock appt_info_block">
     <!-- if not, it is an open appointment, paperwork, or surrender and could have notes at most -->
     {% else %}
@@ -130,32 +94,79 @@
         <th class="right"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
       </tr>
 
-      {% if appt.internal_notes %}
-      <tr>
-        <td class="left"><b>From Adoptions:</b></td>
-        <td class="left"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
-      </tr>
-      {% endif %}
+      {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest %}
+        {% if appt.internal_notes %}
+        <tr>
+          <td class="left"><b>From Adoptions:</b></td>
+          <td class="left"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
+        </tr>
+        {% endif %}
 
-      {% if appt.adopter_notes %}
-      <tr>
-        <td class="left"><b>From {{appt.adopter.f_name}}:</b></td>
-        <td class="left">{{appt.adopter_notes|linebreaks}}</td>
-      </tr>
-      {% endif %}
+        {% if appt.adopter_notes %}
+        <tr>
+          <td class="left"><b>From {{appt.adopter.f_name}}:</b></td>
+          <td class="left">{{appt.adopter_notes|linebreaks}}</td>
+        </tr>
+        {% endif %}
 
-      {% if appt.adopter.app_interest and appt.appt_type in schedulable %}
-      <tr>
-        <td class="left"><b>From Shelterluv:</b></td>
-        <td class="left">{{appt.adopter.app_interest|linebreaks}}</td>
-      </tr>
+        {% if appt.adopter.app_interest and appt.appt_type in schedulable %}
+        <tr>
+          <td class="left"><b>From Shelterluv:</b></td>
+          <td class="left">{{appt.adopter.app_interest|linebreaks}}</td>
+        </tr>
+        {% endif %}
+      {% else %}
+        <tr>
+          <td class="left"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">No notes on file for this appointment. Click to add a note.</a></td>
+        </tr>
       {% endif %}
 
     </table>
   {% endif %}
-
   <!-- if appt is booked, show actions and contacts -->
   {% if appt.appt_type in schedulable and appt.available == False %}
+
+  <!-- if the appt has an adopter attached, there should be application info above notes and options for contact and other actions below notes -->
+    <table class="appt_subblock appt_info_block">
+
+      <tr class="info_block_subheader">
+        <th>About {{appt.adopter.f_name}}</th>
+        <th class="right"></th>
+      </tr>
+
+      <tr>
+        <td>
+          {% if appt.adopter.city != "" and appt.adopter.state != "" %}
+            Coming from {{appt.adopter.city}}, {{appt.adopter.state}}
+          {% else %}
+            No Shelterluv information on file.
+          {% endif %}
+        </td>
+
+        <td class="right">
+          {% if appt.adopter.housing_type != "" and appt.adopter.housing != "" %}
+            {{appt.adopter.housing_type}} ({{appt.adopter.housing}})
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          {% if appt.adopter.activity_level != "" %}
+            {{appt.adopter.activity_level}} Activity Household
+          {% endif %}
+        </td>
+
+        <td class="right">
+          {% if appt.adopter.has_fence %}
+            Has Fence
+          {% elif appt.adopter.application_id and not appt.adopter.has_fence %}
+            No Fence
+          {% endif %}
+        </td>
+      </tr>
+
+    </table>
 
     <!-- this table would never be the last block -->
     <table class="appt_subblock appt_info_block">

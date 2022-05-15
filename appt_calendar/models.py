@@ -181,9 +181,9 @@ class Appointment(models.Model):
         if self.adopter is not None:
             self.visits_to_date = copy(self.adopter.visits_to_date)
 
-        if self.adopter.acknowledged_faq == False:
-            self.adopter.acknowledged_faq = True
-            self.adopter.save()
+            if self.adopter.acknowledged_faq == False:
+                self.adopter.acknowledged_faq = True
+                self.adopter.save()
 
         self.save()
 
