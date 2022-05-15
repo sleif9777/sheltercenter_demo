@@ -31,6 +31,7 @@ def email_home(request):
 
     context = {
         'e_templates': e_templates,
+        'page_title': "Email Templates",
     }
 
     return render(request, "email_mgr/email_home.html/", context)
@@ -42,6 +43,7 @@ def outbox(request):
 
     context = {
         'pending_messages': pending_messages,
+        'page_title': "Outbox",
     }
 
     return render(request, "email_mgr/outbox.html/", context)
