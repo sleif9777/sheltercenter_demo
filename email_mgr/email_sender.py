@@ -260,8 +260,8 @@ def follow_up_w_host(adopter):
     scrub_and_send(subject, template, adopter, None)
 
 def invite(adopter):
-    subject = "Your adoption request has been reviewed: " + adopter.full_name().upper()
-    template = EmailTemplate.objects.get(template_name="Add Adopter (inside NC, VA, SC)")
+    subject = "Your adoption request has been reviewed: {0} ({1})".format(adopter.full_name().upper(), adopter.app_interest)
+    template = EmailTemplate.objects.get(template_name="Application Accepted (inside NC, VA, SC)")
 
     scrub_and_send(subject, template, adopter, None)
 
@@ -272,8 +272,8 @@ def inactive_invite(adopter):
     scrub_and_send(subject, template, adopter, None)
 
 def invite_oos_etemp(adopter):
-    subject = "Your adoption request has been reviewed: " + adopter.full_name().upper()
-    template = EmailTemplate.objects.get(template_name="Add Adopter (outside NC, VA, SC)")
+    subject = "Your adoption request has been reviewed: {0} ({1})".format(adopter.full_name().upper(), adopter.app_interest)
+    template = EmailTemplate.objects.get(template_name="Application Accepted (outside NC, VA, SC)")
 
     scrub_and_send(subject, template, adopter, None)
 

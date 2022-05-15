@@ -5,6 +5,7 @@ from tinymce.models import HTMLField
 class EmailTemplate(models.Model):
 
     template_name = models.CharField(default="", max_length=200, blank=True) #need to refactor and add verbose
+    description = models.CharField(default="", max_length=500, blank=True)
     text = models.TextField(blank=True, null=True)
 
     def __repr__(self):

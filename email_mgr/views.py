@@ -87,6 +87,7 @@ def send_outbox(request):
 def edit_template(request, template_id):
     e_template = EmailTemplate.objects.get(pk=template_id)
     form = EmailTemplateForm(request.POST or None, instance=e_template)
+
     if form.is_valid():
         form.save()
         return redirect('email_home')
@@ -106,7 +107,7 @@ def edit_template(request, template_id):
 @allowed_users(allowed_roles={'superuser'})
 def add_email_template(request):
 
-    form = EmailTemplateForm(request.POST or None)
+    form = EmailTemplateAddForm(request.POST or None)
 
     if form.is_valid():
         data = form.cleaned_data
@@ -115,7 +116,7 @@ def add_email_template(request):
 
         return redirect('email_home')
     else:
-        form = EmailTemplateForm(request.POST or None)
+        form = EmailTemplateAddForm(request.POST or None)
 
     context = {
         'form': form,
