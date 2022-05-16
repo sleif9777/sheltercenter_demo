@@ -289,7 +289,7 @@ def carryover_temp(adopter):
     scrub_and_send(subject, template, adopter, None)
 
 def chosen(adopter, appt):
-    subject = "Congratulations on choosing " + appt.dog
+    subject = "Congratulations on choosing {0}!".format(appt.dog)
     template = EmailTemplate.objects.get(template_name="Chosen Dog")
 
     scrub_and_send(subject, template, adopter, appt)
@@ -340,16 +340,25 @@ def notify_adoptions_paperwork(adopter, appt):
 
     send_email(text, html, "default", subject, get_base_email())
 
+def return_shelterluv(adopter):
+    if adopter.application_id:
+        text = "https://www.shelterluv.com/adoption_request_print/{0}".format(adopter.application_id)
+    else:
+        text = "Please print from Shelterluv"
+
+    return text
+
 def notify_adoptions_reschedule_add(adopter, current_appt, new_appt):
     subject = "ADD: {0} {1}".format(adopter.full_name().upper(), time_str(new_appt.time))
-    text = "Rescheduled for {0} at {1} | https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}".format(is_today_or_tomorrow(new_appt), time_str(new_appt.time))
+    text = "Rescheduled for {0} at {1} | https://www.shelterluv.com/adoption_request_print/{2}".format(is_today_or_tomorrow(new_appt), time_str(new_appt.time), return_shelterluv(adopter))
     html = text
 
     send_email(text, html, "default", subject, get_base_email())
 
 def notify_adoptions_add(adopter, appt):
     subject = "ADD: {0} {1}".format(adopter.full_name().upper(), time_str(appt.time))
-    text = "https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}"
+    text = return_shelterluv(adopter)
+
     html = text
 
     send_email(text, html, "default", subject, get_base_email())
