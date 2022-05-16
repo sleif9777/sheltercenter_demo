@@ -246,6 +246,11 @@ def test_harness(request):
     return render(request, 'appt_calendar/calendar_test_harness.html', context)
 
 @authenticated_user
+@allowed_users(allowed_roles={'superuser'})
+def images(request):
+    return render(request, 'dashboard/images.html')
+
+@authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def edit_signature(request):
     profile = Profile.objects.get(user=request.user)
