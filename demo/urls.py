@@ -46,6 +46,7 @@ urlpatterns = [
     path('logout/', views.logout_user, name="logout"),
     path('test/', views.test_harness, name="test_harness"),
     path('login/staff/', views.staff_login, name="staff_login"),
+    path('images/', views.images, name="images"),
     path('help/', visit_and_faq.views.help, name="help"),
     path('tinymce/', include('tinymce.urls')),
 ]

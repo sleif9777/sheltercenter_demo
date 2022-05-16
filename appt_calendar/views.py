@@ -452,7 +452,7 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
         if int(appt.appt_type) > 3:
             appt.delist()
 
-        if appt.adopter != None:
+        if appt.adopter is not None:
 
             adopter = appt.adopter
             adopter.has_current_appt = True
@@ -512,7 +512,7 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
         original_appt.outcome = "8"
         original_appt.save()
 
-        if appt.adopter != None:
+        if appt.adopter is not None:
 
             adopter = appt.adopter
             adopter.has_current_appt = False
@@ -565,7 +565,7 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
     else:
         form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
 
-    if appt.adopter != None:
+    if appt.adopter is not None:
         current_email = appt.adopter.primary_email
     else:
         current_email = None
@@ -577,13 +577,13 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
             post_save_email = appt.adopter.primary_email
         except:
             post_save_email = None
-        if appt.adopter != None:
+        if appt.adopter is not None:
             if appt.appt_type in ["1", "2", "3"]:
 
                 if original_adopter != appt.adopter:
                     confirm_etemp(appt.adopter, appt)
 
-                    if original_adopter != None:
+                    if original_adopter is not None:
                         cancel(original_adopter, appt)
 
                 if short_notice(appt):
