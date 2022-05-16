@@ -142,7 +142,7 @@ def upload_errors(errors):
     </html>
     """
 
-    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+    send_email(text, html, "default", subject, get_base_email())
 
 def dates_are_open(adopter, date):
     subject = "Let's Book Your Saving Grace Adoption Appointment!"
@@ -190,7 +190,6 @@ def new_contact_adopter_msg(adopter, message):
 def new_contact_us_msg(adopter, message):
     subject = "New message from " + adopter.full_name()
     reply_to = adopter.primary_email
-    email = "sheltercenterdev@gmail.com"
 
     text = """\
     Adopter: """ + adopter.full_name() + """\n
@@ -205,7 +204,7 @@ def new_contact_us_msg(adopter, message):
     </html>
     """
 
-    send_email(text, html, reply_to, subject, email)
+    send_email(text, html, reply_to, subject, get_base_email())
 
 def confirm_etemp(adopter, appt):
     subject = "Your appointment has been confirmed: " + adopter.full_name().upper()
@@ -290,7 +289,7 @@ def carryover_temp(adopter):
     scrub_and_send(subject, template, adopter, None)
 
 def chosen(adopter, appt):
-    subject = "Congratulations on choosing " + appt.dog
+    subject = "Congratulations on choosing {0}!".format(appt.dog)
     template = EmailTemplate.objects.get(template_name="Chosen Dog")
 
     scrub_and_send(subject, template, adopter, appt)
@@ -301,14 +300,14 @@ def notify_adoptions_cancel(appt, adopter):
     text = "Did not reschedule"
     html = text
 
-    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+    send_email(text, html, "default", subject, get_base_email())
 
 def notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt):
     subject = "CANCEL: {0} {1}".format(adopter.full_name().upper(), time_str(current_appt.time))
     text = "Rescheduled for {0} at {1}".format(date_str(new_appt.date), time_str(new_appt.time))
     html = text
 
-    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+    send_email(text, html, "default", subject, get_base_email())
 
 def is_today_or_tomorrow(appt):
     if appt.date == datetime.date.today():
@@ -316,12 +315,18 @@ def is_today_or_tomorrow(appt):
 
     return "tomorrow"
 
+def get_base_email():
+    if str(os.environ.get("DJANGO_ALLOWED_HOST")) != "*":
+        return "sheltercenterdev@gmail.com"
+    else:
+        return "adoptions@savinggracenc.org"
+
 def notify_adoptions_time_change(adopter, current_appt, new_appt):
     subject = "MOVED: {0} NOW AT {1}".format(adopter.full_name().upper(), time_str(new_appt.time))
     text = "Moved from {0}".format(time_str(current_appt.time))
     html = text
 
-    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+    send_email(text, html, "default", subject, get_base_email())
 
 def notify_adoptions_paperwork(adopter, appt):
     if appt.heartworm:
@@ -333,18 +338,27 @@ def notify_adoptions_paperwork(adopter, appt):
     text = ""
     html = text
 
-    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+    send_email(text, html, "default", subject, get_base_email())
+
+def return_shelterluv(adopter):
+    if adopter.application_id:
+        text = "https://www.shelterluv.com/adoption_request_print/{0}".format(adopter.application_id)
+    else:
+        text = "Please print from Shelterluv"
+
+    return text
 
 def notify_adoptions_reschedule_add(adopter, current_appt, new_appt):
     subject = "ADD: {0} {1}".format(adopter.full_name().upper(), time_str(new_appt.time))
-    text = "Rescheduled for {0} at {1} | https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}".format(is_today_or_tomorrow(new_appt), time_str(new_appt.time))
+    text = "Rescheduled for {0} at {1} | https://www.shelterluv.com/adoption_request_print/{2}".format(is_today_or_tomorrow(new_appt), time_str(new_appt.time), return_shelterluv(adopter))
     html = text
 
-    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+    send_email(text, html, "default", subject, get_base_email())
 
 def notify_adoptions_add(adopter, appt):
     subject = "ADD: {0} {1}".format(adopter.full_name().upper(), time_str(appt.time))
-    text = "https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}"
+    text = return_shelterluv(adopter)
+
     html = text
 
-    send_email(text, html, "default", subject, "sheltercenterdev@gmail.com")
+    send_email(text, html, "default", subject, get_base_email())
