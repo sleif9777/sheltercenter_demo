@@ -10,8 +10,12 @@ class EmailTemplateForm(forms.ModelForm):
         model = EmailTemplate
         fields = [
             'text',
+            # 'file1',
+            # 'file2',
         ]
         labels = {
+        #     'file1': 'Upload a file:',
+        #     'file2': 'Upload a file:',
         }
 
 class EmailTemplateAddForm(forms.ModelForm):

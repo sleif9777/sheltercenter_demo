@@ -16,7 +16,6 @@ class AdopterForm(forms.ModelForm):
             'lives_with_parents',
             'adopting_host',
             'adopting_foster',
-            'friend_of_foster',
             'chosen_dog',
             'app_interest'
         ]
@@ -30,7 +29,6 @@ class AdopterForm(forms.ModelForm):
             'lives_with_parents': 'Adopter lives with parents',
             'adopting_host': 'Adopting their host dog',
             'adopting_foster': 'Adopting their foster dog',
-            'friend_of_foster': "Adopting a friend's foster dog",
             'chosen_dog': '(For foster/host adoptions) Chosen dog:',
             'app_interest': '(For general adoptions) Interested in:'
         }

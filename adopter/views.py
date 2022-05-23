@@ -559,10 +559,15 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         adopter_id = source.split('_')[1]
         adopter = Adopter.objects.get(pk=adopter_id)
 
+    file1 = None
+    file2 = None
+
     if source in ["calendar", "update"] or 'mgmt' in source:
         template = EmailTemplate.objects.get(template_name="Contact Adopter")
     elif source == "ready_positive":
         template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Positive)")
+        file1 = template.file1
+        file2 = template.file2
     elif source == "ready_negative":
         template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Negative)")
     elif source == "limited_puppies":
@@ -580,7 +585,6 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     elif source == 'add_form_friend_of_foster':
         template = EmailTemplate.objects.get(template_name="Application Accepted (Friend of Foster)")
     elif source == 'add_form_adopting_host':
-        print('fffff')
         template = EmailTemplate.objects.get(template_name="Application Accepted (Host Weekend)")
 
     try:
@@ -594,7 +598,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     if form.is_valid():
         data = form.cleaned_data
         message = data['message']
-        new_contact_adopter_msg(adopter, message)
+        new_contact_adopter_msg(adopter, message, [file1, file2])
 
         if source in ["update", "ready_positive", "ready_negative"]:
 
