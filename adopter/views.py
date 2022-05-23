@@ -130,6 +130,7 @@ def create_invite_email(adopter):
 def handle_existing(existing_adopter, status, app_interest):
     today = datetime.date.today()
     special_circumstances = (existing_adopter.adopting_foster or existing_adopter.friend_of_foster or existing_adopter.adopting_host)
+    accepted_last_2_days = existing_adopter.accept_date in [today - datetime.timedelta(days = x) for x in range(2)]
 
     print(special_circumstances, existing_adopter.adopting_foster, existing_adopter.friend_of_foster, existing_adopter.adopting_host)
 
@@ -146,8 +147,7 @@ def handle_existing(existing_adopter, status, app_interest):
             existing_adopter.accept_date = datetime.date.today()
             create_invite_email(existing_adopter)
         #...and was accepted under a year ago, but more than two days ago, send push
-        # elif existing_adopter.accept_date not in [today - datetime.timedelta(days = x) for x in range(2)] and not (existing_adopter.adopting_foster or existing_adopter.friend_of_foster or existing_adopter.adopting_host):
-        elif not special_circumstances:
+        elif not accepted_last_2_days and not special_circumstances:
             print('miss')
             duplicate_app(existing_adopter)
 
