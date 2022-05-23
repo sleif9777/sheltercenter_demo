@@ -27,7 +27,7 @@ def strip_tags(html):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def email_home(request):
-    e_templates = EmailTemplate.objects.all()
+    e_templates = EmailTemplate.objects.filter(active=True)
 
     context = {
         'e_templates': e_templates,

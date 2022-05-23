@@ -1,6 +1,7 @@
-import smtplib, ssl, datetime, time, os
+import smtplib, ssl, datetime, time, os, mimetypes
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 from appt_calendar.models import Appointment
 from appt_calendar.date_time_strings import *
 from io import StringIO
@@ -8,6 +9,10 @@ from html.parser import HTMLParser
 from .email_sender import *
 from .models import EmailTemplate
 from .dictionary import *
+from django.core.mail import EmailMultiAlternatives
+from mimetypes import guess_type
+from os.path import basename
+
 
 class MLStripper(HTMLParser):
     def __init__(self):
@@ -21,65 +26,39 @@ class MLStripper(HTMLParser):
     def get_data(self):
         return self.text.getvalue()
 
+
 def strip_tags(html, adopter, appt):
     s = MLStripper()
     s.feed(html)
     return s.get_data()
 
-# def send_email(text, html, reply_to, subject, receiver_email):
-#     sender_email = "savinggracenc@sheltercenter.dog"
-#     password = os.environ.get('EMAIL_PASSWORD')
-#
-#     message = MIMEMultipart("alternative")
-#     message["From"] = sender_email
-#     message["To"] = receiver_email
-#
-#     if reply_to == "default":
-#         message['Reply-To'] = "adoptions@savinggracenc.org"
-#     else:
-#         message['Reply-To'] = reply_to
-#     message['Subject'] = subject
-#
-#     part1 = MIMEText(text, "plain")
-#     part2 = MIMEText(html, "html")
-#     message.attach(part1)
-#     message.attach(part2)
-#
-#     context = ssl.create_default_context()
-#     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-#         server.login(sender_email, password)
-#         server.sendmail(
-#             sender_email, receiver_email, message.as_string()
-#         )
 
-def send_email(text, html, reply_to, subject, receiver_email):
+def send_email(text, html, reply_to_email, subject, receiver_email, files):
     sender_email = os.environ.get('EMAIL_ADDRESS')
     password = os.environ.get('EMAIL_PASSWORD')
 
-    message = MIMEMultipart("alternative")
-    message["From"] = sender_email
-    message["To"] = receiver_email
+    if reply_to_email == "default":
+        reply_to_email = "adoptions@savinggracenc.com"
 
-    if reply_to == "default":
-        message['Reply-To'] = "adoptions@savinggracenc.com"
-    else:
-        message['Reply-To'] = reply_to
-    message['Subject'] = subject
+    email = EmailMultiAlternatives(
+        subject,
+        text,
+        sender_email,
+        [receiver_email],
+        reply_to = [reply_to_email]
+    )
 
-    part1 = MIMEText(text, "plain")
-    part2 = MIMEText(html, "html")
-    message.attach(part1)
-    message.attach(part2)
+    email.attach_alternative(html, 'text/html')
 
-    context = ssl.create_default_context()
-    with smtplib.SMTP("smtp.office365.com", 587) as server:
-        server.ehlo()
-        server.starttls(context=context)
-        server.ehlo()
-        server.login(sender_email, password)
-        server.sendmail(
-            sender_email, receiver_email, message.as_string()
-        )
+    file_count = 0
+
+    for file in [f for f in files if f is not None]:
+        file.open()
+        email.attach(basename(file.name), file.read(), guess_type(file.name)[0])
+        file.close()
+
+    email.send()
+
 
 def clean_time_and_date(time, date):
     time = time_str(time)
@@ -87,13 +66,15 @@ def clean_time_and_date(time, date):
 
     return time, date
 
+
 def scrub_and_send(subject, template, adopter, appt):
     email = adopter.primary_email
     html = replacer(template.text, adopter, appt)
-
+    files = [template.file1, template.file2]
     text = strip_tags(html, adopter, appt)
 
-    send_email(text, html, "default", subject, email)
+    send_email(text, html, "default", subject, email, files)
+
 
 def alert_date_set(adopter, date):
     subject = "We'll Be In Touch Soon!"
@@ -120,7 +101,8 @@ def alert_date_set(adopter, date):
     </html>
     """
 
-    send_email(text, html, "default", subject, email)
+    send_email(text, html, "default", subject, email, None)
+
 
 def upload_errors(errors):
     subject = "Some Adopters Were Not Uploaded"
@@ -142,7 +124,7 @@ def upload_errors(errors):
     </html>
     """
 
-    send_email(text, html, "default", subject, get_base_email())
+    send_email(text, html, "default", subject, get_base_email(), None)
 
 def dates_are_open(adopter, date):
     subject = "Let's Book Your Saving Grace Adoption Appointment!"
@@ -176,16 +158,16 @@ def dates_are_open(adopter, date):
     </html>
     """
 
-    send_email(text, html, "default", subject, email)
+    send_email(text, html, "default", subject, email, None)
 
-def new_contact_adopter_msg(adopter, message):
+def new_contact_adopter_msg(adopter, message, files):
     subject = "New message from the Saving Grace adoptions team"
     name = adopter.f_name
     email = adopter.primary_email
 
     text = strip_tags(message, adopter, None)
 
-    send_email(text, message, "default", subject, email)
+    send_email(text, message, "default", subject, email, files)
 
 def new_contact_us_msg(adopter, message):
     subject = "New message from " + adopter.full_name()
@@ -204,7 +186,7 @@ def new_contact_us_msg(adopter, message):
     </html>
     """
 
-    send_email(text, html, reply_to, subject, get_base_email())
+    send_email(text, html, reply_to, subject, get_base_email(), None)
 
 def confirm_etemp(adopter, appt):
     subject = "Your appointment has been confirmed: " + adopter.full_name().upper()
@@ -300,14 +282,14 @@ def notify_adoptions_cancel(appt, adopter):
     text = "Did not reschedule"
     html = text
 
-    send_email(text, html, "default", subject, get_base_email())
+    send_email(text, html, "default", subject, get_base_email(), None)
 
 def notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt):
     subject = "CANCEL: {0} {1}".format(adopter.full_name().upper(), time_str(current_appt.time))
     text = "Rescheduled for {0} at {1}".format(date_str(new_appt.date), time_str(new_appt.time))
     html = text
 
-    send_email(text, html, "default", subject, get_base_email())
+    send_email(text, html, "default", subject, get_base_email(), None)
 
 def is_today_or_tomorrow(appt):
     if appt.date == datetime.date.today():
@@ -326,7 +308,7 @@ def notify_adoptions_time_change(adopter, current_appt, new_appt):
     text = "Moved from {0}".format(time_str(current_appt.time))
     html = text
 
-    send_email(text, html, "default", subject, get_base_email())
+    send_email(text, html, "default", subject, get_base_email(), None)
 
 def notify_adoptions_paperwork(adopter, appt):
     if appt.heartworm:
@@ -338,7 +320,7 @@ def notify_adoptions_paperwork(adopter, appt):
     text = ""
     html = text
 
-    send_email(text, html, "default", subject, get_base_email())
+    send_email(text, html, "default", subject, get_base_email(), None)
 
 def return_shelterluv(adopter):
     if adopter.application_id:
@@ -353,7 +335,7 @@ def notify_adoptions_reschedule_add(adopter, current_appt, new_appt):
     text = "Rescheduled for {0} at {1} | https://www.shelterluv.com/adoption_request_print/{2}".format(is_today_or_tomorrow(new_appt), time_str(new_appt.time), return_shelterluv(adopter))
     html = text
 
-    send_email(text, html, "default", subject, get_base_email())
+    send_email(text, html, "default", subject, get_base_email(), None)
 
 def notify_adoptions_add(adopter, appt):
     subject = "ADD: {0} {1}".format(adopter.full_name().upper(), time_str(appt.time))
@@ -361,4 +343,4 @@ def notify_adoptions_add(adopter, appt):
 
     html = text
 
-    send_email(text, html, "default", subject, get_base_email())
+    send_email(text, html, "default", subject, get_base_email(), None)
