@@ -52,16 +52,11 @@ def send_email(text, html, reply_to_email, subject, receiver_email, files):
 
     file_count = 0
 
-    # print([f for f in files if f is not None])
-
     try:
         for file in files:
-            try:
-                file.open()
-                email.attach(basename(file.name), file.read(), guess_type(file.name)[0])
-                file.close()
-            except:
-                pass
+            file.open()
+            email.attach(basename(file.name), file.read(), guess_type(file.name)[0])
+            file.close()
     except:
         pass
 
