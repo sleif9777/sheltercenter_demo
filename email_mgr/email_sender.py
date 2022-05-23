@@ -40,23 +40,6 @@ def send_email(text, html, reply_to_email, subject, receiver_email, files):
     if reply_to_email == "default":
         reply_to_email = "adoptions@savinggracenc.com"
 
-    # message = MIMEMultipart("alternative")
-    # message["From"] = sender_email
-    # message["To"] = receiver_email
-    #
-    # if reply_to == "default":
-    #     message['Reply-To'] = "adoptions@savinggracenc.com"
-    # else:
-    #     message['Reply-To'] = reply_to
-    # message['Subject'] = subject
-    #
-    # part1 = MIMEText(text, "plain")
-    # part2 = MIMEText(html, "html")
-    # message.attach(part1)
-    # message.attach(part2)
-
-    # success = send_mail(subject, text, sender_email, [receiver_email], fail_silently=False, html_message=html)
-
     email = EmailMultiAlternatives(
         subject,
         text,
@@ -70,68 +53,11 @@ def send_email(text, html, reply_to_email, subject, receiver_email, files):
     file_count = 0
 
     for file in [f for f in files if f is not None]:
-        # if file_count == 0:
-        #     file_name = "Heartworm Treatment Options.docx"
-        # else:
-        #     file_name = "Heartworm Reference Sheet.docx"
-        #
-        # email.attach_file(file.path)
         file.open()
         email.attach(basename(file.name), file.read(), guess_type(file.name)[0])
         file.close()
-#
-# from mimetypes import guess_type
-# from os.path import basename
-#
-#
-# f = model.filefield
-# f.open()
-# # msg.attach(filename, content, mimetype)
-# msg.attach(basename(f.name), f.read(), guess_type(f.name)[0])
-# f.close()
-
-# message.attach('design.png', img_data, 'image/png')
-        # application/msword
-
 
     email.send()
-
-    # print(success)
-
-    # send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None)[source]¶
-
-    #
-    # for file in files:
-    #     if file is not None:
-    #         message.attach(file)
-
-            # content_type = mimetypes.guess_type(file.name)[0]
-            # message.attach(file, file.read(), content_type)
-            # file_data = bytes(file.read())
-            # message.attach(file)
-
-            # content_type = mimetypes.guess_type(instance.presentation.name)[0] # change is here <<<
-            # mail.attach_file(instance.presentation, instance.presentation.read(), content_type) # <<< change is here also
-
-
-        # if file is not None:
-        #     with open(file, "rb") as open_file:
-        #         part = MIMEApplication(
-        #             open_file.read(),
-        #             Name=basename(file)
-        #         )
-        #     part['Content-Disposition'] = 'attachment; filename="%s"' % basename(file)
-        #     message.attach_file(part)
-
-    # context = ssl.create_default_context()
-    # with smtplib.SMTP("smtp.office365.com", 587) as server:
-    #     server.ehlo()
-    #     server.starttls(context=context)
-    #     server.ehlo()
-    #     server.login(sender_email, password)
-    #     server.sendmail(
-    #         sender_email, receiver_email, message.as_string()
-    #     )
 
 
 def clean_time_and_date(time, date):
