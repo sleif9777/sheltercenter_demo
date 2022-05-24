@@ -265,6 +265,8 @@ def invite_oos_etemp(adopter):
     if adopter.app_interest not in ["", "dogs", "Dogs", "dog", "Dog"]:
         subject += " ({0})".format(adopter.app_interest)
 
+    template = EmailTemplate.objects.get(template_name="Application Accepted (outside NC, VA, SC)")
+
     scrub_and_send(subject, template, adopter, None)
 
 def carryover_temp(adopter):
