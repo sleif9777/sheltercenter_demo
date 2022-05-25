@@ -68,7 +68,7 @@ def send_outbox(request):
             message = MIMEMultipart("alternative")
             message["From"] = sender_email
             message["To"] = receiver_email
-            message['Reply-To'] = "adoptions@savinggracenc.com"
+            message['Reply-To'] = "adoptions@savinggracenc.org"
             message['Subject'] = pm.subject
 
             part1 = MIMEText(pm.text, "plain")
