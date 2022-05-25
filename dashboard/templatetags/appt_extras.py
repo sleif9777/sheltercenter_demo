@@ -14,6 +14,7 @@ def alert_overdue(appt):
     else:
         return False
 
+
 @register.filter(name='is_chosen')
 def is_chosen(appt):
     if appt.outcome in ["3", "9", "10"]:
@@ -21,12 +22,13 @@ def is_chosen(appt):
 
     return False
 
+
 @register.filter(name='notes_only')
 def notes_only(appt):
     if appt.appt_type in ["1", "2", "3"]:
         if appt.adopter:
             return False
         else:
-            return True    
+            return True
 
     return False
