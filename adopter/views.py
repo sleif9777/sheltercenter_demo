@@ -71,7 +71,7 @@ def create_adopter_from_row(row):
     #set status
     if row[4] == "Denied":
         new_adopter.status = "2"
-    elif row[4] == "Pending":
+    elif row[4] not in ["Pending", "In Process"]:
         new_adopter.status = "3"
 
     new_adopter.save()

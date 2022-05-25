@@ -38,7 +38,7 @@ def send_email(text, html, reply_to_email, subject, receiver_email, files):
     password = os.environ.get('EMAIL_PASSWORD')
 
     if reply_to_email == "default":
-        reply_to_email = "adoptions@savinggracenc.com"
+        reply_to_email = "adoptions@savinggracenc.org"
 
     email = EmailMultiAlternatives(
         subject,

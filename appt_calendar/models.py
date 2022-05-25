@@ -188,7 +188,7 @@ class Appointment(models.Model):
         self.save()
 
     class Meta:
-        ordering = ('time', 'appt_type', 'id',)
+        ordering = ('time', 'adopter', 'appt_type', 'id',)
 
 class Timeslot(models.Model):
     date = models.DateField(default = timezone.now())
