@@ -127,7 +127,7 @@ def upload_errors(errors):
     </html>
     """
 
-    send_email(text, html, "default", subject, get_base_email(), None)
+    send_email(text, html, "default", subject, get_base_email(), None) #done
 
 def dates_are_open(adopter, date):
     subject = "Let's Book Your Saving Grace Adoption Appointment!"
