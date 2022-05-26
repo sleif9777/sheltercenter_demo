@@ -823,6 +823,13 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 def delete_appointment(request, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     deleted_appt = get_object_or_404(Appointment, pk=appt_id)
+
+    if deleted_appt.adopter:
+        deleted_appt.adopter.has_current_appt = False
+        deleted_appt.adopter.save()
+
+        deleted_appt.reset()
+
     deleted_appt.delete()
 
     return redirect('calendar_date', date.year, date.month, date.day)
