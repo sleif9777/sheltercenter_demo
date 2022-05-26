@@ -10,6 +10,10 @@ class DailyAnnouncement(models.Model):
     date = models.DateField(default = timezone.now())
     text = models.TextField(default="", blank=True)
 
+class InternalAnnouncement(models.Model):
+    date = models.DateField(default = timezone.now())
+    text = models.TextField(default="", blank=True)
+
 class CalendarAnnouncement(models.Model):
     text = models.TextField(default="", blank=True)
 

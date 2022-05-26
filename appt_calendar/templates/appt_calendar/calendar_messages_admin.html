@@ -1,6 +1,15 @@
 <div class="info_box">
+  <p class="datelink"><b>INTERNAL NOTE FOR {{date_pretty.upper}}</b></p>
+  {% if internal_announcement %}
+    <p><a class="datelink" href="{% url 'edit_internal_announcement' internal_announcement.id date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>{{internal_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
+  {% else %}
+    <p><a class="datelink" href="{% url 'add_internal_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>Add an internal note. &#9998;&#xFE0E;</a></p>
+  {% endif %}
+</div>
+
+<div class="info_box">
   <p class="datelink"><b>DISPLAYS FOR ALL DATES</b></p>
-  {% if calendar_announcement|length > 0 %}
+  {% if calendar_announcement.text|length > 0 %}
     <p><a class="datelink" href="{% url 'edit_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>{{calendar_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
   {% else %}
     <p><a class="datelink" href="{% url 'add_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>Add a notification for adopters. &#9998;&#xFE0E;</a></p>

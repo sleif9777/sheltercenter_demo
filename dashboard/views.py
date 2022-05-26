@@ -157,7 +157,14 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
 
     #retrieve the daily announcement if one exists
     try:
-        calendar_announcement = CalendarAnnouncement.objects.get(pk = 1)
+        internal_announcement = InternalAnnouncement.objects.get(date = date)
+    except:
+        internal_announcement = None
+
+    #retrieve the daily announcement if one exists
+    try:
+        calendar_announcement = CalendarAnnouncement.objects.latest('id')
+        print(calendar_announcement.text)
     except:
         calendar_announcement = None
 
@@ -236,6 +243,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'page_title': "Calendar",
         'daily_announcement': daily_announcement,
         'calendar_announcement': calendar_announcement,
+        'internal_announcement': internal_announcement,
     }
 
     return context

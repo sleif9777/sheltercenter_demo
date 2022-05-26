@@ -397,16 +397,60 @@ def edit_daily_announcement(request, announcement_id, date_year, date_month, dat
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
-def add_calendar_announcement(request, date_year, date_month, date_day):
+def add_internal_announcement(request, date_year, date_month, date_day):
     date = datetime.date(date_year, date_month, date_day)
-    form = CalendarAnnouncementForm(request.POST or None, initial = {'date': date})
+    form = InternalAnnouncementForm(request.POST or None, initial = {'date': date})
 
     if form.is_valid():
         form.save()
         return redirect('calendar_date', date.year, date.month, date.day)
 
     else:
-        form = CalendarAnnouncementForm(request.POST or None, initial = {'date': date})
+        form = InternalAnnouncementForm(request.POST or None, initial = {'date': date})
+
+    context = {
+        'form': form,
+        'date': date,
+        'title': "Add Calendar Note for {0}".format(date_str(date)),
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def edit_internal_announcement(request, announcement_id, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    announcement = DailyAnnouncement.objects.get(pk = announcement_id)
+    form = DailyAnnouncementForm(request.POST or None, instance=announcement)
+
+    if form.is_valid():
+        form.save()
+        return redirect('calendar_date', date.year, date.month, date.day)
+
+    else:
+        form = DailyAnnouncementForm(request.POST or None, instance=announcement)
+
+    context = {
+        'form': form,
+        'date': date,
+        'title': "Edit Calendar Note for {0}".format(date_str(date)),
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def add_calendar_announcement(request, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    announcement = CalendarAnnouncement.objects.latest('id')
+    form = CalendarAnnouncementForm(request.POST or None, instance=announcement)
+
+    if form.is_valid():
+        form.save()
+        return redirect('calendar_date', date.year, date.month, date.day)
+
+    else:
+        form = CalendarAnnouncementForm(request.POST or None, instance=announcement)
 
     context = {
         'form': form,

@@ -77,6 +77,17 @@ class DailyAnnouncementForm(forms.ModelForm):
             'date': forms.HiddenInput(),
         }
 
+class InternalAnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = InternalAnnouncement
+        fields = [
+            'date',
+            'text'
+        ]
+        widgets = {
+            'date': forms.HiddenInput(),
+        }
+
 class CalendarAnnouncementForm(forms.ModelForm):
     class Meta:
         model = CalendarAnnouncement
