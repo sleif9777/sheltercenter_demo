@@ -71,7 +71,7 @@ def create_adopter_from_row(row):
     #set status
     if row[4] == "Denied":
         new_adopter.status = "2"
-    elif row[4] not in ["Pending", "In Process"]:
+    elif row[4] in ["Pending", "In Process"]:
         new_adopter.status = "3"
 
     new_adopter.save()
@@ -113,6 +113,9 @@ def create_invite_email(adopter):
 
     message.subject = "Your adoption request has been reviewed: " + adopter.full_name().upper()
     message.email = adopter.primary_email
+
+    if adopter.app_interest not in ["", "dogs", "Dogs", "dog", "Dog"] and len(adopter.app_interest) <= 10:
+        message.subject += " ({0})".format(adopter.app_interest)
 
     if adopter.out_of_state == True:
         template = EmailTemplate.objects.get(template_name="Application Accepted (outside NC, VA, SC)")
@@ -194,6 +197,9 @@ def add_from_file(file):
         except Exception as f:
             print('f', f)
             adopter = create_adopter_from_row(row)
+
+            print(adopter.full_name())
+            print(adopter.status)
 
             if adopter.status == "1":
                 #create Application

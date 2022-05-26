@@ -140,26 +140,24 @@ def dates_are_open(adopter, date):
     date_string = date_str(date)
 
     text = """\
-    Hi """ + name + """,\n
-    We are now scheduling adoption appointments for """ + date_string + """.\n
-    Visit this website to schedule your adoption appointment: """ + url + """\n
-    Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.\n
+    Hi {0},\n
+    We are now scheduling adoption appointments for {1}.\n
+    Please email us with three dates and times you would like to visit. We are open Monday, Tuesday, Wednesday, Friday from noon to 6pm, and Thursday 1pm to 6pm.\n
     All the best, \n
     The Adoptions Team
     Saving Grace Animals for Adoption
-    """
+    """.format(name, date_string)
 
     html = """\
     <html>
       <body>
-        <p>Hi """ + name + """,</p>
-        <p>We are now scheduling adoption appointments for """ + date_string + """.</p>
-        <p>""" + url + """</p>
-        <p>Your authorization code is: """ + str(adopter.auth_code) + """. You'll need this when you set up your appointment.</p>
+        <p>Hi {0},</p>
+        <p>We are now scheduling adoption appointments for {1}.</p>
+        <p>Please email us with three dates and times you would like to visit. We are open Monday, Tuesday, Wednesday, Friday from noon to 6pm, and Thursday 1pm to 6pm.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
       </body>
     </html>
-    """
+    """.format(name, date_string)
 
     send_email(text, html, "default", subject, email, None)
 
@@ -226,10 +224,11 @@ def greeter_reschedule_email(adopter, appt):
     scrub_and_send(subject, template, adopter, appt)
 
 def duplicate_app(adopter):
-    subject = "We already have you in our database: " + adopter.full_name().upper()
-    template = EmailTemplate.objects.get(template_name="Duplicate Application")
-
-    scrub_and_send(subject, template, adopter, None)
+    invite(adopter)
+    # subject = "We already have you in our database: " + adopter.full_name().upper()
+    # template = EmailTemplate.objects.get(template_name="Duplicate Application")
+    #
+    # scrub_and_send(subject, template, adopter, None)
 
 def follow_up(adopter):
     subject = "Thank you for visiting: " + adopter.full_name().upper()
@@ -246,7 +245,7 @@ def follow_up_w_host(adopter):
 def invite(adopter):
     subject = "Your adoption request has been reviewed: {0}".format(adopter.full_name().upper())
 
-    if adopter.app_interest not in ["", "dogs", "Dogs", "dog", "Dog"]:
+    if adopter.app_interest not in ["", "dogs", "Dogs", "dog", "Dog"] and len(adopter.app_interest) <= 10:
         subject += " ({0})".format(adopter.app_interest)
 
     template = EmailTemplate.objects.get(template_name="Application Accepted (inside NC, VA, SC)")

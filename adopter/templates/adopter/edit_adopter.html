@@ -47,6 +47,7 @@
 
             <tr class="info_block_subheader">
               <th>
+                <div style="padding-bottom: 10px;"><em>"{{adopter.app_interest}}"</em><br></div>
                 <a href="{% url 'contact_adopter' 100 2021 1 1 source %}">Contact {{adopter.f_name}} &#9993;&#xFE0E;</a><br>
                 <a href="{% url 'greeter_reschedule' adopter.id 100 today.year today.month today.day 'edit' %}">Schedule {{adopter.f_name}}</a><br>
                 <a href="https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}" target="_blank">Print Application</a>
