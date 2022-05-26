@@ -19,18 +19,18 @@ class Adopter(models.Model):
     l_name = models.CharField(default="", max_length=200, blank=True) #""
     primary_email = models.EmailField(default="", blank=True) #""
     secondary_email = models.EmailField(default="", blank=True)
-    city = models.CharField(default="", max_length=200)
-    state = models.CharField(default="", max_length=2)
+    city = models.CharField(default="", max_length=200, blank=True)
+    state = models.CharField(default="", max_length=2, blank=True)
 
     #application attributes
     application_id = models.CharField(default="", max_length=20, blank=True)
     accept_date = models.DateField(default=datetime.date.today(), blank=True)
-    housing_type = models.CharField(default="", max_length=200)
-    housing = models.CharField(default="", max_length=200)
-    activity_level = models.CharField(default="", max_length=200)
-    has_fence = models.BooleanField(default = False)
+    housing_type = models.CharField(default="", max_length=200, blank=True)
+    housing = models.CharField(default="", max_length=200, blank=True)
+    activity_level = models.CharField(default="", max_length=200, blank=True)
+    has_fence = models.BooleanField(default=False, blank=True)
     app_interest = models.CharField(default="", max_length=2000, blank=True)
-    wishlist = models.ManyToManyField(Dog, null=True)
+    wishlist = models.ManyToManyField(Dog, null=True, blank=True)
 
     #adoption-related attributes
     out_of_state = models.BooleanField(default = False)
