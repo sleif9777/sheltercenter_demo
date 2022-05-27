@@ -193,8 +193,10 @@ def confirm_etemp(adopter, appt):
     if appt.appt_type in ["1", "2", "3"]:
         subject = "Your appointment has been confirmed: " + adopter.full_name().upper()
         template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
-
         scrub_and_send(subject, template, adopter, appt)
+    elif appt.appt_type in ["4", "5", "6", "7"]:
+        adopter.has_current_appt = False
+        adopter.save()
 
 def adoption_paperwork(adopter, appt, hw_status):
     if hw_status == False:
