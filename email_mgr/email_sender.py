@@ -190,10 +190,11 @@ def new_contact_us_msg(adopter, message):
     send_email(text, html, reply_to, subject, get_base_email(), None)
 
 def confirm_etemp(adopter, appt):
-    subject = "Your appointment has been confirmed: " + adopter.full_name().upper()
-    template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
+    if appt.appt_type in ["1", "2", "3"]:
+        subject = "Your appointment has been confirmed: " + adopter.full_name().upper()
+        template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
 
-    scrub_and_send(subject, template, adopter, appt)
+        scrub_and_send(subject, template, adopter, appt)
 
 def adoption_paperwork(adopter, appt, hw_status):
     if hw_status == False:
