@@ -138,7 +138,7 @@ def handle_existing(existing_adopter, status, app_interest):
     print(special_circumstances, existing_adopter.adopting_foster, existing_adopter.friend_of_foster, existing_adopter.adopting_host)
 
     #if the adopter is approved...
-    if existing_adopter.status == "1":
+    if existing_adopter.status == "1" and status is not "Archived":
         print('hit')
         if app_interest not in ["", "dogs", "Dogs", "Dog"]:
             existing_adopter.app_interest = app_interest
@@ -152,7 +152,7 @@ def handle_existing(existing_adopter, status, app_interest):
         #...and was accepted under a year ago, but more than two days ago, send push
         elif not accepted_last_4_days and not special_circumstances:
             print('miss')
-            duplicate_app(existing_adopter)
+            create_invite_email(existing_adopter)
 
     #if moved from pending to approved, send invite
     elif existing_adopter.status == "3" and status in ["Accepted", "1"]:
