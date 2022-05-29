@@ -42,7 +42,7 @@
           <a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a>
 
           {% if appt.adopter %}
-            <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">&#128438;&#xFE0E;</a>
+            <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">&#128196;&#xFE0E;</a>
             <a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">&#128100;&#xFE0E;<sub style="font-size: 8pt;">&#128683;&#xFE0E;</sub></a>
           {% endif %}
           <a href="{% url 'delete_cal_appointment' appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
