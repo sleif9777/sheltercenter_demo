@@ -420,7 +420,7 @@ def add_internal_announcement(request, date_year, date_month, date_day):
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def edit_internal_announcement(request, announcement_id, date_year, date_month, date_day):
     date = datetime.date(date_year, date_month, date_day)
-    announcement = DailyAnnouncement.objects.get(pk = announcement_id)
+    announcement = InternalAnnouncement.objects.get(pk = announcement_id)
     form = InternalAnnouncementForm(request.POST or None, instance=announcement)
 
     if form.is_valid():
