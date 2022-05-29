@@ -421,14 +421,14 @@ def add_internal_announcement(request, date_year, date_month, date_day):
 def edit_internal_announcement(request, announcement_id, date_year, date_month, date_day):
     date = datetime.date(date_year, date_month, date_day)
     announcement = DailyAnnouncement.objects.get(pk = announcement_id)
-    form = DailyAnnouncementForm(request.POST or None, instance=announcement)
+    form = InternalAnnouncementForm(request.POST or None, instance=announcement)
 
     if form.is_valid():
         form.save()
         return redirect('calendar_date', date.year, date.month, date.day)
 
     else:
-        form = DailyAnnouncementForm(request.POST or None, instance=announcement)
+        form = InternalAnnouncementForm(request.POST or None, instance=announcement)
 
     context = {
         'form': form,
