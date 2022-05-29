@@ -163,7 +163,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
 
     #retrieve the daily announcement if one exists
     try:
-        calendar_announcement = CalendarAnnouncement.objects.latest('id')
+        calendar_announcement = CalendarAnnouncement.objects.get(pk=1)
         print(calendar_announcement.text)
     except:
         calendar_announcement = None
