@@ -250,6 +250,7 @@ def calendar_print(request, date_year, date_month, date_day):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def daily_report_all_appts(request, date_year, date_month, date_day):
+    return redirect('daily_report_adopted_chosen_fta')
     context = gc(request.user, 'full', None, date_year, date_month, date_day)
 
     context['page_title'] = "All Appointments Report"
@@ -257,19 +258,14 @@ def daily_report_all_appts(request, date_year, date_month, date_day):
     return render(request, "appt_calendar/daily_report_all_appts.html/", context)
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def daily_reports_home(request):
     date = datetime.date.today()
 
-    context = {
-        "date": date,
-        'page_title': "Daily Reports",
-    }
-
-    return render(request, "appt_calendar/daily_report_home.html/", context)
+    return redirect('daily_report_adopted_chosen_fta', date.year, date.month, date.day)
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def chosen_board(request):
     today = datetime.date.today()
     appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "7", "8", "9", "10"], paperwork_complete=False)]
@@ -314,7 +310,7 @@ def mark_complete_on_chosen_board(request, appt_id):
     return redirect('chosen_board')
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def daily_report_adopted_chosen_fta(request, date_year, date_month, date_day):
     context = gc(request.user, 'full', None, date_year, date_month, date_day)
 
