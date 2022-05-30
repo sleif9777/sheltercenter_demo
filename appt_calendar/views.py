@@ -635,10 +635,10 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
             appt.delist()
 
             if original_adopter != appt.adopter:
-                print('blah')
-                print(original_adopter.id)
-                print(appt.adopter.id)
-                print(original_adopter != appt.adopter)
+                # print('blah')
+                # print(original_adopter.id)
+                # print(appt.adopter.id)
+                # print(original_adopter != appt.adopter)
                 return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
 
         return redirect('calendar_date', date.year, date.month, date.day)
