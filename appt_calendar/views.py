@@ -623,10 +623,10 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
                 # if original_adopter != appt.adopter:
                 #     confirm_etemp(appt.adopter, appt)
                 #
-                if original_adopter is not None:
+                if original_adopter not in [None, appt.adopter]:
                     cancel(original_adopter, appt)
 
-                if short_notice(appt):
+                if short_notice(appt) and appt.adopter not in [None, original_adopter]:
                     notify_adoptions_add(appt.adopter, appt)
 
                 appt.adopter.has_current_appt = True
@@ -634,7 +634,12 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
 
             appt.delist()
 
-            return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
+            if original_adopter != appt.adopter:
+                print('blah')
+                print(original_adopter.id)
+                print(appt.adopter.id)
+                print(original_adopter != appt.adopter)
+                return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
 
         return redirect('calendar_date', date.year, date.month, date.day)
     else:
