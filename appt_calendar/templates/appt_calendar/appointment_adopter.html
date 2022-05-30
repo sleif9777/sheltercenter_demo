@@ -69,8 +69,8 @@
       <table class="appt_subblock appt_info_block">
 
         <tr class="info_block_subheader">
-          <th class="left"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">Notes</a></th>
-          <th class="right"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
+          <th class="left"><a href="{% url 'edit_cal_appointment' date.year date.month date.day current_appt.id %}">Notes</a></th>
+          <th class="right"><a href="{% url 'edit_cal_appointment' date.year date.month date.day current_appt.id %}">&#9998;&#xFE0E;</a></th>
         </tr>
 
         <tr>

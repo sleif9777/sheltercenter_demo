@@ -191,6 +191,27 @@ def new_contact_us_msg(adopter, message):
 
     send_email(text, html, reply_to, subject, get_base_email(), None)
 
+def questions_msg(adopter, appt, questions):
+    subject = "Question from " + adopter.full_name()
+    reply_to = adopter.primary_email
+
+    text = """\
+    Adopter: {0}\n\n
+    Appointment: {1}\n\n
+    Questions: {2}""".format(adopter.full_name(), appt.date_and_time_string(), questions)
+
+    html = """\
+    <html>
+      <body>
+        <h2>Question from {0}</h2>
+        <p><b>Appointment:</b> {1}</p>
+        <p><b>Question:</b> {2}</p>
+      </body>
+    </html>
+    """.format(adopter.full_name(), appt.date_and_time_string(), questions)
+
+    send_email(text, html, reply_to, subject, get_base_email(), None)
+
 def confirm_etemp(adopter, appt):
     if appt.appt_type in ["1", "2", "3"]:
         subject = "Your appointment has been confirmed: " + adopter.full_name().upper()

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-import datetime, time
+import datetime, time, sys
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
 from .models import *
 from adopter.models import Adopter
@@ -125,6 +125,20 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
         if form.is_valid():
             form.save()
+
+            print(request.POST)
+
+            try:
+                questions = dict(request.POST)['outstanding_questions'][0]
+                questions_msg(adopter, appt, questions)
+            except Exception as e:
+                exception_type, exception_object, exception_traceback = sys.exc_info()
+                filename = exception_traceback.tb_frame.f_code.co_filename
+                line_number = exception_traceback.tb_lineno
+
+                print("Exception type: ", exception_type)
+                print("File name: ", filename)
+                print("Line number: ", line_number)
 
             adopter.has_current_appt = True
             adopter.save()
@@ -589,7 +603,7 @@ def short_notice(appt):
     return False
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
 def edit_appointment(request, date_year, date_month, date_day, appt_id):
     try:
         user_groups = set(group.name for group in request.user.groups.all().iterator())

@@ -54,9 +54,9 @@ class BookAppointmentForm(forms.ModelForm):
         }
         labels = {
             'adopter_notes': "",
-            'bringing_dog': "Check this box if you plan to bring your current dog with you: ",
-            'has_cat': "Check this box if you have a cat in the home: ",
-            'mobility': "We are happy to accommodate visitors with limited mobility and are ADA compliant. If you have limited mobility, please check this box so we can be best prepared: "
+            'bringing_dog': "I plan to bring my dog with me: ",
+            'has_cat': "I need a cat-friendly dog: ",
+            'mobility': "I would like to request mobility accomodations: "
         }
 
     def __init__(self, *args, **kwargs):
