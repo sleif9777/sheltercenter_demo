@@ -567,15 +567,22 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
     file1 = None
     file2 = None
+    subject = None
 
     if source in ["calendar", "update"] or 'mgmt' in source:
         template = EmailTemplate.objects.get(template_name="Contact Adopter")
     elif source == "ready_positive":
         template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Positive)")
+        subject = "{0} is ready to come home!".format(appt.dog)
         file1 = template.file1
         file2 = template.file2
+    elif source == "confirm_appt":
+        print('hit222')
+        template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
+        subject = "Your appointment is confirmed: {0}".format(adopter.full_name().upper())
     elif source == "ready_negative":
         template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Negative)")
+        subject = "{0} is ready to come home!".format(appt.dog)
     elif source == "limited_puppies":
         template = EmailTemplate.objects.get(template_name="Limited Puppies")
     elif source == "limited_small":
@@ -604,7 +611,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     if form.is_valid():
         data = form.cleaned_data
         message = data['message']
-        new_contact_adopter_msg(adopter, message, [file1, file2])
+        new_contact_adopter_msg(adopter, message, [file1, file2], subject)
 
         if source in ["update", "ready_positive", "ready_negative"]:
 
@@ -620,7 +627,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
             return redirect('chosen_board')
 
-        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'calendar']:
+        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'calendar', 'confirm_appt']:
 
             if source == "limited_puppies":
                 appt.comm_limited_puppies = True
@@ -641,7 +648,6 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
             return redirect('edit_adopter', adopter.id)
 
         elif 'add_form' in source:
-            print('eeeee')
             return redirect('add_adopter')
 
     context = {

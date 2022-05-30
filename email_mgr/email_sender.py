@@ -161,8 +161,10 @@ def dates_are_open(adopter, date):
 
     send_email(text, html, "default", subject, email, None)
 
-def new_contact_adopter_msg(adopter, message, files):
-    subject = "New message from the Saving Grace adoptions team"
+def new_contact_adopter_msg(adopter, message, files, subject):
+    if subject == None:
+        subject = "New message from the Saving Grace adoptions team"
+
     name = adopter.f_name
     email = adopter.primary_email
 

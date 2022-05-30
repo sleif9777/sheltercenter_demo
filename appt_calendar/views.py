@@ -504,10 +504,10 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
 
             appt.delist()
 
-            confirm_etemp(adopter, appt)
-
             if short_notice(appt):
                 notify_adoptions_add(adopter, appt)
+
+            return redirect('contact_adopter', appt.id, date_year, date_month, date_day, 'confirm_appt')
 
         return redirect('calendar_date', date.year, date.month, date.day)
     else:
@@ -623,12 +623,12 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
             post_save_email = None
         if appt.adopter is not None:
             if appt.appt_type in ["1", "2", "3"]:
-
-                if original_adopter != appt.adopter:
-                    confirm_etemp(appt.adopter, appt)
-
-                    if original_adopter is not None:
-                        cancel(original_adopter, appt)
+                #
+                # if original_adopter != appt.adopter:
+                #     confirm_etemp(appt.adopter, appt)
+                #
+                if original_adopter is not None:
+                    cancel(original_adopter, appt)
 
                 if short_notice(appt):
                     notify_adoptions_add(appt.adopter, appt)
@@ -637,6 +637,8 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
                 appt.adopter.save()
 
             appt.delist()
+
+            return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
 
         return redirect('calendar_date', date.year, date.month, date.day)
     else:
@@ -812,8 +814,9 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                 new_appt.delist()
 
                 if source == "edit":
-                    confirm_etemp(adopter, new_appt)
-                    return redirect('edit_adopter', adopter.id)
+                    # confirm_etemp(adopter, new_appt)
+                    # return redirect('edit_adopter', adopter.id)
+                    return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
                 else:
                     reschedule(adopter, new_appt)
                     return redirect("calendar_date", today.year, today.month, today.day)
@@ -825,6 +828,8 @@ def delete_appointment(request, date_year, date_month, date_day, appt_id):
     deleted_appt = get_object_or_404(Appointment, pk=appt_id)
 
     if deleted_appt.adopter:
+        cancel(deleted_appt.adopter, deleted_appt)
+
         deleted_appt.adopter.has_current_appt = False
         deleted_appt.adopter.save()
 
