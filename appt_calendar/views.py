@@ -619,10 +619,6 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
             post_save_email = None
         if appt.adopter is not None:
             if appt.appt_type in ["1", "2", "3"]:
-                #
-                # if original_adopter != appt.adopter:
-                #     confirm_etemp(appt.adopter, appt)
-                #
                 if original_adopter not in [None, appt.adopter]:
                     cancel(original_adopter, appt)
 
@@ -635,10 +631,6 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
             appt.delist()
 
             if original_adopter != appt.adopter:
-                # print('blah')
-                # print(original_adopter.id)
-                # print(appt.adopter.id)
-                # print(original_adopter != appt.adopter)
                 return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
 
         return redirect('calendar_date', date.year, date.month, date.day)

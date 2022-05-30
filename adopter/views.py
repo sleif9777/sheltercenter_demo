@@ -421,6 +421,15 @@ def resend_invite(request, adopter_id):
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})
+def resend_confirmation(request, appt_id):
+    appt = Appointment.objects.get(pk=appt_id)
+
+    confirm_etemp(appt.adopter, appt)
+
+    return redirect('calendar_date', appt.date.year, appt.date.month, appt.date.day)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
 def set_alert_mgr(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)
     form = SetAlertDateForm(request.POST or None, instance=adopter)
