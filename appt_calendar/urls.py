@@ -12,6 +12,7 @@ urlpatterns = [
 
     #calendar admin pages
     path('edit_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.edit_appointment, name="edit_cal_appointment"),
+    path('edit_appt/mgmt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.edit_appointment_from_mgmt, name="edit_cal_appointment_mgmt"),
     path('book_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.book_appointment, name="book_cal_appointment"),
     path('delete_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.delete_appointment, name="delete_cal_appointment"),
     path('add_appt/<int:timeslot_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.add_appointment, name="add_cal_appointment"),

@@ -86,7 +86,7 @@ def greeter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
     adopter = Adopter.objects.get(pk=adopter_id)
     full_name = adopter.full_name()
 
-    if 'source' == 'edit':
+    if source == 'edit' or 'mgmt' in source:
         action = "Scheduling"
     else:
         action = 'Rescheduling'
@@ -663,6 +663,66 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
     return render(request, "appt_calendar/add_edit_appt.html", context)
 
 @authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
+def edit_appointment_from_mgmt(request, date_year, date_month, date_day, appt_id):
+    try:
+        user_groups = set(group.name for group in request.user.groups.all().iterator())
+    except:
+        user_groups = set()
+
+    date = datetime.date(date_year, date_month, date_day)
+    appt = Appointment.objects.get(pk=appt_id)
+    original_adopter = appt.adopter
+
+    if user_groups == {'adopter'}:
+        form = BookAppointmentForm(request.POST or None, instance=appt)
+    else:
+        form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+
+    if appt.adopter is not None:
+        current_email = appt.adopter.primary_email
+    else:
+        current_email = None
+
+    if form.is_valid():
+        form.save()
+
+        try:
+            post_save_email = appt.adopter.primary_email
+        except:
+            post_save_email = None
+        if appt.adopter is not None:
+            if appt.appt_type in ["1", "2", "3"]:
+                if original_adopter not in [None, appt.adopter]:
+                    cancel(original_adopter, appt)
+
+                if short_notice(appt) and appt.adopter not in [None, original_adopter]:
+                    notify_adoptions_add(appt.adopter, appt)
+
+                appt.adopter.has_current_appt = True
+                appt.adopter.save()
+
+            appt.delist()
+
+            print('hey')
+            return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
+
+        return redirect('calendar_date', date.year, date.month, date.day)
+    else:
+        if user_groups == {'adopter'}:
+            form = BookAppointmentForm(request.POST or None, instance=appt)
+        else:
+            form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+
+    context = {
+        'form': form,
+        'title': "Edit Appointment",
+        'adopter': appt.adopter,
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def enter_decision(request, appt_id, date_year, date_month, date_day):
     appt = Appointment.objects.get(pk=appt_id)
@@ -823,7 +883,7 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                 if source == "edit":
                     # confirm_etemp(adopter, new_appt)
                     # return redirect('edit_adopter', adopter.id)
-                    return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
+                    return redirect('edit_cal_appointment_mgmt', new_appt.id, new_appt.date.year, new_appt.date.month, new_appt.date.day)
                 else:
                     reschedule(adopter, new_appt)
                     return redirect("calendar_date", today.year, today.month, today.day)

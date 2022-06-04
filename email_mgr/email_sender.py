@@ -141,23 +141,6 @@ def upload_errors(errors):
         </html>
         """.format(blocked_errors_html, pending_errors_html)
 
-    # text = "The following applicants have a status of Blocked or Pending and were not sent an invitation:\n"
-    #
-    # html = """\
-    # <html>
-    #   <body>
-    #   <p>The following applicants have a status of Blocked or Pending and were not sent an invitation:</p>
-    # """
-    #
-    # for e in errors:
-    #     text += "{0} - {1}\n".format(e.full_name(), "Blocked" if e.status == "2" else "Pending")
-    #     html += "{0} - {1}<br>".format(e.full_name(), "Blocked" if e.status == "2" else "Pending")
-    #
-    # html += """\
-    #   </body>
-    # </html>
-    # """
-
     send_email(text, html, "default", subject, get_base_email(), None) #done
 
 def dates_are_open(adopter, date):
