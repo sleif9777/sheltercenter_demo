@@ -110,22 +110,53 @@ def alert_date_set(adopter, date):
 def upload_errors(errors):
     subject = "Some Adopters Were Not Uploaded"
 
-    text = "The following applicants have a status of Blocked or Pending and were not sent an invitation:"
-
-    html = """\
-    <html>
-      <body>
-      <p>The following applicants have a status of Blocked or Pending and were not sent an invitation:</p>
-    """
+    pending_errors_text = ""
+    blocked_errors_text = ""
 
     for e in errors:
-        text += "{0} - {1}\n".format(e.full_name(), "Blocked" if e.status == "2" else "Pending")
-        html += "{0} - {1}<br>".format(e.full_name(), "Blocked" if e.status == "2" else "Pending")
+        if e.status == "2":
+            blocked_errors_text += "{0} - {1}\n".format(e.full_name(), "Blocked")
+        else:
+            pending_errors_text += "{0} - {1}\n".format(e.full_name(), "Pending")
 
-    html += """\
-      </body>
-    </html>
-    """
+    pending_errors_html = pending_errors_text.replace("\n", "<br>")
+    blocked_errors_html = blocked_errors_text.replace("\n", "<br>")
+
+    text = """
+        The following applicants have a status of Blocked. They may have been previously blocklisted, and their application may have been approved in error. Please review and adjust their status to Approved manually if neccessary:\n
+        {0}
+        \n
+        The following applicants have a status of Pending:
+        {1}
+        """.format(blocked_errors_text, pending_errors_text)
+
+    html = """
+        <html>
+        <body>
+        <p>The following applicants have a status of Blocked. They may have been previously blocklisted, and their application may have been approved in error. Please review and adjust their status to Approved manually if neccessary:</p>
+        {0}
+        <p>The following applicants have a status of Pending:</p>
+        {1}
+        </body>
+        </html>
+        """.format(blocked_errors_html, pending_errors_html)
+
+    # text = "The following applicants have a status of Blocked or Pending and were not sent an invitation:\n"
+    #
+    # html = """\
+    # <html>
+    #   <body>
+    #   <p>The following applicants have a status of Blocked or Pending and were not sent an invitation:</p>
+    # """
+    #
+    # for e in errors:
+    #     text += "{0} - {1}\n".format(e.full_name(), "Blocked" if e.status == "2" else "Pending")
+    #     html += "{0} - {1}<br>".format(e.full_name(), "Blocked" if e.status == "2" else "Pending")
+    #
+    # html += """\
+    #   </body>
+    # </html>
+    # """
 
     send_email(text, html, "default", subject, get_base_email(), None) #done
 
