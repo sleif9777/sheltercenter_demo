@@ -28,7 +28,7 @@
 
           <!-- header grid, has a bottom border unless it is the only section -->
           <!-- it will be the only section when the appointment is not booked and has no notes -->
-          {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest %}
+          {% if appt.internal_notes or adopter_notes or adopter.app_interest %}
             <table class="appt_info_block" id="appt_header_block">
           {% else %}
             <table class="appt_info_block appt_end_block" id="appt_header_block">
@@ -43,11 +43,79 @@
           <!-- end header table -->
           </table>
 
+            <table class="appt_subblock appt_info_block">
+
+            <tr class="info_block_subheader">
+              <th class="left">Notes</th>
+              <th class="right"></th>
+            </tr>
+
+            {% if appt.internal_notes or adopter_notes or adopter.app_interest %}
+
+              {% if adopter.app_interest %}
+              <tr>
+                <td class="left"><b>From Shelterluv:</b></td>
+                <td class="left">{{adopter.app_interest|linebreaks}}</td>
+              </tr>
+              {% endif %}
+            {% else %}
+              <tr>
+                <td class="left">No notes on file for this adopter.</td>
+              </tr>
+            {% endif %}
+
+          </table>
+        {% endif %}
+        <!-- if appt is booked, show actions and contacts -->
+
+        <!-- if the adopter has a shelterluv application attached, there should be application info -->
+        {% if adopter.application_id %}
+          <table class="appt_subblock appt_info_block">
+
+            <tr class="info_block_subheader">
+              <th>About {{adopter.f_name}}</th>
+              <th class="right"></th>
+            </tr>
+
+            <tr>
+              <td>
+                {% if adopter.city != "" and adopter.state != "" %}
+                  Coming from {{adopter.city}}, {{adopter.state}}
+                {% else %}
+                  No Shelterluv information on file.
+                {% endif %}
+              </td>
+
+              <td class="right">
+                {% if adopter.housing_type != "" and adopter.housing != "" %}
+                  {{adopter.housing_type}} ({{adopter.housing}})
+                {% endif %}
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                {% if adopter.activity_level != "" %}
+                  {{adopter.activity_level}} Activity Household
+                {% endif %}
+              </td>
+
+              <td class="right">
+                {% if adopter.has_fence %}
+                  Has Fence
+                {% elif adopter.application_id and not adopter.has_fence %}
+                  No Fence
+                {% endif %}
+              </td>
+            </tr>
+
+          </table>
+          {% endif %}
+
           <table class="appt_subblock appt_info_block appt_end_block">
 
             <tr class="info_block_subheader">
               <th>
-                <div style="padding-bottom: 10px;"><em>"{{adopter.app_interest}}"</em><br></div>
                 <a href="{% url 'contact_adopter' 100 2021 1 1 source %}">Contact {{adopter.f_name}} &#9993;&#xFE0E;</a><br>
                 <a href="{% url 'greeter_reschedule' adopter.id 100 today.year today.month today.day 'edit' %}">Schedule {{adopter.f_name}}</a><br>
                 <a href="https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}" target="_blank">Print Application</a>
@@ -65,7 +133,6 @@
 
     </ul>
 
-    {% endif %}
 
     <form class="" action="" method="post">
       {% csrf_token %}
