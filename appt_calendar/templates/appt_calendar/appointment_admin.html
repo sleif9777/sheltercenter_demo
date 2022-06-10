@@ -241,7 +241,7 @@
           {% if appt.outcome == "1" %}
             <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
           {% else %}
-            {% if appt.outcome == "5" or appt.outcome == "6" %}
+            {% if appt.outcome == "5" or appt.outcome == "6" or appt.outcome == "11" %}
               <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
             {% else %}
               <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog.upper}}</a>

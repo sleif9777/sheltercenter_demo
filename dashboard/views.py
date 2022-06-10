@@ -139,6 +139,10 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
                 empty_dates += [[d, date_str(d)]]
 
         #check when adopters were last uploaded
+        print("Today", today)
+        print("Range", [today - datetime.timedelta(days=x) for x in range(2)])
+        print("Datapoint", system_settings.last_adopter_upload)
+        print("Bool", system_settings.last_adopter_upload not in [today - datetime.timedelta(days=x) for x in range(2)])
         if system_settings.last_adopter_upload not in [today - datetime.timedelta(days=x) for x in range(2)]:
             upload_current = False
 

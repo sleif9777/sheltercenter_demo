@@ -35,7 +35,7 @@
           {% endif %}
 
             <tr>
-              <td class="appt_description left upper"><b>{{adopter.full_name}} - NO APPOINTMENT SET</b></td>
+              <td class="appt_description left upper"><b>NO APPOINTMENT SET</b></td>
 
               <td class="appt_description right"></td>
             </tr>
@@ -65,7 +65,6 @@
             {% endif %}
 
           </table>
-        {% endif %}
         <!-- if appt is booked, show actions and contacts -->
 
         <!-- if the adopter has a shelterluv application attached, there should be application info -->
@@ -132,6 +131,7 @@
       </li>
 
     </ul>
+    {% endif %}
 
 
     <form class="" action="" method="post">
