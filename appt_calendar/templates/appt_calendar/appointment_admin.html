@@ -168,6 +168,54 @@
 
     </table>
 
+    <!-- <table class="appt_subblock appt_info_block">
+      <tr class="info_block_subheader">
+        <th class="left">{{appt.adopter.f_name}}'s Preferences</th>
+        <th class="right"></th>
+      </tr>
+
+      <tr>
+        <td class="left">
+          {% if appt.adopter.gender_preference == "2" %}
+            Only interested in females
+          {% elif appt.adopter.gender_preference == "3" %}
+            Only interested in males
+          {% else %}
+            No gender preference
+          {% endif %}
+        </td>
+        <td class="right">
+          {% if appt.adopter.age_preference == "2" %}
+            Puppies only
+          {% elif appt.adopter.age_preference == "3" %}
+            Adults only
+          {% else %}
+            No age preference
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td class="left">
+          {% if appt.adopter.min_weight == 0 and appt.adopter.max_weight == 0 %}
+            No weight preference
+          {% elif appt.adopter.min_weight > 0 and appt.adopter.max_weight == 0 %}
+            Looking for over {{appt.adopter.min_weight}} lbs.
+          {% elif appt.adopter.max_weight > 0 and appt.adopter.min_weight == 0 %}
+            Looking for under {{appt.adopter.max_weight}} lbs.
+          {% elif appt.adopter.min_weight > 0 and appt.adopter.max_weight > 0 %}
+            Looking for between {{appt.adopter.min_weight}} and {{appt.adopter.max_weight}} lbs.
+          {% endif %}
+        </td>
+        <td class="right">
+          {% if appt.adopter.hypo_preferred %}
+            Needs hypo/low-shedding!
+          {% endif %}
+        </td>
+      </tr>
+
+    </table> -->
+
     <!-- this table would never be the last block -->
     <table class="appt_subblock appt_info_block">
 

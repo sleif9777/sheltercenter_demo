@@ -4,6 +4,7 @@ from schedule_template.models import Daily_Schedule, TimeslotTemplate, Appointme
 from .models import *
 from adopter.models import Adopter
 from .forms import *
+from adopter.forms import *
 from email_mgr.email_sender import *
 from .date_time_strings import *
 from .appointment_manager import *
@@ -122,9 +123,11 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
     else:
         form = BookAppointmentForm(request.POST or None, instance=appt)
+        adopter_form = AdopterPreferenceForm(request.POST or None, instance=appt)
 
         if form.is_valid():
             form.save()
+            adopter_form.save()
 
             print(request.POST)
 
@@ -155,9 +158,11 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
         else:
 
             form = BookAppointmentForm(request.POST or None, instance=appt, initial={'adopter': adopter})
+            adopter_form = AdopterPreferenceForm(request.POST or None, instance=adopter)
 
         context = {
             'form': form,
+            'adopter_form': adopter_form,
             'adopter': adopter,
             'page_title': "Book Appointment",
         }
@@ -615,9 +620,15 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
     original_adopter = appt.adopter
 
     if user_groups == {'adopter'}:
-        form = BookAppointmentForm(request.POST or None, instance=appt)
+        form = EditAppointmentForm(request.POST or None, instance=appt,)
+        adopter_form = AdopterPreferenceForm(request.POST or None, instance=original_adopter)
     else:
-        form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+        print(appt.adopter)
+        if appt.adopter is not None:
+            form = AppointmentModelFormPrefilledEdit(request.POST or None, instance=appt)
+        else:
+            form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+        adopter_form = None
 
     if appt.adopter is not None:
         current_email = appt.adopter.primary_email
@@ -626,6 +637,9 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
 
     if form.is_valid():
         form.save()
+
+        if adopter_form:
+            adopter_form.save()
 
         try:
             post_save_email = appt.adopter.primary_email
@@ -650,12 +664,18 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
         return redirect('calendar_date', date.year, date.month, date.day)
     else:
         if user_groups == {'adopter'}:
-            form = BookAppointmentForm(request.POST or None, instance=appt)
+            form = EditAppointmentForm(request.POST or None, instance=appt,)
+            adopter_form = AdopterPreferenceForm(request.POST or None, instance=original_adopter)
         else:
-            form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+            if appt.adopter is not None:
+                form = AppointmentModelFormPrefilledEdit(request.POST or None, instance=appt)
+            else:
+                form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+            adopter_form = None
 
     context = {
         'form': form,
+        'adopter_form': adopter_form,
         'title': "Edit Appointment",
         'adopter': appt.adopter,
     }
@@ -675,9 +695,12 @@ def edit_appointment_from_mgmt(request, date_year, date_month, date_day, appt_id
     original_adopter = appt.adopter
 
     if user_groups == {'adopter'}:
-        form = BookAppointmentForm(request.POST or None, instance=appt)
+        form = EditAppointmentForm(request.POST or None, instance=appt)
     else:
-        form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+        if appt.adopter is not None:
+            form = AppointmentModelFormPrefilledEdit(request.POST or None, instance=appt)
+        else:
+            form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
 
     if appt.adopter is not None:
         current_email = appt.adopter.primary_email
@@ -710,10 +733,13 @@ def edit_appointment_from_mgmt(request, date_year, date_month, date_day, appt_id
         return redirect('calendar_date', date.year, date.month, date.day)
     else:
         if user_groups == {'adopter'}:
-            form = BookAppointmentForm(request.POST or None, instance=appt)
+            form = EditAppointmentForm(request.POST or None, instance=appt)
         else:
-            form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
-
+            if appt.adopter is not None:
+                form = AppointmentModelFormPrefilledEdit(request.POST or None, instance=appt)
+            else:
+                form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+                
     context = {
         'form': form,
         'title': "Edit Appointment",

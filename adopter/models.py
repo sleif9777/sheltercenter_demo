@@ -14,6 +14,18 @@ class Adopter(models.Model):
         ("3", "Pending")
     ]
 
+    PREF_GENDERS = [
+        ("1", "No Preference"),
+        ("2", "Female Only"),
+        ("3", "Male Only"),
+    ]
+
+    PREF_AGES = [
+        ("1", "No Preference"),
+        ("2", "Puppies Only"),
+        ("3", "Adults Only")
+    ]
+
     #personal attributes
     f_name = models.CharField(default="", max_length=200, blank=True) #need to refactor and add verbose
     l_name = models.CharField(default="", max_length=200, blank=True) #""
@@ -40,6 +52,13 @@ class Adopter(models.Model):
     friend_of_foster = models.BooleanField(default = False)
     carryover_shelterluv = models.BooleanField(default = False)
     chosen_dog = models.CharField(default="", max_length=200, blank=True)
+
+    #preference attributes
+    min_weight = models.IntegerField(default = 0,)
+    max_weight = models.IntegerField(default = 0,)
+    hypo_preferred = models.BooleanField(default = False)
+    gender_preference = models.CharField(default="1", max_length=1, choices=PREF_GENDERS)
+    age_preference = models.CharField(default="1", max_length=1, choices=PREF_AGES)
 
     #database-related attributes
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)

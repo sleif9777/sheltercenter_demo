@@ -36,6 +36,22 @@ class AdopterForm(forms.ModelForm):
         kwargs.setdefault('label_suffix', '')
         super(AdopterForm, self).__init__(*args, **kwargs)
 
+class AdopterPreferenceForm(forms.ModelForm):
+    class Meta:
+        model = Adopter
+        fields = [
+            'gender_preference',
+            'age_preference',
+            'min_weight',
+            'max_weight',
+            'hypo_preferred',
+        ]
+        labels = {
+            'min_weight': "Minimum desired weight (optional)",
+            'max_weight': "Maximum desired weight (optional)",
+            'hypo_preferred': "I am only looking for a low-shed or hypoallergenic dog"
+        }
+
 class SetAlertDateForm(forms.ModelForm):
     class Meta:
         model = Adopter

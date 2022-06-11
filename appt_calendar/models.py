@@ -55,7 +55,7 @@ class Appointment(models.Model):
 
     #adopter note attributes
     internal_notes = models.TextField(default="", blank=True)
-    adopter_notes = models.TextField(default="", blank=True)
+    adopter_notes = models.TextField(default="", blank=True, max_length="100")
 
     #communication attributes
     comm_adopted_dogs = models.BooleanField(default=False)
