@@ -144,7 +144,7 @@ def upload_errors(errors):
     send_email(text, html, "default", subject, get_base_email(), None) #done
 
 def dates_are_open(adopter, date):
-    subject = "Let's Book Your Saving Grace Adoption Appointment!"
+    subject = "Let's Book Your Saving Grace Adoption Appointment! ({0})".format(adopter.full_name().upper())
     name = adopter.f_name
     email = adopter.primary_email
 

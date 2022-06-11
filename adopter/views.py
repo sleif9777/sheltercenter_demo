@@ -193,6 +193,7 @@ def add_from_file(file):
 
             #else handle message
             else:
+                print(existing_adopter.full_name(), existing_adopter.accept_date)
                 handle_existing(existing_adopter, row[4], row[11])
         except Exception as f:
             print('f', f)
