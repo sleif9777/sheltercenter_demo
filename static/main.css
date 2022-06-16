@@ -20,6 +20,14 @@ body {
   background-color: #ea9999;
 }
 
+#searchBar {
+  width: 95%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 10px; /* Add some padding */
+  border: 1px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
+
 .info_box {
   border: 4px #A7396E solid;
   width: 80%;
