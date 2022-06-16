@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-import datetime, time
+import datetime, time, sys
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
 from .models import *
 from adopter.models import Adopter
 from .forms import *
+from adopter.forms import *
 from email_mgr.email_sender import *
 from .date_time_strings import *
 from .appointment_manager import *
@@ -86,7 +87,7 @@ def greeter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
     adopter = Adopter.objects.get(pk=adopter_id)
     full_name = adopter.full_name()
 
-    if 'source' == 'edit':
+    if source == 'edit' or 'mgmt' in source:
         action = "Scheduling"
     else:
         action = 'Rescheduling'
@@ -122,9 +123,25 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
     else:
         form = BookAppointmentForm(request.POST or None, instance=appt)
+        adopter_form = AdopterPreferenceForm(request.POST or None, instance=appt)
 
         if form.is_valid():
             form.save()
+            adopter_form.save()
+
+            print(request.POST)
+
+            try:
+                questions = dict(request.POST)['outstanding_questions'][0]
+                questions_msg(adopter, appt, questions)
+            except Exception as e:
+                exception_type, exception_object, exception_traceback = sys.exc_info()
+                filename = exception_traceback.tb_frame.f_code.co_filename
+                line_number = exception_traceback.tb_lineno
+
+                print("Exception type: ", exception_type)
+                print("File name: ", filename)
+                print("Line number: ", line_number)
 
             adopter.has_current_appt = True
             adopter.save()
@@ -141,9 +158,11 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
         else:
 
             form = BookAppointmentForm(request.POST or None, instance=appt, initial={'adopter': adopter})
+            adopter_form = AdopterPreferenceForm(request.POST or None, instance=adopter)
 
         context = {
             'form': form,
+            'adopter_form': adopter_form,
             'adopter': adopter,
             'page_title': "Book Appointment",
         }
@@ -250,6 +269,7 @@ def calendar_print(request, date_year, date_month, date_day):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def daily_report_all_appts(request, date_year, date_month, date_day):
+    return redirect('daily_report_adopted_chosen_fta')
     context = gc(request.user, 'full', None, date_year, date_month, date_day)
 
     context['page_title'] = "All Appointments Report"
@@ -257,19 +277,14 @@ def daily_report_all_appts(request, date_year, date_month, date_day):
     return render(request, "appt_calendar/daily_report_all_appts.html/", context)
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def daily_reports_home(request):
     date = datetime.date.today()
 
-    context = {
-        "date": date,
-        'page_title': "Daily Reports",
-    }
-
-    return render(request, "appt_calendar/daily_report_home.html/", context)
+    return redirect('daily_report_adopted_chosen_fta', date.year, date.month, date.day)
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def chosen_board(request):
     today = datetime.date.today()
     appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "7", "8", "9", "10"], paperwork_complete=False)]
@@ -314,7 +329,7 @@ def mark_complete_on_chosen_board(request, appt_id):
     return redirect('chosen_board')
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def daily_report_adopted_chosen_fta(request, date_year, date_month, date_day):
     context = gc(request.user, 'full', None, date_year, date_month, date_day)
 
@@ -397,16 +412,60 @@ def edit_daily_announcement(request, announcement_id, date_year, date_month, dat
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
-def add_calendar_announcement(request, date_year, date_month, date_day):
+def add_internal_announcement(request, date_year, date_month, date_day):
     date = datetime.date(date_year, date_month, date_day)
-    form = CalendarAnnouncementForm(request.POST or None, initial = {'date': date})
+    form = InternalAnnouncementForm(request.POST or None, initial = {'date': date})
 
     if form.is_valid():
         form.save()
         return redirect('calendar_date', date.year, date.month, date.day)
 
     else:
-        form = CalendarAnnouncementForm(request.POST or None, initial = {'date': date})
+        form = InternalAnnouncementForm(request.POST or None, initial = {'date': date})
+
+    context = {
+        'form': form,
+        'date': date,
+        'title': "Add Calendar Note for {0}".format(date_str(date)),
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def edit_internal_announcement(request, announcement_id, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    announcement = InternalAnnouncement.objects.get(pk = announcement_id)
+    form = InternalAnnouncementForm(request.POST or None, instance=announcement)
+
+    if form.is_valid():
+        form.save()
+        return redirect('calendar_date', date.year, date.month, date.day)
+
+    else:
+        form = InternalAnnouncementForm(request.POST or None, instance=announcement)
+
+    context = {
+        'form': form,
+        'date': date,
+        'title': "Edit Calendar Note for {0}".format(date_str(date)),
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def add_calendar_announcement(request, date_year, date_month, date_day):
+    date = datetime.date(date_year, date_month, date_day)
+    announcement = CalendarAnnouncement.objects.latest('id')
+    form = CalendarAnnouncementForm(request.POST or None, instance=announcement)
+
+    if form.is_valid():
+        form.save()
+        return redirect('calendar_date', date.year, date.month, date.day)
+
+    else:
+        form = CalendarAnnouncementForm(request.POST or None, instance=announcement)
 
     context = {
         'form': form,
@@ -460,10 +519,10 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
 
             appt.delist()
 
-            confirm_etemp(adopter, appt)
-
             if short_notice(appt):
                 notify_adoptions_add(adopter, appt)
+
+            return redirect('contact_adopter', appt.id, date_year, date_month, date_day, 'confirm_appt')
 
         return redirect('calendar_date', date.year, date.month, date.day)
     else:
@@ -549,7 +608,7 @@ def short_notice(appt):
     return False
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
 def edit_appointment(request, date_year, date_month, date_day, appt_id):
     try:
         user_groups = set(group.name for group in request.user.groups.all().iterator())
@@ -561,9 +620,87 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
     original_adopter = appt.adopter
 
     if user_groups == {'adopter'}:
-        form = BookAppointmentForm(request.POST or None, instance=appt)
+        form = EditAppointmentForm(request.POST or None, instance=appt,)
+        adopter_form = AdopterPreferenceForm(request.POST or None, instance=original_adopter)
     else:
-        form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+        print(appt.adopter)
+        if appt.adopter is not None:
+            form = AppointmentModelFormPrefilledEdit(request.POST or None, instance=appt)
+        else:
+            form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+        adopter_form = None
+
+    if appt.adopter is not None:
+        current_email = appt.adopter.primary_email
+    else:
+        current_email = None
+
+    if form.is_valid():
+        form.save()
+
+        if adopter_form:
+            adopter_form.save()
+
+        try:
+            post_save_email = appt.adopter.primary_email
+        except:
+            post_save_email = None
+        if appt.adopter is not None:
+            if appt.appt_type in ["1", "2", "3"]:
+                if original_adopter not in [None, appt.adopter]:
+                    cancel(original_adopter, appt)
+
+                if short_notice(appt) and appt.adopter not in [None, original_adopter]:
+                    notify_adoptions_add(appt.adopter, appt)
+
+                appt.adopter.has_current_appt = True
+                appt.adopter.save()
+
+            appt.delist()
+
+            if original_adopter != appt.adopter:
+                return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
+
+        return redirect('calendar_date', date.year, date.month, date.day)
+    else:
+        if user_groups == {'adopter'}:
+            form = EditAppointmentForm(request.POST or None, instance=appt,)
+            adopter_form = AdopterPreferenceForm(request.POST or None, instance=original_adopter)
+        else:
+            if appt.adopter is not None:
+                form = AppointmentModelFormPrefilledEdit(request.POST or None, instance=appt)
+            else:
+                form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+            adopter_form = None
+
+    context = {
+        'form': form,
+        'adopter_form': adopter_form,
+        'title': "Edit Appointment",
+        'adopter': appt.adopter,
+    }
+
+    return render(request, "appt_calendar/add_edit_appt.html", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
+def edit_appointment_from_mgmt(request, date_year, date_month, date_day, appt_id):
+    try:
+        user_groups = set(group.name for group in request.user.groups.all().iterator())
+    except:
+        user_groups = set()
+
+    date = datetime.date(date_year, date_month, date_day)
+    appt = Appointment.objects.get(pk=appt_id)
+    original_adopter = appt.adopter
+
+    if user_groups == {'adopter'}:
+        form = EditAppointmentForm(request.POST or None, instance=appt)
+    else:
+        if appt.adopter is not None:
+            form = AppointmentModelFormPrefilledEdit(request.POST or None, instance=appt)
+        else:
+            form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
 
     if appt.adopter is not None:
         current_email = appt.adopter.primary_email
@@ -579,14 +716,10 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
             post_save_email = None
         if appt.adopter is not None:
             if appt.appt_type in ["1", "2", "3"]:
+                if original_adopter not in [None, appt.adopter]:
+                    cancel(original_adopter, appt)
 
-                if original_adopter != appt.adopter:
-                    confirm_etemp(appt.adopter, appt)
-
-                    if original_adopter is not None:
-                        cancel(original_adopter, appt)
-
-                if short_notice(appt):
+                if short_notice(appt) and appt.adopter not in [None, original_adopter]:
                     notify_adoptions_add(appt.adopter, appt)
 
                 appt.adopter.has_current_appt = True
@@ -594,13 +727,19 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
 
             appt.delist()
 
+            print('hey')
+            return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
+
         return redirect('calendar_date', date.year, date.month, date.day)
     else:
         if user_groups == {'adopter'}:
-            form = BookAppointmentForm(request.POST or None, instance=appt)
+            form = EditAppointmentForm(request.POST or None, instance=appt)
         else:
-            form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
-
+            if appt.adopter is not None:
+                form = AppointmentModelFormPrefilledEdit(request.POST or None, instance=appt)
+            else:
+                form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
+                
     context = {
         'form': form,
         'title': "Edit Appointment",
@@ -768,8 +907,9 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                 new_appt.delist()
 
                 if source == "edit":
-                    confirm_etemp(adopter, new_appt)
-                    return redirect('edit_adopter', adopter.id)
+                    # confirm_etemp(adopter, new_appt)
+                    # return redirect('edit_adopter', adopter.id)
+                    return redirect('edit_cal_appointment_mgmt', new_appt.id, new_appt.date.year, new_appt.date.month, new_appt.date.day)
                 else:
                     reschedule(adopter, new_appt)
                     return redirect("calendar_date", today.year, today.month, today.day)
@@ -779,6 +919,15 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 def delete_appointment(request, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     deleted_appt = get_object_or_404(Appointment, pk=appt_id)
+
+    if deleted_appt.adopter:
+        cancel(deleted_appt.adopter, deleted_appt)
+
+        deleted_appt.adopter.has_current_appt = False
+        deleted_appt.adopter.save()
+
+        deleted_appt.reset()
+
     deleted_appt.delete()
 
     return redirect('calendar_date', date.year, date.month, date.day)

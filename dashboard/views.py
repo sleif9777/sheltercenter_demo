@@ -139,6 +139,10 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
                 empty_dates += [[d, date_str(d)]]
 
         #check when adopters were last uploaded
+        print("Today", today)
+        print("Range", [today - datetime.timedelta(days=x) for x in range(2)])
+        print("Datapoint", system_settings.last_adopter_upload)
+        print("Bool", system_settings.last_adopter_upload not in [today - datetime.timedelta(days=x) for x in range(2)])
         if system_settings.last_adopter_upload not in [today - datetime.timedelta(days=x) for x in range(2)]:
             upload_current = False
 
@@ -157,7 +161,14 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
 
     #retrieve the daily announcement if one exists
     try:
-        calendar_announcement = CalendarAnnouncement.objects.get(pk = 1)
+        internal_announcement = InternalAnnouncement.objects.get(date = date)
+    except:
+        internal_announcement = None
+
+    #retrieve the daily announcement if one exists
+    try:
+        calendar_announcement = CalendarAnnouncement.objects.get(pk=1)
+        print(calendar_announcement.text)
     except:
         calendar_announcement = None
 
@@ -236,6 +247,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'page_title': "Calendar",
         'daily_announcement': daily_announcement,
         'calendar_announcement': calendar_announcement,
+        'internal_announcement': internal_announcement,
     }
 
     return context

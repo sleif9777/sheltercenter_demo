@@ -42,7 +42,7 @@
           <a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a>
 
           {% if appt.adopter %}
-            <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">&#128438;&#xFE0E;</a>
+            <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">&#128196;&#xFE0E;</a>
             <a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">&#128100;&#xFE0E;<sub style="font-size: 8pt;">&#128683;&#xFE0E;</sub></a>
           {% endif %}
           <a href="{% url 'delete_cal_appointment' appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
@@ -168,6 +168,54 @@
 
     </table>
 
+    <!-- <table class="appt_subblock appt_info_block">
+      <tr class="info_block_subheader">
+        <th class="left">{{appt.adopter.f_name}}'s Preferences</th>
+        <th class="right"></th>
+      </tr>
+
+      <tr>
+        <td class="left">
+          {% if appt.adopter.gender_preference == "2" %}
+            Only interested in females
+          {% elif appt.adopter.gender_preference == "3" %}
+            Only interested in males
+          {% else %}
+            No gender preference
+          {% endif %}
+        </td>
+        <td class="right">
+          {% if appt.adopter.age_preference == "2" %}
+            Puppies only
+          {% elif appt.adopter.age_preference == "3" %}
+            Adults only
+          {% else %}
+            No age preference
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td class="left">
+          {% if appt.adopter.min_weight == 0 and appt.adopter.max_weight == 0 %}
+            No weight preference
+          {% elif appt.adopter.min_weight > 0 and appt.adopter.max_weight == 0 %}
+            Looking for over {{appt.adopter.min_weight}} lbs.
+          {% elif appt.adopter.max_weight > 0 and appt.adopter.min_weight == 0 %}
+            Looking for under {{appt.adopter.max_weight}} lbs.
+          {% elif appt.adopter.min_weight > 0 and appt.adopter.max_weight > 0 %}
+            Looking for between {{appt.adopter.min_weight}} and {{appt.adopter.max_weight}} lbs.
+          {% endif %}
+        </td>
+        <td class="right">
+          {% if appt.adopter.hypo_preferred %}
+            Needs hypo/low-shedding!
+          {% endif %}
+        </td>
+      </tr>
+
+    </table> -->
+
     <!-- this table would never be the last block -->
     <table class="appt_subblock appt_info_block">
 
@@ -222,6 +270,7 @@
         </td>
 
         <td class="right">
+          <a href="{% url 'resend_confirmation' appt.id %}">Resend Confirmation</a>
         </td>
       </tr>
 
@@ -240,7 +289,7 @@
           {% if appt.outcome == "1" %}
             <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
           {% else %}
-            {% if appt.outcome == "5" or appt.outcome == "6" %}
+            {% if appt.outcome == "5" or appt.outcome == "6" or appt.outcome == "11" %}
               <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
             {% else %}
               <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog.upper}}</a>

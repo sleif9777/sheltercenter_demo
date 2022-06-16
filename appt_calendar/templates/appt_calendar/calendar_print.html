@@ -12,6 +12,12 @@
       <h1>{{date_pretty}}</h1>
     </div>
 
+    <div class="info_box">
+      {% if internal_announcement %}
+        <p class="datelink"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>{{internal_announcement.text|safe}}</p>
+      {% endif %}
+    </div>
+
     {% if empty_day == True %}
     <div class="textpage">
       No appointments today.
@@ -29,7 +35,7 @@
       </tr>
       {% for timeslot, appointments in timeslots.items %}
         {% for appt in appointments %}
-          {% if appt.appt_type in schedulable and appt.adopter %}
+          {% if appt.dog or appt.adopter %}
             <tr class="appt_row">
               <td style="">{{appt.time_string}}</td>
               <td>

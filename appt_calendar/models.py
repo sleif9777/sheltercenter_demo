@@ -10,6 +10,10 @@ class DailyAnnouncement(models.Model):
     date = models.DateField(default = timezone.now())
     text = models.TextField(default="", blank=True)
 
+class InternalAnnouncement(models.Model):
+    date = models.DateField(default = timezone.now())
+    text = models.TextField(default="", blank=True)
+
 class CalendarAnnouncement(models.Model):
     text = models.TextField(default="", blank=True)
 
@@ -34,7 +38,8 @@ class Appointment(models.Model):
         ("7", "Ready To Roll"),
         ("8", "Paperwork Scheduled"),
         ("9", "Chosen - needs vetting"),
-        ("10", "Chosen - needs well check")
+        ("10", "Chosen - needs well check"),
+        ("11", "Error")
     ]
 
     #appt basic information
@@ -43,14 +48,14 @@ class Appointment(models.Model):
     appt_type = models.CharField(default="1", max_length=1, choices=APPT_TYPES)
 
     #booking information
-    adopter = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL)
+    adopter = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL, limit_choices_to={'has_current_appt': False, 'status': "1"})
     available = models.BooleanField(default = True) #is not filled
     published = models.BooleanField(default = True) #can be seen by public
     locked = models.BooleanField(default = False) #when published = True, if locked, public can see but not interact
 
     #adopter note attributes
     internal_notes = models.TextField(default="", blank=True)
-    adopter_notes = models.TextField(default="", blank=True)
+    adopter_notes = models.TextField(default="", blank=True, max_length="100")
 
     #communication attributes
     comm_adopted_dogs = models.BooleanField(default=False)

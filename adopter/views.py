@@ -71,7 +71,7 @@ def create_adopter_from_row(row):
     #set status
     if row[4] == "Denied":
         new_adopter.status = "2"
-    elif row[4] not in ["Pending", "In Process"]:
+    elif row[4] in ["Pending", "In Process"]:
         new_adopter.status = "3"
 
     new_adopter.save()
@@ -114,6 +114,9 @@ def create_invite_email(adopter):
     message.subject = "Your adoption request has been reviewed: " + adopter.full_name().upper()
     message.email = adopter.primary_email
 
+    if adopter.app_interest not in ["", "dogs", "Dogs", "dog", "Dog"] and len(adopter.app_interest) <= 10:
+        message.subject += " ({0})".format(adopter.app_interest)
+
     if adopter.out_of_state == True:
         template = EmailTemplate.objects.get(template_name="Application Accepted (outside NC, VA, SC)")
     else:
@@ -130,12 +133,12 @@ def create_invite_email(adopter):
 def handle_existing(existing_adopter, status, app_interest):
     today = datetime.date.today()
     special_circumstances = (existing_adopter.adopting_foster or existing_adopter.friend_of_foster or existing_adopter.adopting_host)
-    accepted_last_2_days = existing_adopter.accept_date in [today - datetime.timedelta(days = x) for x in range(2)]
+    accepted_last_4_days = existing_adopter.accept_date in [today - datetime.timedelta(days = x) for x in range(4)]
 
     print(special_circumstances, existing_adopter.adopting_foster, existing_adopter.friend_of_foster, existing_adopter.adopting_host)
 
     #if the adopter is approved...
-    if existing_adopter.status == "1":
+    if existing_adopter.status == "1" and status is not "Archived":
         print('hit')
         if app_interest not in ["", "dogs", "Dogs", "Dog"]:
             existing_adopter.app_interest = app_interest
@@ -147,9 +150,9 @@ def handle_existing(existing_adopter, status, app_interest):
             existing_adopter.accept_date = datetime.date.today()
             create_invite_email(existing_adopter)
         #...and was accepted under a year ago, but more than two days ago, send push
-        elif not accepted_last_2_days and not special_circumstances:
+        elif not accepted_last_4_days and not special_circumstances:
             print('miss')
-            duplicate_app(existing_adopter)
+            create_invite_email(existing_adopter)
 
     #if moved from pending to approved, send invite
     elif existing_adopter.status == "3" and status in ["Accepted", "1"]:
@@ -190,10 +193,14 @@ def add_from_file(file):
 
             #else handle message
             else:
+                print(existing_adopter.full_name(), existing_adopter.accept_date)
                 handle_existing(existing_adopter, row[4], row[11])
         except Exception as f:
             print('f', f)
             adopter = create_adopter_from_row(row)
+
+            print(adopter.full_name())
+            print(adopter.status)
 
             if adopter.status == "1":
                 #create Application
@@ -415,6 +422,15 @@ def resend_invite(request, adopter_id):
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})
+def resend_confirmation(request, appt_id):
+    appt = Appointment.objects.get(pk=appt_id)
+
+    confirm_etemp(appt.adopter, appt)
+
+    return redirect('calendar_date', appt.date.year, appt.date.month, appt.date.day)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
 def set_alert_mgr(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)
     form = SetAlertDateForm(request.POST or None, instance=adopter)
@@ -561,15 +577,22 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
     file1 = None
     file2 = None
+    subject = None
 
     if source in ["calendar", "update"] or 'mgmt' in source:
         template = EmailTemplate.objects.get(template_name="Contact Adopter")
     elif source == "ready_positive":
         template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Positive)")
+        subject = "{0} is ready to come home!".format(appt.dog)
         file1 = template.file1
         file2 = template.file2
+    elif source == "confirm_appt":
+        print('hit222')
+        template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
+        subject = "Your appointment is confirmed: {0}".format(adopter.full_name().upper())
     elif source == "ready_negative":
         template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Negative)")
+        subject = "{0} is ready to come home!".format(appt.dog)
     elif source == "limited_puppies":
         template = EmailTemplate.objects.get(template_name="Limited Puppies")
     elif source == "limited_small":
@@ -598,7 +621,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     if form.is_valid():
         data = form.cleaned_data
         message = data['message']
-        new_contact_adopter_msg(adopter, message, [file1, file2])
+        new_contact_adopter_msg(adopter, message, [file1, file2], subject)
 
         if source in ["update", "ready_positive", "ready_negative"]:
 
@@ -614,7 +637,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
             return redirect('chosen_board')
 
-        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'calendar']:
+        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'calendar', 'confirm_appt']:
 
             if source == "limited_puppies":
                 appt.comm_limited_puppies = True
@@ -635,7 +658,6 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
             return redirect('edit_adopter', adopter.id)
 
         elif 'add_form' in source:
-            print('eeeee')
             return redirect('add_adopter')
 
     context = {

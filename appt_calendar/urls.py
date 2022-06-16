@@ -12,6 +12,7 @@ urlpatterns = [
 
     #calendar admin pages
     path('edit_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.edit_appointment, name="edit_cal_appointment"),
+    path('edit_appt/mgmt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.edit_appointment_from_mgmt, name="edit_cal_appointment_mgmt"),
     path('book_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.book_appointment, name="book_cal_appointment"),
     path('delete_appt/<int:appt_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.delete_appointment, name="delete_cal_appointment"),
     path('add_appt/<int:timeslot_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.add_appointment, name="add_cal_appointment"),
@@ -19,6 +20,8 @@ urlpatterns = [
     path('add_appt/paperwork/<int:timeslot_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/source/<int:originalappt_id>/', views.add_paperwork_appointment, name="add_paperwork_appointment"),
     path('announcement/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.add_daily_announcement, name="add_daily_announcement"),
     path('announcement/<int:announcement_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.edit_daily_announcement, name="edit_daily_announcement"),
+    path('internal/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.add_internal_announcement, name="add_internal_announcement"),
+    path('internal/<int:announcement_id>/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.edit_internal_announcement, name="edit_internal_announcement"),
     path('calendar_note/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.add_calendar_announcement, name="add_calendar_announcement"),
     path('calendar_note/edit/date/<int:date_year>/<int:date_month>/<int:date_day>/', views.edit_calendar_announcement, name="edit_calendar_announcement"),
     path('delete_timeslot/<int:timeslot_id>/<int:date_year>/<int:date_month>/<int:date_day>/', views.delete_timeslot, name="delete_cal_timeslot"),
