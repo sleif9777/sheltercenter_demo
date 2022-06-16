@@ -18,7 +18,7 @@
 
     </ul>
 
-    {% else %}
+    {% elif adopter.status == "1" %}
 
     <ul class="appt_solo" id="adopter_mgmt_appt">
 
@@ -131,6 +131,10 @@
       </li>
 
     </ul>
+    {% else %}
+      <div class="info_box" style="margin-bottom: 10px;">
+        <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> This adopter was not approved. If you have approved a previously-denied application from this adopter, please change their status.</p>
+      </div>
     {% endif %}
 
 
