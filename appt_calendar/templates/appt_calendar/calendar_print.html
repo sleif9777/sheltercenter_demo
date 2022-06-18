@@ -27,7 +27,7 @@
     <table style="width:100%;font-size:10pt;">
       <tr>
         <th style="width:5%;">Time</th>
-        <th style="width:15%;">Adopter</th>
+        <th style="width:15%;">Adopter/Dog</th>
         <th style="width:23%;">Notes from Adopter</th>
         <th style="width:24%;">Notes from Adoptions Team</th>
         <th style="width:23%;">Notes from Shelterluv</th>
@@ -49,6 +49,8 @@
                 {% if appt.has_cat %}
                   &#128008;&#xFE0E;
                 {% endif %}
+                <br>
+                <span style="font-size: 8pt;">({{appt.appt_string}})</span>
               </td>
               <td>{{appt.adopter_notes}}</td>
               <td>{{appt.internal_notes}}</td>

@@ -9,7 +9,8 @@
     </div>
 
     <div class="calendar_actions">
-      <a href="{% url 'daily_report_adopted_chosen_fta' today.year today.month today.day %}">Return to Today</a><br>
+      <a href="{% url 'daily_report_adopted_chosen_fta' today.year today.month today.day %}">Return to Today</a>
+      <a href="{% url 'report_print' date.year date.month date.day %}">Print View</a><br>
     </div>
 
     {% if empty_day == True %}
