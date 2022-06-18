@@ -42,6 +42,8 @@ urlpatterns = [
     path("reports/home/", views.daily_reports_home, name="daily_reports_home"),
     path("reports/all/<int:date_year>/<int:date_month>/<int:date_day>/", views.daily_report_all_appts, name="daily_report_all_appts"),
     path("reports/adoption_chosen_fta/<int:date_year>/<int:date_month>/<int:date_day>/", views.daily_report_adopted_chosen_fta, name="daily_report_adopted_chosen_fta"),
+    path("reports/adoption_chosen_fta/<int:date_year>/<int:date_month>/<int:date_day>/print/", views.report_print, name="report_print"),
+
 
     #chosen_board
     path("chosen_board/", views.chosen_board, name="chosen_board"),

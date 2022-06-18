@@ -268,6 +268,15 @@ def calendar_print(request, date_year, date_month, date_day):
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
+def report_print(request, date_year, date_month, date_day):
+    context = gc(request.user, 'full', None, date_year, date_month, date_day)
+
+    context['page_title'] = "Daily Report"
+
+    return render(request, "appt_calendar/daily_report_print.html/", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def daily_report_all_appts(request, date_year, date_month, date_day):
     return redirect('daily_report_adopted_chosen_fta')
     context = gc(request.user, 'full', None, date_year, date_month, date_day)
@@ -739,7 +748,7 @@ def edit_appointment_from_mgmt(request, date_year, date_month, date_day, appt_id
                 form = AppointmentModelFormPrefilledEdit(request.POST or None, instance=appt)
             else:
                 form = AppointmentModelFormPrefilled(request.POST or None, instance=appt)
-                
+
     context = {
         'form': form,
         'title': "Edit Appointment",
