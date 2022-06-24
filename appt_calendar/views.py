@@ -123,7 +123,7 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
     else:
         form = BookAppointmentForm(request.POST or None, instance=appt)
-        adopter_form = AdopterPreferenceForm(request.POST or None, instance=appt)
+        adopter_form = AdopterPreferenceForm(request.POST or None, instance=adopter)
 
         if form.is_valid():
             form.save()
@@ -133,7 +133,9 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
             try:
                 questions = dict(request.POST)['outstanding_questions'][0]
-                questions_msg(adopter, appt, questions)
+
+                if questions != "":
+                    questions_msg(adopter, appt, questions)
             except Exception as e:
                 exception_type, exception_object, exception_traceback = sys.exc_info()
                 filename = exception_traceback.tb_frame.f_code.co_filename
@@ -836,6 +838,8 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
     new_appt = Appointment.objects.get(pk=appt_id)
 
+    print("Attempting to reschedule {0} to appointment {1}".format(adopter.full_name(), new_appt.id))
+
     if new_appt.available == False and new_appt.adopter != adopter:
         context = {
             'adopter': adopter,
@@ -843,6 +847,8 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
             'date': date,
             'page_title': "Appointment Not Available",
         }
+
+        print("Aborted, appointment was already booked")
 
         return render(request, "appt_calendar/appt_not_available.html", context)
     else:
@@ -852,14 +858,17 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
             new_appt.bringing_dog = current_appt.bringing_dog
             new_appt.has_cat = current_appt.has_cat
             new_appt.mobility = current_appt.mobility
+            print("Appointment details carried")
 
             if source == "followup":
                 new_appt.appt_type = current_appt.appt_type
+                print("Appointment type copied")
 
         except:
             pass
 
         if user_groups == {"adopter"} or ("admin" in user_groups and source == "calendar"):
+            print("Resetting appointment {0}, removing {1}".format(current_appt.id, adopter.full_name()))
             current_appt.reset()
             current_appt.save()
 
