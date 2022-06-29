@@ -93,16 +93,13 @@ def create_new_user_from_adopter(adopter):
 def reconcile_missing_users(request):
     affected_adopters = Adopter.objects.filter(user=None)
     print("Attempting to reconcile {0} adopters".format(len(affected_adopters)))
-    print(len(Adopter.objects.filter()))
-
-    print(affected_adopters)
 
     for adopter in affected_adopters:
         try:
             create_new_user_from_adopter(adopter)
             print("Created user for {0}".format(adopter.full_name()))
         except:
-            pass
+            print("Could not create user for {0}".format(adopter.full_name()))
 
     return redirect('add_adopter')
 
