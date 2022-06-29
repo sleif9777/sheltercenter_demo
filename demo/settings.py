@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.environ.get('DEBUG')) == "1"
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.ondigitalocean.app', 'sheltercenter.dog']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.ondigitalocean.app', 'sheltercenter.dog', 'www.sheltercenter.dog']
 if not DEBUG:
     ALLOWED_HOSTS += [os.environ.get("DJANGO_ALLOWED_HOST"), 'sheltercenter.dog']
 
