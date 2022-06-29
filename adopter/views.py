@@ -92,14 +92,17 @@ def create_new_user_from_adopter(adopter):
 
 def reconcile_missing_users(request):
     affected_adopters = Adopter.objects.filter(user=None)
-    print(len(affected_adopters))
+    print("Attempting to reconcile {0} adopters".format(len(affected_adopters)))
     print(len(Adopter.objects.filter()))
 
     print(affected_adopters)
 
-    for adopter in affected_adopters [:2]:
-        print("Created user for {0}".format(adopter.full_name()))
-        create_new_user_from_adopter(adopter)
+    for adopter in affected_adopters:
+        try:
+            create_new_user_from_adopter(adopter)
+            print("Created user for {0}".format(adopter.full_name()))
+        except:
+            pass
 
     return redirect('add_adopter')
 
@@ -215,9 +218,13 @@ def add_from_file(file):
             print(adopter.full_name())
             print(adopter.status)
 
+            try:
+                create_new_user_from_adopter(adopter)
+            except:
+                pass
+
             if adopter.status == "1":
                 #create Application
-                create_new_user_from_adopter(adopter)
                 create_invite_email(adopter)
             else:
                 errors += [adopter]
