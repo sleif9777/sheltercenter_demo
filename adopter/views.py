@@ -90,6 +90,19 @@ def create_new_user_from_adopter(adopter):
 
     adopter_group.user_set.add(new_user)
 
+def reconcile_missing_users(request):
+    affected_adopters = Adopter.objects.filter(user=None)
+    print(len(affected_adopters))
+    print(len(Adopter.objects.filter()))
+
+    print(affected_adopters)
+
+    for adopter in affected_adopters [:2]:
+        print("Created user for {0}".format(adopter.full_name()))
+        create_new_user_from_adopter(adopter)
+
+    return redirect('add_adopter')
+
 #can be refactored for genericity
 def create_invite_inactive_email(adopter):
     message = PendingMessage()
