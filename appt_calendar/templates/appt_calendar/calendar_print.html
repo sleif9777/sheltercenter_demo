@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     {% load static %}
+    {% load appt_extras %}
     <meta charset="utf-8">
     <title></title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
@@ -54,7 +55,11 @@
               </td>
               <td>{{appt.adopter_notes}}</td>
               <td>{{appt.internal_notes}}</td>
-              <td>{{appt.adopter.app_interest}}</td>
+              <td>
+                {% if appt.appt_type in schedulable %}
+                  {{appt.adopter.app_interest}}
+                {% endif %}
+              </td>
               <td>
                 {% if appt.adopter.visits_to_date > 1 %}
                   {{appt.adopter.number_of_visits}}
