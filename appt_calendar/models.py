@@ -21,7 +21,7 @@ class Appointment(models.Model):
     APPT_TYPES = [
         ("1", "Adults"),
         ("2", "Puppies"),
-        ("3", "Puppies or Adults"),
+        ("3", "Puppies and/or Adults"),
         ("4", "Surrender"),
         ("5", "Adoption Paperwork"),
         ("6", "FTA Paperwork"),
