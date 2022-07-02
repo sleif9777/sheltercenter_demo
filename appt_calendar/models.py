@@ -46,6 +46,7 @@ class Appointment(models.Model):
     date = models.DateField(default = timezone.now())
     time = models.TimeField(default=datetime.time(12,00))
     appt_type = models.CharField(default="1", max_length=1, choices=APPT_TYPES)
+    short_notice = models.BooleanField(default=False)
 
     #booking information
     adopter = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL, limit_choices_to={'has_current_appt': False, 'status': "1"})
@@ -77,6 +78,7 @@ class Appointment(models.Model):
     dog = models.CharField(default="", max_length=200, blank=True) #this can also be used in surrenders
     dog_fka = models.CharField(default="", max_length=200, blank=True) #only used for surrenders
     heartworm = models.BooleanField(default=False)
+    rtr_notif_date = models.CharField(default="", max_length=200, blank=True)
     last_update_sent = models.DateField(default=timezone.now(), blank=True)
     paperwork_complete = models.BooleanField(default=False)
 
@@ -148,12 +150,17 @@ class Appointment(models.Model):
         appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA", "Visit"]
         return appt_type[int(self.appt_type) - 1]
 
+    def mark_short_notice(self):
+        self.short_notice = True
+        self.save()
+
     def reset(self):
         # clears all information out of an appointment and republishes it for booking
 
         self.adopter = None
         self.available = True
         self.published = True
+        self.short_notice = False
 
         self.internal_notes = ""
         self.adopter_notes = ""
@@ -209,3 +216,55 @@ class Timeslot(models.Model):
 
     class Meta:
         ordering = ('time',)
+
+class ShortNotice(models.Model):
+    STATUS_TYPES = [
+        ("1", "Add"),
+        ("2", "Cancel"),
+        ("3", "Move"),
+    ]
+
+    adopter = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL)
+    dog = models.CharField(default="", max_length=200, blank=True) #this can also be used in surrenders
+    current_appt = models.ForeignKey(Appointment, null=True, blank=True, on_delete=models.SET_NULL, related_name="prev_appt")
+    date = models.DateField(default = timezone.now())
+    prev_appt = models.ForeignKey(Appointment, null=True, blank=True, on_delete=models.SET_NULL, related_name="current_appt")
+    sn_status = models.CharField(default="1", max_length=1, choices=STATUS_TYPES)
+
+    def __repr__(self):
+        schedulable = False
+
+        try:
+            if self.current_appt.appt_type in ["1", "2", "3"]:
+                schedulable = True
+                appt = self.current_appt
+        except:
+            try:
+                if self.prev_appt.appt_type in ["1", "2", "3"]:
+                    schedulable = True
+                    appt = self.prev_appt
+            except:
+                pass
+
+        if schedulable:
+            return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.adopter.full_name(), appt.appt_type, appt.date_str())
+        else:
+            return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.dog, appt.appt_type, appt.date_str())
+
+    def __str__(self):
+        schedulable = False
+
+        try:
+            if self.current_appt.appt_type in ["1", "2", "3"]:
+                schedulable = True
+        except:
+            try:
+                if self.prev_appt.appt_type in ["1", "2", "3"]:
+                    schedulable = True
+            except:
+                pass
+
+        if schedulable:
+            return self.adopter.full_name()
+        else:
+            return self.dog

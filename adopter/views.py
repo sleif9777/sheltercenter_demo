@@ -604,7 +604,6 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         file1 = template.file1
         file2 = template.file2
     elif source == "confirm_appt":
-        print('hit222')
         template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
         subject = "Your appointment is confirmed: {0}".format(adopter.full_name().upper())
     elif source == "ready_negative":
@@ -646,6 +645,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
             if source in ['ready_positive', 'ready_negative']:
                 appt.outcome = "7"
+                appt.rtr_notif_date = "{0} {1}".format(date_no_weekday_str(today), time_str(datetime.datetime.now()))
 
             if source == 'ready_positive':
                 appt.heartworm = True

@@ -10,6 +10,7 @@ class AdopterForm(forms.ModelForm):
             'f_name',
             'l_name',
             'primary_email',
+            'auth_code',
             'status',
             'carryover_shelterluv',
             'out_of_state',
@@ -17,12 +18,13 @@ class AdopterForm(forms.ModelForm):
             'adopting_host',
             'adopting_foster',
             'chosen_dog',
-            'app_interest'
+            'app_interest',
         ]
         labels = {
             'f_name': 'First Name:',
             'l_name': 'Last Name:',
             'primary_email': 'Email:',
+            'auth_code': "Authorization Code:",
             'status': 'Status:',
             'carryover_shelterluv': 'Adopter was in Shelterluv before ShelterCenter went live',
             'out_of_state': 'Adopter from outside NC, SC, or VA',
@@ -35,6 +37,7 @@ class AdopterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label_suffix', '')
         super(AdopterForm, self).__init__(*args, **kwargs)
+        self.fields['auth_code'].disabled = True
 
 class AdopterPreferenceForm(forms.ModelForm):
     class Meta:

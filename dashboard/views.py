@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 import datetime, time
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-from appt_calendar.models import Timeslot, Appointment, DailyAnnouncement, CalendarAnnouncement
+from appt_calendar.models import *
 from adopter.models import Adopter
 from appt_calendar.forms import *
 from email_mgr.email_sender import *
@@ -229,6 +229,10 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     else:
         empty_day = False
 
+    sn_add = ShortNotice.objects.filter(date = date, sn_status = "1")
+    sn_cancel = ShortNotice.objects.filter(date = date, sn_status = "2")
+    sn_move = ShortNotice.objects.filter(date = date, sn_status = "3")
+
     context = {
         "date": date,
         "date_pretty": date_pretty,
@@ -248,6 +252,9 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'daily_announcement': daily_announcement,
         'calendar_announcement': calendar_announcement,
         'internal_announcement': internal_announcement,
+        'sn_add': sn_add,
+        'sn_cancel': sn_cancel,
+        'sn_move': sn_move,
     }
 
     return context

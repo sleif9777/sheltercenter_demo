@@ -67,6 +67,9 @@
                   </div>
                 {% elif appt.outcome == "7" %}
                   Adopter Notified<br>
+                  {% if appt.rtr_notif_date %}
+                    ({{appt.rtr_notif_date}})<br>
+                  {% endif %}
                   {% if appt.heartworm == True %}
                     <div class="chosen_board_actions">
                       <a class="chosen_board_actions" href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
