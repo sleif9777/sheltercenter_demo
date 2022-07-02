@@ -48,6 +48,9 @@ def send_email(text, html, reply_to_email, subject, receiver_email, files):
         reply_to = [reply_to_email]
     )
 
+    if "is ready to come home!" in subject:
+        email.to += ["adoptions@savinggracenc.org"]
+
     email.attach_alternative(html, 'text/html')
 
     file_count = 0

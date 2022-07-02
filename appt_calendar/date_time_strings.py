@@ -8,6 +8,12 @@ def date_str(date):
     else:
         return date.strftime("%A, %B %-d, %Y")
 
+def date_no_weekday_str(date):
+    if is_windows:
+        return date.strftime("%B %#d, %Y")
+    else:
+        return date.strftime("%B %-d, %Y")
+
 def weekday_str(date):
     return date.strftime("%A")
 

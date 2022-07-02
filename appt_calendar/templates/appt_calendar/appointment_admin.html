@@ -1,4 +1,4 @@
-<div class="appointment">
+<div class="appointment {% if appt.short_notice %} short_notice {% endif %}">
 
   <!-- header grid, has a bottom border unless it is the only section -->
   <!-- it will be the only section when the appointment is not booked and has no notes -->
@@ -13,6 +13,8 @@
           {% if appt.locked %}
             &#128274;&#xFE0E;
           {% endif %}
+
+          {% if appt.short_notice %} &#9888;&#xFE0E; {% endif %}
 
           {% if show_timestr %}
             {{appt_str}}

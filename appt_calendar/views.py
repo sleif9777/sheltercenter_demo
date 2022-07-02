@@ -154,6 +154,18 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
             confirm_etemp(adopter, appt)
 
             if short_notice(appt):
+                appt.mark_short_notice()
+
+                try:
+                    sn_obj = ShortNotice.objects.get(date = appt.date, adopter = adopter)
+                    print(sn_obj.id)
+                    sn_obj.prev_appt, sn_obj.current_appt = None, appt
+                    sn_obj.sn_status = "1"
+                    sn_obj.save()
+                except Exception as e:
+                    print('e', e)
+                    sn_obj = ShortNotice.objects.create(adopter = adopter, current_appt = appt, prev_appt = None, date = appt.date, sn_status = "1")
+
                 notify_adoptions_add(adopter, appt)
 
             return redirect('calendar')
@@ -531,6 +543,8 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
             appt.delist()
 
             if short_notice(appt):
+                sn_obj = ShortNotice.objects.create(adopter = adopter, current_appt = appt, date = appt.date, sn_status = "1")
+                appt.mark_short_notice()
                 notify_adoptions_add(adopter, appt)
 
             return redirect('contact_adopter', appt.id, date_year, date_month, date_day, 'confirm_appt')
@@ -593,6 +607,8 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
             adoption_paperwork(adopter, appt, original_appt.heartworm)
 
             if short_notice(appt):
+                appt.mark_short_notice()
+                sn_obj = ShortNotice.objects.create(dog = appt.dog, current_appt = appt, date = appt.date, sn_status = "1")
                 notify_adoptions_paperwork(appt.adopter, appt)
 
         return redirect('chosen_board')
@@ -662,6 +678,8 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
                     cancel(original_adopter, appt)
 
                 if short_notice(appt) and appt.adopter not in [None, original_adopter]:
+                    appt.mark_short_notice()
+                    sn_obj = ShortNotice.objects.create(adopter = appt.adopter, current_appt = appt, date = appt.date, sn_status = "1")
                     notify_adoptions_add(appt.adopter, appt)
 
                 appt.adopter.has_current_appt = True
@@ -669,7 +687,7 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
 
             appt.delist()
 
-            if original_adopter != appt.adopter:
+            if original_adopter != appt.adopter and appt.appt_type in ["1", "2", "3"]:
                 return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
 
         return redirect('calendar_date', date.year, date.month, date.day)
@@ -731,6 +749,8 @@ def edit_appointment_from_mgmt(request, date_year, date_month, date_day, appt_id
                     cancel(original_adopter, appt)
 
                 if short_notice(appt) and appt.adopter not in [None, original_adopter]:
+                    appt.mark_short_notice()
+                    sn_obj = ShortNotice.objects.create(adopter = appt.adopter, current_appt = appt, date = appt.date, sn_status = "1")
                     notify_adoptions_add(appt.adopter, appt)
 
                 appt.adopter.has_current_appt = True
@@ -778,9 +798,9 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
             follow_up(adopter)
         elif appt.outcome in ["2", "3", "4"]:
             adopter.visits_to_date = 0
-
-            if appt.outcome == "3":
-                chosen(adopter, appt)
+            #
+            # if appt.outcome == "3":
+            #     chosen(adopter, appt)
 
         adopter.save()
 
@@ -809,6 +829,16 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
     appt.reset()
 
     if short_notice(appt):
+        try:
+            sn_obj = ShortNotice.objects.get(date = appt.date, adopter = adopter)
+            print(sn_obj.id)
+            sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
+            sn_obj.sn_status = "2"
+            sn_obj.save()
+        except Exception as e:
+            print('e', e)
+            sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = appt, date = appt.date, sn_status = "2")
+
         notify_adoptions_cancel(appt, adopter)
 
     if get_groups(request.user) == {'adopter'}:
@@ -884,13 +914,51 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
             reschedule(adopter, new_appt)
 
             if short_notice(current_appt) and short_notice(new_appt):
+                new_appt.mark_short_notice()
+
+                try:
+                    sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
+                    print(sn_obj.id)
+                    sn_obj.prev_appt, sn_obj.current_appt = current_appt, new_appt
+                    sn_obj.sn_status = "3"
+                    sn_obj.save()
+                except Exception as e:
+                    print('e', e)
+                    sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, current_appt = new_appt, date = new_appt.date, sn_status = "3")
+
                 notify_adoptions_time_change(adopter, current_appt, new_appt)
+
             elif short_notice(current_appt):
+
+                try:
+                    sn_obj = ShortNotice.objects.get(date = current_appt.date, adopter = adopter)
+                    print(sn_obj.id)
+                    sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
+                    sn_obj.sn_status = "2"
+                    sn_obj.save()
+                except Exception as e:
+                    print('e', e)
+                    sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, date = current_appt.date, sn_status = "2")
+
                 notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+
             elif short_notice(new_appt):
+                new_appt.mark_short_notice()
+
+                try:
+                    sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
+                    print(sn_obj.id)
+                    sn_obj.prev_appt, sn_obj.current_appt = None, new_appt
+                    sn_obj.sn_status = "1"
+                    sn_obj.save()
+                except Exception as e:
+                    print('e', e)
+                    sn_obj = ShortNotice.objects.create(adopter = adopter, current_appt = new_appt, prev_appt = None, date = new_appt.date, sn_status = "1")
+
                 notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
             return redirect("calendar_date", date_year, date_month, date_day)
+
         else:
             today = datetime.date.today()
 
@@ -910,14 +978,60 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                     pass
             elif 'admin' in user_groups:
 
-                try:
-                    if short_notice(current_appt) and short_notice(new_appt):
-                        notify_adoptions_time_change(adopter, current_appt, new_appt)
-                    elif short_notice(current_appt):
-                        notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
-                except:
-                    if short_notice(new_appt):
-                        notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+                # try:
+                #     if short_notice(current_appt) and short_notice(new_appt):
+                #         new_appt.mark_short_notice()
+                #         notify_adoptions_time_change(adopter, current_appt, new_appt)
+                #     elif short_notice(current_appt):
+                #         notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+                # except:
+                #     if short_notice(new_appt):
+                #         new_appt.mark_short_notice()
+                #         notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+
+                if short_notice(current_appt) and short_notice(new_appt):
+                    new_appt.mark_short_notice()
+
+                    try:
+                        sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
+                        print(sn_obj.id)
+                        sn_obj.prev_appt, sn_obj.current_appt = current_appt, new_appt
+                        sn_obj.sn_status = "3"
+                        sn_obj.save()
+                    except Exception as e:
+                        print('e', e)
+                        sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, current_appt = new_appt, date = new_appt.date, sn_status = "3")
+
+                    notify_adoptions_time_change(adopter, current_appt, new_appt)
+
+                elif short_notice(current_appt):
+
+                    try:
+                        sn_obj = ShortNotice.objects.get(date = current_appt.date, adopter = adopter)
+                        print(sn_obj.id)
+                        sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
+                        sn_obj.sn_status = "2"
+                        sn_obj.save()
+                    except Exception as e:
+                        print('e', e)
+                        sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, date = current_appt.date, sn_status = "2")
+
+                    notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+
+                elif short_notice(new_appt):
+                    new_appt.mark_short_notice()
+
+                    try:
+                        sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
+                        print(sn_obj.id)
+                        sn_obj.prev_appt, sn_obj.current_appt = None, new_appt
+                        sn_obj.sn_status = "1"
+                        sn_obj.save()
+                    except Exception as e:
+                        print('e', e)
+                        sn_obj = ShortNotice.objects.create(adopter = adopter, current_appt = new_appt, prev_appt = None, date = new_appt.date, sn_status = "1")
+
+                    notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
                 adopter.has_current_appt = True
                 adopter.save()
@@ -1014,14 +1128,14 @@ def toggle_time(request, timeslot_id, date_year, date_month, date_day, lock):
 
     return redirect('calendar_date', date_year, date_month, date_day)
 
-@authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
-def gen_applications(request, date_year, date_month, date_day):
-    date = datetime.date(date_year, date_month, date_day)
-    filename = 'Applications{0}{1}{2}.pdf'.format(date_year, date_month, date_day)
-    pdf = canvas.Canvas(filename)
-
-    pdf.setTitle('Applications for {0}'.format(date_str(date)))
-    pdf.save()
-
-    return redirect('calendar_date', date_year, date_month, date_day)
+# @authenticated_user
+# @allowed_users(allowed_roles={'admin', 'superuser'})
+# def gen_applications(request, date_year, date_month, date_day):
+#     date = datetime.date(date_year, date_month, date_day)
+#     filename = 'Applications{0}{1}{2}.pdf'.format(date_year, date_month, date_day)
+#     pdf = canvas.Canvas(filename)
+#
+#     pdf.setTitle('Applications for {0}'.format(date_str(date)))
+#     pdf.save()
+#
+#     return redirect('calendar_date', date_year, date_month, date_day)
