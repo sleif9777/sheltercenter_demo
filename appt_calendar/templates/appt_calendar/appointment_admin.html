@@ -65,7 +65,7 @@
       <tr>
         <td class="left" style="width: 50%;">
           <!-- displays number_of_visits if second visit or greater -->
-          {% if appt.visits_to_date >= 1 %}
+          {% if appt.visits_to_date >= 1 and appt.appt_type in schedulable %}
             <b>{{appt.number_of_visits}}</b>
           {% endif %}
           {% if appt.adopter.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}
