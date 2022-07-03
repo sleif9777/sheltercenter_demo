@@ -5,6 +5,8 @@ urlpatterns = [
     #calendar view pages
     path("", views.calendar, name="calendar"),
     path("<int:date_year>/<int:date_month>/<int:date_day>/", views.calendar_date, name="calendar_date"),
+    path("<int:date_year>/<int:date_month>/<int:date_day>/appt/<int:appt_id>", views.calendar_date_appt, name="calendar_date_appt"),
+    path("<int:date_year>/<int:date_month>/<int:date_day>/ts/<int:ts_id>", views.calendar_date_ts, name="calendar_date_ts"),
     path("<int:date_year>/<int:date_month>/<int:date_day>/copy/", views.copy_temp_to_cal, name="copy_temp_to_cal"),
     path("<int:date_year>/<int:date_month>/<int:date_day>/print/", views.calendar_print, name="calendar_print"),
     path('schedule_next/adopter/<int:adopter_id>/appt/<int:appt_id>/jump_to_date/<str:source>/', views.jump_to_date_greeter, name="jump_to_date_greeter"),

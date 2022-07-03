@@ -12,6 +12,7 @@ from dashboard.views import generate_calendar as gc
 from django.contrib.auth.models import Group, User
 from dashboard.decorators import *
 from reportlab.pdfgen import canvas
+from django.http import HttpResponseRedirect
 
 system_settings = SystemSettings.objects.get(pk=1)
 
@@ -248,6 +249,83 @@ def calendar_date(request, date_year, date_month, date_day):
 
     return render(request, "appt_calendar/calendar_test_harness.html", context)
 
+def calendar_date_appt(request, date_year, date_month, date_day, appt_id):
+    try:
+        user_groups = set(group.name for group in request.user.groups.all().iterator())
+    except:
+        user_groups = set()
+
+    context = gc(request.user, 'full', None, date_year, date_month, date_day)
+
+    try:
+        appt = Appointment.objects.get(pk=appt_id)
+        ts_query = Timeslot.objects.get(appointments__id__exact=appt.id)
+
+        redirect_context = {
+            'go_to_div': "ts{0}".format(ts_query.id),
+        }
+
+        context.update(redirect_context)
+    except:
+        pass
+
+    if 'adopter' in user_groups:
+        # context['role'] = 'adopter'
+        try:
+            current_appt = Appointment.objects.filter(adopter=request.user.adopter).latest('id') #.exclude(date__lt = today)
+            current_appt_str = current_appt.date_and_time_string()
+        except:
+            current_appt = None
+            current_appt_str = None
+
+        adopter_context = {
+            'current_appt': current_appt,
+            'current_appt_str': current_appt_str,
+            'page_title': "Calendar",
+        }
+
+        context.update(adopter_context)
+
+    return render(request, "appt_calendar/calendar_test_harness.html", context)
+
+def calendar_date_ts(request, date_year, date_month, date_day, ts_id):
+    try:
+        user_groups = set(group.name for group in request.user.groups.all().iterator())
+    except:
+        user_groups = set()
+
+    context = gc(request.user, 'full', None, date_year, date_month, date_day)
+
+    try:
+        ts_query = Timeslot.objects.get(pk=ts_id)
+
+        redirect_context = {
+            'go_to_div': "ts{0}".format(ts_query.id),
+        }
+
+        context.update(redirect_context)
+    except:
+        pass
+
+    if 'adopter' in user_groups:
+        # context['role'] = 'adopter'
+        try:
+            current_appt = Appointment.objects.filter(adopter=request.user.adopter).latest('id') #.exclude(date__lt = today)
+            current_appt_str = current_appt.date_and_time_string()
+        except:
+            current_appt = None
+            current_appt_str = None
+
+        adopter_context = {
+            'current_appt': current_appt,
+            'current_appt_str': current_appt_str,
+            'page_title': "Calendar",
+        }
+
+        context.update(adopter_context)
+
+    return render(request, "appt_calendar/calendar_test_harness.html", context)
+
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def paperwork_calendar(request, date_year, date_month, date_day, appt_id, hw_status):
@@ -379,7 +457,7 @@ def send_followup(request, appt_id, date_year, date_month, date_day, host):
     adopter.visits_to_date += 1
     adopter.save()
 
-    return redirect('calendar_date', date.year, date.month, date.day)
+    return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -547,9 +625,10 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
                 appt.mark_short_notice()
                 notify_adoptions_add(adopter, appt)
 
-            return redirect('contact_adopter', appt.id, date_year, date_month, date_day, 'confirm_appt')
+            if appt.appt_type in ["1", "2", "3"]:
+                return redirect('contact_adopter', appt.id, date_year, date_month, date_day, 'confirm_appt')
 
-        return redirect('calendar_date', date.year, date.month, date.day)
+        return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
     else:
         form = AppointmentModelFormPrefilled(initial={'date': date, 'time': timeslot.time})
 
@@ -586,7 +665,18 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
     else:
         paperwork_appt_type = "5"
 
-    form = AppointmentModelFormPrefilled(request.POST or None, initial = {'date': date, 'time': timeslot.time, 'appt_type': paperwork_appt_type, 'adopter': original_appt.adopter, 'available': False, 'published': False, 'dog': original_appt.dog})
+    form = AppointmentModelFormPrefilled(
+        request.POST or None,
+        initial = {
+            'date': date,
+            'time': timeslot.time,
+            'appt_type': paperwork_appt_type,
+            'adopter': original_appt.adopter,
+            'available': False,
+            'published': False,
+            'dog': original_appt.dog
+        }
+    )
 
     if form.is_valid():
         form.save()
@@ -690,7 +780,7 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
             if original_adopter != appt.adopter and appt.appt_type in ["1", "2", "3"]:
                 return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
 
-        return redirect('calendar_date', date.year, date.month, date.day)
+        return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
     else:
         if user_groups == {'adopter'}:
             form = EditAppointmentForm(request.POST or None, instance=appt,)
@@ -712,7 +802,7 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
     return render(request, "appt_calendar/add_edit_appt.html", context)
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def edit_appointment_from_mgmt(request, date_year, date_month, date_day, appt_id):
     try:
         user_groups = set(group.name for group in request.user.groups.all().iterator())
@@ -761,7 +851,7 @@ def edit_appointment_from_mgmt(request, date_year, date_month, date_day, appt_id
             print('hey')
             return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
 
-        return redirect('calendar_date', date.year, date.month, date.day)
+        return redirect('edit_adopter', original_adopter.id)
     else:
         if user_groups == {'adopter'}:
             form = EditAppointmentForm(request.POST or None, instance=appt)
@@ -853,7 +943,7 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
         return render(request, "appt_calendar/adopter_self_cancel.html", context)
 
     else:
-        return redirect('calendar_date', date.year, date.month, date.day)
+        return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
 
 def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date_day, source):
     adopter = Adopter.objects.get(pk=adopter_id)
@@ -957,7 +1047,7 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
                 notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
-            return redirect("calendar_date", date_year, date_month, date_day)
+            return redirect("calendar_date", date_year, date_month, date_day, new_appt.id)
 
         else:
             today = datetime.date.today()
@@ -989,49 +1079,50 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                 #         new_appt.mark_short_notice()
                 #         notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
-                if short_notice(current_appt) and short_notice(new_appt):
-                    new_appt.mark_short_notice()
+                try:
+                    if short_notice(current_appt) and short_notice(new_appt):
+                        new_appt.mark_short_notice()
 
-                    try:
-                        sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
-                        print(sn_obj.id)
-                        sn_obj.prev_appt, sn_obj.current_appt = current_appt, new_appt
-                        sn_obj.sn_status = "3"
-                        sn_obj.save()
-                    except Exception as e:
-                        print('e', e)
-                        sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, current_appt = new_appt, date = new_appt.date, sn_status = "3")
+                        try:
+                            sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
+                            print(sn_obj.id)
+                            sn_obj.prev_appt, sn_obj.current_appt = current_appt, new_appt
+                            sn_obj.sn_status = "3"
+                            sn_obj.save()
+                        except Exception as e:
+                            print('e', e)
+                            sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, current_appt = new_appt, date = new_appt.date, sn_status = "3")
 
-                    notify_adoptions_time_change(adopter, current_appt, new_appt)
+                        notify_adoptions_time_change(adopter, current_appt, new_appt)
 
-                elif short_notice(current_appt):
+                    elif short_notice(current_appt):
 
-                    try:
-                        sn_obj = ShortNotice.objects.get(date = current_appt.date, adopter = adopter)
-                        print(sn_obj.id)
-                        sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
-                        sn_obj.sn_status = "2"
-                        sn_obj.save()
-                    except Exception as e:
-                        print('e', e)
-                        sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, date = current_appt.date, sn_status = "2")
+                        try:
+                            sn_obj = ShortNotice.objects.get(date = current_appt.date, adopter = adopter)
+                            print(sn_obj.id)
+                            sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
+                            sn_obj.sn_status = "2"
+                            sn_obj.save()
+                        except Exception as e:
+                            print('e', e)
+                            sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, date = current_appt.date, sn_status = "2")
 
-                    notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+                        notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
+                except:
+                    if short_notice(new_appt):
+                        new_appt.mark_short_notice()
 
-                elif short_notice(new_appt):
-                    new_appt.mark_short_notice()
+                        try:
+                            sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
+                            print(sn_obj.id)
+                            sn_obj.prev_appt, sn_obj.current_appt = None, new_appt
+                            sn_obj.sn_status = "1"
+                            sn_obj.save()
+                        except Exception as e:
+                            print('e', e)
+                            sn_obj = ShortNotice.objects.create(adopter = adopter, current_appt = new_appt, prev_appt = None, date = new_appt.date, sn_status = "1")
 
-                    try:
-                        sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
-                        print(sn_obj.id)
-                        sn_obj.prev_appt, sn_obj.current_appt = None, new_appt
-                        sn_obj.sn_status = "1"
-                        sn_obj.save()
-                    except Exception as e:
-                        print('e', e)
-                        sn_obj = ShortNotice.objects.create(adopter = adopter, current_appt = new_appt, prev_appt = None, date = new_appt.date, sn_status = "1")
-
-                    notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
+                        notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
                 adopter.has_current_appt = True
                 adopter.save()
@@ -1051,6 +1142,7 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 def delete_appointment(request, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     deleted_appt = get_object_or_404(Appointment, pk=appt_id)
+    ts_query = Timeslot.objects.get(appointments__id__exact=deleted_appt.id)
 
     if deleted_appt.adopter:
         cancel(deleted_appt.adopter, deleted_appt)
@@ -1062,7 +1154,7 @@ def delete_appointment(request, date_year, date_month, date_day, appt_id):
 
     deleted_appt.delete()
 
-    return redirect('calendar_date', date.year, date.month, date.day)
+    return redirect('calendar_date_ts', date.year, date.month, date.day, ts_query.id)
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -1082,7 +1174,7 @@ def add_timeslot(request, date_year, date_month, date_day):
 
         new_ts = Timeslot.objects.create(date = date, time = datetime.time(hour, minute))
 
-        return redirect('calendar_date', date.year, date.month, date.day)
+        return redirect('calendar_date_ts', date.year, date.month, date.day, new_ts.id)
     else:
         form = NewTimeslotModelForm(request.POST or None, initial={'daypart': "1"})
 
@@ -1101,7 +1193,9 @@ def toggle_lock(request, appt_id, date_year, date_month, date_day):
     appt.locked = not appt.locked
     appt.save()
 
-    return redirect('calendar_date', date_year, date_month, date_day)
+    return redirect('calendar_date_appt', date_year, date_month, date_day, appt_id)
+    # return redirect('calendar_date', date_year, date_month, date_day)
+    # return HttpResponseRedirect('?next=calendar/{0}/{1}/{2}/#{3}'.format(date_year, date_month, date_day, appt_id))
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -1126,7 +1220,7 @@ def toggle_time(request, timeslot_id, date_year, date_month, date_day, lock):
         appt.locked = bool(lock)
         appt.save()
 
-    return redirect('calendar_date', date_year, date_month, date_day)
+    return redirect('calendar_date_ts', date_year, date_month, date_day, timeslot.id)
 
 # @authenticated_user
 # @allowed_users(allowed_roles={'admin', 'superuser'})
