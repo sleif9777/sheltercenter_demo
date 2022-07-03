@@ -11,7 +11,7 @@ class AppointmentTemplate(models.Model):
     APPT_TYPES = [
         ("1", "Adults"),
         ("2", "Puppies"),
-        ("3", "Puppies or Adults"),
+        ("3", "Puppies and/or Adults"),
         ("4", "Surrender"),
         ("5", "Adoption"),
         ("6", "FTA"),
@@ -53,7 +53,7 @@ class AppointmentTemplate(models.Model):
         return time_str(self.time)
 
     def appt_string(self):
-        appt_type = ["Adults", "Puppies", "Puppies or Adults", "Surrender", "Adoption", "FTA"]
+        appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA"]
         return appt_type[int(self.appt_type) - 1]
 
     class Meta:

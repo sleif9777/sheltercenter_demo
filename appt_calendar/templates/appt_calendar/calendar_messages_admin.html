@@ -54,77 +54,79 @@
 {% endif %}
 
 <!-- {% if no_outcome_appts %} -->
-<div class="short_notice_box">
-  <p><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E;</div> The following short-notice changes have occurred:</p>
-  <table class="infobox_table">
-    <tr>
-      <th>Added:</th>
-      <th>Canceled:</th>
-      <th>Moved:</th>
-    </tr>
-    <tr>
-      <td>
+{% if sn_show %}
+  <div class="short_notice_box">
+    <p><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E;</div> The following short-notice changes have occurred:</p>
+    <table class="infobox_table">
+      <tr>
+        <th>Added:</th>
+        <th>Canceled:</th>
+        <th>Moved:</th>
+      </tr>
+      <tr>
+        <td>
+          <ul>
+            {% for sn in sn_add %}
+              {% if sn.current_appt.appt_type in schedulable %}
+                <a target="_blank" href="https://www.shelterluv.com/adoption_request_print/{{sn.current_appt.adopter.application_id}}"><li>{{sn}} &#128196;&#xFE0E;<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li></a>
+              {% else%}
+                <li>{{sn}} &#x270d;&#xFE0E;<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </td>
+
+        <td>
+          <ul>
+            {% for sn in sn_cancel %}
+            <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.prev_appt.appt_string}} - {{sn.prev_appt.time_string}})</span></li>
+            {% endfor %}
+          </ul>
+        </td>
+
+        <td>
+          <ul>
+            {% for sn in sn_move %}
+            <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - moved from {{sn.prev_appt.time_string}} to {{sn.current_appt.time_string}})</span></li>
+            {% endfor %}
+          </ul>
+        </td>
+
+      </tr>
+    </table>
+
+    <!-- <ul class="change_type">
+      <li>
+        <b>Added:</b>
         <ul>
           {% for sn in sn_add %}
-            {% if sn.current_appt.appt_type in schedulable %}
-              <a target="_blank" href="https://www.shelterluv.com/adoption_request_print/{{sn.current_appt.adopter.application_id}}"><li>{{sn}} &#128196;&#xFE0E;<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li></a>
-            {% else%}
-              <li>{{sn}} &#x270d;&#xFE0E;<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li>
-            {% endif %}
+          <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li>
           {% endfor %}
         </ul>
-      </td>
-
-      <td>
+      </li>
+      <li>
+        <b>Canceled:</b>
         <ul>
           {% for sn in sn_cancel %}
           <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.prev_appt.appt_string}} - {{sn.prev_appt.time_string}})</span></li>
           {% endfor %}
         </ul>
-      </td>
-
-      <td>
+      </li>
+      <li>
+        <b>Moved:</b>
         <ul>
           {% for sn in sn_move %}
-          <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - moved from {{sn.prev_appt.time_string}} to {{sn.current_appt.time_string}})</span></li>
+          <li>{{sn}} <br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - moved from {{sn.prev_appt.time_string}} to {{sn.current_appt.time_string}})</span></li>
           {% endfor %}
         </ul>
-      </td>
+      </li>
+    </ul> -->
 
-    </tr>
-  </table>
-
-  <!-- <ul class="change_type">
-    <li>
-      <b>Added:</b>
-      <ul>
-        {% for sn in sn_add %}
-        <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li>
-        {% endfor %}
-      </ul>
-    </li>
-    <li>
-      <b>Canceled:</b>
-      <ul>
-        {% for sn in sn_cancel %}
-        <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.prev_appt.appt_string}} - {{sn.prev_appt.time_string}})</span></li>
-        {% endfor %}
-      </ul>
-    </li>
-    <li>
-      <b>Moved:</b>
-      <ul>
-        {% for sn in sn_move %}
-        <li>{{sn}} <br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - moved from {{sn.prev_appt.time_string}} to {{sn.current_appt.time_string}})</span></li>
-        {% endfor %}
-      </ul>
-    </li>
-  </ul> -->
-
-  <!-- <ul>
-    {% for appt in no_outcome_appts %}
-    <li><a class="datelink" href="{% url 'enter_decision' appt.id appt.date.year appt.date.month appt.date.day%}">{{appt.adopter.full_name}} - {{appt.date}}</a></li>
-    {% endfor %}
-  </ul> -->
-</div>
+    <!-- <ul>
+      {% for appt in no_outcome_appts %}
+      <li><a class="datelink" href="{% url 'enter_decision' appt.id appt.date.year appt.date.month appt.date.day%}">{{appt.adopter.full_name}} - {{appt.date}}</a></li>
+      {% endfor %}
+    </ul> -->
+  </div>
+{% endif %}
 <!-- {% endif %} -->
