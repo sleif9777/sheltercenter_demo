@@ -151,7 +151,7 @@ def handle_existing(existing_adopter, status, app_interest):
     print(special_circumstances, existing_adopter.adopting_foster, existing_adopter.friend_of_foster, existing_adopter.adopting_host)
 
     #if the adopter is approved...
-    if existing_adopter.status == "1" and status is not "Archived":
+    if existing_adopter.status == "1" and status in ["1", "Accepted"]:
         print('hit')
         if app_interest not in ["", "dogs", "Dogs", "Dog"]:
             existing_adopter.app_interest = app_interest

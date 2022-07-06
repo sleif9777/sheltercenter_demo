@@ -159,22 +159,22 @@ def dates_are_open(adopter, date):
     text = """\
     Hi {0},\n
     We are now scheduling adoption appointments for {1}.\n
-    Please email us with three dates and times you would like to visit. We are open Monday, Tuesday, Wednesday, Friday from noon to 6pm, and Thursday 1pm to 6pm.\n
+    Please visit sheltercenter.dog to book an appointment. Your authorization code is {2}.\n
     All the best, \n
     The Adoptions Team
     Saving Grace Animals for Adoption
-    """.format(name, date_string)
+    """.format(name, date_string, adopter.auth_code)
 
     html = """\
     <html>
       <body>
         <p>Hi {0},</p>
         <p>We are now scheduling adoption appointments for {1}.</p>
-        <p>Please email us with three dates and times you would like to visit. We are open Monday, Tuesday, Wednesday, Friday from noon to 6pm, and Thursday 1pm to 6pm.</p>
+        <p>Please visit sheltercenter.dog to book an appointment. Your authorization code is {2}.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
       </body>
     </html>
-    """.format(name, date_string)
+    """.format(name, date_string, adopter.auth_code)
 
     send_email(text, html, "default", subject, email, None)
 
