@@ -247,9 +247,9 @@ class ShortNotice(models.Model):
                 pass
 
         if schedulable:
-            return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.adopter.full_name(), appt.appt_type, appt.date_str())
+            return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.adopter.full_name(), appt.appt_type, appt.date_string())
         else:
-            return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.dog, appt.appt_type, appt.date_str())
+            return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.dog, appt.appt_type, appt.date_string())
 
     def __str__(self):
         schedulable = False
