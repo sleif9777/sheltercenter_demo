@@ -244,14 +244,14 @@ class ShortNotice(models.Model):
                     schedulable = True
                     appt = self.prev_appt
             except:
-                pass
+                appt = "Deleted Appointment"
 
         if schedulable:
-            return self.adopter.full_name()
-            # return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.adopter.full_name(), self.current_appt.appt_type, appt.date_string())
+            # return self.adopter.full_name()
+            return "{0}: {1} ({2})".format(self.sn_status, self.adopter.full_name(), appt.appt_type,)
         else:
-            return self.dog()
-            # return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.dog, appt.appt_type, appt.date_string())
+            # return self.dog()
+            return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.dog, appt.appt_type,)
 
     def __str__(self):
         schedulable = False
