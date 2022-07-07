@@ -248,10 +248,10 @@ class ShortNotice(models.Model):
 
         if schedulable:
             # return self.adopter.full_name()
-            return "{0}: {1} ({2})".format(self.sn_status, self.adopter.full_name(), appt.appt_type,)
+            return "{0}: {1} ({2})".format(self.sn_status, self.adopter.full_name(),)
         else:
             # return self.dog()
-            return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.dog, appt.appt_type,)
+            return "{0}: {1} ({2}) - {3}".format(self.sn_status, self.dog,)
 
     def __str__(self):
         schedulable = False
