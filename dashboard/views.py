@@ -230,13 +230,19 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         empty_day = False
 
     sn_add = ShortNotice.objects.filter(date = date, sn_status = "1")
+    print('sn_add', sn_add)
     sn_cancel = ShortNotice.objects.filter(date = date, sn_status = "2")
+    print('sn_add', sn_add)
     sn_move = ShortNotice.objects.filter(date = date, sn_status = "3")
+    print('sn_add', sn_add)
 
     if len(ShortNotice.objects.filter(date=date)) > 0:
         sn_show = True
     else:
         sn_show = False
+
+    print(ShortNotice.objects.filter(date=date))
+    print('sn_show', sn_show)
 
     context = {
         "date": date,
@@ -262,6 +268,8 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'sn_move': sn_move,
         'sn_show': sn_show,
     }
+
+    print(context)
 
     return context
 
