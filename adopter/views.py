@@ -332,20 +332,21 @@ def add(request):
                 adopter = Adopter.objects.latest('id')
                 shellappt = add_from_form(adopter)
 
-                if adopter.adopting_foster:
-                    return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
-                elif adopter.friend_of_foster:
-                    return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
-                elif adopter.adopting_host:
-                    print('host')
-                    return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
-                elif adopter.out_of_state == True:
-                    invite_oos_etemp(adopter)
-                elif adopter.carryover_shelterluv:
-                    carryover_temp(adopter)
-                else:
-                    print('invite')
-                    invite(adopter)
+                if adopter.status in ["1", "Accepted"]:
+                    if adopter.adopting_foster:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
+                    elif adopter.friend_of_foster:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
+                    elif adopter.adopting_host:
+                        print('host')
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
+                    elif adopter.out_of_state == True:
+                        invite_oos_etemp(adopter)
+                    elif adopter.carryover_shelterluv:
+                        carryover_temp(adopter)
+                    else:
+                        print('invite')
+                        invite(adopter)
 
 
     form = AdopterForm()
