@@ -621,7 +621,7 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
             appt.delist()
 
             if short_notice(appt):
-                sn_obj = ShortNotice.objects.create(adopter = adopter, current_appt = appt, date = appt.date, sn_status = "1")
+                sn_obj = ShortNotice.objects.create(adopter = adopter, dog = appt.dog, current_appt = appt, date = appt.date, sn_status = "1")
                 appt.mark_short_notice()
                 notify_adoptions_add(adopter, appt)
 
@@ -758,6 +758,20 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
         if adopter_form:
             adopter_form.save()
 
+        if short_notice(appt):
+            if short_notice(appt):
+                try:
+                    sn_obj = ShortNotice.objects.get(date = appt.date, adopter = appt.adopter, dog = appt.dog)
+                    print(sn_obj.id)
+                    sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
+                    sn_obj.sn_status = "1"
+                    sn_obj.save()
+                except Exception as e:
+                    print('e', e)
+                    appt.mark_short_notice()
+                    sn_obj = ShortNotice.objects.create(adopter = appt.adopter, dog=appt.dog, current_appt = appt, date = appt.date, sn_status = "1")
+                    notify_adoptions_add(appt.adopter, appt)
+
         try:
             post_save_email = appt.adopter.primary_email
         except:
@@ -767,18 +781,15 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
                 if original_adopter not in [None, appt.adopter]:
                     cancel(original_adopter, appt)
 
-                if short_notice(appt) and appt.adopter not in [None, original_adopter]:
-                    appt.mark_short_notice()
-                    sn_obj = ShortNotice.objects.create(adopter = appt.adopter, current_appt = appt, date = appt.date, sn_status = "1")
-                    notify_adoptions_add(appt.adopter, appt)
+                # if short_notice(appt) and appt.adopter not in [None, original_adopter]:
+                #     appt.mark_short_notice()
+                #     sn_obj = ShortNotice.objects.create(adopter = appt.adopter, dog = appt.dog, current_appt = appt, date = appt.date, sn_status = "1")
+                #     notify_adoptions_add(appt.adopter, appt)
 
                 appt.adopter.has_current_appt = True
                 appt.adopter.save()
 
             appt.delist()
-
-            if original_adopter != appt.adopter and appt.appt_type in ["1", "2", "3"]:
-                return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
 
         return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
     else:
@@ -911,7 +922,8 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
     appt = Appointment.objects.get(pk=appt_id)
     adopter = appt.adopter
 
-    cancel(adopter, appt)
+    if appt.appt_type in ["1", "2", "3"]:
+        cancel(adopter, appt)
 
     adopter.has_current_appt = False
     adopter.save()

@@ -1,3 +1,5 @@
+{% load appt_extras %}
+
 <div class="appointment {% if appt.short_notice %} short_notice {% endif %}" id="appt{{appt.id}}">
 
   <!-- header grid, has a bottom border unless it is the only section -->
@@ -96,7 +98,7 @@
         <th class="right"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
       </tr>
 
-      {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest %}
+      {% if appt|show_notes %}
         {% if appt.internal_notes %}
         <tr>
           <td class="left"><b>From Adoptions:</b></td>

@@ -560,14 +560,14 @@ def visitor_instructions(request):
 
 @authenticated_user
 @allowed_users(allowed_roles={'adopter'})
-def contact(request):
+def contact(request, appt_id=None):
     all_dows = Daily_Schedule.objects
     form = ContactUsForm(request.POST or None)
     if form.is_valid():
         data = form.cleaned_data
         adopter = request.user.adopter
         message = data['message']
-        new_contact_us_msg(adopter, message)
+        new_contact_us_msg(adopter, message, appt_id)
         return redirect('adopter_home')
 
     context = {

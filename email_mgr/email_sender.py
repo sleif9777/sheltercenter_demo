@@ -189,9 +189,16 @@ def new_contact_adopter_msg(adopter, message, files, subject):
 
     send_email(text, message, "default", subject, email, files)
 
-def new_contact_us_msg(adopter, message):
+def new_contact_us_msg(adopter, message, appt_id=None):
     subject = "New message from " + adopter.full_name()
     reply_to = adopter.primary_email
+
+    if appt_id is not None:
+        appt = Appointment.objects.get(pk=appt_id)
+        req_appt_str = "<p><b>Requested Appointment:</b> {0}</p>".format(appt.date_and_time_string())
+        appt_requested(adopter, appt)
+    else:
+        req_appt_str = "--"
 
     text = """\
     Adopter: """ + adopter.full_name() + """\n
@@ -200,13 +207,39 @@ def new_contact_us_msg(adopter, message):
     html = """\
     <html>
       <body>
-        <h2>New Message from """ + adopter.full_name() + """</h2>
-        <p><b>Message:</b> """ + message + """</p>
+        <h2>New Message from {0}</h2>
+        {1}
+        <p><b>Message:</b> {2}</p>
       </body>
     </html>
-    """
+    """.format(adopter.full_name(), req_appt_str, message)
 
     send_email(text, html, reply_to, subject, get_base_email(), None)
+
+def appt_requested(adopter, appt):
+    subject = "You Have Requested An Appointment"
+    name = adopter.f_name
+    email = adopter.primary_email
+
+    text = """\
+    Hi {0},\n
+    You have requested an appointment for {1}. We will follow-up as soon as we see your message.\n
+    All the best, \n
+    The Adoptions Team
+    Saving Grace Animals for Adoption
+    """.format(name, appt.date_and_time_string())
+
+    html = """\
+    <html>
+      <body>
+        <p>Hi {0},</p>
+        <p>You have requested an appointment for {1}. We will follow-up within 24 hours.</p>
+        <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
+      </body>
+    </html>
+    """.format(name, appt.date_and_time_string())
+
+    send_email(text, html, "default", subject, email, None)
 
 def questions_msg(adopter, appt, questions):
     subject = "Question from " + adopter.full_name()

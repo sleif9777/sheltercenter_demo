@@ -248,25 +248,31 @@ class ShortNotice(models.Model):
 
         if schedulable:
             # return self.adopter.full_name()
-            return "{0}: {1}".format(self.sn_status, self.adopter.full_name(),)
+            return "{0}: ({1})".format(self.sn_status, self.adopter.full_name(),)
         else:
             # return self.dog()
             return "{0}: {1}".format(self.sn_status, self.dog,)
 
     def __str__(self):
         schedulable = False
+        print(self.id)
 
         try:
             if self.current_appt.appt_type in ["1", "2", "3"]:
                 schedulable = True
-        except:
+                print('hit1')
+        except Exception as uu:
+            print('uu', uu)
             try:
                 if self.prev_appt.appt_type in ["1", "2", "3"]:
                     schedulable = True
+                    print('hit2')
             except:
                 pass
 
         if schedulable:
+            print('human')
             return self.adopter.full_name()
         else:
+            print('dog')
             return self.dog

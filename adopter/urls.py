@@ -7,6 +7,7 @@ urlpatterns = [
     path("faq/test/", views.faq_test, name="faq_test"),
     path("select/", views.login, name="select_adopter"),
     path("contact/", views.contact, name="contact_us"),
+    path("contact/<int:appt_id>", views.contact, name="contact_us"),
     path("add/", views.add, name="add_adopter"),
     path("reconcile/", views.reconcile_missing_users, name="reconcile"),
     path("acknowledged/", views.acknowledged_faq, name="acknowledged_faq"),

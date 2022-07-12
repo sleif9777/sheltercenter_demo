@@ -10,7 +10,7 @@
     {% if appt.available == True and appt.appt_type in schedulable %}
       <tr>
         {% if appt.locked %}
-          <td class="appt_description left upper"><b>&#128274;&#xFE0E; <a href="{% url 'contact_us' %}">CONTACT US TO BOOK</a></b></td>
+          <td class="appt_description left upper"><b>&#128274;&#xFE0E; <a href="{% url 'contact_us' appt.id %}">CONTACT US TO BOOK</a></b></td>
         {% else %}
           {% if current_appt == None %}
             <td class="appt_description left upper"><b><a href="{% url 'book_cal_appointment' appt.id date.year date.month date.day %}">CLICK TO BOOK</a></b></td>
