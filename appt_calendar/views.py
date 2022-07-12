@@ -1047,7 +1047,7 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
                 notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
 
-            return redirect("calendar_date", date_year, date_month, date_day, new_appt.id)
+            return redirect("calendar_date_appt", date_year, date_month, date_day, new_appt.id)
 
         else:
             today = datetime.date.today()
