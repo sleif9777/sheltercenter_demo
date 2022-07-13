@@ -101,7 +101,7 @@
       {% if appt|show_notes %}
         {% if appt.internal_notes %}
         <tr>
-          <td class="left"><b>From Adoptions:</b></td>
+          <td class="left" style="width:20%;"><b>From Adoptions:</b></td>
           <td class="left"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
         </tr>
         {% endif %}
@@ -116,7 +116,7 @@
         {% if appt.adopter.app_interest and appt.appt_type in schedulable %}
         <tr>
           <td class="left"><b>From Shelterluv:</b></td>
-          <td class="left">{{appt.adopter.app_interest|linebreaks}}</td>
+          <td class="left">{{appt.adopter.app_interest_str|linebreaks}}</td>
         </tr>
         {% endif %}
       {% else %}

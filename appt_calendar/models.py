@@ -56,7 +56,7 @@ class Appointment(models.Model):
 
     #adopter note attributes
     internal_notes = models.TextField(default="", blank=True)
-    adopter_notes = models.TextField(default="", blank=True, max_length="100")
+    adopter_notes = models.TextField(default="", blank=True, max_length="50")
 
     #communication attributes
     comm_adopted_dogs = models.BooleanField(default=False)
@@ -229,7 +229,20 @@ class ShortNotice(models.Model):
     current_appt = models.ForeignKey(Appointment, null=True, blank=True, on_delete=models.SET_NULL, related_name="prev_appt")
     date = models.DateField(default = timezone.now())
     prev_appt = models.ForeignKey(Appointment, null=True, blank=True, on_delete=models.SET_NULL, related_name="current_appt")
+    backup_str = models.CharField(default="", max_length=100, blank=True)
+    header_str = models.CharField(default="", max_length=100, blank=True)
     sn_status = models.CharField(default="1", max_length=1, choices=STATUS_TYPES)
+
+    def set_backup(self):
+        self.header_str = str(self)
+
+        if self.sn_status == "1":
+            self.backup_str = "{0} - {1}".format(self.current_appt.appt_string(), self.current_appt.time_string())
+        if self.sn_status == "2":
+            self.backup_str = "{0} - {1}".format(self.prev_appt.appt_string(), self.prev_appt.time_string())
+        if self.sn_status == "3":
+            self.backup_str = "{0} - moved from {1} to {2}".format(self.current_appt.appt_string(), self.prev_appt.time_string(), self.current_appt.time_string())
+        self.save()
 
     def __repr__(self):
         schedulable = False

@@ -89,6 +89,12 @@ class Adopter(models.Model):
     def adopter_list_name(self):
         return self.l_name + ", " + self.f_name
 
+    def app_interest_str(self):
+        if len(self.app_interest) > 50:
+            return self.app_interest[:48] + "..."
+        else:
+            return self.app_interest
+
     def chg_appt_status(self):
         self.has_current_appt = not self.has_current_appt
         self.save()

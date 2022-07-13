@@ -67,9 +67,9 @@
           <ul>
             {% for sn in sn_add %}
               {% if sn.current_appt.appt_type in schedulable %}
-                <a target="_blank" href="https://www.shelterluv.com/adoption_request_print/{{sn.current_appt.adopter.application_id}}"><li>{{sn}} &#128196;&#xFE0E;<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li></a>
+                <a target="_blank" href="https://www.shelterluv.com/adoption_request_print/{{sn.current_appt.adopter.application_id}}"><li>{{sn.header_str}} &#128196;&#xFE0E;<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li></a>
               {% else %}
-                <li>{{sn}} {%if sn.current_appt.appt_type != "4"%}&#x270d;&#xFE0E;{% endif %}<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li>
+                <li>{{sn.header_str}}<br><span style="font-size: 8pt;">({{sn.backup_str}})</span></li>
               {% endif %}
             {% endfor %}
           </ul>
@@ -78,7 +78,7 @@
         <td>
           <ul>
             {% for sn in sn_cancel %}
-            <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.prev_appt.appt_string}} - {{sn.prev_appt.time_string}})</span></li>
+            <li>{{sn.header_str}}<br><span style="font-size: 8pt;">({{sn.backup_str}})</span></li>
             {% endfor %}
           </ul>
         </td>
@@ -86,7 +86,7 @@
         <td>
           <ul>
             {% for sn in sn_move %}
-            <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - moved from {{sn.prev_appt.time_string}} to {{sn.current_appt.time_string}})</span></li>
+            <li>{{sn.header_str}}<br><span style="font-size: 8pt;">({{sn.backup_str}})</span></li>
             {% endfor %}
           </ul>
         </td>
