@@ -261,7 +261,10 @@ class ShortNotice(models.Model):
 
         if schedulable:
             # return self.adopter.full_name()
-            return "{0}: ({1})".format(self.sn_status, self.adopter.full_name(),)
+            try:
+                return "{0}: ({1})".format(self.sn_status, self.adopter.full_name(),)
+            except:
+                return "{0}: (Unknown)"
         else:
             # return self.dog()
             return "{0}: {1}".format(self.sn_status, self.dog,)
@@ -285,7 +288,13 @@ class ShortNotice(models.Model):
 
         if schedulable:
             print('human')
-            return self.adopter.full_name()
+            try:
+                return self.adopter.full_name()
+            except:
+                return "Unknown"
         else:
             print('dog')
-            return self.dog
+            try:
+                return self.dog
+            except:
+                return "Unknown"

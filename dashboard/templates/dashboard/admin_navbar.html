@@ -14,3 +14,6 @@
 <li><a href="{% url 'visitor_instructions' %}">Visit Instructions</a></li>
 <!-- <li><a href="{% url 'help' %}">Help</a></li> -->
 <li><a href="https://docs.google.com/document/d/1D_-MGNVgaxyzmcqeO1DeWDYwPAlEVJH82kzS_djcO0E/edit?usp=sharing" target="blank">Help</a></li>
+{% if request.user|has_group:"superuser" %}
+  <li><a href="{% url 'admin:index' %}">Django Admin</a></li>
+{% endif %}
