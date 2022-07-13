@@ -32,6 +32,36 @@ class FAQForm(forms.ModelForm):
         labels = {
         }
 
+class HelpSectionForm(forms.ModelForm):
+    class Meta:
+        model = HelpSection
+        fields = [
+            'name',
+            'order',
+        ]
+        widgets = {
+
+        }
+        labels = {
+            'name': 'Section Name',
+            'order': 'Display Order'
+        }
+
+class HelpTopicForm(forms.ModelForm):
+    class Meta:
+        model = HelpTopic
+        fields = [
+            'header',
+            'text',
+            'order',
+        ]
+        widgets = {
+            'header': forms.TextInput(attrs={'size': 160}),
+            'text': TinyMCE(attrs={'cols': 80, 'rows': 30})
+        }
+        labels = {
+        }
+
 class VisitorInstructionForm(forms.ModelForm):
     class Meta:
         model = VisitorInstruction

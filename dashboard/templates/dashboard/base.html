@@ -8,8 +8,15 @@
     {% if page_title %}
       <title>{{page_title}}</title>
     {% else %}
-      <title></title>
+      <title>ShelterCenter</title>
     {% endif %}
+
+    {% if go_to_div %}
+      <script type="text/javascript">
+        window.location.hash = '#{{go_to_div}}';
+      </script>
+    {% endif %}
+
     <link rel="icon" href="{% static 'media/logo.png' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">

@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load appt_extras %}
 
 {% block content %}
   <div class="main textpage">
@@ -8,12 +9,36 @@
     </div>
 
     <div class="calendar_actions">
-      <a href="{% url 'daily_report_adopted_chosen_fta' today.year today.month today.day %}">Return to Today</a><br>
+      <a href="{% url 'daily_report_adopted_chosen_fta' today.year today.month today.day %}">Return to Today</a>
+      <a href="{% url 'report_print' date.year date.month date.day %}">Print View</a><br>
     </div>
 
     {% if empty_day == True %}
       No appointments today.
     {% else %}
+      <h2>All Appointments</h2>
+        <table id="chosenboard" style="width: 95%;">
+          <tr class="no-border">
+            <th style="width:15%;">Time</th>
+            <th style="width:30%;">Adopter</th>
+            <th style="width:30%;">Outcome</th>
+            <th style="width:25%;">Dog</th>
+          </tr>
+          {% for timeslot, appointments in timeslots.items %}
+            {% for appt in appointments %}
+              {% if appt.appt_type in schedulable and appt.adopter %}
+                <tr class="appt_row">
+                  <td>{{appt.time}}</td>
+                  <td>{{appt.adopter}}</td>
+                  <td>{{appt.get_outcome_display}}</td>
+                  <td>{{appt.dog}}</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+          <br><br>
+        </table>
+
       <h2>Adopted</h2>
         <table id="chosenboard" style="width: 95%;">
         <tr class="no-border">
@@ -27,7 +52,7 @@
             {% if appt.appt_type in schedulable and appt.outcome == "2" %}
               <tr class="appt_row">
                 <td>{{appt.time}}</td>
-                <td>{{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}</td>
+                <td>{{appt.adopter.f_name}} {{appt.adopter.l_name}}</td>
                 <td>{{appt.get_outcome_display}}</td>
                 <td>{{appt.dog}}</td>
               </tr>
@@ -47,10 +72,10 @@
           </tr>
           {% for timeslot, appointments in timeslots.items %}
             {% for appt in appointments %}
-              {% if appt.appt_type in schedulable and appt.outcome == "3" %}
+              {% if appt.appt_type in schedulable and appt|is_chosen %}
                 <tr class="appt_row">
                   <td>{{appt.time}}</td>
-                  <td>{{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}</td>
+                  <td>{{appt.adopter}}</td>
                   <td>{{appt.get_outcome_display}}</td>
                   <td>{{appt.dog}}</td>
                 </tr>
@@ -73,7 +98,7 @@
               {% if appt.appt_type in schedulable and appt.outcome == "4" %}
                 <tr class="appt_row">
                   <td>{{appt.time}}</td>
-                  <td>{{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}</td>
+                  <td>{{appt.adopter}}</td>
                   <td>{{appt.get_outcome_display}}</td>
                   <td>{{appt.dog}}</td>
                 </tr>

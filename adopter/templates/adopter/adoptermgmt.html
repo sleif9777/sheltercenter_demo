@@ -2,6 +2,31 @@
 {% load static %}
 
 {% block content %}
+
+<script>
+  function filterAdopters() {
+    // Declare variables
+    var input, filter, ul, li, name, email, i, txtValue;
+    input = document.getElementById('searchBar');
+    filter = input.value.toLowerCase();
+    ul = document.getElementById("adopter_list");
+    li = ul.getElementsByClassName('adopter_listing');
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < li.length; i++) {
+      name = li[i].getElementsByClassName("adopter_name")[0];
+      email = li[i].getElementsByClassName("adopter_email")[0];
+      nameTxtValue = name.textContent || name.innerText;
+      emailTxtValue = email.textContent || email.innerText;
+      if (nameTxtValue.toLowerCase().indexOf(filter) > -1 || emailTxtValue.toLowerCase().indexOf(filter) > -1) {
+        li[i].style.display = "";
+      } else {
+        li[i].style.display = "none";
+      }
+    }
+  }
+</script>
+
   <div class="main textpage">
     <h1 class="page_header">Manage Adopters</h1>
 
@@ -9,47 +34,57 @@
       <a href="{% url 'send_to_inactive' %}">Send Follow-Up Emails</a>
     </div>
 
-    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 5px;">
+    <input type="text" id="searchBar" onkeyup="filterAdopters()" placeholder="Search by name or email address.">
+
+    <!-- <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 5px;">
       <span style="font-weight: bold;">First Name:</span>
       {% for letter in alphabet %}
       <a href="{% url 'manage_filter' 'fname' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
       {% endfor %}
     </div>
-    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 10px;">
+    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 5px;">
       <span style="font-weight: bold;">Last Name:</span>
       {% for letter in alphabet %}
       <a href="{% url 'manage_filter' 'lname' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
       {% endfor %}
     </div>
+    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 10px;">
+      <span style="font-weight: bold;">Email:</span>
+      {% for letter in alphabet %}
+      <a href="{% url 'manage_filter' 'email' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
+      {% endfor %}
+      {% for digit in digits %}
+      <a href="{% url 'manage_filter' 'email' digit %}" class="standalone" style="font-size: 16pt;">{{digit}}</a>
+      {% endfor %}
+    </div> -->
 
     <ul class="listpage" id="adopter_list">
       {% for adopter in adopters %}
-        <div class="" style="break-inside: avoid-column; border-bottom: 1px solid #BF4580;"">
-          <li>
+        <div class="" style="break-inside: avoid-column;">
+          <li class="adopter_listing" style="border-bottom: 1px solid #BF4580;">
             <a class="standalone" href="{% url 'edit_adopter' adopter.id %}">
-              <span style="font-size: 14pt;">
+              <span class="adopter_name" style="font-size: 14pt;">
               {% if lname_fname %}
-                {{adopter.adopter_last_name}}, {{adopter.adopter_first_name}}
+                {{adopter.l_name}}, {{adopter.f_name}}
               {% else %}
                 {{adopter}}
               {% endif %}
               {% if adopter.status == "2" %}
-                &#128683;&#xFE0E;</span><br>
+                &#128683;&#xFE0E;
               {% elif adopter.status == "3" %}
-                &#x231B;&#xFE0E;</span><br>
-              {% else %}
-                </span><br>
-                <span style="font-size: 8pt;">{{adopter.adopter_email}}</span>
+                &#x231B;&#xFE0E;
               {% endif %}
+              </span><br>
+              <span class="adopter_email" style="font-size: 8pt;">{{adopter.primary_email}}</span>
             </a>
+            <ul style="padding-left: 10%; list-style-type: '&#10551;';">
+              {% if adopter.status == "1" %}
+                <li><a class="standalone" href="{% url 'resend_invite' adopter.id %}">Resend Invitation</a></li>
+                <li><a class="standalone" href="{% url 'set_alert_mgr' adopter.id %}">Set Reminder</a></li>
+              {% endif %}
+            </ul>
 
           </li>
-          <ul style="padding-left: 10%; list-style-type: '&#10551;';">
-            {% if adopter.status != "2" and adopter.status != "3" %}
-              <li><a class="standalone" href="{% url 'resend_invite' adopter.id %}">Resend Invitation</a></li>
-              <li><a class="standalone" href="{% url 'set_alert_mgr' adopter.id %}">Set Reminder</a></li>
-            {% endif %}
-          </ul>
         </div>
       {% endfor %}
     </ul>

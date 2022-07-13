@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load auth_extras %}
 {% load appt_extras %}
 
 {% block content %}
@@ -13,10 +14,12 @@
         <th style="width:15%;">Date</th>
         <th style="width:10%;">Time</th>
         <th style="width:17%;">Adopter</th>
-        <th style="width:10%;">Outcome</th>
         <th style="width:15%;">Dog</th>
-        <th style="width:15%;">Last Update Sent</th>
-        <th style="width:18%;">Ready To Roll?</th>
+        <th style="width:10%;">Outcome</th>
+        {% if request.user|has_group:"admin" %}
+          <th style="width:15%;">Last Update Sent</th>
+          <th style="width:18%;">Update Status</th>
+        {% endif %}
       </tr>
 
       {% for appt in appointments %}
@@ -26,55 +29,65 @@
             <td>{{appt.date}}</td>
             <td>{{appt.time}}</td>
             <td>
-              {{appt.adopter_choice.adopter_first_name}} {{appt.adopter_choice.adopter_last_name}}
-              <div class="chosen_board_actions" style="display: inline;">
-                <a href="{% url 'clear_from_cb' appt.id %}">(Clear)</a>
-              </div>
-            </td>
-            <td>{{appt.get_outcome_display}}</td>
-            <td>{{appt.dog}}</td>
-
-            <td>
-              <div class="chosen_board_actions">
-                {% if appt|alert_overdue == True %}
-                  <div class="" style="color: #BF4580;">
-                    <b>&#9888;&#xFE0E; {{appt.last_update_sent}}</b>
-                  </div>
-                {% else %}
-                  <div class="">
-                    {{appt.last_update_sent}}
-                  </div>
-                {% endif %}
-                <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a>
-              </div>
-            </td>
-
-            <td class="chosenboard">
-              {% if appt.outcome == "3" %}
-                <div class="chosen_board_actions">
-                  <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_negative' %}">Heartworm Negative</a><br>
-                  <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_positive' %}">Heartworm Positive</a>
-                </div>
-              {% elif appt.outcome == "6" %}
-                Adopters Notified<br>
-                {% if appt.heartworm == True %}
-                  <div class="chosen_board_actions">
-                    <a class="chosen_board_actions" href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
-                  </div>
-                {% else %}
-                  <div class="chosen_board_actions">
-                    <a class="chosen_board_actions" href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
-                  </div>
-                {% endif %}
-              {% elif appt.outcome == "7" %}
-                Adopters Notified<br>
-                Paperwork Scheduled
+              {{appt.adopter.f_name}} {{appt.adopter.l_name}}
+              {% if request.user|has_group:"admin" %}
                 <div class="chosen_board_actions" style="display: inline;">
-                  <a href="{% url 'mark_complete_cb' appt.id %}">(Complete)</a>
+                  <a href="{% url 'clear_from_cb' appt.id %}">(Clear)</a>
                 </div>
               {% endif %}
             </td>
+            <td>{{appt.dog}}</td>
+            <td>{{appt.get_outcome_display}}</td>
 
+            {% if request.user|has_group:"admin" %}
+              <td>
+                <div class="chosen_board_actions">
+                  {% if appt|alert_overdue == True %}
+                    <div class="" style="color: #BF4580;">
+                      <b>&#9888;&#xFE0E; {{appt.last_update_sent}}</b>
+                    </div>
+                  {% else %}
+                    <div class="">
+                      {{appt.last_update_sent}}
+                    </div>
+                  {% endif %}
+                  {% if request.user|has_group:"admin" %}
+                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a>
+                  {% endif %}
+                </div>
+              </td>
+
+              <td class="chosenboard">
+                {% if appt|is_chosen %}
+                  <div class="chosen_board_actions">
+                    <a href="{% url 'cb_update_status' appt.id 9 %}">Chosen - needs vetting</a><br>
+                    <a href="{% url 'cb_update_status' appt.id 10 %}">Chosen - needs well check</a><br>
+                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_negative' %}">Heartworm Negative</a><br>
+                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_positive' %}">Heartworm Positive</a>
+                  </div>
+                {% elif appt.outcome == "7" %}
+                  Adopter Notified<br>
+                  {% if appt.rtr_notif_date %}
+                    ({{appt.rtr_notif_date}})<br>
+                  {% endif %}
+                  {% if appt.heartworm == True %}
+                    <div class="chosen_board_actions">
+                      <a class="chosen_board_actions" href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
+                    </div>
+                  {% else %}
+                    <div class="chosen_board_actions">
+                      <a class="chosen_board_actions" href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
+                    </div>
+                  {% endif %}
+                {% elif appt.outcome == "8" %}
+                  Adopter Notified<br>
+                  Paperwork Scheduled
+                  <div class="chosen_board_actions" style="display: inline;">
+                    <a href="{% url 'mark_complete_cb' appt.id %}">(Complete)</a>
+                  </div>
+                {% endif %}
+              </td>
+            {% endif %}
           </tr>
 
       {% endfor %}

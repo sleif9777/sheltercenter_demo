@@ -1,0 +1,5 @@
+<!-- two-column table displaying timeslot and timeslot-level actions -->
+<th style="font-size: 18pt; text-align: left; padding-bottom: 10px;" class="faq_section">{{sec.name}}</th>
+<th style="font-size: 18pt; text-align: right;" class="timeslotheader">
+<a class="timeslot_action" href="{% url 'add_helptopic' sec.id %}">Add Topic</a> |
+<a class="timeslot_action" href="{% url 'delete_helpsection' sec.id %}">Delete Section</a></th>

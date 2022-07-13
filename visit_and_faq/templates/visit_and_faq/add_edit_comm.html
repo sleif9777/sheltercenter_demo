@@ -7,7 +7,7 @@
     <h1 class="page_header no_actions">{{title}}</h1>
 
     {% if section %}
-      <p class="standalone">This question will be added to the {{section}} section of the FAQ page.</p>
+      <p class="standalone">This content will be added to the {{section}} section.</p>
     {% endif %}
 
     <form class="" action="" method="post">
@@ -16,9 +16,11 @@
         tinymce.init({
           selector:'textarea',
           height:'512px',
-          plugins:'link textcolor',
+          plugins:'link textcolor image',
           menubar: 'file edit insert view format table tools help',
-          toolbar: 'undo redo | styleselect | bold italic forecolor fontsizeselect | alignleft aligncenter alignright alignjustify | outdent indent | link',
+          toolbar: 'undo redo | styleselect | bold italic forecolor fontsizeselect | alignleft aligncenter alignright alignjustify | outdent indent | link image',
+          image_uploadtab: true,
+          images_upload_url: 'static/media/'
         });
       </script>
       {% csrf_token %}

@@ -1,0 +1,71 @@
+{% load auth_extras %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% if request.user|has_group:"superuser" %}
+  <h1 class="page_header">Help</h1>
+  <div class="calendar_actions">
+    <a href="{% url 'add_helpsection' %}">Add Section</a>
+  </div>
+{% else %}
+  <h1 class="page_header no_actions">Help</h1>
+{% endif %}
+
+
+<div class="outstanding_task" style="margin-bottom: 10px; border-color: #1E6C80; color: #1E6C80; background-color: #D2ECF4;">
+  <p><i class="fa fa-question-circle" style="display: inline; font-size:16px;"></i> The topics on this page include: </p>
+  <ul style="column-count: 1; list-style-type: none; padding-left: 10px;">
+    {% for sec, topics in help_dict.items %}
+    <li><a class="datelink" style="color: #1E6C80" href="#s{{sec.id}}"><b>{{sec.name}}</b></a></li>
+      <ul style="column-count: 1; list-style-type: disc; padding: 5px 0px 5px 40px;">
+        {% for t in topics %}
+          <li><a class="datelink" style="color: #1E6C80" href="#t{{t.id}}">{{t.header}}</a></li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  </ul>
+</div>
+
+{% for sec, topics in help_dict.items %}
+  <div class="faq_section_div" style="border-top: 1px solid #1E6C80;" id="s{{sec.id}}">
+    <table style = "padding: 0; width:100%; margin: 0;">
+      <tr>
+        {% if request.user|has_group:"superuser" %}
+          {% include 'visit_and_faq/help_topic_action_toolbar_admin.html' %}
+
+        {% else %}
+          {% include 'visit_and_faq/help_topic_action_toolbar.html' %}
+        {% endif %}
+      </tr>
+      {% for t in topics %}
+        <tr>
+          <td colspan="2" style="border: none;">
+            <h3 class="faq_question" id="t{{t.id}}">
+              {{t.header}}
+              {% if request.user|has_group:"superuser" %}
+                <a class="timeslot_action" href="{% url 'edit_helptopic' t.id %}">&#9998;&#xFE0E;</a>
+                <a class="timeslot_action" href="{% url 'delete_helptopic' t.id %}">&#10006;&#xFE0E;</a>
+              {% endif %}
+            </h3>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="border-top: none; border-bottom: 1px dashed #1E6C80; padding-bottom: 10px;">{{t.text|safe|linebreaks}}</td>
+        </tr>
+      {% endfor %}
+    </table>
+
+  </div>
+
+{% endfor %}
+
+{% if request.user|has_group:"superuser" %}
+  <div class="timeslot">
+      <!-- two-column table displaying timeslot and timeslot-level actions -->
+      <table style = "width:100%; padding: 10px; margin: 0;">
+        <th style="font-size: 18pt; text-align: left;" class="timeslotheader"></th>
+        <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
+          <a class="timeslot_action" href="{% url 'add_helpsection' %}">Add Section</a>
+        </th>
+      </table>
+  </div>
+{% endif %}

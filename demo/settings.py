@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.environ.get('DEBUG')) == "1"
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.ondigitalocean.app', 'sheltercenter.dog']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.ondigitalocean.app', 'sheltercenter.dog', 'www.sheltercenter.dog']
 if not DEBUG:
     ALLOWED_HOSTS += [os.environ.get("DJANGO_ALLOWED_HOST"), 'sheltercenter.dog']
 
@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'email_mgr.apps.EmailMgrConfig',
     'tinymce',
     'dashboard.apps.DashboardConfig',
-    'visit_and_faq.apps.VisitAndFaqConfig'
+    'visit_and_faq.apps.VisitAndFaqConfig',
+    'wishlist.apps.WishlistConfig'
+
 ]
 
 MIDDLEWARE = [
@@ -216,3 +218,12 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 # TINYMCE_SPELLCHECKER = True
 # TINYMCE_COMPRESSOR = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.office365.com'
+EMAIL_HOST_USER = os.environ.get('EMAIL_ADDRESS')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

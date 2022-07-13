@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load auth_extras %}
 
 {% block content %}
   <div class="main textpage">
@@ -22,6 +23,11 @@
       {{ form.as_p }}
       <input class="submitform" type="submit" name="" value="Add Adopter"><br>
     </form>
+    <br>
+
+    {% if request.user|has_group:"superuser" %}
+    <a href="{% url 'reconcile' %}" class="standalone">Reconcile</a>
+    {% endif %}
 
   </div>
 {% endblock %}

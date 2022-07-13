@@ -1,0 +1,27 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block content%}
+  <div class="main">
+    <h1 class="page_header">List of All Dogs</h1>
+
+    <form class="" action="" method="post">
+      {% csrf_token %}
+      <input type="submit" name="" value="Save Wishlist">
+      <ul class="appt_list">
+        {% for dog in user_wishlist %}
+          <li class="appt_slot">{% include 'wishlist/dog_on_wishlist_card.html' %}</li>
+        {% endfor %}
+      </ul>
+
+      <hr>
+
+      <ul class="appt_list">
+        {% for dog in all_available_dogs %}
+          <li class="appt_slot">{% include 'wishlist/dog_card.html' %}</li>
+        {% endfor %}
+      </ul>
+    </form>
+  </div>
+{% endblock %}

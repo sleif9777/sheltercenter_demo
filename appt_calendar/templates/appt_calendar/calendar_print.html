@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     {% load static %}
+    {% load appt_extras %}
     <meta charset="utf-8">
     <title></title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
@@ -10,6 +11,12 @@
   <body>
     <div class="calendar_header">
       <h1>{{date_pretty}}</h1>
+    </div>
+
+    <div class="info_box">
+      {% if internal_announcement %}
+        <p class="datelink"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>{{internal_announcement.text|safe}}</p>
+      {% endif %}
     </div>
 
     {% if empty_day == True %}
@@ -21,15 +28,15 @@
     <table style="width:100%;font-size:10pt;">
       <tr>
         <th style="width:5%;">Time</th>
-        <th style="width:15%;">Adopter</th>
-        <th style="width:30%;">Notes from Adopter</th>
-        <th style="width:30%;">Notes from Adoptions Team</th>
-        <th style="width:10%;">Bringing dog?</th>
-        <th style="width:10%;">Number of Visits</th>
+        <th style="width:15%;">Adopter/Dog</th>
+        <th style="width:23%;">Notes from Adopter</th>
+        <th style="width:24%;">Notes from Adoptions Team</th>
+        <th style="width:23%;">Notes from Shelterluv</th>
+        <th style="width:10%;"># of Visits</th>
       </tr>
       {% for timeslot, appointments in timeslots.items %}
         {% for appt in appointments %}
-          {% if appt.appt_type in schedulable and appt.adopter_choice %}
+          {% if appt.dog or appt.adopter %}
             <tr class="appt_row">
               <td style="">{{appt.time_string}}</td>
               <td>
@@ -43,17 +50,19 @@
                 {% if appt.has_cat %}
                   &#128008;&#xFE0E;
                 {% endif %}
+                <br>
+                <span style="font-size: 8pt;">({{appt.appt_string}})</span>
               </td>
               <td>{{appt.adopter_notes}}</td>
               <td>{{appt.internal_notes}}</td>
               <td>
-                {% if appt.bringing_dog %}
-                  Yes
+                {% if appt.appt_type in schedulable %}
+                  {{appt.adopter.app_interest}}
                 {% endif %}
               </td>
               <td>
-                {% if appt.adopter_choice.visits_to_date > 1 %}
-                  {{appt.adopter_choice.number_of_visits}}
+                {% if appt.adopter.visits_to_date > 1 %}
+                  {{appt.number_of_visits}}
                 {% endif %}
               </td>
             </tr>

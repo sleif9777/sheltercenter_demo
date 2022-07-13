@@ -1,0 +1,33 @@
+{% load auth_extras %}
+
+<div class="appointment" id={{dog.shelterluv_id}}>
+
+  <table style="width: 100%; margin: auto;">
+    <tr class="appt_info_block appt_end_block">
+      <td style="border: none; width: 20%;">
+        <img src="{{dog.info.CoverPhoto}}" height="150px" alt=""><br>
+        {% if request.user|has_group:"adopter" %}
+          <input type="checkbox" name="{{dog.shelterluv_id}}" value="{{dog.shelterluv_id}}" checked>
+          <label for="{{dog.shelterluv_id}}">Remove From Wishlist</label>
+        {% endif %}
+      </td>
+      <td>
+        <table style="width: 100%; margin: auto;">
+          <tr>
+            <td><span class="appt_description left upper"><b>{{dog.info.Name}}
+              {% if dog.info.Status != "Available for Adoption" %}
+                - NO LONGER AVAILABLE
+              {% endif %}
+            </b></span><br>
+            <b>{{dog.info.Sex}} {{dog.info.Breed}}, {{dog.Weight_str}}{{dog.Age_str}}</b>
+            </td>
+          </tr>
+          <tr class="appt_end_block" style="border: none;">
+            <td style="border: none; font-size: 10pt;"><em>{{dog.info.Description}}</em></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</div>

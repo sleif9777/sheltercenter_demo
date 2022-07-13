@@ -10,6 +10,13 @@
     <form class="" action="" method="post">
       {% csrf_token %}
       {{ form.as_p }}
+      {% if adopter_form %}
+        <br>
+        {{adopter_form.as_p}}
+        <br>
+        <em>**Low-shed and hypoallergenic dogs do not come into our program often and are wildly popular. If you can be flexible about this, you will have a much easier time finding a match.</em>
+        <br>
+      {% endif %}
       <br>
       <input class="submitform" type="submit" name="" value="Submit">
     </form>

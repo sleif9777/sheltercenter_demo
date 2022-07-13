@@ -7,36 +7,53 @@ class AdopterForm(forms.ModelForm):
     class Meta:
         model = Adopter
         fields = [
-            'adopter_first_name',
-            'adopter_last_name',
-            'adopter_email',
+            'f_name',
+            'l_name',
+            'primary_email',
+            'auth_code',
             'status',
             'carryover_shelterluv',
             'out_of_state',
             'lives_with_parents',
             'adopting_host',
             'adopting_foster',
-            'friend_of_foster',
             'chosen_dog',
-            'app_interest'
+            'app_interest',
         ]
         labels = {
-            'adopter_first_name': 'First Name:',
-            'adopter_last_name': 'Last Name:',
-            'adopter_email': 'Email:',
+            'f_name': 'First Name:',
+            'l_name': 'Last Name:',
+            'primary_email': 'Email:',
+            'auth_code': "Authorization Code:",
             'status': 'Status:',
             'carryover_shelterluv': 'Adopter was in Shelterluv before ShelterCenter went live',
             'out_of_state': 'Adopter from outside NC, SC, or VA',
             'lives_with_parents': 'Adopter lives with parents',
             'adopting_host': 'Adopting their host dog',
             'adopting_foster': 'Adopting their foster dog',
-            'friend_of_foster': "Adopting a friend's foster dog",
             'chosen_dog': '(For foster/host adoptions) Chosen dog:',
             'app_interest': '(For general adoptions) Interested in:'
         }
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label_suffix', '')
         super(AdopterForm, self).__init__(*args, **kwargs)
+        self.fields['auth_code'].disabled = True
+
+class AdopterPreferenceForm(forms.ModelForm):
+    class Meta:
+        model = Adopter
+        fields = [
+            'gender_preference',
+            'age_preference',
+            'min_weight',
+            'max_weight',
+            'hypo_preferred',
+        ]
+        labels = {
+            'min_weight': "Minimum desired weight (optional)",
+            'max_weight': "Maximum desired weight (optional)",
+            'hypo_preferred': "I am only looking for a low-shed or hypoallergenic dog"
+        }
 
 class SetAlertDateForm(forms.ModelForm):
     class Meta:

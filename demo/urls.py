@@ -19,7 +19,7 @@ from appt_calendar import views #as cal_views
 from adopter import views #as adopt_views
 from dashboard import views as views
 from . import settings
-import adopter
+import adopter, visit_and_faq
 from django.conf.urls.static import static
 
 #import scheduleconfig.views
@@ -39,12 +39,15 @@ urlpatterns = [
     path('adopter/', include('adopter.urls')),
     path('emails/', include('email_mgr.urls')),
     path('visit_comms/', include('visit_and_faq.urls')),
+    path('wishlist/', include('wishlist.urls')),
     path('', adopter.views.home_page, name="home_page"),
     path('register/', views.register, name="register"),
     path('login/', views.login_page, name="login"),
     path('logout/', views.logout_user, name="logout"),
     path('test/', views.test_harness, name="test_harness"),
     path('login/staff/', views.staff_login, name="staff_login"),
+    path('images/', views.images, name="images"),
+    path('help/', visit_and_faq.views.help, name="help"),
     path('tinymce/', include('tinymce.urls')),
 ]
 
