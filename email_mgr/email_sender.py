@@ -223,7 +223,7 @@ def appt_requested(adopter, appt):
 
     text = """\
     Hi {0},\n
-    You have requested an appointment for {1}. We will follow-up as soon as we see your message.\n
+    You have requested an appointment for {1}. This is not a confirmation, please do not plan to come until we have followed up. We will follow up as soon as we see your message.\n
     All the best, \n
     The Adoptions Team
     Saving Grace Animals for Adoption
@@ -233,7 +233,7 @@ def appt_requested(adopter, appt):
     <html>
       <body>
         <p>Hi {0},</p>
-        <p>You have requested an appointment for {1}. We will follow-up within 24 hours.</p>
+        <p>You have requested an appointment for {1}. <b>This is not a confirmation, please do not plan to come until we have followed up.</b> We will follow-up within 24 hours.</p>
         <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
       </body>
     </html>
