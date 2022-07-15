@@ -159,5 +159,11 @@
       {% endif %}
       </p>
     {% endif %}
+  {% else %}
+    {% if empty_day == True and date.weekday < 5 %}
+    <div class="info_box">
+      <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> We're sorry, there are no appointments available for this date.</p>
+    </div>
+    {% endif %}
   {% endif %}
 </div>

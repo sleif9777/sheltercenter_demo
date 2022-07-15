@@ -249,6 +249,10 @@ def calendar_date(request, date_year, date_month, date_day):
 
         context.update(adopter_context)
 
+        print(request.user.adopter.alert_date)
+        print(context['date'])
+        print(request.user.adopter.alert_date == context['date'])
+
     return render(request, "appt_calendar/calendar_test_harness.html", context)
 
 def calendar_date_appt(request, date_year, date_month, date_day, appt_id):

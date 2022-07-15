@@ -227,3 +227,5 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_ADDRESS')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+ADMINS = [('Sam Leifer', 'leifersam9@gmail.com')]
+SERVER_EMAIL = os.environ.get('EMAIL_ADDRESS')
