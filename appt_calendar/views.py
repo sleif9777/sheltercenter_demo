@@ -723,14 +723,17 @@ def add_paperwork_appointment(request, date_year, date_month, date_day, timeslot
     return render(request, "appt_calendar/add_edit_appt.html", context)
 
 def short_notice(appt):
-    is_today = appt.date == datetime.date.today()
-    is_tomorrow = appt.date == datetime.date.today() + datetime.timedelta(days=1)
-    booked_after_close = datetime.datetime.now().time() > datetime.time(16,00)
+    try:
+        is_today = appt.date == datetime.date.today()
+        is_tomorrow = appt.date == datetime.date.today() + datetime.timedelta(days=1)
+        booked_after_close = datetime.datetime.now().time() > datetime.time(16,00)
 
-    if is_today or (is_tomorrow and booked_after_close):
-        return True
-
-    return False
+        if is_today or (is_tomorrow and booked_after_close):
+            return True
+        else:
+            return False
+    except:
+        return False
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
@@ -1027,9 +1030,12 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
             pass
 
         if user_groups == {"adopter"} or ("admin" in user_groups and source == "calendar"):
-            print("Resetting appointment {0}, removing {1}".format(current_appt.id, adopter.full_name()))
-            current_appt.reset()
-            current_appt.save()
+            try:
+                print("Resetting appointment {0}, removing {1}".format(current_appt.id, adopter.full_name()))
+                current_appt.reset()
+                current_appt.save()
+            except:
+                pass
 
         new_appt.adopter = adopter
         adopter.has_current_appt = True
