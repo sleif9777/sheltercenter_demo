@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from django.utils.log import DEFAULT_LOGGING as LOGGING
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -229,3 +230,4 @@ EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ADMINS = [('Sam Leifer', 'leifersam9@gmail.com')]
 SERVER_EMAIL = os.environ.get('EMAIL_ADDRESS')
+LOGGING['handlers']['mail_admins']['include_html'] = True
