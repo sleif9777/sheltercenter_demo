@@ -1,3 +1,66 @@
+<ul class="two-col-flex">
+  <li class="two-col-flex">
+    <div class="info_box">
+      <p class="datelink"><b>INTERNAL NOTE FOR {{date_pretty.upper}}</b></p>
+      {% if internal_announcement %}
+        <p><a class="datelink" href="{% url 'edit_internal_announcement' internal_announcement.id date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>{{internal_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
+      {% else %}
+        <p><a class="datelink" href="{% url 'add_internal_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>Add an internal note. &#9998;&#xFE0E;</a></p>
+      {% endif %}
+    </div>
+  </li>
+
+  <li class="two-col-flex">
+    <div class="info_box">
+      <p class="datelink"><b>DISPLAYS FOR ALL DATES</b></p>
+      {% if calendar_announcement.text|length > 0 %}
+        <p><a class="datelink" href="{% url 'edit_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>{{calendar_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
+      {% else %}
+        <p><a class="datelink" href="{% url 'add_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>Add a notification for adopters. &#9998;&#xFE0E;</a></p>
+      {% endif %}
+    </div>
+  </li>
+
+  <li class="two-col-flex">
+    <div class="info_box">
+      <p class="datelink"><b>DISPLAYS ONLY FOR {{date_pretty.upper}}</b></p>
+      {% if daily_announcement %}
+        <p><a class="datelink" href="{% url 'edit_daily_announcement' daily_announcement.id date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>{{daily_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
+      {% else %}
+        <p><a class="datelink" href="{% url 'add_daily_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>Add a notification for adopters. &#9998;&#xFE0E;</a></p>
+      {% endif %}
+    </div>
+  </li>
+
+  {% if empty_dates %}
+    <li class="two-col-flex">
+      <div class="outstanding_task">
+        <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> Please check that a full schedule is set for:</p>
+        <ul>
+          {% for d, d_str in empty_dates %}
+          <li><a class="datelink" href="{% url 'calendar_date' d.year d.month d.day %}">{{d_str}}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </li>
+  {% endif %}
+
+  {% if no_outcome_appts %}
+    <li class="two-col-flex">
+      <div class="outstanding_task no_decision">
+        <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> Please enter a decision for:</p>
+        <ul>
+          {% for appt in no_outcome_appts %}
+          <li><a class="datelink" href="{% url 'enter_decision' appt.id appt.date.year appt.date.month appt.date.day%}">{{appt.adopter.full_name}} - {{appt.date}}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </li>
+  {% endif %}
+</ul>
+
+<!--
+
 <div class="info_box">
   <p class="datelink"><b>INTERNAL NOTE FOR {{date_pretty.upper}}</b></p>
   {% if internal_announcement %}
@@ -36,12 +99,6 @@
   </div>
 {% endif %}
 
-<!-- {% if not upload_current %}
-  <div class="outstanding_task">
-    <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> <a href="{% url 'add_adopter' %}" class="datelink">An adopter upload was not completed yesterday. Please upload the most recent approved adopters.</a></p>
-  </div>
-{% endif %} -->
-
 {% if no_outcome_appts %}
   <div class="outstanding_task">
     <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> Some appointments in the past week do not have an outcome entered. Adopters cannot schedule a new appointment until their previous appointment has an outcome. Please update these appointments.</p>
@@ -51,7 +108,7 @@
       {% endfor %}
     </ul>
   </div>
-{% endif %}
+{% endif %} -->
 
 {% if sn_show %}
   <div class="short_notice_box">

@@ -105,5 +105,19 @@ class Adopter(models.Model):
     def __str__(self):
         return self.full_name()
 
+    def show_preferences(self):
+        if self.min_weight != 0:
+            return True
+        if self.max_weight != 0:
+            return True
+        if self.hypo_preferred:
+            return True
+        if self.gender_preference != "1":
+            return True
+        if self.age_preference != "1":
+            return True
+
+        return False
+
     class Meta:
         ordering = ('f_name', 'l_name')

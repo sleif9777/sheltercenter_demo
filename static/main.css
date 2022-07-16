@@ -20,6 +20,29 @@ body {
   background-color: #ea9999;
 }
 
+ul.two-col-flex {
+    list-style-type: none;
+    column-count: 2;
+    padding-inline-start: 0;
+}
+
+li.two-col-flex {
+  display: block;
+  padding-top: 3px;
+  break-inside: avoid-column;
+  text-align: left;
+}
+
+li.two-col-flex:nth-last-child(2):nth-child(odd) {
+  float: right;
+  text-align: right;
+}
+
+.appointment li.two-col-flex:nth-last-child(1) {
+  float: right;
+  text-align: right;
+}
+
 .short_notice_box {
   border: 4px #7A7400 solid;
   width: 80%;
@@ -114,7 +137,7 @@ body {
   }
 
   .outstanding_task ul {
-    column-count: 2;
+    column-count: 1;
     padding-top: 10px;
   }
 
