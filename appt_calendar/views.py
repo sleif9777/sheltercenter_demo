@@ -24,6 +24,7 @@ def get_groups(user_obj):
 
     return user_groups
 
+@authenticated_user
 def calendar(request):
     today = datetime.date.today()
     return redirect('calendar_date', today.year, today.month, today.day)
@@ -51,6 +52,7 @@ def copy_temp_to_cal(request, date_year, date_month, date_day):
 
     return redirect('calendar_date', date.year, date.month, date.day)
 
+@authenticated_user
 def set_alert_date(request, date_year, date_month, date_day):
     date = datetime.date(date_year, date_month, date_day)
     adopter = request.user.adopter
@@ -62,6 +64,7 @@ def set_alert_date(request, date_year, date_month, date_day):
 
     return redirect('calendar_date', date.year, date.month, date.day)
 
+@authenticated_user
 def set_alert_date_greeter(request, adopter_id, date_year, date_month, date_day):
     date = datetime.date(date_year, date_month, date_day)
     adopter = Adopter.objects.get(pk=adopter_id)
@@ -108,6 +111,7 @@ def greeter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
     return render(request, "appt_calendar/calendar_greeter_reschedule.html/", context)
 
+@authenticated_user
 def book_appointment(request, appt_id, date_year, date_month, date_day):
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
@@ -206,6 +210,7 @@ def jump_to_date_greeter(request, adopter_id, appt_id, source):
 
     return render(request, "appt_calendar/jump_to_date.html", context)
 
+@authenticated_user
 def jump_to_date(request):
     form = JumpToDateForm(request.POST or None)
 
@@ -224,6 +229,7 @@ def jump_to_date(request):
 
     return render(request, "appt_calendar/jump_to_date.html", context)
 
+@authenticated_user
 def calendar_date(request, date_year, date_month, date_day):
     try:
         user_groups = set(group.name for group in request.user.groups.all().iterator())
@@ -255,6 +261,7 @@ def calendar_date(request, date_year, date_month, date_day):
 
     return render(request, "appt_calendar/calendar_test_harness.html", context)
 
+@authenticated_user
 def calendar_date_appt(request, date_year, date_month, date_day, appt_id):
     try:
         user_groups = set(group.name for group in request.user.groups.all().iterator())
@@ -294,6 +301,7 @@ def calendar_date_appt(request, date_year, date_month, date_day, appt_id):
 
     return render(request, "appt_calendar/calendar_test_harness.html", context)
 
+@authenticated_user
 def calendar_date_ts(request, date_year, date_month, date_day, ts_id):
     try:
         user_groups = set(group.name for group in request.user.groups.all().iterator())
@@ -945,6 +953,7 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
 
     return render(request, "appt_calendar/enter_decision_form.html", context)
 
+@authenticated_user
 def remove_adopter(request, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
@@ -987,6 +996,7 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
     else:
         return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
 
+@authenticated_user
 def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date_day, source):
     adopter = Adopter.objects.get(pk=adopter_id)
     date = datetime.date(date_year, date_month, date_day)

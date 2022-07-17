@@ -198,7 +198,7 @@ def new_contact_us_msg(adopter, message, appt_id=None):
         req_appt_str = "<p><b>Requested Appointment:</b> {0}</p>".format(appt.date_and_time_string())
         appt_requested(adopter, appt)
     else:
-        req_appt_str = "--"
+        req_appt_str = "<em>This adopter is already approved and uploaded to ShelterCenter.</em>"
 
     text = """\
     Adopter: """ + adopter.full_name() + """\n
@@ -208,7 +208,7 @@ def new_contact_us_msg(adopter, message, appt_id=None):
     <html>
       <body>
         <h2>New Message from {0}</h2>
-        {1}
+        {1}<br>
         <p><b>Message:</b> {2}</p>
       </body>
     </html>

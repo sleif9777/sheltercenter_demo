@@ -81,7 +81,7 @@
           {% endif %}
         </td>
       </tr>
-<!-- 
+<!--
       <tr>
         <td colspan="2">
           <ul class="two-col-flex">
@@ -208,7 +208,7 @@
     </table>
 
     {% if appt.adopter.show_preferences %}
-      <table class="appt_subblock appt_info_block">
+      <!-- <table class="appt_subblock appt_info_block">
         <tr class="info_block_subheader">
           <th class="left">{{appt.adopter.f_name}}'s Preferences</th>
           <th class="right"></th>
@@ -240,9 +240,9 @@
               {% endif %}
             </ul>
           </td>
-        </tr>
+        </tr> -->
 
-        <!-- <tr>
+        <tr>
           <td class="left">
             {% if appt.adopter.gender_preference == "2" %}
               Only interested in females
@@ -250,7 +250,7 @@
               Only interested in males
             {% else %}
               No gender preference
-            {% endif %}
+            {% endif %}<br>
           </td>
           <td class="right">
             {% if appt.adopter.age_preference == "2" %}
@@ -280,7 +280,7 @@
               Needs hypo/low-shedding!
             {% endif %}
           </td>
-        </tr> -->
+        </tr>
 
       </table>
     {% endif %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-import datetime, time
+import datetime, time, random, requests, json
 from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
 from appt_calendar.models import *
 from adopter.models import Adopter
@@ -12,6 +12,8 @@ from django.contrib.auth import authenticate, login, logout
 from .decorators import *
 from .models import *
 from .forms import *
+from wishlist.models import Dog
+from wishlist.views import get_and_update_dogs
 
 system_settings = SystemSettings.objects.get(pk=1)
 
@@ -309,3 +311,35 @@ def edit_help(request):
 def help(request):
 
     return render(request, "email_mgr/help.html", context)
+
+def error_500(request):
+    headers = {
+        'X-Api-Key': os.environ.get('SHELTERLUV_API_KEY'),
+    }
+
+    dogs_request = requests.get('https://www.shelterluv.com/api/v1/animals?status_type=publishable', headers=headers).json()['animals']
+    display_dog = random.choice(list(dogs_request))
+
+    dog_img = display_dog['CoverPhoto']
+    dog_name = display_dog['Name']
+    dog_sex = display_dog['Sex']
+    dog_breed = display_dog['Breed']
+
+    try:
+        dog_weight = "{0} lbs., ".format(display_dog['CurrentWeightPounds'])
+    except:
+        return ""
+
+    age_months = int(display_dog['Age'])
+    dog_age = "Age {0}Y {1}M".format(age_months // 12, age_months % 12)
+
+    context = {
+        'dog_img': dog_img,
+        'dog_name': dog_name,
+        'dog_sex': dog_sex,
+        'dog_breed': dog_breed,
+        'dog_weight': dog_weight,
+        'dog_age': dog_age,
+    }
+
+    return render(request, 'dashboard/500.html', context)

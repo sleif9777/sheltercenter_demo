@@ -152,7 +152,7 @@
     {% if date.weekday < 5 %}
       <br><br>
       <p>We only schedule two weeks in advance, and are not scheduling for this date yet.
-      {% if adopter.alert_date == date %}
+      {% if request.user.adopter.alert_date == date %}
         We will alert you when appointments for this date are open.
       {% else %}
         <a class="standalone" href="{% url 'set_alert_date' date.year date.month date.day %}">Please click here to be alerted when we have opened appointments for this date.</a>

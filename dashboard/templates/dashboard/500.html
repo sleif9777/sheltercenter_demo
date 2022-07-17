@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title>An Error Has Occurred</title>
+    <link rel="icon" href="{% static 'media/logo.png' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  </head>
+  <body>
+
+    <table style="width: 90%;">
+      <td style="width: 20%; border-bottom: none;">
+        <div class="dog-box" style="background-color: #D2ECF4; border: 3px solid #1E6C80; text-align: center;">
+          <img src="{{dog_img}}" width=100% alt=""><br>
+          <span class="appt_description left upper"><b>{{dog_name}}</b></span><br>
+          <b>{{dog_sex}} {{dog_breed}}<br>{{dog_weight}}{{dog_age}}</b><br>
+          <em>available for Adoption</em>
+        </div>
+      </td>
+      <td style="padding: 10px; border-bottom: none;">
+        <div class="error-msg">
+          <h1>Oh no! Something went wrong.</h1>
+          <p>The Saving Grace adoptions team has been informed of the issue and will reach out directly to resolve this.</p>
+        </div>
+      </td>
+    </table>
+  </body>
+</html>

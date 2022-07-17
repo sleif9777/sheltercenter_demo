@@ -23,20 +23,28 @@ def get_and_update_dogs():
 
     for dog in dogs:
         try:
-            existing_dog = Dog.objects.get(shelterluv_id=dog['ID'])
+            existing_dog = Dog.objects.get(shelterluv_id=dog['Internal-ID'])
             existing_dog.info = dog
             existing_dog.shelterluv_status = dog['Status']
             existing_dog.save()
-        except:
+        except Exception as e:
+            print('e2', e)
             new_dog = Dog()
-            new_dog.shelterluv_id = dog['ID']
+            new_dog.shelterluv_id = dog['Internal-ID']
             new_dog.shelterluv_status = dog['Status']
             new_dog.info = dog
             new_dog.save()
 
+def check_for_updated_status():
+    available_dogs = Dog.objects.get(shelterluv_status="Available for Adoption")
 
+    for dog in available_dogs:
+        update_request = requests.get('https://www.shelterluv.com/api/v1/animals?offset={0}&status_type=publishable'.format(offset), params=params, headers=headers).json()
+
+@authenticated_user
+@allowed_users(allowed_roles={'superuser'})
 def display_list(request):
-    # get_and_update_dogs()
+    get_and_update_dogs()
 
     user_wishlist = {dog for dog in request.user.adopter.wishlist.iterator()}
     all_available_dogs = {dog for dog in Dog.objects.filter(shelterluv_status = 'Available for Adoption').order_by('shelterluv_id')}
