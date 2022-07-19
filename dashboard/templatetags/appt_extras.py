@@ -37,12 +37,15 @@ def notes_only(appt):
 @register.filter(name='show_notes')
 def show_notes(appt):
     show = False
-
-    # for appts in schedulable, should be shown so long as at least one exists
-    if appt.internal_notes or appt.adopter_notes:
-        show = True
-    # for non-schedulable, should be shown so long as one exists other than app_interest
-    if appt.appt_type in ["1", "2", "3"] and appt.adopter.app_interest:
-        show = True
+    
+    try:
+        # for appts in schedulable, should be shown so long as at least one exists
+        if appt.internal_notes or appt.adopter_notes:
+            show = True
+        # for non-schedulable, should be shown so long as one exists other than app_interest
+        if appt.appt_type in ["1", "2", "3"] and appt.adopter.app_interest:
+            show = True
+    except:
+        pass
 
     return show
