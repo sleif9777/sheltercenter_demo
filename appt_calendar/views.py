@@ -13,6 +13,7 @@ from django.contrib.auth.models import Group, User
 from dashboard.decorators import *
 from reportlab.pdfgen import canvas
 from django.http import HttpResponseRedirect
+from django.db.models import F
 
 system_settings = SystemSettings.objects.get(pk=1)
 
@@ -402,7 +403,7 @@ def daily_reports_home(request):
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def chosen_board(request):
     today = datetime.date.today()
-    appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "7", "8", "9", "10"], paperwork_complete=False)]
+    appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "7", "8", "9", "10"], paperwork_complete=False).order_by(F('outcome').desc(), 'dog')]
 
     context = {
         "today": today,
@@ -416,6 +417,9 @@ def chosen_board(request):
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def remove_from_chosen_board(request, appt_id):
     appt = Appointment.objects.get(pk=appt_id)
+
+    appt.adopter.waiting_for_chosen = False
+    appt.adopter.save()
 
     appt.dog = ""
     appt.outcome = "5"
@@ -437,6 +441,9 @@ def cb_update_status(request, appt_id, outcome):
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def mark_complete_on_chosen_board(request, appt_id):
     appt = Appointment.objects.get(pk=appt_id)
+
+    appt.adopter.waiting_for_chosen = False
+    appt.adopter.save()
 
     appt.paperwork_complete = True
     appt.save()
@@ -812,9 +819,12 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
 
                 if appt.appt_type in ["1", "2", "3"]:
                     print('h4')
-                    if original_adopter not in [None, appt.adopter]:
+                    if original_adopter != appt.adopter:
                         print('break')
-                        cancel(original_adopter, appt)
+
+                        if original_adopter is not None:
+                            cancel(original_adopter, appt)
+
                         appt.adopter.has_current_appt = True
                         appt.adopter.save()
 
@@ -935,11 +945,15 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
             follow_up(adopter)
         elif appt.outcome in ["2", "3", "4"]:
             adopter.visits_to_date = 0
+            adopter.waiting_for_chosen = True
             #
             # if appt.outcome == "3":
             #     chosen(adopter, appt)
 
         adopter.save()
+
+        appt.last_update_sent = appt.date
+        appt.save()
 
         return redirect('calendar')
 

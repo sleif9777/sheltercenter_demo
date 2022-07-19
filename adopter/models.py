@@ -52,6 +52,7 @@ class Adopter(models.Model):
     friend_of_foster = models.BooleanField(default = False)
     carryover_shelterluv = models.BooleanField(default = False)
     chosen_dog = models.CharField(default="", max_length=200, blank=True)
+    waiting_for_chosen = models.BooleanField(default=False)
 
     #preference attributes
     min_weight = models.IntegerField(default = 0,)

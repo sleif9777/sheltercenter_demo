@@ -8,16 +8,15 @@
 
     <h1 class="page_header no_actions">Chosen Board</h1>
 
-    <table id="chosenboard" style="width: 95%;">
+    <table id="chosenboard" style="width: 80%;">
 
       <tr class="no-border" style="margin-bottom: 5px;">
         <th style="width:15%;">Date</th>
-        <th style="width:10%;">Time</th>
-        <th style="width:17%;">Adopter</th>
-        <th style="width:15%;">Dog</th>
+        <th style="width:10%;">Dog</th>
         <th style="width:10%;">Outcome</th>
+        <th style="width:17%;">Adopter</th>
         {% if request.user|has_group:"admin" %}
-          <th style="width:15%;">Last Update Sent</th>
+          <th style="width:20%;">Last Update Sent</th>
           <th style="width:18%;">Update Status</th>
         {% endif %}
       </tr>
@@ -27,7 +26,8 @@
 
           <tr>
             <td>{{appt.date}}</td>
-            <td>{{appt.time}}</td>
+            <td>{{appt.dog}}</td>
+            <td>{{appt.get_outcome_display}}</td>
             <td>
               {{appt.adopter.f_name}} {{appt.adopter.l_name}}
               {% if request.user|has_group:"admin" %}
@@ -36,8 +36,6 @@
                 </div>
               {% endif %}
             </td>
-            <td>{{appt.dog}}</td>
-            <td>{{appt.get_outcome_display}}</td>
 
             {% if request.user|has_group:"admin" %}
               <td>
@@ -60,10 +58,10 @@
               <td class="chosenboard">
                 {% if appt|is_chosen %}
                   <div class="chosen_board_actions">
-                    <a href="{% url 'cb_update_status' appt.id 9 %}">Chosen - needs vetting</a><br>
-                    <a href="{% url 'cb_update_status' appt.id 10 %}">Chosen - needs well check</a><br>
-                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_negative' %}">Heartworm Negative</a><br>
-                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_positive' %}">Heartworm Positive</a>
+                    <!-- <a href="{% url 'cb_update_status' appt.id 9 %}">Chosen - needs vetting</a><br>
+                    <a href="{% url 'cb_update_status' appt.id 10 %}">Chosen - needs well check</a><br> -->
+                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_negative' %}">Chosen - Dog Vetted</a><br>
+                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_positive' %}">Vetted - Heartworm Positive</a>
                   </div>
                 {% elif appt.outcome == "7" %}
                   Adopter Notified<br>

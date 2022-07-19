@@ -479,9 +479,11 @@ def edit_adopter(request, adopter_id):
 
     try:
         current_appt = Appointment.objects.filter(adopter=adopter).latest('id')
+        print(current_appt)
         current_appt_str = current_appt.date_and_time_string()
         date = current_appt.date
     except:
+        print('nonono')
         current_appt = None
         current_appt_str = None
         date = None
@@ -500,6 +502,8 @@ def edit_adopter(request, adopter_id):
         form = AdopterForm(request.POST or None, instance=adopter)
 
     source = 'mgmt_' + str(adopter.id)
+
+    print(adopter.has_current_appt)
 
     context = {
         'form': form,

@@ -12,7 +12,7 @@
         {% if appt.locked %}
           <td class="appt_description left upper"><b>&#128274;&#xFE0E; <a href="{% url 'contact_us' appt.id %}">CONTACT US TO BOOK</a></b></td>
         {% else %}
-          {% if current_appt == None %}
+          {% if not request.user.adopter.has_current_appt %}
             <td class="appt_description left upper"><b><a href="{% url 'book_cal_appointment' appt.id date.year date.month date.day %}">CLICK TO BOOK</a></b></td>
           {% else %}
             <td class="appt_description left upper"><b><a href="{% url 'adopter_reschedule' request.user.adopter.id appt.id date.year date.month date.day 'calendar' %}">CLICK TO RESCHEDULE</a></b></td>
@@ -25,7 +25,7 @@
         <td class="right"></td>
       </tr>
 
-      {% if current_appt != None %}
+      {% if request.user.adopter.has_current_appt %}
         <tr>
           <td class="left" style="font-size: 10pt; padding-top: 5px;">By scheduling this appointment, you will forfeit your current appt for {{current_appt_str}}.</td>
           <td></td>
