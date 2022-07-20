@@ -312,13 +312,18 @@ def help(request):
 
     return render(request, "email_mgr/help.html", context)
 
+def fake500(request):
+
+    return render(request, "dashboard/fake500.html")
+
 def error_500(request):
     headers = {
         'X-Api-Key': os.environ.get('SHELTERLUV_API_KEY'),
     }
 
-    dogs_request = requests.get('https://www.shelterluv.com/api/v1/animals?status_type=publishable', headers=headers).json()['animals']
-    display_dog = random.choice(list(dogs_request))
+    dogs_request = requests.get('https://www.shelterluv.com/api/v1/animals?status_type=publishable', headers=headers).json()
+    print([key for key in dogs_request.keys()])
+    display_dog = random.choice(list(dogs_request['animals']))
 
     dog_img = display_dog['CoverPhoto']
     dog_name = display_dog['Name']
