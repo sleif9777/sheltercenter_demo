@@ -1225,7 +1225,7 @@ def delete_appointment(request, date_year, date_month, date_day, appt_id):
     deleted_appt = get_object_or_404(Appointment, pk=appt_id)
     ts_query = Timeslot.objects.get(appointments__id__exact=deleted_appt.id)
 
-    if deleted_appt.adopter or deleted_appt.dog:
+    if (deleted_appt.adopter or deleted_appt.dog) and deleted_appt.appt_type in ["1", "2", "3"]:
 
         if short_notice(deleted_appt):
             try:
