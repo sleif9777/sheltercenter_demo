@@ -1,19 +1,23 @@
-from django.shortcuts import render, get_object_or_404, redirect
-import datetime, time, sys
-from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-from .models import *
-from adopter.models import Adopter
-from .forms import *
-from adopter.forms import *
-from email_mgr.email_sender import *
-from .date_time_strings import *
-from .appointment_manager import *
-from dashboard.views import generate_calendar as gc
-from django.contrib.auth.models import Group, User
-from dashboard.decorators import *
-from reportlab.pdfgen import canvas
-from django.http import HttpResponseRedirect
+import datetime
+import sys
+import time
+
 from django.db.models import F
+from django.http import HttpResponseRedirect
+from django.contrib.auth.models import Group, User
+from django.shortcuts import get_object_or_404, redirect, render
+from reportlab.pdfgen import canvas
+
+from .appointment_manager import *
+from .date_time_strings import *
+from .forms import *
+from .models import *
+from adopter.forms import *
+from adopter.models import *
+from dashboard.decorators import *
+from dashboard.views import generate_calendar as gc
+from email_mgr.email_sender import *
+from schedule_template.models import *
 
 system_settings = SystemSettings.objects.get(pk=1)
 

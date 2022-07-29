@@ -1,11 +1,11 @@
-from django.db import models
 import datetime
-from num2words import num2words
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.contrib.auth.models import User
-from wishlist.models import Dog
 
-# Create your models here.
+from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from num2words import num2words
+
+from wishlist.models import Dog
 
 class Adopter(models.Model):
     STATUSES = [

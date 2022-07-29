@@ -1,8 +1,10 @@
-from django import forms
 import datetime
+
+from django import forms
+
 from .models import *
 from adopter.models import Adopter
-import demo.settings as settings
+from demo import settings as settings
 
 class AppointmentModelFormPrefilled(forms.ModelForm):
     class Meta:

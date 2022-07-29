@@ -1,8 +1,10 @@
-from django.shortcuts import render, get_object_or_404, redirect
+import datetime
+
+from django.contrib.auth.models import Group, User
+from django.shortcuts import get_object_or_404, redirect, render
+
 from .forms import *
 from .models import *
-import datetime
-from django.contrib.auth.models import Group, User
 from dashboard.decorators import *
 
 @authenticated_user

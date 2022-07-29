@@ -1,6 +1,9 @@
-from appt_calendar.date_time_strings import *
-import os, datetime
+import datetime
+import os
+
 from django.contrib.auth.models import User
+
+from appt_calendar.date_time_strings import *
 
 def replacer(html, adopter, appt):
     print(appt)

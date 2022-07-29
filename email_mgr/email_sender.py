@@ -1,17 +1,24 @@
-import smtplib, ssl, datetime, time, os, mimetypes
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
-from appt_calendar.models import Appointment
-from appt_calendar.date_time_strings import *
-from io import StringIO
-from html.parser import HTMLParser
-from .email_sender import *
-from .models import EmailTemplate
-from .dictionary import *
+import datetime
+import os
+import mimetypes
+import smtplib
+import ssl
+import time
+
 from django.core.mail import EmailMultiAlternatives
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from html.parser import HTMLParser
+from io import StringIO
 from mimetypes import guess_type
 from os.path import basename
+
+from appt_calendar.models import Appointment
+from appt_calendar.date_time_strings import *
+from .email_sender import *
+from .dictionary import *
+from .models import EmailTemplate
 
 
 class MLStripper(HTMLParser):

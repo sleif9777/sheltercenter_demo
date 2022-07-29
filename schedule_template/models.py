@@ -1,5 +1,7 @@
-from django.db import models
 import datetime
+
+from django.db import models
+
 from appt_calendar.date_time_strings import *
 
 # Create your models here.

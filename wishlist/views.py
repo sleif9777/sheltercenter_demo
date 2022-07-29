@@ -1,8 +1,12 @@
-from django.shortcuts import render
-import requests, json, os
+import json
+import os
+import requests
+
 from django.contrib.auth.models import Group, User
-from dashboard.decorators import *
+from django.shortcuts import render
+
 from .models import *
+from dashboard.decorators import *
 
 def get_and_update_dogs():
     headers = {

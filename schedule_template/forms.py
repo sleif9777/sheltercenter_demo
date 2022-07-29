@@ -1,6 +1,9 @@
+import datetime
+import os
+
 from django import forms
-import datetime, os
-from .models import TimeslotTemplate, AppointmentTemplate
+
+from .models import AppointmentTemplate, TimeslotTemplate
 
 class GenericAppointmentModelFormPrefilled(forms.ModelForm):
     class Meta:

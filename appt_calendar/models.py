@@ -1,10 +1,12 @@
+import datetime
+
+from copy import copy
 from django.db import models
 from django.utils import timezone
-import datetime
+from num2words import num2words
+
 from .date_time_strings import *
 from adopter.models import Adopter
-from num2words import num2words
-from copy import copy
 
 class DailyAnnouncement(models.Model):
     date = models.DateField(default = timezone.now())

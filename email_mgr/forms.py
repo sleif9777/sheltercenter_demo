@@ -1,6 +1,7 @@
 from django import forms
-from .models import EmailTemplate
 from tinymce.widgets import TinyMCE
+
+from .models import EmailTemplate
 
 class EmailTemplateForm(forms.ModelForm):
 

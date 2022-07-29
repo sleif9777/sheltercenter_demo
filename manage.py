@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import os
-import sys
 import dotenv
+import os
 import pathlib
+import sys
 
 if __name__ == "__main__":
     DOT_ENV_PATH = pathlib.Path() / '.env'

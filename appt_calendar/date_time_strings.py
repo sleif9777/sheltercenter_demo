@@ -1,4 +1,6 @@
-import datetime, time, os
+import datetime
+import os
+import time
 
 is_windows = os.environ.get('WINDOWS')
 

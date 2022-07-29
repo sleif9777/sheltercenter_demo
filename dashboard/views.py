@@ -1,17 +1,23 @@
-from django.shortcuts import render, redirect
-import datetime, time, random, requests, json
-from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-from appt_calendar.models import *
-from adopter.models import Adopter
-from appt_calendar.forms import *
-from email_mgr.email_sender import *
-from appt_calendar.date_time_strings import *
-from appt_calendar.appointment_manager import *
-from django.contrib.auth.forms import UserCreationForm
+import datetime
+import json
+import random
+import requests
+import time
+
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import redirect, render 
+
 from .decorators import *
 from .models import *
 from .forms import *
+from adopter.models import Adopter
+from appt_calendar.appointment_manager import *
+from appt_calendar.date_time_strings import *
+from appt_calendar.forms import *
+from appt_calendar.models import *
+from email_mgr.email_sender import *
+from schedule_template.models import AppointmentTemplate, Daily_Schedule, TimeslotTemplate, SystemSettings
 from wishlist.models import Dog
 from wishlist.views import get_and_update_dogs
 

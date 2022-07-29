@@ -1,8 +1,10 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from .forms import *
-from .models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate
 import datetime
+
 from django.contrib.auth.models import Group, User
+from django.shortcuts import render, get_object_or_404, redirect
+
+from .forms import *
+from .models import AppointmentTemplate, Daily_Schedule, TimeslotTemplate
 from dashboard.decorators import *
 
 @authenticated_user
@@ -118,7 +120,7 @@ def edit_appointment(request, dow_id, appt_id):
 
     context = {
         'form': form,
-        'page_title': "Edit Appointment",    
+        'page_title': "Edit Appointment",
     }
 
     return render(request, "schedule_template/render_form.html", context)

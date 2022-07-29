@@ -1,5 +1,6 @@
 from django import template
 from django.contrib.auth.models import Group
+
 from email_mgr.models import PendingMessage
 
 register = template.Library()

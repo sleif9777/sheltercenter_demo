@@ -1,6 +1,8 @@
-from django import template
-from appt_calendar.models import Appointment
 import datetime
+
+from django import template
+
+from appt_calendar.models import Appointment
 
 register = template.Library()
 
@@ -37,7 +39,7 @@ def notes_only(appt):
 @register.filter(name='show_notes')
 def show_notes(appt):
     show = False
-    
+
     try:
         # for appts in schedulable, should be shown so long as at least one exists
         if appt.internal_notes or appt.adopter_notes:
