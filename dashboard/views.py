@@ -6,7 +6,7 @@ import time
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import redirect, render 
+from django.shortcuts import redirect, render
 
 from .decorators import *
 from .models import *
@@ -167,18 +167,21 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     except:
         daily_announcement = None
 
-    #retrieve the daily announcement if one exists
+    #retrieve the internal announcement if one exists
     try:
         internal_announcement = InternalAnnouncement.objects.get(date = date)
     except:
         internal_announcement = None
 
-    #retrieve the daily announcement if one exists
+    #retrieve the overarching announcement if one exists
     try:
         calendar_announcement = CalendarAnnouncement.objects.get(pk=1)
         print(calendar_announcement.text)
     except:
         calendar_announcement = None
+
+    #retrieve the list of offsite dogs
+    offsite_dogs = Dog.objects.filter(offsite=True).order_by('name')
 
     #adopters should not see if more than two weeks into future
     if delta_from_today <= 13:
@@ -275,6 +278,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'sn_cancel': sn_cancel,
         'sn_move': sn_move,
         'sn_show': sn_show,
+        'offsite_dogs': offsite_dogs,
     }
 
     print(context)

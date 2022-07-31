@@ -570,14 +570,19 @@ def visitor_instructions(request):
 
 @authenticated_user
 @allowed_users(allowed_roles={'adopter'})
-def contact(request, appt_id=None):
+def contact(request, appt_id=None, dog_name=None):
     all_dows = Daily_Schedule.objects
-    form = ContactUsForm(request.POST or None)
+
+    if dog_name:
+        form = ContactUsForm(request.POST or None, initial={'message': "I am interested in meeting {0}. My availability is...".format(dog_name)})
+    else:
+        form = ContactUsForm(request.POST or None)
+
     if form.is_valid():
         data = form.cleaned_data
         adopter = request.user.adopter
         message = data['message']
-        new_contact_us_msg(adopter, message, appt_id)
+        new_contact_us_msg(adopter, message, appt_id, dog_name)
         return redirect('adopter_home')
 
     context = {

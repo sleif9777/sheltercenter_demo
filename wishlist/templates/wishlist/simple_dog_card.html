@@ -1,0 +1,13 @@
+{% load auth_extras %}
+
+<div class="appointment" id={{dog.shelterluv_id}}>
+  <img src="{{dog.info.CoverPhoto}}" height="150px" alt=""><br>
+  <span class="appt_description upper"><b>{{dog.info.Name}}</b></span><br>
+  <!-- <input type="checkbox" name="{{dog.shelterluv_id}}" value="{{dog.shelterluv_id}}">
+  <label for="{{dog.shelterluv_id}}"> Appointment-Only</label> -->
+  <!-- {{form}} -->
+  <input type="checkbox" name="{{dog.shelterluv_id}}" value="appt_only" {% if dog.offsite %} checked {% endif %}>
+  <label for="appt_only">Appointment Only?</label><br>
+  <input type="checkbox" name="{{dog.shelterluv_id}}" value="ext_host">
+  <label for="ext_host">Extended Host?</label>
+</div>

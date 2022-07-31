@@ -196,7 +196,7 @@ def new_contact_adopter_msg(adopter, message, files, subject):
 
     send_email(text, message, "default", subject, email, files)
 
-def new_contact_us_msg(adopter, message, appt_id=None):
+def new_contact_us_msg(adopter, message, appt_id=None, dog_name=None):
     subject = "New message from " + adopter.full_name()
     reply_to = adopter.primary_email
 
@@ -204,6 +204,8 @@ def new_contact_us_msg(adopter, message, appt_id=None):
         appt = Appointment.objects.get(pk=appt_id)
         req_appt_str = "<p><b>Requested Appointment:</b> {0}</p>".format(appt.date_and_time_string())
         appt_requested(adopter, appt)
+    elif dog_name is not None:
+        req_appt_str = "<p><b>This adopter is looking to meet {0}, who is offsite in foster.".format(dog_name)
     else:
         req_appt_str = "<em>This adopter is already approved and uploaded to ShelterCenter.</em>"
 

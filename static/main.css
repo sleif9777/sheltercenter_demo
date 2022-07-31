@@ -93,6 +93,11 @@ li.two-col-flex:nth-last-child(2):nth-child(odd) {
   column-count: 1;
   }
 
+  ul.dog_list {
+    column-count: 2;
+  }
+
+
   ul.appt_solo {
   list-style-type: none;
   padding: 0;
@@ -126,6 +131,10 @@ li.two-col-flex:nth-last-child(2):nth-child(odd) {
   list-style-type: none;
   padding: 0;
   column-count: 2;
+  }
+
+  ul.dog_list {
+    column-count: 6;
   }
 
   ul.appt_solo {
@@ -734,4 +743,8 @@ p.greeting {
 
 #adopter_mgmt_appt {
   width: 90%;
+}
+
+.adopter_messages div.info_box li {
+  text-align: left;
 }

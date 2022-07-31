@@ -1,9 +1,11 @@
 from django.db import models
 
 class Dog(models.Model):
+    name = models.CharField(default = "", max_length = 200)
     shelterluv_id = models.CharField(default = "", max_length = 200)
     shelterluv_status = models.CharField(default = "Available for Adoption", max_length = 200)
     info = models.JSONField()
+    offsite = models.BooleanField(default=False)
 
     def __repr__(self):
         return self.info['Name']
