@@ -149,10 +149,22 @@
 
     {% if offsite_dogs %}
       <div class="info_box">
-        <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> The following dogs are currently in foster and require pre-arranged appointments. Please click a name below to begin coordinating with us.</p>
+        <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> The following dogs are currently in foster and require pre-arranged appointments. Please click a name below to begin coordinating with us. Do not book an appointment below.</p>
         <ul>
           {% for dog in offsite_dogs %}
-          <li><a href="{% url 'contact_us' dog.name %}">{{dog.name}}</a></li>
+            {% if dog.appt_only %}
+            <li><a class="datelink" href="{% url 'contact_us' dog.name %}">{{dog.name}}</a></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+
+        <br>
+        <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> The following dogs are on an extended Host Weekend! They are temporarily unavailable to meet.</p>
+        <ul>
+          {% for dog in offsite_dogs %}
+            {% if not dog.appt_only %}
+            <li>{{dog.name}} - returning {{dog.host_date}}</li>
+            {% endif %}
           {% endfor %}
         </ul>
       </div>

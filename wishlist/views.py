@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import requests
@@ -80,24 +81,35 @@ def display_list(request):
     # user_wishlist = {dog for dog in request.user.adopter.wishlist.iterator()}
     all_available_dogs = [dog for dog in Dog.objects.filter(shelterluv_status = 'Available for Adoption').order_by('name')]
 
-    print([dog.name for dog in all_available_dogs])
-
     # other_available_dogs = all_available_dogs - user_wishlist
 
     if request.method == "POST":
         form_data = dict(request.POST)
         del form_data['csrfmiddlewaretoken']
-        print(type(form_data.keys()))
+        #
+        # for key in form_data.keys():
+        #     if form_data[key] == ['']:
+        #         del form_data[key]
 
-        for dog in Dog.objects.filter(offsite=True):
+        form_data = dict([(k, v) for k, v in form_data.items() if v[0] != ""])
+
+        print(form_data)
+
+        for dog in Dog.objects.filter(appt_only=True):
             if dog.shelterluv_id not in form_data.keys():
-                dog.offsite = False
+                dog.appt_only = False
                 dog.save()
 
         for id in form_data.keys():
-            dog = Dog.objects.get(shelterluv_id=id)
-            dog.offsite = True
-            dog.save()
+            if form_data[id] != ['']:
+                dog = Dog.objects.get(shelterluv_id=id)
+                dog.offsite = True
+                if 'appt_only' in form_data[id]:
+                    dog.appt_only = True
+                else:
+                    date_string = form_data[id][-1]
+                    dog.host_date = datetime.date(int(date_string[:4]), int(date_string[5:7]), int(date_string[8:]))
+                dog.save()
 
         return redirect('calendar')
 

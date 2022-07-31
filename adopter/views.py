@@ -573,7 +573,10 @@ def visitor_instructions(request):
 def contact(request, appt_id=None, dog_name=None):
     all_dows = Daily_Schedule.objects
 
-    if dog_name:
+    if appt_id:
+        dt_string = Appointment.objects.get(pk=appt_id).date_and_time_string()
+        form = ContactUsForm(request.POST or None, initial={'message': "I would like to book for {0}.".format(dt_string)})
+    elif dog_name:
         form = ContactUsForm(request.POST or None, initial={'message': "I am interested in meeting {0}. My availability is...".format(dog_name)})
     else:
         form = ContactUsForm(request.POST or None)

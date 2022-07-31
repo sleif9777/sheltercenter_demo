@@ -34,11 +34,18 @@
 
   <li class="two-col-flex">
     <div class="info_box">
-      <p class="datelink"><a class="datelink" href="{% url 'display_list' %}"><b>APPOINTMENT-ONLY DOGS &#9998;&#xFE0E;</b></a></p>
+      <p class="datelink"><a class="datelink" href="{% url 'display_list' %}"><b>OFFSITE DOGS &#9998;&#xFE0E;</b></a></p>
       {% if offsite_dogs %}
         <ul>
           {% for dog in offsite_dogs %}
-          <li>{{dog.name}}</li>
+          <li>
+            {{dog.name}} -
+            {% if dog.appt_only %}
+            In Foster
+            {% else %}
+            Extended Host, returning {{dog.host_date}}
+            {% endif %}
+          </li>
           {% endfor %}
         </ul>
       {% else %}

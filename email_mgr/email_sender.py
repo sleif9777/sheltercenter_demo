@@ -202,10 +202,10 @@ def new_contact_us_msg(adopter, message, appt_id=None, dog_name=None):
 
     if appt_id is not None:
         appt = Appointment.objects.get(pk=appt_id)
-        req_appt_str = "<p><b>Requested Appointment:</b> {0}</p>".format(appt.date_and_time_string())
+        req_appt_str = "<p><b>Requested Appointment:</b> {0} (Locked)</p>".format(appt.date_and_time_string())
         appt_requested(adopter, appt)
     elif dog_name is not None:
-        req_appt_str = "<p><b>This adopter is looking to meet {0}, who is offsite in foster.".format(dog_name)
+        req_appt_str = "<em>This adopter is requesting to meet {0}, who is offsite in foster. They are already approved and uploaded to ShelterCenter.</em>".format(dog_name)
     else:
         req_appt_str = "<em>This adopter is already approved and uploaded to ShelterCenter.</em>"
 
