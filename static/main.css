@@ -1,16 +1,36 @@
+/* CSS foundations */
+
 * {
   margin: 0;
 }
 
 body {
   font-family: 'Lato',Helvetica,Arial,Lucida,sans-serif;
-  margin: 0;
-  width: 100%;
   height: 100%;
+  margin: 0;
   overflow-x: hidden;
+  width: 100%;
+}
+
+/* Formatting for calendar announcements */
+
+.info_box {
+  border: 4px #A7396E solid;
+  width: 80%;
+  margin: auto;
+  margin-top: 10px;
+  padding: 10px;
+  color: #A7396E;
+  background-color: #F2D9E5;
+}
+
+.status_box {
+  border-color: #A7396E;
+
 }
 
 .outstanding_task {
+  border-color: #800;
   border: 4px #880000 solid;
   width: 80%;
   margin: auto;
@@ -18,29 +38,6 @@ body {
   padding: 10px;
   color: #880000;
   background-color: #ea9999;
-}
-
-ul.two-col-flex {
-    list-style-type: none;
-    column-count: 2;
-    padding-inline-start: 0;
-}
-
-li.two-col-flex {
-  display: block;
-  padding-top: 3px;
-  break-inside: avoid-column;
-  text-align: left;
-}
-
-li.two-col-flex:nth-last-child(2):nth-child(odd) {
-  float: right;
-  text-align: right;
-}
-
-.appointment li.two-col-flex:nth-last-child(1) {
-  float: right;
-  text-align: right;
 }
 
 .short_notice_box {
@@ -63,22 +60,14 @@ li.two-col-flex:nth-last-child(2):nth-child(odd) {
   text-decoration: underline;
 }
 
+/* Remainder to refactor */
+
 #searchBar {
   width: 95%; /* Full-width */
   font-size: 16px; /* Increase font-size */
   padding: 12px 20px 12px 10px; /* Add some padding */
   border: 1px solid #ddd; /* Add a grey border */
   margin-bottom: 12px; /* Add some space below the input */
-}
-
-.info_box {
-  border: 4px #A7396E solid;
-  width: 80%;
-  margin: auto;
-  margin-top: 10px;
-  padding: 10px;
-  color: #A7396E;
-  background-color: #F2D9E5;
 }
 
 .datelink {
