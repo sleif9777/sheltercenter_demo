@@ -2,7 +2,7 @@
   <p class="greeting"><b>Hello, {{request.user.adopter.f_name}}!</b></p><br>
 
   {% if request.user.adopter.waiting_for_chosen %}
-    <div class="info_box">
+    <div class="info_box calendar-notes">
       <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> Congratulations on choosing a Saving Grace dog! We will let you know as soon as they are ready to come home with you.</p>
     </div>
   {% else %}
@@ -136,43 +136,57 @@
     {% endif %}
 
     {% if calendar_announcement.text != "" %}
-      <div class="info_box">
-        <p class="datelink"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>{{calendar_announcement.text|safe}}</p>
+      <div class="info-box calendar-notes">
+        <table>
+          <tr>
+            <td class="info-box-data no-border">
+              <span class="alert-symbol">&#9432;&#xFE0E; </span>{{calendar_announcement.text|safe}}
+            </td>
+          </tr>
+        </table>
       </div>
     {% endif %}
 
     {% if daily_announcement %}
-      <div class="info_box">
-        <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> {{daily_announcement.text|safe}}</p>
+      <div class="info-box calendar-notes">
+        <table>
+          <tr>
+            <td class="info-box-data no-border">
+              <span class="alert-symbol">&#9432;&#xFE0E; </span>{{daily_announcement.text|safe}}
+            </td>
+          </tr>
+        </table>
       </div>
     {% endif %}
 
     {% if offsite_dogs %}
-      <div class="info_box">
-        <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> The following dogs are currently in foster and require pre-arranged appointments. Please click a name below to begin coordinating with us. Do not book an appointment below.</p>
-        <ul>
-          {% for dog in offsite_dogs %}
-            {% if dog.appt_only %}
-            <li><a class="datelink" href="{% url 'contact_us' dog.name %}">{{dog.name}}</a></li>
-            {% endif %}
-          {% endfor %}
-        </ul>
-
-        <br>
-        <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> The following dogs are on an extended Host Weekend! They are temporarily unavailable to meet.</p>
-        <ul>
-          {% for dog in offsite_dogs %}
-            {% if not dog.appt_only %}
-            <li>{{dog.name}} - returning {{dog.host_date}}</li>
-            {% endif %}
-          {% endfor %}
-        </ul>
+      <div class="info-box calendar-notes">
+        <table>
+          <tr>
+            <td class="info-box-data no-border">
+              <span class="alert-symbol">&#9432;&#xFE0E; </span> The following dogs are currently in foster and require pre-arranged appointments. Please click a name below to begin coordinating with us. Do not book an appointment below.
+              <ul class="two-col-list">
+                {% for dog in offsite_dogs %}
+                {% if dog.appt_only %}
+                <li><a href="{% url 'contact_us' dog.name %}">{{dog.name}}</a></li>
+                {% endif %}
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+        </table>
       </div>
     {% endif %}
 
     {% if date.weekday == 5 or date.weekday == 6 %}
-      <div class="info_box">
-        <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> We are not open on weekends.</p>
+      <div class="info-box calendar-notes">
+        <table>
+          <tr>
+            <td class="info-box-data no-border">
+              <span class="alert-symbol">&#9432;&#xFE0E; </span>We are not open on weekends.
+            </td>
+          </tr>
+        </table>
       </div>
     {% endif %}
 
@@ -191,6 +205,15 @@
       {% if empty_day == True and date.weekday < 5 %}
       <div class="info_box">
         <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> We're sorry, there are no appointments available for this date.</p>
+      </div>
+      <div class="info-box calendar-notes">
+        <table>
+          <tr>
+            <td class="info-box-data no-border">
+              <span class="alert-symbol">&#9432;&#xFE0E; </span>We're sorry, there are no appointments available for this date. Please choose another date to see appointments.
+            </td>
+          </tr>
+        </table>
       </div>
       {% endif %}
     {% endif %}

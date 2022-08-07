@@ -1,24 +1,33 @@
-<div class="info_box">
-  <p class="datelink"><b>INTERNAL NOTE FOR {{date_pretty.upper}}</b></p>
-  {% if internal_announcement %}
-    <p class="datelink"><span style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </span>{{internal_announcement.text|safe}} &#9998;&#xFE0E;</p>
-  {% endif %}
-</div>
+{% if internal_announcement %}
+  <div class="info-box calendar-notes">
+    <table>
+      <tr>
+        <td class="info-box-data no-border">
+          <span class="alert-symbol">&#9432;&#xFE0E; </span>{{internal_announcement.text|safe}}
+        </td>
+      </tr>
+    </table>
+  </div>
+{% endif %}
 
 {% if sn_show %}
-  <div class="short_notice_box">
-    <p><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E;</div> The following short-notice changes have occurred:</p>
-    <table class="infobox_table">
+  <div class="info-box short-notice">
+    <span class="alert-symbol">&#9432;&#xFE0E;</span> The following short-notice changes have occurred:
+    <table id="short-notice-table">
       <tr>
         <th>Added:</th>
         <th>Canceled:</th>
         <th>Moved:</th>
       </tr>
       <tr>
-        <td>
+        <td class="info-box-data">
           <ul>
             {% for sn in sn_add %}
-              <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li>
+              {% if sn.current_appt.appt_type in schedulable %}
+                <li>{{sn.header_str}} &#128196;&#xFE0E;<br><span class="short-notice-subscript">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li>
+              {% else %}
+                <li>{{sn.header_str}}<br><span class="short-notice-subscript">({{sn.backup_str}})</span></li>
+              {% endif %}
             {% endfor %}
           </ul>
         </td>
@@ -26,7 +35,7 @@
         <td>
           <ul>
             {% for sn in sn_cancel %}
-            <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.prev_appt.appt_string}} - {{sn.prev_appt.time_string}})</span></li>
+            <li>{{sn.header_str}}<br><span class="short-notice-subscript">({{sn.backup_str}})</span></li>
             {% endfor %}
           </ul>
         </td>
@@ -34,45 +43,12 @@
         <td>
           <ul>
             {% for sn in sn_move %}
-            <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - moved from {{sn.prev_appt.time_string}} to {{sn.current_appt.time_string}})</span></li>
+            <li>{{sn.header_str}}<br><span class="short-notice-subscript">({{sn.backup_str}})</span></li>
             {% endfor %}
           </ul>
         </td>
 
       </tr>
     </table>
-
-    <!-- <ul class="change_type">
-      <li>
-        <b>Added:</b>
-        <ul>
-          {% for sn in sn_add %}
-          <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li>
-          {% endfor %}
-        </ul>
-      </li>
-      <li>
-        <b>Canceled:</b>
-        <ul>
-          {% for sn in sn_cancel %}
-          <li>{{sn}}<br><span style="font-size: 8pt;">({{sn.prev_appt.appt_string}} - {{sn.prev_appt.time_string}})</span></li>
-          {% endfor %}
-        </ul>
-      </li>
-      <li>
-        <b>Moved:</b>
-        <ul>
-          {% for sn in sn_move %}
-          <li>{{sn}} <br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - moved from {{sn.prev_appt.time_string}} to {{sn.current_appt.time_string}})</span></li>
-          {% endfor %}
-        </ul>
-      </li>
-    </ul> -->
-
-    <!-- <ul>
-      {% for appt in no_outcome_appts %}
-      <li><a class="datelink" href="{% url 'enter_decision' appt.id appt.date.year appt.date.month appt.date.day%}">{{appt.adopter.full_name}} - {{appt.date}}</a></li>
-      {% endfor %}
-    </ul> -->
   </div>
 {% endif %}

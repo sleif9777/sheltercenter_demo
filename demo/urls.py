@@ -34,7 +34,7 @@ urlpatterns = [
     path('adopter/', include('adopter.urls')),
     path('emails/', include('email_mgr.urls')),
     path('visit_comms/', include('visit_and_faq.urls')),
-    path('wishlist/', include('wishlist.urls')),
+    path('dogs/', include('wishlist.urls')),
     path('', adopter.views.home_page, name="home_page"),
     path('register/', views.register, name="register"),
     path('login/', views.login_page, name="login"),
