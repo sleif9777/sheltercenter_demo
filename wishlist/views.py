@@ -50,7 +50,7 @@ def check_for_updated_status():
 @authenticated_user
 @allowed_users(allowed_roles={'superuser'})
 def display_list(request):
-    get_and_update_dogs()
+    # get_and_update_dogs()
 
     all_available_dogs = [dog for dog in Dog.objects.filter(shelterluv_status = 'Available for Adoption').order_by('name')]
 
