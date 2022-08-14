@@ -949,6 +949,8 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
             follow_up(adopter)
         elif appt.outcome in ["2", "3", "4"]:
             adopter.visits_to_date = 0
+
+        if appt.outcome in ["3", "9", "10"]:
             adopter.waiting_for_chosen = True
             #
             # if appt.outcome == "3":
