@@ -13,11 +13,19 @@
       <h1>{{date_pretty}}</h1>
     </div>
 
-    <div class="info_box">
-      {% if internal_announcement %}
-        <p class="datelink"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>{{internal_announcement.text|safe}}</p>
-      {% endif %}
+    {% if internal_announcement %}
+    <div class="info-box calendar-notes">
+      <table>
+        <tr>
+          <td class="info-box-data no-border">
+            {% if internal_announcement %}
+            <span class="alert-symbol">&#9432;&#xFE0E; </span>{{internal_announcement.text|safe}}
+            {% endif %}
+          </td>
+        </tr>
+      </table>
     </div>
+    {% endif %}
 
     {% if empty_day == True %}
     <div class="textpage">

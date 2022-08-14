@@ -9,8 +9,8 @@ class Dog(models.Model):
     info = models.JSONField()
     offsite = models.BooleanField(default=False)
     appt_only = models.BooleanField(default=False)
-    host_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
-    foster_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
+    # host_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
+    # foster_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
 
     def __repr__(self):
         return self.info['Name']

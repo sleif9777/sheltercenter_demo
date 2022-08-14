@@ -165,7 +165,11 @@
           <tr>
             <td class="info-box-data no-border">
               <span class="alert-symbol">&#9432;&#xFE0E; </span> The following dogs are currently in foster and require pre-arranged appointments. Please click a name below to begin coordinating with us. Do not book an appointment below.
+<<<<<<< HEAD
+              <ul class="two-col-list">
+=======
               <ul>
+>>>>>>> apptdogs
                 {% for dog in offsite_dogs %}
                 {% if dog.appt_only %}
                 <li><a href="{% url 'contact_us' dog.name %}">{{dog.name}}</a></li>
@@ -174,6 +178,8 @@
               </ul>
             </td>
           </tr>
+<<<<<<< HEAD
+=======
 
           <tr>
             <td class="info-box-data no-border">
@@ -195,6 +201,7 @@
             </td>
           </tr>
 
+>>>>>>> apptdogs
         </table>
       </div>
     {% endif %}
