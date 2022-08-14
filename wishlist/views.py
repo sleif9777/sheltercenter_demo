@@ -29,28 +29,30 @@ def get_and_update_dogs():
 
     # try to call dog, if not existing, create object and save
     for dog in dogs:
-        dog = Dog.objects.update_or_create(shelterluv_id=dog['Internal-ID'], info=dog, shelterluv_status=dog['Status'], name=dog['Name'])
+        updated_values = {'info': dog, 'shelterluv_status': dog['Status'], 'name': dog['Name']}
+
+        dog = Dog.objects.update_or_create(shelterluv_id=dog['Internal-ID'], defaults = updated_values)
 
     # with updated list, call all dogs listed as available in database
     current_available_dogs = [dog for dog in Dog.objects.filter(shelterluv_status="Available for Adoption")]
 
     # determine which dogs were recently removed from website and update status
     recent_delisted = [dog for dog in previous_available_dogs if dog not in current_available_dogs]
+
     for dog in recent_delisted:
-        # dog_req = requests.get('https://www.shelterluv.com/api/v1/animals/{0}'.format(dog.shelterluv_id), headers=headers).json()
         dog.shelterluv_status = 'Delisted' #dog_req['Status']
         dog.save()
-
-def check_for_updated_status():
-    available_dogs = Dog.objects.get(shelterluv_status="Available for Adoption")
-
-    for dog in available_dogs:
-        update_request = requests.get('https://www.shelterluv.com/api/v1/animals?offset={0}&status_type=publishable'.format(offset), params=params, headers=headers).json()
+#
+# def check_for_updated_status():
+#     available_dogs = Dog.objects.get(shelterluv_status="Available for Adoption")
+#
+#     for dog in available_dogs:
+#         update_request = requests.get('https://www.shelterluv.com/api/v1/animals?offset={0}&status_type=publishable'.format(offset), params=params, headers=headers).json()
 
 @authenticated_user
 @allowed_users(allowed_roles={'superuser'})
 def display_list(request):
-    # get_and_update_dogs()
+    get_and_update_dogs()
 
     all_available_dogs = [dog for dog in Dog.objects.filter(shelterluv_status = 'Available for Adoption').order_by('name')]
 
@@ -68,15 +70,19 @@ def display_list(request):
                 dog.save()
 
         for id in form_data.keys():
-            if form_data[id] != ['']:
-                dog = Dog.objects.get(shelterluv_id=id)
-                dog.offsite = True
-                if 'appt_only' in form_data[id]:
-                    dog.appt_only = True
-                else:
-                    date_string = form_data[id][-1]
-                    dog.host_date = datetime.date(int(date_string[:4]), int(date_string[5:7]), int(date_string[8:]))
-                dog.save()
+            dog = Dog.objects.get(shelterluv_id=id[:-5])
+            dog.offsite = True
+
+            if '-appt' in id:
+                dog.appt_only = True
+            elif '-host' in id:
+                date_string = form_data[id][0]
+                dog.host_date = datetime.date(int(date_string[:4]), int(date_string[5:7]), int(date_string[8:]))
+            elif '-fstr' in id:
+                date_string = form_data[id][0]
+                dog.foster_date = datetime.date(int(date_string[:4]), int(date_string[5:7]), int(date_string[8:]))
+
+            dog.save()
 
         return redirect('calendar')
 
