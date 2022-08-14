@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load auth_extras %}
 
 {% block content %}
 
@@ -36,28 +37,6 @@
 
     <input type="text" id="searchBar" onkeyup="filterAdopters()" placeholder="Search by name or email address.">
 
-    <!-- <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 5px;">
-      <span style="font-weight: bold;">First Name:</span>
-      {% for letter in alphabet %}
-      <a href="{% url 'manage_filter' 'fname' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
-      {% endfor %}
-    </div>
-    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 5px;">
-      <span style="font-weight: bold;">Last Name:</span>
-      {% for letter in alphabet %}
-      <a href="{% url 'manage_filter' 'lname' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
-      {% endfor %}
-    </div>
-    <div class="" style="display: block; margin: auto; width: 100%; font-size: 16pt; margin-bottom: 10px;">
-      <span style="font-weight: bold;">Email:</span>
-      {% for letter in alphabet %}
-      <a href="{% url 'manage_filter' 'email' letter %}" class="standalone" style="font-size: 16pt;">{{letter}}</a>
-      {% endfor %}
-      {% for digit in digits %}
-      <a href="{% url 'manage_filter' 'email' digit %}" class="standalone" style="font-size: 16pt;">{{digit}}</a>
-      {% endfor %}
-    </div> -->
-
     <ul class="listpage" id="adopter_list">
       {% for adopter in adopters %}
         <div class="" style="break-inside: avoid-column;">
@@ -81,6 +60,9 @@
               {% if adopter.status == "1" %}
                 <li><a class="standalone" href="{% url 'resend_invite' adopter.id %}">Resend Invitation</a></li>
                 <li><a class="standalone" href="{% url 'set_alert_mgr' adopter.id %}">Set Reminder</a></li>
+              {% endif %}
+              {% if request.user|has_group:"superuser" %}
+                <li><a class="standalone" href="https://sheltercenter.dog/admin/adopter/adopter/{{adopter.id}}/change/">Edit in Admin</a></li>
               {% endif %}
             </ul>
 
