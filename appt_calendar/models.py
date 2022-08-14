@@ -68,6 +68,8 @@ class Appointment(models.Model):
     comm_limited_other = models.BooleanField(default=False)
     comm_limited_small_puppies = models.BooleanField(default=False)
     comm_followup = models.BooleanField(default=False)
+    comm_reminder_breed = models.BooleanField(default=False)
+    comm_reminder_parents = models.BooleanField(default=False)
 
     #adopter attributes
     visits_to_date = models.IntegerField(default=0)
