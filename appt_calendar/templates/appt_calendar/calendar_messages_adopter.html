@@ -165,7 +165,11 @@
           <tr>
             <td class="info-box-data no-border">
               <span class="alert-symbol">&#9432;&#xFE0E; </span> The following dogs are currently in foster and require pre-arranged appointments. Please click a name below to begin coordinating with us. Do not book an appointment below.
+<<<<<<< HEAD
               <ul class="two-col-list">
+=======
+              <ul>
+>>>>>>> apptdogs
                 {% for dog in offsite_dogs %}
                 {% if dog.appt_only %}
                 <li><a href="{% url 'contact_us' dog.name %}">{{dog.name}}</a></li>
@@ -174,6 +178,30 @@
               </ul>
             </td>
           </tr>
+<<<<<<< HEAD
+=======
+
+          <tr>
+            <td class="info-box-data no-border">
+              <span class="alert-symbol">&#9432;&#xFE0E; </span> The following dogs are currently on an Extended Host Weekend or are returning from Foster soon. Please keep these dates in mind if looking to meet one of them:
+              <ul>
+                {% for dog in offsite_dogs %}
+                {% if not dog.appt_only %}
+                <li>
+                  {{dog.name}}
+                  {% if dog.host_date.year > 2000 %}
+                  , returning {{dog.host_date}}
+                  {% elif dog.foster_date.year > 2000 %}
+                  , returning {{dog.foster_date}}
+                  {% endif %}
+                </li>
+                {% endif %}
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+
+>>>>>>> apptdogs
         </table>
       </div>
     {% endif %}

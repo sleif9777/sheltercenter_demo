@@ -29,3 +29,15 @@ class Dog(models.Model):
             return "{0} lbs., ".format(weight)
         except:
             return ""
+
+    def host_date_str(self):
+        if self.host_date.year != 2000:
+            return self.host_date.strftime("%Y-%m-%d")
+        else:
+            return
+
+    def foster_date_str(self):
+        if self.foster_date.year != 2000:
+            return self.foster_date.strftime("%Y-%m-%d")
+        else:
+            return

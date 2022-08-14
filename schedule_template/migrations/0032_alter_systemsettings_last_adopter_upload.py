@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='systemsettings',
             name='last_adopter_upload',
-            field=models.DateField(default=datetime.date(2022, 8, 7)),
+            field=models.DateField(default=datetime.date(2022, 8, 14)),
         ),
     ]
