@@ -961,7 +961,7 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
         appt.last_update_sent = appt.date
         appt.save()
 
-        return redirect('calendar')
+        return redirect('calendar_date_appt', date_year, date_month, date_day, appt.id)
 
     else:
         form = ApptOutcomeForm(request.POST or None, instance=appt)
