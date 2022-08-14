@@ -294,6 +294,28 @@
 
       <tr>
         <td>
+          {% if appt.adopter.housing != "Own" %}
+            {% if appt.comm_reminder_breed == False %}
+            <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'reminder_breed' %}">Breed Restrictions</a>
+            {% else %}
+            <p class="completed_appt_action">Breed Restrictions</p>
+            {% endif %}
+          {% endif %}
+        </td>
+
+        <td class="right">
+          {% if appt.adopter.lives_with_parents %}
+            {% if appt.comm_reminder_parents == False %}
+            <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'reminder_parents' %}">Lives With Parents</a>
+            {% else %}
+            <p class="completed_appt_action">Lives With Parents</p>
+            {% endif %}
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td>
           {% if appt.comm_adopted_dogs == False %}
             <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dogs_were_adopted' %}">Dogs Were Adopted</a>
           {% else %}
@@ -341,6 +363,7 @@
           <a href="{% url 'resend_confirmation' appt.id %}">Resend Confirmation</a>
         </td>
       </tr>
+
 
     </table>
 
