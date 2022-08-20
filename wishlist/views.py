@@ -19,6 +19,7 @@ def get_and_update_dogs():
     offset = 0
     dogs = []
     previous_available_dogs = [dog for dog in Dog.objects.filter(shelterluv_status="Available for Adoption")]
+    current_available_dogs = []
 
     # get all currently available_dogs
     while has_more:
@@ -31,10 +32,8 @@ def get_and_update_dogs():
     for dog in dogs:
         updated_values = {'info': dog, 'shelterluv_status': dog['Status'], 'name': dog['Name']}
 
-        dog = Dog.objects.update_or_create(shelterluv_id=dog['Internal-ID'], defaults = updated_values)
-
-    # with updated list, call all dogs listed as available in database
-    current_available_dogs = [dog for dog in Dog.objects.filter(shelterluv_status="Available for Adoption")]
+        dog_obj = Dog.objects.update_or_create(shelterluv_id=dog['Internal-ID'], defaults = updated_values)
+        current_available_dogs += [dog_obj[0]]
 
     # determine which dogs were recently removed from website and update status
     recent_delisted = [dog for dog in previous_available_dogs if dog not in current_available_dogs]

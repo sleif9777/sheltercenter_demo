@@ -185,7 +185,7 @@ def gc_get_announcements(date):
         calendar_announcement = None
 
     #retrieve the list of offsite dogs
-    offsite_dogs = Dog.objects.filter(offsite=True).order_by('name')
+    offsite_dogs = Dog.objects.filter(offsite=True, shelterluv_status="Available for Adoption").order_by('name')
 
     return daily_announcement, internal_announcement, calendar_announcement, offsite_dogs
 

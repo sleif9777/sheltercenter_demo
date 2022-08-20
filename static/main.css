@@ -1,4 +1,4 @@
-/* CSS foundations */
+/* Base formatting */
 
 * {
   margin: 0;
@@ -12,8 +12,74 @@ body {
   width: 100%;
 }
 
+.half-width {
+  width: 50%;
+}
+
+.hide {
+  display: none;
+}
+
+.main {
+  margin-left: 220px;
+  width: calc(100% - 220px);
+}
+
 .no-border {
   border: none;
+}
+
+/* Base formatting for desktop */
+
+.textpage, .text-page {
+  padding: 10px;
+  width: calc(100% - 240px);
+}
+
+/* Formatting for page headers and toolbar actions */
+
+.no_actions {
+  padding-bottom: 15px;
+}
+
+.calendar_actions, 
+.calendar-actions {
+  text-align: center;
+}
+
+.calendar_actions a, 
+.calendar-actions a, 
+.page_header a, 
+.page-header a {
+  color: black;
+  margin: 5px;
+  text-decoration: none;
+}
+
+.calendar_actions a:hover,
+.calendar-actions a:hover, 
+.page_header a:hover, 
+.page-header a:hover {
+  color: #A7396E;
+  text-decoration: underline;
+}
+
+.page_header, 
+.page-header {
+  padding-top: 5px;
+  text-align: center;
+}
+
+/* Formatting for links */
+
+.pink-link {
+  color: #A7396E;
+  text-decoration: none;
+}
+
+.pink-link:hover {
+  color: grey;
+  text-decoration: underline;
 }
 
 /* Formatting for calendar announcements */
@@ -70,12 +136,12 @@ td.info-box-data.no-border {
 }
 
 /* Subcomponent styling */
-.calendar-notes-header {
-  font-weight: bold;
-}
-
 .alert-symbol {
   font-size: 16pt;
+}
+
+.calendar-notes-header {
+  font-weight: bold;
 }
 
 .info-box-data a {
@@ -86,13 +152,12 @@ td.info-box-data.no-border {
   text-decoration: underline;
 }
 
-#short-notice-table {
-  margin-top: 5px;
+.short-notice-subscript {
+  font-size: 8pt;
 }
 
-#short-notice-table th {
-  text-align: left;
-  width: 33.33%;
+#short-notice-table {
+  margin-top: 5px;
 }
 
 #short-notice-table td {
@@ -100,19 +165,60 @@ td.info-box-data.no-border {
   vertical-align: top;
 }
 
-.short-notice-subscript {
+#short-notice-table th {
+  text-align: left;
+  width: 33.33%;
+}
+
+/* Formatting for Manage Adopters */
+
+.adopter-email {
   font-size: 8pt;
 }
 
-/* Remainder to refactor */
+#adopter_list,
+#adopter-list {
+  -webkit-column-width: 200px;
+  -moz-column-width: 200px;
+  column-width: 200px;
+  padding: 0;
+}
+
+.adopter-listing {
+  border-bottom: 1px solid #BF4580;
+  break-inside: avoid-column;
+}
+
+.adopter-mgmt-actions {
+  list-style-type: "\2937";
+  padding-left: 10%;
+}
+
+.adopter-name {
+  font-size: 14pt;
+}
+
+.listpage,
+.list-page {
+  list-style-type: none;
+  padding-left: 0;
+  padding-top: 10px;
+}
+
+.listpage li,
+.list-page li {
+  margin: 2px 0px;
+}
 
 #searchBar {
-  width: 95%; /* Full-width */
-  font-size: 16px; /* Increase font-size */
-  padding: 12px 20px 12px 10px; /* Add some padding */
-  border: 1px solid #ddd; /* Add a grey border */
-  margin-bottom: 12px; /* Add some space below the input */
+  border: 1px solid #ddd;
+  font-size: 16px;
+  margin-bottom: 12px;
+  padding: 12px 20px 12px 10px;
+  width: 95%;
 }
+
+/* Remainder to refactor */
 
 .datelink {
   text-decoration: none;
@@ -133,7 +239,6 @@ td.info-box-data.no-border {
   ul.dog_list {
     column-count: 2;
   }
-
 
   ul.appt_solo {
   list-style-type: none;
@@ -156,12 +261,6 @@ td.info-box-data.no-border {
     padding: 0;
     padding-top: 10px;
   }
-
-  #adopter_list {
-    column-count: 2;
-    padding: 0;
-  }
-
 }
 
 @media only screen and (min-width: 981px) {
@@ -200,13 +299,6 @@ td.info-box-data.no-border {
     column-count: 1;
     padding-top: 10px;
   }
-
-  #adopter_list {
-    list-style-type: none;
-    column-count: 5;
-    padding: 0;
-  }
-
 }
 
 .roleselector {
@@ -255,11 +347,6 @@ td.info-box-data.no-border {
   padding-bottom: 10px;
 }
 
-.main {
-  margin-left: 220px;
-  width: calc(100% - 220px);
-}
-
 .activitymenu li {
   display: inline-block;
   list-style-type: none;
@@ -303,38 +390,9 @@ td.info-box-data.no-border {
   border-bottom: none;
 }
 
-.textpage {
-  padding: 10px;
-  width: calc(100% - 240px);
-}
-
 .timeslot, .week, #allreports {
   text-align: center;
   padding: 20px 0px;
-}
-
-.page_header {
-  text-align: center;
-  padding-top: 5px;
-}
-
-.no_actions {
-  padding-bottom: 15px;
-}
-
-.calendar_actions {
-  text-align: center;
-}
-
-.page_header a, .calendar_actions a {
-  color: black;
-  margin: 5px;
-  text-decoration: none;
-}
-
-.page_header a:hover, .calendar_actions a:hover {
-  color: #A7396E;
-  text-decoration: underline;
 }
 
 .timeslot h2 {
@@ -747,16 +805,6 @@ tr.info_block_subheader {
 
 p.greeting {
   font-size: 20pt;
-}
-
-.listpage {
-  list-style-type: none;
-  padding-top: 10px;
-  padding-left: 0;
-}
-
-.listpage li {
-  margin: 2px 0px;
 }
 
 #adopter_mgmt_appt {
