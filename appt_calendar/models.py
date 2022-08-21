@@ -45,16 +45,17 @@ class Appointment(models.Model):
     ]
 
     #appt basic information
-    date = models.DateField(default = timezone.now())
+    date = models.DateField(default=timezone.now())
     time = models.TimeField(default=datetime.time(12,00))
     appt_type = models.CharField(default="1", max_length=1, choices=APPT_TYPES)
     short_notice = models.BooleanField(default=False)
 
     #booking information
     adopter = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL, limit_choices_to={'has_current_appt': False, 'status': "1"})
-    available = models.BooleanField(default = True) #is not filled
-    published = models.BooleanField(default = True) #can be seen by public
-    locked = models.BooleanField(default = False) #when published = True, if locked, public can see but not interact
+    available = models.BooleanField(default=True) #is not filled
+    dt_booking = models.DateTimeField(default=datetime.datetime(2000,1,1,0,0), blank=True)
+    published = models.BooleanField(default=True) #can be seen by public
+    locked = models.BooleanField(default=False) #when published = True, if locked, public can see but not interact
 
     #adopter note attributes
     internal_notes = models.TextField(default="", blank=True)
