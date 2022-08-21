@@ -20,6 +20,10 @@ body {
   display: none;
 }
 
+.left {
+  text-align: left;
+}
+
 .main {
   margin-left: 220px;
   width: calc(100% - 220px);
@@ -29,7 +33,26 @@ body {
   border: none;
 }
 
+.right {
+  text-align: right;
+}
+
+.upper {
+  text-transform: uppercase;
+}
+
 /* Base formatting for desktop */
+
+.listpage,
+.list-page {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.listpage li,
+.list-page li {
+  margin: 0;
+}
 
 .textpage, .text-page {
   padding: 10px;
@@ -70,6 +93,39 @@ body {
   text-align: center;
 }
 
+/* Formatting for form elements */
+
+.submitform,
+.submit-form {
+  background-color: #e8e8e8;
+  border: 1px solid #ccc;
+  color: #1E6C80;
+  display: block;
+  margin: 10px auto;
+  padding: 5px;
+}
+
+.submitform:hover,
+.submit-form:hover {
+  background-color: #ddd;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* Formatting for cards (dog wishlist, appointments) */
+
+.appointment,
+.grey-card {
+  background-color: #e8e8e8;
+  border: 2px solid #cccccc;
+  break-inside: avoid-column;
+  color: #1E6C80;
+  display: inline-table;
+  margin: 10px;
+  padding: 10px;
+  width: 90%;
+}
+
 /* Formatting for links */
 
 .pink-link {
@@ -90,7 +146,7 @@ body {
 }
 
 .info-box {
-  border: 4px #A7396E solid;
+  border: 4px solid;
   margin: auto;
   margin-top: 10px;
   padding: 10px;
@@ -198,24 +254,27 @@ td.info-box-data.no-border {
   font-size: 14pt;
 }
 
-.listpage,
-.list-page {
-  list-style-type: none;
-  padding-left: 0;
-  padding-top: 10px;
-}
-
-.listpage li,
-.list-page li {
-  margin: 2px 0px;
-}
-
 #searchBar {
   border: 1px solid #ddd;
   font-size: 16px;
   margin-bottom: 12px;
   padding: 12px 20px 12px 10px;
   width: 95%;
+}
+
+/* Formatting for dog list pages */
+
+.dog-card-field {
+  padding: 2px 0;
+}
+
+#dog_list,
+#dog-list {
+  -webkit-column-width: 190px;
+  -moz-column-width: 190px;
+  column-width: 190px;
+  list-style-type: none;
+  padding: 0;
 }
 
 /* Remainder to refactor */
@@ -264,22 +323,18 @@ td.info-box-data.no-border {
 }
 
 @media only screen and (min-width: 981px) {
-  ul.appt_list {
-  list-style-type: none;
-  padding: 0;
-  column-count: 2;
-  }
-
-  ul.dog_list {
-    column-count: 6;
+  .appt_list {
+    list-style-type: none;
+    padding: 0;
+    column-count: 2;
   }
 
   ul.appt_solo {
-  list-style-type: none;
-  padding: 0;
-  column-count: 1;
-  width: 75%;
-  margin: auto;
+    list-style-type: none;
+    padding: 0;
+    column-count: 1;
+    width: 75%;
+    margin: auto;
   }
 
   ul.two-col-list {
@@ -404,19 +459,9 @@ td.info-box-data.no-border {
   display: inline-table;
   background-color: #48c8d3;
   border: 5px solid #1E6C80;
-  margin: 10px 10px;
+  margin: 10px;
   padding: 10px;
   border-radius: 15px;
-}
-
-.appointment {
-  width: 90%;
-  display: inline-table;
-  background-color: #e8e8e8;
-  border: 2px solid #cccccc;
-  margin: 10px 10px;
-  padding: 10px;
-  color: #1E6C80;
 }
 
 .short_notice {
@@ -424,14 +469,6 @@ td.info-box-data.no-border {
   background-color: #FFFCC9;
   color: #7A7400;
 }
-
-/* .appointment {
-  display: inline-table;
-  border: 5px solid #1E6C80;
-  margin: 10px 10px;
-  padding: 10px;
-  border-radius: 15px;
-} */
 
 .appt_action {
   display: inline-table;
@@ -621,20 +658,6 @@ input[type=submit].copytemplate:hover {
   font-weight: bold;
 }
 
-input[type=submit].submitform {
-  background-color: #e8e8e8;
-  border: 1px solid #cccccc;
-  display: inline-table;
-  color: #1E6C80;
-  padding: 5px;
-}
-
-input[type=submit].submitform:hover {
-  background-color: #dddddd;
-  text-decoration: underline;
-  font-weight: bold;
-}
-
 p.standalone {
   margin-bottom: 5px;
 }
@@ -759,20 +782,9 @@ tr.info_block_subheader {
   padding-bottom: 5px;
 }
 
-.appt_description {
+.appt_description,
+.grey-card-descr {
   font-size: 18pt;
-}
-
-.left {
-  text-align: left;
-}
-
-.right {
-  text-align: right;
-}
-
-.upper {
-  text-transform: uppercase;
 }
 
 #appt_header_block {

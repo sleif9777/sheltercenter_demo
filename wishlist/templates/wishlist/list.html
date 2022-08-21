@@ -4,17 +4,19 @@
 
 {% block content%}
   <div class="main">
-    <h1 class="page_header">Add Appointment-Only Dogs</h1>
+    <h1 class="page-header">Add Appointment-Only Dogs</h1>
 
     <form class="" action="" method="post">
       {% csrf_token %}
       <input class="submitform" type="submit" name="" value="Save">
 
-      <ul class="appt_list dog_list">
-        {% for dog in all_available_dogs %}
-          <li class="appt_slot">{% include 'wishlist/simple_dog_card.html' %}</li>
-        {% endfor %}
-      </ul>
+      <article id="dog-list">
+        <ul class="list-page">
+          {% for dog in all_available_dogs %}
+            <li class="appt_slot">{% include 'wishlist/simple_dog_card.html' %}</li>
+          {% endfor %}
+        </ul>
+      </article>
 
       <input class="submitform" type="submit" name="" value="Save">
     </form>
