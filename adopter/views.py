@@ -154,23 +154,18 @@ def handle_existing(existing_adopter, status, app_interest):
     special_circumstances = (existing_adopter.adopting_foster or existing_adopter.friend_of_foster or existing_adopter.adopting_host)
     accepted_last_4_days = existing_adopter.accept_date in [today - datetime.timedelta(days = x) for x in range(4)]
 
-    print(special_circumstances, existing_adopter.adopting_foster, existing_adopter.friend_of_foster, existing_adopter.adopting_host)
-
     #if the adopter is approved...
     if existing_adopter.status == "1" and status in ["1", "Accepted"]:
-        print('hit')
         if app_interest not in ["", "dogs", "Dogs", "Dog"]:
             existing_adopter.app_interest = app_interest
             existing_adopter.save()
 
         #...and was accepted over a year ago, send new invite
         if existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
-            print('swing')
             existing_adopter.accept_date = datetime.date.today()
             create_invite_email(existing_adopter)
         #...and was accepted under a year ago, but more than two days ago, send push
         elif not accepted_last_4_days and not special_circumstances:
-            print('miss')
             create_invite_email(existing_adopter)
 
     #if moved from pending to approved, send invite
@@ -212,14 +207,9 @@ def add_from_file(file):
 
             #else handle message
             else:
-                print(existing_adopter.full_name(), existing_adopter.accept_date)
                 handle_existing(existing_adopter, row[4], row[11])
         except Exception as f:
-            print('f', f)
             adopter = create_adopter_from_row(row)
-
-            print(adopter.full_name())
-            print(adopter.status)
 
             try:
                 create_new_user_from_adopter(adopter)
@@ -243,7 +233,6 @@ def add_from_file(file):
 def add_from_form(adopter):
     #for testing purposes, do not put into prod
     if str(os.environ.get('SANDBOX')) == "1":
-        print('i')
         adopter.primary_email = "sheltercenterdev+" + adopter.f_name.replace(" ", "").lower() + adopter.l_name.replace(" ", "").lower() + "@gmail.com"
 
     #set an auth code that isn't divisible by 100
@@ -261,12 +250,10 @@ def add_from_form(adopter):
             create_new_user_from_adopter(adopter)
             if adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host:
                 shellappt = create_shell_appt(adopter)
-                print(shellappt.id)
                 return shellappt
             else:
                 return None
         except Exception as h:
-            print('h', h)
             pass
 
 def create_shell_appt(adopter):
@@ -307,10 +294,7 @@ def add(request):
             add_from_file(file)
     #except no file, add manually without application
     except Exception as g:
-        print('g', g)
         if form.is_valid():
-            print(form.cleaned_data)
-
             try:
                 fname = form.cleaned_data["f_name"]
                 lname = form.cleaned_data["l_name"]
@@ -330,10 +314,8 @@ def add(request):
 
                 #else handle message
                 else:
-                    print('here')
                     handle_existing(existing_adopter, status, app_interest)
             except Exception as b:
-                print("b", b)
                 form.save()
                 adopter = Adopter.objects.latest('id')
                 shellappt = add_from_form(adopter)
@@ -344,14 +326,12 @@ def add(request):
                     elif adopter.friend_of_foster:
                         return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
                     elif adopter.adopting_host:
-                        print('host')
                         return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
                     elif adopter.out_of_state == True:
                         invite_oos_etemp(adopter)
                     elif adopter.carryover_shelterluv:
                         carryover_temp(adopter)
                     else:
-                        print('invite')
                         invite(adopter)
 
 
@@ -485,11 +465,9 @@ def edit_adopter(request, adopter_id):
 
     try:
         current_appt = Appointment.objects.filter(adopter=adopter).latest('id')
-        print(current_appt)
         current_appt_str = current_appt.date_and_time_string()
         date = current_appt.date
     except:
-        print('nonono')
         current_appt = None
         current_appt_str = None
         date = None
@@ -508,8 +486,6 @@ def edit_adopter(request, adopter_id):
         form = AdopterForm(request.POST or None, instance=adopter)
 
     source = 'mgmt_' + str(adopter.id)
-
-    print(adopter.has_current_appt)
 
     context = {
         'form': form,
@@ -657,6 +633,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         if source in ["update", "ready_positive", "ready_negative"]:
 
             appt.last_update_sent = today
+            appt.all_updates_sent.insert(0, date_str(today))
 
             if source in ['ready_positive', 'ready_negative']:
                 appt.outcome = "7"

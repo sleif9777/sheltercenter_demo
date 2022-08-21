@@ -708,12 +708,12 @@ tr.info_block_subheader {
   text-decoration: underline;
 }
 
-.chosen_board_actions a {
+.chosen_board_actions {
   color: #A7396E;
   text-decoration: none;
 }
 
-.chosen_board_actions a:hover {
+.chosen_board_actions:hover {
   color: #fd6da8;
   text-decoration: underline;
 }

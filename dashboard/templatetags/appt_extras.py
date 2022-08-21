@@ -9,7 +9,6 @@ register = template.Library()
 @register.filter(name='alert_overdue')
 def alert_overdue(appt):
     delta_from_today = (datetime.date.today() - appt.last_update_sent).days
-    print(delta_from_today)
 
     if delta_from_today >= 7:
         return True

@@ -1,6 +1,7 @@
 import datetime
 
 from copy import copy
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 from num2words import num2words
@@ -79,11 +80,14 @@ class Appointment(models.Model):
     visits_to_date = models.IntegerField(default=0)
 
     #post-visit attributes
+    all_updates_sent = ArrayField(
+        models.CharField(max_length=30, null=True, blank=True)
+    )
     dog = models.CharField(default="", max_length=200, blank=True) #this can also be used in surrenders
     dog_fka = models.CharField(default="", max_length=200, blank=True) #only used for surrenders
     heartworm = models.BooleanField(default=False)
     last_update_sent = models.DateField(default=timezone.now(), blank=True)
-    outcome = models.CharField(default="1", max_length = 2, choices=OUTCOME_TYPES)
+    outcome = models.CharField(default="1", max_length=2, choices=OUTCOME_TYPES)
     paperwork_complete = models.BooleanField(default=False)
     rtr_notif_date = models.CharField(default="", max_length=200, blank=True)
 
@@ -281,29 +285,23 @@ class ShortNotice(models.Model):
 
     def __str__(self):
         schedulable = False
-        print(self.id)
 
         try:
             if self.current_appt.appt_type in ["1", "2", "3"]:
                 schedulable = True
-                print('hit1')
         except Exception as uu:
-            print('uu', uu)
             try:
                 if self.prev_appt.appt_type in ["1", "2", "3"]:
                     schedulable = True
-                    print('hit2')
             except:
                 pass
 
         if schedulable:
-            print('human')
             try:
                 return self.adopter.full_name()
             except:
                 return "Unknown"
         else:
-            print('dog')
             try:
                 return self.dog
             except:
