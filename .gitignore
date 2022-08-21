@@ -132,3 +132,6 @@ dmypy.json
 
 # Internal documentation
 creds.txt
+
+# Terminal settings
+.zshrc
