@@ -147,10 +147,6 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
                 empty_dates += [[d, date_str(d)]]
 
         #check when adopters were last uploaded
-        print("Today", today)
-        print("Range", [today - datetime.timedelta(days=x) for x in range(2)])
-        print("Datapoint", system_settings.last_adopter_upload)
-        print("Bool", system_settings.last_adopter_upload not in [today - datetime.timedelta(days=x) for x in range(2)])
         if system_settings.last_adopter_upload not in [today - datetime.timedelta(days=x) for x in range(2)]:
             upload_current = False
 
@@ -176,7 +172,6 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     #retrieve the daily announcement if one exists
     try:
         calendar_announcement = CalendarAnnouncement.objects.get(pk=1)
-        print(calendar_announcement.text)
     except:
         calendar_announcement = None
 
@@ -238,19 +233,13 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         empty_day = False
 
     sn_add = ShortNotice.objects.filter(date = date, sn_status = "1")
-    # print('sn_add', sn_add)
     sn_cancel = ShortNotice.objects.filter(date = date, sn_status = "2")
-    # print('sn_add', sn_add)
     sn_move = ShortNotice.objects.filter(date = date, sn_status = "3")
-    # print('sn_add', sn_add)
 
     if len(ShortNotice.objects.filter(date=date)) > 0:
         sn_show = True
     else:
         sn_show = False
-
-    print(ShortNotice.objects.filter(date=date))
-    # print('sn_show', sn_show)
 
     context = {
         "date": date,
@@ -276,8 +265,6 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'sn_move': sn_move,
         'sn_show': sn_show,
     }
-
-    print(context)
 
     return context
 
@@ -328,7 +315,6 @@ def error_500(request):
     }
 
     dogs_request = requests.get('https://www.shelterluv.com/api/v1/animals?status_type=publishable', headers=headers).json()
-    print([key for key in dogs_request.keys()])
     display_dog = random.choice(list(dogs_request['animals']))
 
     dog_img = display_dog['CoverPhoto']

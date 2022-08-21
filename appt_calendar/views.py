@@ -141,20 +141,6 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
             print(request.POST)
 
-            # try:
-            #     questions = dict(request.POST)['outstanding_questions'][0]
-            #
-            #     if questions != "":
-            #         questions_msg(adopter, appt, questions)
-            # except Exception as e:
-            #     exception_type, exception_object, exception_traceback = sys.exc_info()
-            #     filename = exception_traceback.tb_frame.f_code.co_filename
-            #     line_number = exception_traceback.tb_lineno
-            #
-            #     print("Exception type: ", exception_type)
-            #     print("File name: ", filename)
-            #     print("Line number: ", line_number)
-
             adopter.has_current_appt = True
             adopter.save()
 
@@ -168,13 +154,11 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
                 try:
                     sn_obj = ShortNotice.objects.get(date = appt.date, adopter = adopter)
-                    print(sn_obj.id)
                     sn_obj.prev_appt, sn_obj.current_appt = None, appt
                     sn_obj.sn_status = "1"
                     sn_obj.save()
                     sn_obj.set_backup()
                 except Exception as e:
-                    print('e', e)
                     sn_obj = ShortNotice.objects.create(adopter = adopter, current_appt = appt, prev_appt = None, date = appt.date, sn_status = "1")
                     sn_obj.set_backup()
 
@@ -259,10 +243,6 @@ def calendar_date(request, date_year, date_month, date_day):
         }
 
         context.update(adopter_context)
-
-        print(request.user.adopter.alert_date)
-        print(context['date'])
-        print(request.user.adopter.alert_date == context['date'])
 
     return render(request, "appt_calendar/calendar_test_harness.html", context)
 
@@ -407,11 +387,16 @@ def daily_reports_home(request):
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def chosen_board(request):
     today = datetime.date.today()
-    appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "7", "8", "9", "10"], paperwork_complete=False).order_by(F('outcome').desc(), 'dog')]
+    chosen_appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["3", "9", "10"], paperwork_complete=False).order_by(F('outcome').desc(), 'dog')]
+    rtr_appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["7"], paperwork_complete=False).order_by('dog')]
+    paper_appointments = [appt for appt in Appointment.objects.filter(outcome__in = ["8"], paperwork_complete=False).order_by('dog')]
+
 
     context = {
         "today": today,
-        "appointments": appointments,
+        "chosen_appointments": chosen_appointments,
+        "rtr_appointments": rtr_appointments,
+        "paper_appointments": paper_appointments,
         'page_title': "Chosen Board",
     }
 
@@ -766,13 +751,10 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
     appt = Appointment.objects.get(pk=appt_id)
     original_adopter = appt.adopter
 
-    print("h1")
-
     if user_groups == {'adopter'}:
         form = EditAppointmentForm(request.POST or None, instance=appt,)
         adopter_form = AdopterPreferenceForm(request.POST or None, instance=original_adopter)
     else:
-        print(appt.adopter)
         if appt.adopter is not None:
             form = AppointmentModelFormPrefilledEdit(request.POST or None, instance=appt)
         else:
@@ -785,7 +767,6 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
         current_email = None
 
     if form.is_valid():
-        print('h2')
         form.save()
 
         if adopter_form:
@@ -801,13 +782,11 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
                 if short_notice(appt):
                     try:
                         sn_obj = ShortNotice.objects.get(date = appt.date, adopter = appt.adopter, dog = appt.dog)
-                        print(sn_obj.id)
                         sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
                         sn_obj.sn_status = "1"
                         sn_obj.save()
                         sn_obj.set_backup()
                     except Exception as e:
-                        print('e', e)
                         appt.mark_short_notice()
                         sn_obj = ShortNotice.objects.create(adopter = appt.adopter, dog=appt.dog, current_appt = appt, date = appt.date, sn_status = "1")
                         sn_obj.set_backup()
@@ -816,16 +795,8 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
             if appt.adopter is not None:
                 appt.delist()
 
-                print('h3')
-                print(original_adopter)
-                print(appt.adopter)
-                print(appt.appt_type)
-
                 if appt.appt_type in ["1", "2", "3"]:
-                    print('h4')
                     if original_adopter != appt.adopter:
-                        print('break')
-
                         if original_adopter is not None:
                             cancel(original_adopter, appt)
 
@@ -909,7 +880,6 @@ def edit_appointment_from_mgmt(request, date_year, date_month, date_day, appt_id
 
             appt.delist()
 
-            print('hey')
             return redirect('contact_adopter', appt_id, date_year, date_month, date_day, 'confirm_appt')
 
         return redirect('edit_adopter', original_adopter.id)
@@ -990,13 +960,11 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
     if short_notice(appt):
         try:
             sn_obj = ShortNotice.objects.get(date = appt.date, adopter = adopter)
-            print(sn_obj.id)
             sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
             sn_obj.sn_status = "2"
             sn_obj.save()
             sn_obj.set_backup()
         except Exception as e:
-            print('e', e)
             sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = appt, date = appt.date, sn_status = "2")
             sn_obj.set_backup()
 
@@ -1083,13 +1051,11 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
                 try:
                     sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
-                    print(sn_obj.id)
                     sn_obj.prev_appt, sn_obj.current_appt = current_appt, new_appt
                     sn_obj.sn_status = "3"
                     sn_obj.save()
                     sn_obj.set_backup()
                 except Exception as e:
-                    print('e', e)
                     sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, current_appt = new_appt, date = new_appt.date, sn_status = "3")
                     sn_obj.set_backup()
 
@@ -1099,13 +1065,11 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
                 try:
                     sn_obj = ShortNotice.objects.get(date = current_appt.date, adopter = adopter)
-                    print(sn_obj.id)
                     sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
                     sn_obj.sn_status = "2"
                     sn_obj.save()
                     sn_obj.set_backup()
                 except Exception as e:
-                    print('e', e)
                     sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, date = current_appt.date, sn_status = "2")
                     sn_obj.set_backup()
 
@@ -1116,13 +1080,11 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
                 try:
                     sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
-                    print(sn_obj.id)
                     sn_obj.prev_appt, sn_obj.current_appt = None, new_appt
                     sn_obj.sn_status = "1"
                     sn_obj.save()
                     sn_obj.set_backup()
                 except Exception as e:
-                    print('e', e)
                     sn_obj = ShortNotice.objects.create(adopter = adopter, current_appt = new_appt, prev_appt = None, date = new_appt.date, sn_status = "1")
                     sn_obj.set_backup()
 
@@ -1166,13 +1128,11 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
                         try:
                             sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
-                            print(sn_obj.id)
                             sn_obj.prev_appt, sn_obj.current_appt = current_appt, new_appt
                             sn_obj.sn_status = "3"
                             sn_obj.save()
                             sn_obj.set_backup()
                         except Exception as e:
-                            print('e', e)
                             sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = current_appt, current_appt = new_appt, date = new_appt.date, sn_status = "3")
                             sn_obj.set_backup()
 
@@ -1182,13 +1142,11 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
                         try:
                             sn_obj = ShortNotice.objects.get(date = current_appt.date, adopter = adopter)
-                            print(sn_obj.id)
                             sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
                             sn_obj.sn_status = "2"
                             sn_obj.save()
                             sn_obj.set_backup()
                         except Exception as e:
-                            print('e', e)
                             sn_obj = ShortNotice.objects.create(adopter = adopter, dog = current_appt.dog, prev_appt = current_appt, date = current_appt.date, sn_status = "2")
                             sn_obj.set_backup()
 
@@ -1199,13 +1157,11 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
 
                         try:
                             sn_obj = ShortNotice.objects.get(date = new_appt.date, adopter = adopter)
-                            print(sn_obj.id)
                             sn_obj.prev_appt, sn_obj.current_appt = None, new_appt
                             sn_obj.sn_status = "1"
                             sn_obj.save()
                             sn_obj.set_backup()
                         except Exception as e:
-                            print('e', e)
                             sn_obj = ShortNotice.objects.create(adopter = adopter, dog = new_appt.dog, current_appt = new_appt, prev_appt = None, date = new_appt.date, sn_status = "1")
                             sn_obj.set_backup()
 
@@ -1236,13 +1192,11 @@ def delete_appointment(request, date_year, date_month, date_day, appt_id):
         if short_notice(deleted_appt):
             try:
                 sn_obj = ShortNotice.objects.get(date = deleted_appt.date, adopter = deleted_appt.adopter)
-                print(sn_obj.id)
                 sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
                 sn_obj.sn_status = "2"
                 sn_obj.save()
                 sn_obj.set_backup()
             except Exception as e:
-                print('e', e)
                 sn_obj = ShortNotice.objects.create(adopter = deleted_appt.adopter, dog = deleted_appt.dog, prev_appt = deleted_appt, date = deleted_appt.date, sn_status = "2")
                 sn_obj.set_backup()
 
