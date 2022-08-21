@@ -1,5 +1,23 @@
 {% load auth_extras %}
 
+<script>
+  function openAllApps() {
+    // Declare variables
+    var input, filter, ul, li, name, email, i, appId;
+    // input = document.getElementById('searchBar');
+    // filter = input.value.toLowerCase();
+    // ul = document.getElementById("appt_list");
+    li = document.getElementsByClassName('app-id');
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < li.length; i++) {
+      appId = li[i].getElementsByClassName("adopter_name")[0].innerText;
+      console.log(appId);
+      window.open("https://www.shelterluv.com/adoption_request_print/${appId}");
+    }
+  }
+</script>
+
 <a href="{% url 'jump_to_date' %}">Jump To Date</a>
 
 {% if date != today %}
@@ -13,4 +31,5 @@
   <a href="{% url 'add_timeslot' date.year date.month date.day %}">Add Timeslot</a>
   <a href="{% url 'toggle_all' date.year date.month date.day 1 %}">Lock All</a>
   <a href="{% url 'toggle_all' date.year date.month date.day 0 %}">Unlock All</a>
+  <a href="" onclick="openAllApps()">Print All</a>
 {% endif %}

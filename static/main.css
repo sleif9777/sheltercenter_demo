@@ -20,6 +20,10 @@ body {
   background-color: #ea9999;
 }
 
+.hide {
+  display: none;
+}
+
 ul.two-col-flex {
     list-style-type: none;
     column-count: 2;
