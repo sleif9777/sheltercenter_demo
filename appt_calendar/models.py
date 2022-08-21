@@ -45,16 +45,17 @@ class Appointment(models.Model):
     ]
 
     #appt basic information
-    date = models.DateField(default = timezone.now())
-    time = models.TimeField(default=datetime.time(12,00))
     appt_type = models.CharField(default="1", max_length=1, choices=APPT_TYPES)
+    date = models.DateField(default=timezone.now())
     short_notice = models.BooleanField(default=False)
+    time = models.TimeField(default=datetime.time(12,00))
 
     #booking information
     adopter = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL, limit_choices_to={'has_current_appt': False, 'status': "1"})
-    available = models.BooleanField(default = True) #is not filled
-    published = models.BooleanField(default = True) #can be seen by public
-    locked = models.BooleanField(default = False) #when published = True, if locked, public can see but not interact
+    available = models.BooleanField(default=True) #is not filled
+    dt_booking = models.DateTimeField(default=datetime.datetime(2000,1,1,0,0), blank=True)
+    locked = models.BooleanField(default=False) #when published = True, if locked, public can see but not interact
+    published = models.BooleanField(default=True) #can be seen by public
 
     #adopter note attributes
     internal_notes = models.TextField(default="", blank=True)
@@ -62,29 +63,29 @@ class Appointment(models.Model):
 
     #communication attributes
     comm_adopted_dogs = models.BooleanField(default=False)
-    comm_limited_puppies = models.BooleanField(default=False)
-    comm_limited_small = models.BooleanField(default=False)
+    comm_followup = models.BooleanField(default=False)
     comm_limited_hypo = models.BooleanField(default=False)
     comm_limited_other = models.BooleanField(default=False)
+    comm_limited_puppies = models.BooleanField(default=False)
+    comm_limited_small = models.BooleanField(default=False)
     comm_limited_small_puppies = models.BooleanField(default=False)
-    comm_followup = models.BooleanField(default=False)
     comm_reminder_breed = models.BooleanField(default=False)
     comm_reminder_parents = models.BooleanField(default=False)
 
     #adopter attributes
-    visits_to_date = models.IntegerField(default=0)
     bringing_dog = models.BooleanField(default=False)
     has_cat = models.BooleanField(default=False)
     mobility = models.BooleanField(default=False)
+    visits_to_date = models.IntegerField(default=0)
 
     #post-visit attributes
-    outcome = models.CharField(default="1", max_length = 2, choices=OUTCOME_TYPES)
     dog = models.CharField(default="", max_length=200, blank=True) #this can also be used in surrenders
     dog_fka = models.CharField(default="", max_length=200, blank=True) #only used for surrenders
     heartworm = models.BooleanField(default=False)
-    rtr_notif_date = models.CharField(default="", max_length=200, blank=True)
     last_update_sent = models.DateField(default=timezone.now(), blank=True)
+    outcome = models.CharField(default="1", max_length = 2, choices=OUTCOME_TYPES)
     paperwork_complete = models.BooleanField(default=False)
+    rtr_notif_date = models.CharField(default="", max_length=200, blank=True)
 
     def __repr__(self):
         display_string = ""
@@ -150,6 +151,9 @@ class Appointment(models.Model):
     def date_and_time_string(self):
         return self.date_string() + " at " + self.time_string()
 
+    def dt_booking_string(self):
+        return "Appointment booked {0} at {1}".format(date_str(self.dt_booking), time_str(self.dt_booking))
+
     def appt_string(self):
         appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA", "Visit"]
         return appt_type[int(self.appt_type) - 1]
@@ -163,27 +167,28 @@ class Appointment(models.Model):
 
         self.adopter = None
         self.available = True
+        self.dt_booking = datetime.datetime(2000,1,1,0,0)
         self.published = True
         self.short_notice = False
 
-        self.internal_notes = ""
         self.adopter_notes = ""
+        self.internal_notes = ""
 
         self.comm_adopted_dogs = False
-        self.comm_limited_puppies = False
-        self.comm_limited_small = False
         self.comm_limited_hypo = False
         self.comm_limited_other = False
+        self.comm_limited_puppies = False
+        self.comm_limited_small = False
         self.comm_limited_small_puppies = False
 
-        self.visits_to_date = 0
         self.bringing_dog = False
         self.has_cat = False
         self.mobility = False
+        self.visits_to_date = 0
 
-        self.outcome = "1"
         self.dog = ""
         self.dog_fka = ""
+        self.outcome = "1"
         self.paperwork_complete = False
         self.save()
 
@@ -195,6 +200,7 @@ class Appointment(models.Model):
         self.published = False
 
         if self.adopter is not None:
+            self.dt_booking = datetime.datetime.now()
             self.visits_to_date = copy(self.adopter.visits_to_date)
 
             if self.adopter.acknowledged_faq == False:

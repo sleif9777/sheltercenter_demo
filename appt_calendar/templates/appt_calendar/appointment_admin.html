@@ -81,43 +81,6 @@
           {% endif %}
         </td>
       </tr>
-<!--
-      <tr>
-        <td colspan="2">
-          <ul class="two-col-flex">
-            <li class="two-col-flex">
-              <b>({{appt.appt_string}})</b>
-            </li>
-
-            {% if appt.bringing_dog %}
-              <li class="two-col-flex">
-                <b>Bringing dog!</b>
-              </li>
-            {% endif %}
-
-            {% if appt.has_cat %}
-              <li class="two-col-flex">
-                <b>Has a cat!</b>
-              </li>
-            {% endif %}
-
-            {% if appt.visits_to_date >= 1 and appt.appt_type in schedulable %}
-              <li class="two-col-flex">
-                <b>{{appt.number_of_visits}}</b>
-              </li>
-            {% endif %}
-
-            {% if appt.adopter.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}
-              <li class="two-col-flex">
-                <b>Must bring a parent!</b>
-              </li>
-            {% endif %}
-          </ul>
-
-        </td>
-      </tr> -->
-
-    <!-- end header table -->
     </table>
 
   {% if not appt.available %}
@@ -205,6 +168,17 @@
         </td>
       </tr>
 
+      <tr>
+        <td>
+          {% if appt.dt_booking.year != 2000 %}
+            {{appt.dt_booking_string}}
+          {% endif %}
+        </td>
+
+        <td class="right">
+        </td>
+      </tr>
+
     </table>
 
     {% if appt.adopter.show_preferences %}
@@ -214,33 +188,6 @@
           <th class="right"></th>
         </tr>
 
-      <!--   <tr>
-          <td colspan="2">
-            <ul class="two-col-flex">
-              {% if appt.adopter.gender_preference == "2" %}
-              <li class="two-col-flex">Only interested in females</li>
-              {% elif appt.adopter.gender_preference == "3" %}
-              <li class="two-col-flex">Only interested in males</li>
-              {% endif %}
-
-              {% if appt.adopter.age_preference == "2" %}
-              <li class="two-col-flex">Puppies only</li>
-              {% endif %}
-
-              {% if appt.adopter.min_weight > 0 and appt.adopter.max_weight == 0 %}
-              <li class="two-col-flex">Looking for over {{appt.adopter.min_weight}} lbs.</li>
-              {% elif appt.adopter.max_weight > 0 and appt.adopter.min_weight == 0 %}
-              <li class="two-col-flex">Looking for under {{appt.adopter.max_weight}} lbs.</li>
-              {% elif appt.adopter.min_weight > 0 and appt.adopter.max_weight > 0 %}
-              <li class="two-col-flex">Looking for between {{appt.adopter.min_weight}} and {{appt.adopter.max_weight}} lbs.</li>
-              {% endif %}
-
-              {% if appt.adopter.hypo_preferred %}
-              <li class="two-col-flex">Needs hypo/low-shedding!</li>
-              {% endif %}
-            </ul>
-          </td>
-        </tr> -->
         <tr>
           <td class="left">
             {% if appt.adopter.gender_preference == "2" %}
