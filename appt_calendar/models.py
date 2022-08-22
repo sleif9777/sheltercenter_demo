@@ -81,7 +81,7 @@ class Appointment(models.Model):
 
     #post-visit attributes
     all_updates_sent = ArrayField(
-        models.CharField(max_length=30, null=True, blank=True)
+        models.CharField(max_length=30, blank=True), default=[]
     )
     dog = models.CharField(default="", max_length=200, blank=True) #this can also be used in surrenders
     dog_fka = models.CharField(default="", max_length=200, blank=True) #only used for surrenders
