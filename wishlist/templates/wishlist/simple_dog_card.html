@@ -1,0 +1,29 @@
+{% load auth_extras %}
+
+<script>
+  function setDate(year, month, day, id) {
+    if (year !== 2000) {
+      window.alert(id);
+      document.getElementById(id).value = new Date(year, (month - 1), (day - 1));
+    } else {
+      return;
+    }
+  }
+</script>
+
+<div class="grey-card" style="width: 170px;" id={{dog.shelterluv_id}}>
+  <img src="{{dog.info.CoverPhoto}}" height="170px" alt=""><br>
+  <span class="grey-card-descr upper"><b>{{dog.info.Name}}</b></span><br>
+  <div class="dog-card-field">
+    <label for="{{dog.shelterluv_id}}-appt">Appointment Only? </label>
+    <input type="checkbox" name="{{dog.shelterluv_id}}-appt" value="appt-only" {% if dog.offsite %} checked {% endif %}><br>
+  </div>
+  <div class="dog-card-field">
+    <label for="{{dog.shelterluv_id}}-host">Extended Host</label><br>
+    <input type="date" name="{{dog.shelterluv_id}}-host" id="host-{{dog.shelterluv_id}}" value="{{dog.host_date_str}}"><br>
+  </div>
+  <div class="dog-card-field">
+    <label for="{{dog.shelterluv_id}}-fstr">Foster Return</label><br>
+    <input type="date" name="{{dog.shelterluv_id}}-fstr" id="foster-{{dog.shelterluv_id}}" value="{{dog.foster_date_str}}">
+  </div>
+</div>
