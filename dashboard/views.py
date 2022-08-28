@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import datetime
 import json
 import random
@@ -402,4 +401,3 @@ def error_500(request):
     }
 
     return render(request, 'dashboard/500.html', context)
->>>>>>> css_refactor
