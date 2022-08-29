@@ -29,6 +29,10 @@ body {
   width: calc(100% - 220px);
 }
 
+.narrow-td {
+  width: 30%;
+}
+
 .no-border {
   border: none;
 }
@@ -39,6 +43,10 @@ body {
 
 .upper {
   text-transform: uppercase;
+}
+
+.wide-td {
+  width: 70%;
 }
 
 /* Base formatting for desktop */
@@ -124,6 +132,78 @@ body {
   margin: 10px;
   padding: 10px;
   width: 90%;
+}
+
+.appt_description,
+.grey-card-descr {
+  font-size: 18pt;
+}
+
+/* Appointment table components */
+.appointment * .appt-info-block {
+  border-color: #1E6C80;
+}
+
+.appointment * .right {
+  text-align: right;
+}
+
+.short-notice * .appt-info-block {
+  border-color: #7A7400;
+  color: #7A7400;
+}
+
+.appointment * a {
+  color: #1E6C80;
+  text-decoration: none;
+}
+
+.appointment * a:hover {
+  text-decoration: underline;
+}
+
+.appt_action,
+.appt-action {
+  display: inline-table;
+  padding: 5px;
+}
+
+#appt-header-actions > a,
+#info-block-subheader > a {
+  font-size: 10pt;
+}
+
+#appt_header_block td,
+#appt-header-block td {
+  border-bottom: none;
+}
+
+.appt_info_block,
+.appt-info-block {
+  margin-bottom: 0px;
+  text-decoration: none;
+  width: 100%;
+}
+
+.appt-info-block:not(.no-border) {
+  border-bottom: 1px solid;
+}
+
+.appt-subblock {
+  padding-top: 5px;
+  text-align: left;
+}
+
+.appt-subblock td {
+  border-bottom: none;
+  font-size: 10pt;
+  vertical-align: top;
+}
+
+.info_block_subheader,
+.info-block-subheader {
+  font-size: 14pt;
+  padding-bottom: 5px;
 }
 
 /* Formatting for links */
@@ -437,10 +517,6 @@ body {
   margin: 0;
 }
 
-.short_notice table.appt_info_block {
-  border-bottom: 1px solid #7A7400;
-}
-
 .short_notice table.appt_end_block, table.appt_end_block {
   border-bottom: none;
 }
@@ -470,22 +546,6 @@ body {
   color: #7A7400;
 }
 
-.appt_action {
-  display: inline-table;
-  padding: 5px;
-}
-
-.appt_action a {
-  color: #1E6C80;
-  text-decoration: none;
-  margin: 5px;
-}
-
-.appt_action a:hover {
-  color: #1E6C80;
-  text-decoration: underline;
-}
-
 .timeslot_action {
   color: black;
   text-decoration: none;
@@ -507,55 +567,6 @@ body {
 .day_action a:hover {
   color: #A7396E;
   text-decoration: underline;
-}
-
-.appt_subblock th.right, .appt_subblock td.right {
-  text-align: right;
-}
-
-.appt_subblock {
-  padding-top: 5px;
-}
-
-.appt_subblock em {
-  color: #1E6C80;
-}
-
-.appt_subblock a:hover {
-  color: #1E6C80;
-  text-decoration: underline;
-}
-
-.appt_subblock a {
-  color: #1E6C80;
-  text-decoration: none;
-}
-
-.short_notice .appt_subblock a:hover, .short_notice #appt_header_block a:hover {
-  color: #7A7400;
-  text-decoration: underline;
-}
-
-.short_notice .appt_subblock a, .short_notice #appt_header_block a {
-  color: #7A7400;
-  text-decoration: none;
-}
-
-.appt_subblock table {
-  width: 100%;
-  text-align: left;
-  border-bottom: 1px solid #1E6C80;
-}
-
-.appt_subblock th {
-  text-align: left;
-}
-
-.appt_subblock td {
-  vertical-align: top;
-  font-size: 10pt;
-  border-bottom: none;
-  text-align: left;
 }
 
 .contact_adopter {
@@ -775,34 +786,6 @@ table.appt_info_block {
   margin-bottom: 0px;
   width: 100%;
   border-bottom: 1px solid #1E6C80;
-}
-
-tr.info_block_subheader {
-  font-size: 14pt;
-  padding-bottom: 5px;
-}
-
-.appt_description,
-.grey-card-descr {
-  font-size: 18pt;
-}
-
-#appt_header_block {
-  margin-bottom: 0;
-}
-
-#appt_header_block td {
-  border-bottom: none;
-}
-
-#appt_header_block a {
-  color: #1E6C80;
-  text-decoration: none;
-}
-
-#appt_header_block a:hover {
-  color: #1E6C80;
-  text-decoration: underline;
 }
 
 .chosen_board_actions a {

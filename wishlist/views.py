@@ -31,7 +31,7 @@ def get_and_update_dogs():
     for dog in dogs:
         updated_values = {'info': dog, 'shelterluv_status': dog['Status'], 'name': dog['Name']}
 
-        dog_obj = Dog.objects.update_or_create(shelterluv_id=dog['Internal-ID'], defaults = updated_values)
+        dog_obj = Dog.objects.update_or_create(shelterluv_id=dog['Internal-ID'], defaults=updated_values)
         current_available_dogs += [dog_obj[0]]
 
     # determine which dogs were recently removed from website and update status
@@ -52,7 +52,7 @@ def get_and_update_dogs():
 def display_list(request):
     get_and_update_dogs()
 
-    all_available_dogs = [dog for dog in Dog.objects.filter(shelterluv_status = 'Available for Adoption').order_by('name')]
+    all_available_dogs = [dog for dog in Dog.objects.filter(shelterluv_status='Available for Adoption').order_by('name')]
 
     if request.method == "POST":
         form_data = dict(request.POST)

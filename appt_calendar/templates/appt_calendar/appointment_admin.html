@@ -1,120 +1,125 @@
 {% load appt_extras %}
 
-<div class="appointment {% if appt.short_notice %} short_notice {% endif %}" id="appt{{appt.id}}">
+<div class="appointment {% if appt.short_notice %} short-notice {% endif %}" id="appt{{appt.id}}">
 
+  <!-- HEADER BLOCK -->
   <!-- header grid, has a bottom border unless it is the only section -->
-  <!-- it will be the only section when the appointment is not booked and has no notes -->
-  {% if not appt.available %}
-    <table class="appt_info_block" id="appt_header_block">
-  {% else %}
-    <table class="appt_info_block appt_end_block" id="appt_header_block">
-  {% endif %}
-
-      <tr>
-        <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">
-          {% if appt.locked %}
-            &#128274;&#xFE0E;
-          {% endif %}
-
-          {% if appt.short_notice %} &#9888;&#xFE0E; {% endif %}
-
-          {% if show_timestr %}
-            {{appt_str}}
-          {% else %}
-            {{appt}}
-          {% endif %}
-        </a>
-        {% if appt.mobility %}
-          &#9855;&#xFE0E;
+  <table class="appt-header-block appt-info-block {% if appt.available %} no-border {% endif %}" id="appt-header-block">
+    <tr>
+      <td class="appt-title grey-card-descr left upper wide-td">
+        <b><a class="appt-action" href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">
+        {% if appt.locked %}
+          &#128274;&#xFE0E;
         {% endif %}
+
+        {% if appt.short_notice %} &#9888;&#xFE0E; {% endif %}
+
+        {% if show_timestr %}
+          {{appt_str}}
+        {% else %}
+          {{appt}}
+        {% endif %}
+        </a></b>
+
+      {% if appt.mobility %}
+        &#9855;&#xFE0E;
+      {% endif %}
+      {% if appt.bringing_dog %}
+        &#128021;&#xFE0E;
+      {% endif %}
+      {% if appt.has_cat %}
+        &#128008;&#xFE0E;
+      {% endif %}
+      </td>
+
+      <td class="right narrow-td" id="appt-header-actions">
+
+        {% if appt.appt_type in schedulable%}
+          {% if appt.locked %}
+            <a href="{% url 'toggle_lock' appt.id date.year date.month date.day %}">Unlock</a> &#8226; 
+          {% else %}
+            <a href="{% url 'toggle_lock' appt.id date.year date.month date.day %}">Lock</a> &#8226; 
+          {% endif %}
+        {% endif %}
+
+        <a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">Edit</a> &#8226; 
+
+        {% if appt.adopter %}
+          <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">Print</a> &#8226; 
+          <a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">Cancel</a> &#8226; 
+        {% endif %}
+        <a href="{% url 'delete_cal_appointment' appt.id date.year date.month date.day %}">Delete</a>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="half-width left">
+        <b>({{appt.appt_string}})</b>
+      </td>
+      <td class="half-width right">
+        <!-- displays bringing dog if applicable, bumps up has a cat if applicable -->
         {% if appt.bringing_dog %}
-          &#128021;&#xFE0E;
+          <b>Bringing dog!<br></b>
+        {% elif appt.has_cat and not appt.bringing_dog %}
+          <b>Has a cat!</b>
         {% endif %}
-        {% if appt.has_cat %}
-          &#128008;&#xFE0E;
+      </td>
+    </tr>
+
+    <tr>
+      <td class="half-width left">
+        <!-- displays number_of_visits if second visit or greater -->
+        {% if appt.visits_to_date >= 1 and appt.appt_type in schedulable %}
+          <b>{{appt.number_of_visits}}</b>
         {% endif %}
-        </td>
+        {% if appt.adopter.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}
+          <b>Must bring a parent!</b>
+        {% endif %}
+      </td>
+      <td class="half-width right">
+        <!-- displays has a cat if applicable and bringing dog -->
+        {% if appt.bringing_dog and appt.has_cat %}
+          <b>Has a cat!</b>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
 
-        <td class="appt_description right">
-
-          {% if appt.locked %}
-            <a href="{% url 'toggle_lock' appt.id date.year date.month date.day %}">&#128275;&#xFE0E;</a>
-          {% else %}
-            <a href="{% url 'toggle_lock' appt.id date.year date.month date.day %}">&#128274;&#xFE0E;</a>
-          {% endif %}
-
-          <a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a>
-
-          {% if appt.adopter %}
-            <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">&#128196;&#xFE0E;</a>
-            <a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">&#128100;&#xFE0E;<sub style="font-size: 8pt;">&#128683;&#xFE0E;</sub></a>
-          {% endif %}
-          <a href="{% url 'delete_cal_appointment' appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
-      </tr>
-
-      <tr>
-        <td class="left" style="width: 50%;"><b>({{appt.appt_string}})</b></td>
-        <td class="right" style="width: 50%;">
-          <!-- displays bringing dog if applicable, bumps up has a cat if applicable -->
-          {% if appt.bringing_dog %}
-            <b>Bringing dog!<br></b>
-          {% elif appt.has_cat and not appt.bringing_dog %}
-            <b>Has a cat!</b>
-          {% endif %}
-        </td>
-      </tr>
-
-      <tr>
-        <td class="left" style="width: 50%;">
-          <!-- displays number_of_visits if second visit or greater -->
-          {% if appt.visits_to_date >= 1 and appt.appt_type in schedulable %}
-            <b>{{appt.number_of_visits}}</b>
-          {% endif %}
-          {% if appt.adopter.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}
-            <b>Must bring a parent!</b>
-          {% endif %}
-        </td>
-        <td class="right" style="width: 50%;">
-          <!-- displays has a cat if applicable and bringing dog -->
-          {% if appt.bringing_dog and appt.has_cat %}
-            <b>Has a cat!</b>
-          {% endif %}
-        </td>
-      </tr>
-    </table>
-
+  <!-- NOTES BLOCK -->
   {% if not appt.available %}
+    <!-- if appointment is booked with an adopter and is a schedulable type, must have more than notes -->
     {% if appt.appt_type in schedulable and appt.adopter %}
-      <table class="appt_subblock appt_info_block">
+      <table class="appt-subblock appt-info-block">
+
     <!-- if not, it is an open appointment, paperwork, or surrender and could have notes at most -->
     {% else %}
-      <table class="appt_subblock appt_info_block appt_end_block">
+      <table class="appt-subblock appt-info-block no-border">
     {% endif %}
 
-      <tr class="info_block_subheader">
+      <tr class="info-block-subheader">
         <th class="left"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">Notes</a></th>
-        <th class="right"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
+        <th class="right"><a style="font-size: 10pt;" href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">(Edit)</a></th>
       </tr>
 
       {% if appt|show_notes %}
         {% if appt.internal_notes %}
         <tr>
-          <td class="left" style="width:20%;"><b>From Adoptions:</b></td>
-          <td class="left"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
+          <td class="left narrow-td"><b>From Adoptions:</b></td>
+          <td class="left wide-td"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
         </tr>
         {% endif %}
 
         {% if appt.adopter_notes %}
         <tr>
-          <td class="left"><b>From {{appt.adopter.f_name}}:</b></td>
-          <td class="left">{{appt.adopter_notes|linebreaks}}</td>
+          <td class="left narrow-td"><b>From {{appt.adopter.f_name}}:</b></td>
+          <td class="left wide-td">{{appt.adopter_notes|linebreaks}}</td>
         </tr>
         {% endif %}
 
         {% if appt.adopter.app_interest and appt.appt_type in schedulable %}
         <tr>
-          <td class="left"><b>From Shelterluv:</b></td>
-          <td class="left">{{appt.adopter.app_interest_str|linebreaks}}</td>
+          <td class="left narrow-td"><b>From Shelterluv:</b></td>
+          <td class="left wide-td">{{appt.adopter.app_interest_str|linebreaks}}</td>
         </tr>
         {% endif %}
       {% else %}
@@ -125,13 +130,13 @@
 
     </table>
   {% endif %}
-  <!-- if appt is booked, show actions and contacts -->
-  {% if appt.appt_type in schedulable and appt.available == False %}
 
-  <!-- if the appt has an adopter attached, there should be application info above notes and options for contact and other actions below notes -->
-    <table class="appt_subblock appt_info_block">
+  <!-- if the appt has an adopter attached, there should be application and preference info, contact actions, and other followups below notes -->
+  {% if appt.appt_type in schedulable and appt.available == False %}   
+    <!-- PERSONAL INFO BLOCK -->
+    <table class="appt-subblock appt-info-block">
 
-      <tr class="info_block_subheader">
+      <tr class="info-block-subheader">
         <th>About {{appt.adopter.f_name}}</th>
         <th class="right"></th>
       </tr>
@@ -181,9 +186,11 @@
 
     </table>
 
+    <!-- PREFERENCE BLOCK -->
+    <!-- only shows if the adopter has indicated any preferences -->
     {% if appt.adopter.show_preferences %}
-      <table class="appt_subblock appt_info_block">
-        <tr class="info_block_subheader">
+      <table class="appt-subblock appt-info-block">
+        <tr class="info-block-subheader">
           <th class="left">{{appt.adopter.f_name}}'s Preferences</th>
           <th class="right"></th>
         </tr>
@@ -231,12 +238,13 @@
       </table>
     {% endif %}
 
+    <!-- CONTACT BLOCK -->
     <!-- this table would never be the last block -->
-    <table class="appt_subblock appt_info_block">
+    <table class="appt-subblock appt-info-block">
 
-      <tr class="info_block_subheader">
+      <tr class="info-block-subheader">
         <th><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">Contact {{appt.adopter.f_name}}</a></th>
-        <th class="right"><a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'calendar' %}">&#9993;&#xFE0E;</a></th>
+        <th class="right"></th>
       </tr>
 
       <tr>
@@ -245,7 +253,7 @@
             {% if appt.comm_reminder_breed == False %}
             <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'reminder_breed' %}">Breed Restrictions</a>
             {% else %}
-            <p class="completed_appt_action">Breed Restrictions</p>
+            <p class="completed_appt-action">Breed Restrictions</p>
             {% endif %}
           {% endif %}
         </td>
@@ -255,7 +263,7 @@
             {% if appt.comm_reminder_parents == False %}
             <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'reminder_parents' %}">Lives With Parents</a>
             {% else %}
-            <p class="completed_appt_action">Lives With Parents</p>
+            <p class="completed_appt-action">Lives With Parents</p>
             {% endif %}
           {% endif %}
         </td>
@@ -266,7 +274,7 @@
           {% if appt.comm_adopted_dogs == False %}
             <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dogs_were_adopted' %}">Dogs Were Adopted</a>
           {% else %}
-            <p class="completed_appt_action">Dogs Were Adopted</p>
+            <p class="completed_appt-action">Dogs Were Adopted</p>
           {% endif %}
         </td>
 
@@ -274,7 +282,7 @@
           {% if appt.comm_limited_puppies == False %}
             <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_puppies' %}">Limited Puppies</a>
           {% else %}
-            <p class="completed_appt_action">Limited Puppies</p>
+            <p class="completed_appt-action">Limited Puppies</p>
           {% endif %}
         </td>
       </tr>
@@ -284,7 +292,7 @@
           {% if appt.comm_limited_small == False %}
             <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_small' %}">Limited Small Dogs</a></td>
           {% else %}
-            <p class="completed_appt_action">Limited Small Dogs</p></td>
+            <p class="completed_appt-action">Limited Small Dogs</p></td>
           {% endif %}
         </td>
 
@@ -292,7 +300,7 @@
           {% if appt.comm_limited_hypo == False %}
             <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_hypo' %}">Limited Low-shed/Hypo</a>
           {% else %}
-            <p class="completed_appt_action">Limited Low-shed/Hypo</p>
+            <p class="completed_appt-action">Limited Low-shed/Hypo</p>
           {% endif %}
         </td>
       </tr>
@@ -302,7 +310,7 @@
           {% if appt.comm_limited_small_puppies == False %}
             <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_small_puppies' %}">Limited Small Puppies</a>
           {% else %}
-            <p class="completed_appt_action">Limited Small Puppies</p>
+            <p class="completed_appt-action">Limited Small Puppies</p>
           {% endif %}
         </td>
 
@@ -314,12 +322,12 @@
 
     </table>
 
-    <!-- actions table will always be last (if present) -->
-    <table class="appt_subblock appt_info_block">
+    <!-- ACTIONS BLOCK -->
+    <table class="appt-subblock appt-info-block">
 
-      <tr class="info_block_subheader">
+      <tr class="info-block-subheader">
         <th>Actions</th>
-        <th class="right">&#128498;&#xFE0E;</th>
+        <th class="right"></th>
       </tr>
 
       <tr>
@@ -335,29 +343,36 @@
           {% endif %}
         </td>
 
-        <td class="right"><a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'calendar' %}">Reschedule Adopter</a></td>
+        <td class="right">
+          <a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'calendar' %}">Reschedule Adopter</a>
+        </td>
       </tr>
 
       <tr>
-        <td><a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">Cancel Adopter</a><br></td>
-        <td class="right"><a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">Print Application</a></td>
+        <td>
+          <a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">Cancel Adopter</a>
+        </td>
+        <td class="right">
+          <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">Print Application</a>
+        </td>
       </tr>
 
     </table>
 
-    <!-- actions table will always be last (if present) -->
-    <table class="appt_subblock appt_info_block appt_end_block">
+    <!-- FOLLOW-UPS BLOCK -->
+    <!-- follow-ups will always be last (if present) -->
+    <table class="appt-subblock appt-info-block no-border">
 
-      <tr class="info_block_subheader">
+      <tr class="info-block-subheader">
         <th>Follow-Ups</th>
-        <th class="right">&#8635;&#xFE0E;</th>
+        <th class="right"></th>
       </tr>
 
       <tr>
         {% if appt.comm_followup == False %}
           <td><a href="{% url 'send_followup' appt.id date.year date.month date.day 0 %}">Send Follow-Up Email</a><br></td>
         {% else %}
-          <td><p class="completed_appt_action">Send Follow-Up Email</p></td>
+          <td><p class="completed_appt-action">Send Follow-Up Email</p></td>
         {% endif %}
 
         <td class="right"><a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a></td>
@@ -367,7 +382,7 @@
         {% if appt.comm_followup == False %}
           <td><a href="{% url 'send_followup' appt.id date.year date.month date.day 1 %}">Send Follow-Up Email (with Host Info)</a><br></td>
         {% else %}
-          <td><p class="completed_appt_action">Send Follow-Up Email (with Host Info)</p></td>
+          <td><p class="completed_appt-action">Send Follow-Up Email (with Host Info)</p></td>
         {% endif %}
 
         <td class="right"></td>
@@ -377,6 +392,4 @@
 
   <!-- endif for booked appt blocks   -->
   {% endif %}
-
-<!-- /div for appointment block -->
 </div>
