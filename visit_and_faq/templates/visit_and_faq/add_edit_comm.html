@@ -26,7 +26,7 @@
       {% csrf_token %}
       {{ form.as_p }}
       <br>
-      <input class="submitform" type="submit" name="" value="Submit">
+      <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Submit">
     </form>
 
   </div>

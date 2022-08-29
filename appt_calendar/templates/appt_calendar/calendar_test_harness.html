@@ -44,7 +44,7 @@
         <br>
         <form class="" action="{% url 'copy_temp_to_cal' date.year date.month date.day %}" method="post">
           {% csrf_token %}
-          <input class="copytemplate" type="submit" name="" value="Copy From My {{weekday}} Template">
+          <input class="copytemplate" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Copy From My {{weekday}} Template">
         </form>
       </div>
     {% elif not request.user.adopter.waiting_for_chosen %}

@@ -19,7 +19,7 @@
       </script>
       {% csrf_token %}
       {{ form.as_p }}
-      <input class="submitform" type="submit" name="" value="Send Message">
+      <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Send Message">
     </form>
 
   </div>

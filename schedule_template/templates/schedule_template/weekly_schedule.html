@@ -10,7 +10,7 @@
       {% for dow in dows.all %}
         <form class="" action="{% url 'daily' dow.id %}" method="post" style="display: inline;">
           {% csrf_token %}
-          <input class="copytemplate" type="submit" name="" value="{{dow}}" style="margin: 0px 5px;">
+          <input class="copytemplate" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="{{dow}}" style="margin: 0px 5px;">
         </form>
       {% endfor %}
     </div>

@@ -46,7 +46,7 @@
         {% for appt in appointments %}
           {% if appt.dog or appt.adopter %}
             <tr class="appt_row">
-              <td style="">{{appt.time_string}}</td>
+              <td>{{appt.time_string}}</td>
               <td>
                 {{appt}}
                 {% if appt.mobility %}

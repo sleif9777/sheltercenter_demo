@@ -8,7 +8,7 @@
 
     <form class="" action="" method="post">
       {% csrf_token %}
-      <input class="submit-form" type="submit" name="" value="Save">
+      <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Save">
 
       <article id="dog-list">
         <ul class="list-page">
@@ -18,7 +18,7 @@
         </ul>
       </article>
 
-      <input class="submit-form" type="submit" name="" value="Save">
+      <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Save">
     </form>
   </div>
 {% endblock %}

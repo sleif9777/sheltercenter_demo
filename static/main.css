@@ -158,11 +158,11 @@ body {
   width: 100%;
 }
 
-td.info-box-data {
+.info-box-data {
   border-bottom: 1px solid;
 }
 
-td.info-box-data.no-border {
+.info-box-data.no-border {
   border-bottom: none;
 }
 

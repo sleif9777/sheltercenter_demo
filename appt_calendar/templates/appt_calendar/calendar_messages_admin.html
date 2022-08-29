@@ -59,6 +59,7 @@
         </table>
       </div>
     </td>
+    {% if no_outcome_appts or empty_dates %}
     <td class="no-border half-width">
       <div class="info-box outstanding-task">
         <table>
@@ -89,6 +90,7 @@
         </table>
       </div>
     </td>
+    {% endif %}
   </tr>
 </table>
 
