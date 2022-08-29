@@ -6,8 +6,8 @@
   <!-- header grid, has a bottom border unless it is the only section -->
   <table class="appt-header-block appt-info-block {% if appt.available %} no-border {% endif %}" id="appt-header-block">
     <tr>
-      <td class="appt-title grey-card-descr left upper wide-td">
-        <b><a class="appt-action" href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">
+      <td class="appt-title grey-card-descr left wide-td">
+        <b><a class="appt-action upper" href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">
         {% if appt.locked %}
           &#128274;&#xFE0E;
         {% endif %}
@@ -21,14 +21,10 @@
         {% endif %}
         </a></b>
 
-      {% if appt.mobility %}
-        &#9855;&#xFE0E;
-      {% endif %}
-      {% if appt.bringing_dog %}
-        &#128021;&#xFE0E;
-      {% endif %}
-      {% if appt.has_cat %}
-        &#128008;&#xFE0E;
+      {% if appt.header_notes %}
+        <p class="appt-header-notes">
+          {{appt.header_notes}}
+        </p>
       {% endif %}
       </td>
 
@@ -57,12 +53,6 @@
         <b>({{appt.appt_string}})</b>
       </td>
       <td class="half-width right">
-        <!-- displays bringing dog if applicable, bumps up has a cat if applicable -->
-        {% if appt.bringing_dog %}
-          <b>Bringing dog!<br></b>
-        {% elif appt.has_cat and not appt.bringing_dog %}
-          <b>Has a cat!</b>
-        {% endif %}
       </td>
     </tr>
 
@@ -77,10 +67,6 @@
         {% endif %}
       </td>
       <td class="half-width right">
-        <!-- displays has a cat if applicable and bringing dog -->
-        {% if appt.bringing_dog and appt.has_cat %}
-          <b>Has a cat!</b>
-        {% endif %}
       </td>
     </tr>
   </table>

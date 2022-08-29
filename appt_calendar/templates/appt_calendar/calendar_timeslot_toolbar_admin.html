@@ -1,9 +1,10 @@
 <!-- two-column table displaying timeslot and timeslot-level actions -->
-<table style = "width:100%; padding: 10px; margin: 0;">
-  <th style="font-size: 18pt; text-align: left;" class="timeslotheader">{{timeslot}}</th>
-  <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
-  <a class="timeslot_action" href="{% url 'toggle_time' timeslot.id date.year date.month date.day 1 %}">Lock All</a> |
-  <a class="timeslot_action" href="{% url 'toggle_time' timeslot.id date.year date.month date.day 0 %}">Unlock All</a> |
-  <a class="timeslot_action" href="{% url 'add_cal_appointment' timeslot.id date.year date.month date.day %}">Add Appointment</a> |
-  <a class="timeslot_action" href="{% url 'delete_cal_timeslot' timeslot.id date.year date.month date.day %}">Delete Timeslot</a></th>
+<table class="timeslot-toolbar">
+  <th class="left">{{timeslot}}</th>
+  <th class="right">
+    <a class="timeslot-action" href="{% url 'toggle_time' timeslot.id date.year date.month date.day 1 %}">Lock All</a> |
+    <a class="timeslot-action" href="{% url 'toggle_time' timeslot.id date.year date.month date.day 0 %}">Unlock All</a> |
+    <a class="timeslot-action" href="{% url 'add_cal_appointment' timeslot.id date.year date.month date.day %}">Add Appointment</a> |
+    <a class="timeslot-action" href="{% url 'delete_cal_timeslot' timeslot.id date.year date.month date.day %}">Delete Timeslot</a>
+  </th>
 </table>

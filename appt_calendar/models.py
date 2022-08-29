@@ -146,6 +146,35 @@ class Appointment(models.Model):
 
         return ordinal
 
+    def is_schedulable(self):
+        if int(self.appt_type) <= 3:
+            return True
+
+        return False
+
+    def header_notes(self):
+        show = False
+        notes = "("
+
+        if self.bringing_dog:
+            show = True
+            notes += "bringing dog, "
+        if self.has_cat:
+            show = True
+            notes += "has cat, "
+        if self.mobility:
+            show = True
+            notes += "limited mobility, "
+
+        if show:
+            notes = notes[:-2]
+            notes += ")"
+            return notes
+        else:
+            return
+
+
+
     def date_string(self):
         return date_str(self.date)
 
