@@ -35,7 +35,13 @@
           {% endif %}
 
             <tr>
-              <td class="appt_description left upper"><b>NO APPOINTMENT SET</b></td>
+              <td class="appt_description left upper"><b>
+                {% if adopter.adoption_complete %}
+                ADOPTION COMPLETE
+                {% else %}
+                NO APPOINTMENT SET
+                {% endif %}
+              </b></td>
 
               <td class="appt_description right"></td>
             </tr>
@@ -118,6 +124,9 @@
                 <a href="{% url 'contact_adopter' 100 2021 1 1 source %}">Contact {{adopter.f_name}} &#9993;&#xFE0E;</a><br>
                 <a href="{% url 'greeter_reschedule' adopter.id 100 today.year today.month today.day 'edit' %}">Schedule {{adopter.f_name}}</a><br>
                 <a href="https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}" target="_blank">Print Application</a>
+                {% if adopter.adoption_complete %}
+                <br><a href="{% url 'allow_access' adopter.id %}">Restore Calendar Access</a>
+                {% endif %}
               </th>
             </tr>
           </table>
@@ -146,4 +155,13 @@
     </form>
 
   </div>
+
+  {% if alert %}
+  <footer>
+    <script type="text/javascript">
+      alert("Calendar access restored for {{adopter.full_name}}.")
+    </script>
+  </footer>
+  {% endif %}
+
 {% endblock %}

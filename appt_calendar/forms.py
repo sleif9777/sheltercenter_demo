@@ -126,6 +126,50 @@ class EditAppointmentForm(forms.ModelForm):
 class JumpToDateForm(forms.Form):
     date = forms.DateField(widget = forms.SelectDateWidget())
 
+
+class SurrenderForm(forms.Form):
+    YN_BUTTONS = [
+        ('Yes', 'Yes'),
+        ('No', 'No')
+    ]
+
+    sg_name = forms.CharField(
+        label="Name of pet while at Saving Grace"
+    )
+    pet_name = forms.CharField(
+        required=False,
+        label="Current name of pet (if renamed)"
+    )
+    microchip = forms.CharField(
+        label="Microchip #"
+    )
+    reason_for_return = forms.CharField(
+        label="Why are you surrendering this dog? Please give as much detail as possible so we can know how to best help",
+        widget=forms.Textarea
+    )
+    dog_aggressive_to_people = forms.ChoiceField(
+        choices=YN_BUTTONS, 
+        widget=forms.RadioSelect,
+        label="Has your dog shown aggression to people?"
+    )
+    dog_aggressive_to_dogs = forms.ChoiceField(
+        choices=YN_BUTTONS, 
+        widget=forms.RadioSelect,
+        label="Has your dog shown aggression to other dogs?"
+    )
+    has_bitten = forms.ChoiceField(
+        choices=YN_BUTTONS, 
+        widget=forms.RadioSelect,
+        label="Has your dog bitten another person or dog?"
+    )
+    drawn_blood = forms.ChoiceField(
+        choices=YN_BUTTONS, 
+        widget=forms.RadioSelect, 
+        required=False,
+        label="If so, did that bite draw blood?"
+    )
+
+
 class DailyAnnouncementForm(forms.ModelForm):
     class Meta:
         model = DailyAnnouncement

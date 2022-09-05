@@ -35,7 +35,7 @@
               {{appt.adopter.f_name}} {{appt.adopter.l_name}}
               {% if request.user|has_group:"admin" %}
                 <div class="chosen_board_actions" style="display: inline;">
-                  <a href="{% url 'clear_from_cb' appt.id %}">(Clear)</a>
+                  <a href="{% url 'clear_from_cb' appt.id %}">(Cancel)</a>
                 </div>
               {% endif %}
             </td>
@@ -94,7 +94,7 @@
                   Adopter Notified<br>
                   Paperwork Scheduled
                   <div class="chosen_board_actions" style="display: inline;">
-                    <a href="{% url 'mark_complete_cb' appt.id %}">(Complete)</a>
+                    <a href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
                   </div>
                 {% endif %}
               </td>
@@ -130,7 +130,7 @@
               {{appt.adopter.f_name}} {{appt.adopter.l_name}}
               {% if request.user|has_group:"admin" %}
                 <div class="chosen_board_actions" style="display: inline;">
-                  <a href="{% url 'clear_from_cb' appt.id %}">(Clear)</a>
+                  <a href="{% url 'clear_from_cb' appt.id %}">(Cancel)</a>
                 </div>
               {% endif %}
             </td>
@@ -185,6 +185,9 @@
                       <a class="chosen_board_actions" href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
                     </div>
                   {% endif %}
+                  <div class="chosen_board_actions" style="display: inline;">
+                    <a href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
+                  </div>
                 {% elif appt.outcome == "8" %}
                   Adopter Notified<br>
                   Paperwork Scheduled
@@ -238,7 +241,7 @@
               {{appt.adopter.f_name}} {{appt.adopter.l_name}}
               {% if request.user|has_group:"admin" %}
                 <div class="chosen_board_actions" style="display: inline;">
-                  <a href="{% url 'clear_from_cb' appt.id %}">(Clear)</a>
+                  <a href="{% url 'clear_from_cb' appt.id %}">(Cancel)</a>
                 </div>
               {% endif %}
             </td>
