@@ -502,6 +502,56 @@ def edit_adopter(request, adopter_id):
 
     return render(request, "adopter/edit_adopter.html", context)
 
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
+def edit_adopter_w_alert(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+    form = AdopterForm(request.POST or None, instance=adopter)
+
+    adopter_curr_status = adopter.status[:]
+
+    try:
+        current_appt = Appointment.objects.filter(adopter=adopter).latest('id')
+        current_appt_str = current_appt.date_and_time_string()
+        date = current_appt.date
+    except:
+        current_appt = None
+        current_appt_str = None
+        date = None
+
+    if form.is_valid():
+        form.save()
+
+        if adopter.status != adopter_curr_status and adopter.status == "1":
+            if adopter.out_of_state == True:
+                invite_oos_etemp(adopter)
+            else:
+                invite(adopter)
+
+        return redirect('adopter_manage')
+    else:
+        form = AdopterForm(request.POST or None, instance=adopter)
+
+    source = 'mgmt_' + str(adopter.id)
+
+    context = {
+        'form': form,
+        'adopter': adopter,
+        'appt': current_appt,
+        'date': date,
+        'appt_str': current_appt_str,
+        'schedulable': ["1", "2", "3"],
+        'source': source,
+        'show_timestr': True,
+        'today': datetime.date.today(),
+        'alert': 'True',
+        'page_title': "Edit Adopter"
+    }
+
+    return render(request, "adopter/edit_adopter.html", context)
+
+
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
 def faq(request):

@@ -432,6 +432,7 @@ def mark_complete_on_chosen_board(request, appt_id):
     appt = Appointment.objects.get(pk=appt_id)
 
     appt.adopter.waiting_for_chosen = False
+    appt.adopter.adoption_complete = True
     appt.adopter.save()
 
     appt.paperwork_complete = True
@@ -1278,6 +1279,76 @@ def toggle_time(request, timeslot_id, date_year, date_month, date_day, lock):
         appt.save()
 
     return redirect('calendar_date_ts', date_year, date_month, date_day, timeslot.id)
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'adopter'})
+def request_access(request, adopter_id):
+    #identify adopter from url id
+    adopter = Adopter.objects.get(pk=adopter_id)
+
+    #email adoptions with links (new tab) to allow reopening automatically
+    access_requested(adopter)
+
+    #email confirmation to adopter
+    confirm_access_request(adopter)
+    
+    #switch some status to block spam requests
+    adopter.requested_access = True
+    adopter.save()
+    
+    #redirect to calendar page
+    return redirect('calendar')
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def allow_access(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+
+    #set access statuses and save
+    adopter.requested_access = False
+    adopter.adoption_complete = False
+    adopter.requested_surrender = False
+    adopter.save()
+
+    #email adopter
+    access_restored(adopter)
+
+    #direct to adopter page w alert
+    return redirect('edit_adopter_w_alert', adopter.id)
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'adopter'})
+def surrender_form(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+
+    #get form
+    form = SurrenderForm(request.POST or None)
+    
+    if form.is_valid():
+        data = form.cleaned_data
+        print(data)
+
+        #set adopter to surrender requested
+        adopter.requested_surrender = True
+        adopter.save()
+
+        #submit request to adoptions with reply-to set to adopter
+        #email confirmation to adopter and redirect to calendar
+        surrender_emails(adopter, data)
+        
+        return redirect('calendar')
+    else:
+        form = SurrenderForm(request.POST or None)
+
+    context = {
+        'form': form,
+        'page_title': "Surrender Request",
+    }
+
+    return render(request, "appt_calendar/surrender_form.html", context)
 
 # @authenticated_user
 # @allowed_users(allowed_roles={'admin', 'superuser'})

@@ -68,6 +68,9 @@ class Adopter(models.Model):
     has_current_appt = models.BooleanField(default = False)
     alert_date = models.DateField(default=datetime.date(datetime.date.today().year,1,1), blank=True)
     visits_to_date = models.IntegerField(default=0)
+    adoption_complete = models.BooleanField(default=False)
+    requested_access = models.BooleanField(default=False)
+    requested_surrender = models.BooleanField(default=False)
     status = models.CharField(default="1", max_length=1, choices=STATUSES)
 
     def number_of_visits(self):

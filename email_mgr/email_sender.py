@@ -185,6 +185,138 @@ def dates_are_open(adopter, date):
 
     send_email(text, html, "default", subject, email, None)
 
+
+def confirm_access_request(adopter):
+    name = adopter.f_name
+    subject = "You have requested calendar access"
+    email = adopter.primary_email
+
+    text = """\
+    Hi {0},\n
+    We have received your request to restore your calendar access and will notify you once ready.\n
+    Thank you for choosing to come back to Saving Grace. We look forward to helping you find a new family member soon!\n
+    All the best, \n
+    The Adoptions Team
+    Saving Grace Animals for Adoption
+    """.format(name)
+
+    html = """\
+    <html>
+      <body>
+        <p>Hi {0},</p>
+        <p>We have received your request to restore your calendar access and will notify you once ready.</p>
+        <p>Thank you for choosing to come back to Saving Grace. We look forward to helping you find a new family member soon!</p>
+        <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
+      </body>
+    </html>
+    """.format(name)
+
+    send_email(text, html, "default", subject, email, None)
+
+
+def access_requested(adopter):
+    name = adopter.f_name
+    subject = "{0} has requested calendar access".format(name)
+    email = adopter.primary_email
+
+    plain_url = 'http://sheltercenter.dog/calendar/allow_access/adopter/{0}/'.format(adopter.id)
+    url = '<a target="_blank" href="http://sheltercenter.dog/calendar/allow_access/adopter/{0}/">Click here to grant calendar access.</a>'.format(adopter.id)
+
+    text = """\
+    {0} would like to return to adopt again.\n
+    Copy and paste this URL to grant access: {1}\n
+    Ignore if access should not be granted (i.e. shitlisted).
+    """.format(adopter.full_name(), plain_url)
+
+    html = """\
+    <html>
+      <body>
+        <p>{0} would like to return to adopt again.</p>
+        <p>{1}</p>
+        <p>Ignore if access should not be granted (i.e. shitlisted).</p>
+      </body>
+    </html>
+    """.format(adopter.full_name(), url)
+
+    send_email(text, html, "default", subject, get_base_email(), None)
+
+
+def access_restored(adopter):
+    subject = "Let's Book Your Saving Grace Adoption Appointment! ({0})".format(adopter.full_name().upper())
+    name = adopter.f_name
+    email = adopter.primary_email
+
+    text = """\
+    Hi {0},\n
+    Saving Grace has restored your calendar access and looks forward to helping you find another furry friend to join your family!\n
+    Please visit www.sheltercenter.dog to book an appointment. Your authorization code is {1}.\n
+    All the best, \n
+    The Adoptions Team
+    Saving Grace Animals for Adoption
+    """.format(name, adopter.auth_code)
+
+    html = """\
+    <html>
+      <body>
+        <p>Hi {0},</p>
+        <p>Saving Grace has restored your calendar access and looks forward to helping you find another furry friend to join your family!</p>
+        <p>Please visit www.sheltercenter.dog to book an appointment. Your authorization code is {1}.</p>
+        <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
+      </body>
+    </html>
+    """.format(name, adopter.auth_code)
+
+    send_email(text, html, "default", subject, email, None)
+
+
+def surrender_emails(adopter, data):
+    name = adopter.full_name()
+    subject = "Surrender Request from {0}".format(name)
+    email = adopter.primary_email
+
+    text = """\
+    Hi {0},\n
+    Saving Grace has received your surrender request. We are sorry to hear you cannot continue your commitment to {1} (fka {2}).\n
+    An adoptions manager will be in touch with you for follow-up soon.\n
+    Please do not come to Saving Grace until a set time and date have been determined. We need to ensure we have sufficient space and volunteer power to re-acclimate your dog. As a result, we cannot accept any walk-in surrenders.\n
+    All the best, \n
+    The Adoptions Team\n
+    Saving Grace Animals for Adoption\n\n
+
+    Adopter Name: {3}\n
+    Dog's Saving Grace Name: {2}\n
+    Dog's Current Name: {1}\n
+    Microchip #: {4}\n
+    Reason for Surrender: {5}\n
+    Aggression Towards People: {6}\n
+    Aggression Towards Dogs: {7}\n
+    Has Bitten?: {8}\n
+    Drawn Blood?: {9}\n
+    """.format(adopter.f_name, data['pet_name'], data['sg_name'], name, data['microchip'], data['reason_for_return'], data['dog_aggressive_to_people'], data['dog_aggressive_to_dogs'], data['has_bitten'], data['drawn_blood'])
+
+    html = """\
+    Hi {0},<br><br>
+    Saving Grace has received your surrender request. We are sorry to hear you cannot continue your commitment to {1} (aka {2}).<br><br>
+    An adoptions manager will be in touch with you for follow-up soon.    Please do not come to Saving Grace until a set time and date have been determined. We need to ensure we have sufficient space and volunteer power to re-acclimate your dog. As a result, we cannot accept any walk-in surrenders.<br><br>
+    All the best, <br>
+    The Adoptions Team<br>
+    Saving Grace Animals for Adoption<br><br>
+
+    <b>Adopter Name:</b> {3}<br>
+    <b>Dog's Saving Grace Name:</b> {2}<br>
+    <b>Dog's Current Name:</b> {1}<br>
+    <b>Microchip #:</b> {4}<br>
+    <b>Reason for Surrender:</b> {5}<br>
+    <b>Aggression Towards People:</b> {6}<br>
+    <b>Aggression Towards Dogs:</b> {7}<br>
+    <b>Has Bitten?:</b> {8}<br>
+    <b>Drawn Blood?:</b> {9}<br>
+    """.format(adopter.f_name, data['sg_name'], data['pet_name'], name, data['microchip'], data['reason_for_return'], data['dog_aggressive_to_people'], data['dog_aggressive_to_dogs'], data['has_bitten'], data['drawn_blood'])
+
+    send_email(text, html, "default", subject, email, None)
+    send_email(text, html, email, subject, get_base_email(), None)
+
+
 def new_contact_adopter_msg(adopter, message, files, subject):
     if subject == None:
         subject = "New message from the Saving Grace adoptions team"

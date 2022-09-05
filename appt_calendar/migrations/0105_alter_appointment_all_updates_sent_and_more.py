@@ -3,6 +3,7 @@
 import datetime
 import django.contrib.postgres.fields
 from django.db import migrations, models
+from django.utils.timezone import utc
 
 
 class Migration(migrations.Migration):
@@ -20,31 +21,31 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='appointment',
             name='date',
-            field=models.DateField(default=datetime.datetime(2022, 8, 22, 21, 5, 19, 906147, tzinfo=datetime.timezone.utc)),
+            field=models.DateField(default=datetime.datetime(2022, 7, 31, 21, 18, 52, 106462, tzinfo=utc)),
         ),
         migrations.AlterField(
             model_name='appointment',
             name='last_update_sent',
-            field=models.DateField(blank=True, default=datetime.datetime(2022, 8, 22, 21, 5, 19, 906218, tzinfo=datetime.timezone.utc)),
+            field=models.DateField(blank=True, default=datetime.datetime(2022, 7, 31, 21, 18, 52, 106462, tzinfo=utc)),
         ),
         migrations.AlterField(
             model_name='dailyannouncement',
             name='date',
-            field=models.DateField(default=datetime.datetime(2022, 8, 22, 21, 5, 19, 905603, tzinfo=datetime.timezone.utc)),
+            field=models.DateField(default=datetime.datetime(2022, 7, 31, 21, 18, 52, 104429, tzinfo=utc)),
         ),
         migrations.AlterField(
             model_name='internalannouncement',
             name='date',
-            field=models.DateField(default=datetime.datetime(2022, 8, 22, 21, 5, 19, 905924, tzinfo=datetime.timezone.utc)),
+            field=models.DateField(default=datetime.datetime(2022, 7, 31, 21, 18, 52, 105460, tzinfo=utc)),
         ),
         migrations.AlterField(
             model_name='shortnotice',
             name='date',
-            field=models.DateField(default=datetime.datetime(2022, 8, 22, 21, 5, 19, 906767, tzinfo=datetime.timezone.utc)),
+            field=models.DateField(default=datetime.datetime(2022, 7, 31, 21, 18, 52, 108452, tzinfo=utc)),
         ),
         migrations.AlterField(
             model_name='timeslot',
             name='date',
-            field=models.DateField(default=datetime.datetime(2022, 8, 22, 21, 5, 19, 906463, tzinfo=datetime.timezone.utc)),
+            field=models.DateField(default=datetime.datetime(2022, 7, 31, 21, 18, 52, 107455, tzinfo=utc)),
         ),
     ]

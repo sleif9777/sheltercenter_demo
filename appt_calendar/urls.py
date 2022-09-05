@@ -47,10 +47,14 @@ urlpatterns = [
     path("reports/adoption_chosen_fta/<int:date_year>/<int:date_month>/<int:date_day>/", views.daily_report_adopted_chosen_fta, name="daily_report_adopted_chosen_fta"),
     path("reports/adoption_chosen_fta/<int:date_year>/<int:date_month>/<int:date_day>/print/", views.report_print, name="report_print"),
 
-
     #chosen_board
     path("chosen_board/", views.chosen_board, name="chosen_board"),
     path("chosen_board/clear/<int:appt_id>/", views.remove_from_chosen_board, name="clear_from_cb"),
     path("chosen_board/complete/<int:appt_id>/", views.mark_complete_on_chosen_board, name="mark_complete_cb"),
-    path("chosen_board/update/<int:appt_id>/<str:outcome>/", views.cb_update_status, name="cb_update_status")
+    path("chosen_board/update/<int:appt_id>/<str:outcome>/", views.cb_update_status, name="cb_update_status"),
+
+    #adopter access pages
+    path("request_access/adopter/<int:adopter_id>/", views.request_access, name="request_access"),
+    path("allow_access/adopter/<int:adopter_id>/", views.allow_access, name="allow_access"),
+    path("surrender/adopter/<int:adopter_id>/", views.surrender_form, name="surrender_form"),
     ]
