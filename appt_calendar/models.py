@@ -28,7 +28,8 @@ class Appointment(models.Model):
         ("4", "Surrender"),
         ("5", "Adoption Paperwork"),
         ("6", "FTA Paperwork"),
-        ("7", "Visit")
+        ("7", "Visit"),
+        ("8", "Donation Drop-Off")
     ]
 
     OUTCOME_TYPES = [
@@ -101,7 +102,7 @@ class Appointment(models.Model):
             else:
                 display_string += "OPEN"
 
-        elif int(self.appt_type) > 3:
+        elif int(self.appt_type) in range(3, 8): #exclude drop-off appts
             if self.dog == "":
                 display_string += "MORE DETAILS NEEDED"
             else:
@@ -121,14 +122,18 @@ class Appointment(models.Model):
                 display_string += str(self.adopter).upper()
             else:
                 display_string += "OPEN"
-        elif int(self.appt_type) > 3:
+
+        elif int(self.appt_type) in range(3, 8): #exclude drop-off appts
             if self.dog == "":
-                display_string += "OPEN"
+                display_string += "MORE DETAILS NEEDED"
             else:
                 display_string += self.dog.upper()
 
                 if self.dog_fka != "":
                     display_string += " fka " + self.dog_fka.upper()
+
+        else:
+            display_string = "DONATION DROP-OFF"
 
         return display_string
 
@@ -159,7 +164,7 @@ class Appointment(models.Model):
         return "Appointment booked {0} at {1}".format(date_str(self.dt_booking), time_str(self.dt_booking))
 
     def appt_string(self):
-        appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA", "Visit"]
+        appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA", "Visit", "Donation Drop-Off"]
         return appt_type[int(self.appt_type) - 1]
 
     def mark_short_notice(self):

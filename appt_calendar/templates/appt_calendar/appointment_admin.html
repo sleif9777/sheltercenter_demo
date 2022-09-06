@@ -53,7 +53,9 @@
       </tr>
 
       <tr>
+        {% if appt.appt_type != "8" %}
         <td class="left" style="width: 50%;"><b>({{appt.appt_string}})</b></td>
+        {% endif %}
         <td class="right" style="width: 50%;">
           <!-- displays bringing dog if applicable, bumps up has a cat if applicable -->
           {% if appt.bringing_dog %}

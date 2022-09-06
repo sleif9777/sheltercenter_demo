@@ -166,7 +166,7 @@ class SurrenderForm(forms.Form):
         choices=YN_BUTTONS, 
         widget=forms.RadioSelect, 
         required=False,
-        label="If so, did that bite draw blood?"
+        label="If so, did that bite break skin?"
     )
 
 

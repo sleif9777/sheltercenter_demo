@@ -291,7 +291,7 @@ def surrender_emails(adopter, data):
     Aggression Towards People: {6}\n
     Aggression Towards Dogs: {7}\n
     Has Bitten?: {8}\n
-    Drawn Blood?: {9}\n
+    Bite Broke Skin?: {9}\n
     """.format(adopter.f_name, data['pet_name'], data['sg_name'], name, data['microchip'], data['reason_for_return'], data['dog_aggressive_to_people'], data['dog_aggressive_to_dogs'], data['has_bitten'], data['drawn_blood'])
 
     html = """\
@@ -310,7 +310,7 @@ def surrender_emails(adopter, data):
     <b>Aggression Towards People:</b> {6}<br>
     <b>Aggression Towards Dogs:</b> {7}<br>
     <b>Has Bitten?:</b> {8}<br>
-    <b>Drawn Blood?:</b> {9}<br>
+    <b>Bite Broke Skin?:</b> {9}<br>
     """.format(adopter.f_name, data['sg_name'], data['pet_name'], name, data['microchip'], data['reason_for_return'], data['dog_aggressive_to_people'], data['dog_aggressive_to_dogs'], data['has_bitten'], data['drawn_blood'])
 
     send_email(text, html, "default", subject, email, None)
