@@ -185,6 +185,8 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     timeslots_query = [timeslot for timeslot in Timeslot.objects.filter(date = date)]
     timeslots = {}
 
+    empty_day_db = True if timeslots_query == [] else False
+
     #admins and greeters should see all appointments
     if 'greeter' in user_groups or 'admin' in user_groups:
         if load == 'full':
@@ -264,7 +266,10 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'sn_cancel': sn_cancel,
         'sn_move': sn_move,
         'sn_show': sn_show,
+        'empty_day_db': empty_day_db,
     }
+
+    print(context)
 
     return context
 

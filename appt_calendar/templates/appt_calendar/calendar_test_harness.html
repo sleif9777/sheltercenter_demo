@@ -47,7 +47,7 @@
           <input class="copytemplate" type="submit" name="" value="Copy From My {{weekday}} Template">
         </form>
       </div>
-    {% elif not request.user.adopter.waiting_for_chosen %}
+    {% elif request.user|show_calendar:visible %}
       {% for timeslot, appointments in timeslots.items %}
         <div class="timeslot" id="ts{{timeslot.id}}">
 

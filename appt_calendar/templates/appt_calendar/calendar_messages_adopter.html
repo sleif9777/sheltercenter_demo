@@ -237,7 +237,7 @@
       </div>
     {% endif %}
 
-    {% if visible == False %}
+    {% if visible == False or empty_day_db %}
       {% if date.weekday < 5 %}
         <br><br>
         <p>We only schedule two weeks in advance, and are not scheduling for this date yet.

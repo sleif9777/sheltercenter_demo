@@ -50,3 +50,5 @@ def show_notes(appt):
         pass
 
     return show
+
+
