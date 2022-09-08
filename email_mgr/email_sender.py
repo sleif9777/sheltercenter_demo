@@ -278,7 +278,7 @@ def surrender_emails(adopter, data):
     Hi {0},\n
     Saving Grace has received your surrender request. We are sorry to hear you cannot continue your commitment to {1} (fka {2}).\n
     An adoptions manager will be in touch with you for follow-up soon.\n
-    Please do not come to Saving Grace until a set time and date have been determined. We need to ensure we have sufficient space and volunteer power to re-acclimate your dog. As a result, we cannot accept any walk-in surrenders.\n
+    Please do not come to Saving Grace until a set time and date have been determined. We need to ensure we have sufficient space and resources to re-acclimate your dog. As a result, we cannot accept any walk-in surrenders. You MUST have an scheduled appointment.\n
     All the best, \n
     The Adoptions Team\n
     Saving Grace Animals for Adoption\n\n
@@ -287,17 +287,19 @@ def surrender_emails(adopter, data):
     Dog's Saving Grace Name: {2}\n
     Dog's Current Name: {1}\n
     Microchip #: {4}\n
-    Reason for Surrender: {5}\n
-    Aggression Towards People: {6}\n
-    Aggression Towards Dogs: {7}\n
-    Has Bitten?: {8}\n
-    Bite Broke Skin?: {9}\n
-    """.format(adopter.f_name, data['pet_name'], data['sg_name'], name, data['microchip'], data['reason_for_return'], data['dog_aggressive_to_people'], data['dog_aggressive_to_dogs'], data['has_bitten'], data['drawn_blood'])
+    Date of Adoption: {5}
+    Reason for Surrender: {6}\n
+    Is your dog up to date on all vet records?: {7}\n
+    Did you seek training or professional guidance with your dog?: {8}\n
+    Please explain if there have been any aggression concerns towards people or other dogs?: {9}\n
+    Please share your observations of your dog that will help us determine if they will be successful in our program once again: {10}\n
+    What type of adopter do you feel would serve your dog best?: {11}\n
+    """.format(adopter.f_name, data['pet_name'], data['sg_name'], name, data['microchip'], data['adoption_date'], data['reason_for_return'], data['utd_vet_records'], data['sought_training'], data['aggression_hx'], data['observations'], data['ideal_adopter'])
 
     html = """\
     Hi {0},<br><br>
     Saving Grace has received your surrender request. We are sorry to hear you cannot continue your commitment to {1} (aka {2}).<br><br>
-    An adoptions manager will be in touch with you for follow-up soon.    Please do not come to Saving Grace until a set time and date have been determined. We need to ensure we have sufficient space and volunteer power to re-acclimate your dog. As a result, we cannot accept any walk-in surrenders.<br><br>
+    An adoptions manager will be in touch with you for follow-up soon. Please do not come to Saving Grace until a set time and date have been determined. We need to ensure we have sufficient space and resources to re-acclimate your dog. As a result, we cannot accept any walk-in surrenders. You MUST have an scheduled appointment.<br><br>
     All the best, <br>
     The Adoptions Team<br>
     Saving Grace Animals for Adoption<br><br>
@@ -306,12 +308,14 @@ def surrender_emails(adopter, data):
     <b>Dog's Saving Grace Name:</b> {2}<br>
     <b>Dog's Current Name:</b> {1}<br>
     <b>Microchip #:</b> {4}<br>
-    <b>Reason for Surrender:</b> {5}<br>
-    <b>Aggression Towards People:</b> {6}<br>
-    <b>Aggression Towards Dogs:</b> {7}<br>
-    <b>Has Bitten?:</b> {8}<br>
-    <b>Bite Broke Skin?:</b> {9}<br>
-    """.format(adopter.f_name, data['sg_name'], data['pet_name'], name, data['microchip'], data['reason_for_return'], data['dog_aggressive_to_people'], data['dog_aggressive_to_dogs'], data['has_bitten'], data['drawn_blood'])
+    <b>Date of Adoption:</b> {5}<br>
+    <b>Reason for Surrender:</b> {6}<br>
+    <b>Is your dog up to date on all vet records?:</b> {7}<br>
+    <b>Did you seek training or professional guidance with your dog?:</b> {8}<br>
+    <b>Please explain if there have been any aggression concerns towards people or other dogs?:</b> {9}<br>
+    <b>Please share your observations of your dog that will help us determine if they will be successful in our program once again:</b> {10}<br>
+    <b>What type of adopter do you feel would serve your dog best?:</b> {11}<br>
+    """.format(adopter.f_name, data['sg_name'], data['pet_name'], name, data['microchip'], data['adoption_date'], data['reason_for_return'], data['utd_vet_records'], data['sought_training'], data['aggression_hx'], data['observations'], data['ideal_adopter'])
 
     send_email(text, html, "default", subject, email, None)
     send_email(text, html, email, subject, get_base_email(), None)

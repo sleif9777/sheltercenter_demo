@@ -128,11 +128,6 @@ class JumpToDateForm(forms.Form):
 
 
 class SurrenderForm(forms.Form):
-    YN_BUTTONS = [
-        ('Yes', 'Yes'),
-        ('No', 'No')
-    ]
-
     sg_name = forms.CharField(
         label="Name of pet while at Saving Grace"
     )
@@ -143,32 +138,37 @@ class SurrenderForm(forms.Form):
     microchip = forms.CharField(
         label="Microchip #"
     )
+    adoption_date = forms.CharField(
+        label="Date of adoption"
+    )
     reason_for_return = forms.CharField(
         label="Why are you surrendering this dog? Please give as much detail as possible so we can know how to best help",
         widget=forms.Textarea
     )
-    dog_aggressive_to_people = forms.ChoiceField(
-        choices=YN_BUTTONS, 
-        widget=forms.RadioSelect,
-        label="Has your dog shown aggression to people?"
+    utd_vet_records = forms.CharField(
+        label="Is your dog up to date on all vet records?",
+        widget=forms.Textarea
     )
-    dog_aggressive_to_dogs = forms.ChoiceField(
-        choices=YN_BUTTONS, 
-        widget=forms.RadioSelect,
-        label="Has your dog shown aggression to other dogs?"
+    # vet_records = forms.ChoiceField(
+    #     label="Is your dog up to date on all vet records?",
+    #     widget=forms.Textarea
+    # )
+    sought_training = forms.CharField(
+        label="Did you seek training or professional guidance with your dog?",
+        widget=forms.Textarea
     )
-    has_bitten = forms.ChoiceField(
-        choices=YN_BUTTONS, 
-        widget=forms.RadioSelect,
-        label="Has your dog bitten another person or dog?"
+    aggression_hx = forms.CharField(
+        label="Please explain if there have been any aggression concerns towards people or other dogs",
+        widget=forms.Textarea
     )
-    drawn_blood = forms.ChoiceField(
-        choices=YN_BUTTONS, 
-        widget=forms.RadioSelect, 
-        required=False,
-        label="If so, did that bite break skin?"
+    observations = forms.CharField(
+        label="Please share your observations of your dog that will help us determine if they will be successful in our program once again",
+        widget=forms.Textarea
     )
-
+    ideal_adopter = forms.CharField(
+        label="What type of adopter do you believe would serve your dog best?",
+        widget=forms.Textarea
+    )
 
 class DailyAnnouncementForm(forms.ModelForm):
     class Meta:
