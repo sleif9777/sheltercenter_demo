@@ -923,6 +923,9 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
 
         if appt.outcome in ["3", "9", "10"]:
             adopter.waiting_for_chosen = True
+
+        if appt.outcome in ["2", "4"]:
+            adopter.adoption_complete = True
             #
             # if appt.outcome == "3":
             #     chosen(adopter, appt)
