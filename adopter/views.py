@@ -462,6 +462,7 @@ def edit_adopter(request, adopter_id):
     form = AdopterForm(request.POST or None, instance=adopter)
 
     adopter_curr_status = adopter.status[:]
+    adopter_original_email = adopter.primary_email[:]
 
     try:
         current_appt = Appointment.objects.filter(adopter=adopter).latest('id')
@@ -480,6 +481,10 @@ def edit_adopter(request, adopter_id):
                 invite_oos_etemp(adopter)
             else:
                 invite(adopter)
+
+        if adopter.primary_email != adopter_original_email:
+            adopter.user.username = adopter.primary_email
+            adopter.user.save()
 
         return redirect('adopter_manage')
     else:
