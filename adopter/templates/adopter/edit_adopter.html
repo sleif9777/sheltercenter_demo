@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load auth_extras %}
 
 {% block content %}
   <div class="main textpage">
@@ -123,7 +124,14 @@
               <th>
                 <a href="{% url 'contact_adopter' 100 2021 1 1 source %}">Contact {{adopter.f_name}} &#9993;&#xFE0E;</a><br>
                 <a href="{% url 'greeter_reschedule' adopter.id 100 today.year today.month today.day 'edit' %}">Schedule {{adopter.f_name}}</a><br>
-                <a href="https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}" target="_blank">Print Application</a>
+                <a href="https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}" target="_blank">Print Application</a><br>
+                {% if request.user|has_group:"superuser" %}
+                  <a href="https://sheltercenter.dog/admin/adopter/adopter/{{adopter.id}}/change/">Edit in Admin</a><br>
+                {% endif %}
+                {% if adopter.status == "1" and not adoption_complete %}
+                  <a href="{% url 'resend_invite' adopter.id %}">Resend Invitation</a><br>
+                  <a href="{% url 'set_alert_mgr' adopter.id %}">Set Reminder</a>
+                {% endif %}
                 {% if adopter.adoption_complete %}
                 <br><a href="{% url 'allow_access' adopter.id %}">Restore Calendar Access</a>
                 {% endif %}

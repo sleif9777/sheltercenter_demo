@@ -735,3 +735,24 @@ p.greeting {
 #adopter_mgmt_appt {
   width: 90%;
 }
+
+.adopter_list_div {
+  break-inside: avoid-column;
+}
+
+.adopter_listing {
+  border-bottom: 1px solid #BF4580;
+}
+
+.adopter_name {
+  font-size: 14pt;
+}
+
+.adopter_email {
+  font-size: 8pt;
+}
+
+.adopter_listing_actions {
+  padding-left: 10%;
+  list-style-type: '\2937';
+}
