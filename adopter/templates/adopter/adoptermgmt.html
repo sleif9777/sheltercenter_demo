@@ -27,49 +27,30 @@
     }
   }
 </script>
-
-  <div class="main textpage">
-    <h1 class="page_header">Manage Adopters</h1>
-
-    <div class="calendar_actions" style="margin-bottom: 15px;">
-      <a href="{% url 'send_to_inactive' %}">Send Follow-Up Emails</a>
-    </div>
-
-    <input type="text" id="searchBar" onkeyup="filterAdopters()" placeholder="Search by name or email address.">
-
-    <ul class="listpage" id="adopter_list">
-      {% for adopter in adopters %}
-        <div class="" style="break-inside: avoid-column;">
-          <li class="adopter_listing" style="border-bottom: 1px solid #BF4580;">
-            <a class="standalone" href="{% url 'edit_adopter' adopter.id %}">
-              <span class="adopter_name" style="font-size: 14pt;">
-              {% if lname_fname %}
-                {{adopter.l_name}}, {{adopter.f_name}}
-              {% else %}
-                {{adopter}}
-              {% endif %}
-              {% if adopter.status == "2" %}
-                &#128683;&#xFE0E;
-              {% elif adopter.status == "3" %}
-                &#x231B;&#xFE0E;
-              {% endif %}
-              </span><br>
-              <span class="adopter_email" style="font-size: 8pt;">{{adopter.primary_email}}</span>
-            </a>
-            <ul style="padding-left: 10%; list-style-type: '&#10551;';">
-              {% if adopter.status == "1" %}
-                <li><a class="standalone" href="{% url 'resend_invite' adopter.id %}">Resend Invitation</a></li>
-                <li><a class="standalone" href="{% url 'set_alert_mgr' adopter.id %}">Set Reminder</a></li>
-              {% endif %}
-              {% if request.user|has_group:"superuser" %}
-                <li><a class="standalone" href="https://sheltercenter.dog/admin/adopter/adopter/{{adopter.id}}/change/">Edit in Admin</a></li>
-              {% endif %}
-            </ul>
-
-          </li>
-        </div>
-      {% endfor %}
-    </ul>
-
+<div class="main textpage">
+  <h1 class="page_header">Manage Adopters</h1>
+  <div class="calendar_actions" style="margin-bottom: 15px;">
+    <a href="{% url 'send_to_inactive' %}">Send Follow-Up Emails</a>
   </div>
+  <input type="text" id="searchBar" onkeyup="filterAdopters()" placeholder="Search by name or email address.">
+  <ul class="listpage" id="adopter_list">
+    {% for adopter in adopters %}
+      <div class="adopter_list_div">
+        <li class="adopter_listing">
+          <a class="standalone" href="{% url 'edit_adopter' adopter.id %}">
+            <span class="adopter_name">
+            {{adopter}}
+            {% if adopter.status == "2" %}
+              &#128683;&#xFE0E;
+            {% elif adopter.status == "3" %}
+              &#x231B;&#xFE0E;
+            {% endif %}
+            </span><br>
+            <span class="adopter_email">{{adopter.primary_email}}</span>
+          </a>
+        </li>
+      </div>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}

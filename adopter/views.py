@@ -362,19 +362,16 @@ def login(request):
 @allowed_users(allowed_roles={'admin'})
 def manage(request):
     adopters = Adopter.objects.all()
-    alphabet = [chr(x) for x in range(65, 91)]
-    digits = [chr(x) for x in range(48, 58)]
 
     context = {
         'adopters': adopters,
         'role': 'admin',
-        'alphabet': alphabet,
-        'digits': digits,
-        'lname_fname': False,
         'page_title': "Manage Adopters",
     }
 
     return render(request, "adopter/adoptermgmt.html", context)
+    # return redirect('manage_filter', 'lname', 'A')
+
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})
@@ -383,7 +380,7 @@ def manage_filter(request, filter, char):
         adopters = Adopter.objects.filter(f_name__startswith=char)
         lname_fname = False
     elif filter == 'lname':
-        adopters = Adopter.objects.filter(l_name__startswith=char).order_by('l_name')
+        adopters = Adopter.objects.filter(l_name__startswith=char.upper()).order_by('l_name')
         lname_fname = True
     elif filter == "email":
         char = char.lower()
@@ -392,6 +389,7 @@ def manage_filter(request, filter, char):
 
     alphabet = [chr(x) for x in range(65, 91)]
     digits = [chr(x) for x in range(48, 58)]
+    print(adopters)
 
     context = {
         'adopters': adopters,
