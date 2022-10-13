@@ -19,7 +19,7 @@
       {% csrf_token %}
       <input type="checkbox" name="read_faq" value="read_faq" required>
       <label for="read_faq"> I have read the Frequently Asked Questions and am ready to schedule my appointment.</label><br><br>
-      <input class="submitform" type="submit" name="" value="Let's schedule my appointment!">
+      <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Let's schedule my appointment!">
     </form>
 
   </div>

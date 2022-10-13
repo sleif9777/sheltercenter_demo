@@ -13,7 +13,7 @@
         <br>
         <form class="" action="{% url 'calendar' %}" method="post">
           {% csrf_token %}
-          <input class="copytemplate" type="submit" name="" value="Return to Calendar">
+          <input class="copytemplate" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Return to Calendar">
         </form>
       </div>
     {% else %}
@@ -21,7 +21,7 @@
         <br>
         <form class="" action="{% url 'greeter_reschedule' adopter.id appt.id date.year date.month date.day %}" method="post">
           {% csrf_token %}
-          <input class="copytemplate" type="submit" name="" value="Return to Calendar">
+          <input class="copytemplate" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Return to Calendar">
         </form>
       </div>
     {% endif %}
