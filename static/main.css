@@ -756,3 +756,102 @@ p.greeting {
   padding-left: 10%;
   list-style-type: '\2937';
 }
+
+#calendar-messages {
+  width: 100%;
+}
+
+.no-border {
+  border: none;
+}
+
+.half-width {
+  width: 50%;
+}
+
+.info-box {
+  border: 4px solid;
+  margin: auto;
+  margin-top: 10px;
+  padding: 10px;
+  width: 80%;
+}
+
+.info-box table {
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.calendar-notes,
+.calendar-notes td,
+.calendar-notes a {
+  background-color: #F2D9E5;
+  border-color: #A7396E;
+  color: #A7396E;
+}
+
+.outstanding-task,
+.outstanding-task td,
+.outstanding-task a {
+  background-color: #ea9999;
+  border-color: #800;
+  color: #880000;
+}
+
+.short-notice,
+.short-notice td,
+.short-notice a {
+  background-color: #FFFCC9;
+  border-color: #7A7400;
+  color: #7A7400;
+}
+
+.completed-all-tasks,
+.completed-all-tasks td,
+.completed-all-tasks a {
+  background-color: #B8FFE0;
+  border-color: #005C34;
+  color: #005C34;
+}
+
+.calendar-notes-header {
+  font-weight: bold;
+}
+
+.info-box-data {
+  border-bottom: 1px solid;
+}
+
+.info-box-data.no-border {
+  border-bottom: none;
+}
+
+.alert-symbol {
+  font-size: 16pt;
+}
+
+.info-box-data a {
+  text-decoration: none;
+}
+
+.info-box-data a:hover {
+  text-decoration: underline;
+}
+
+.short-notice-subscript {
+  font-size: 8pt;
+}
+
+#short-notice-table {
+  margin-top: 5px;
+}
+
+#short-notice-table td {
+  border-bottom: none;
+  vertical-align: top;
+}
+
+#short-notice-table th {
+  text-align: left;
+  width: 33.33%;
+}
