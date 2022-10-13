@@ -1,132 +1,126 @@
-<ul class="two-col-flex">
-  <li class="two-col-flex">
-    <div class="info_box">
-      <p class="datelink"><b>INTERNAL NOTE FOR {{date_pretty.upper}}</b></p>
-      {% if internal_announcement %}
-        <p><a class="datelink" href="{% url 'edit_internal_announcement' internal_announcement.id date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>{{internal_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
-      {% else %}
-        <p><a class="datelink" href="{% url 'add_internal_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>Add an internal note. &#9998;&#xFE0E;</a></p>
-      {% endif %}
-    </div>
-  </li>
-
-  <li class="two-col-flex">
-    <div class="info_box">
-      <p class="datelink"><b>DISPLAYS FOR ALL DATES</b></p>
-      {% if calendar_announcement.text|length > 0 %}
-        <p><a class="datelink" href="{% url 'edit_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>{{calendar_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
-      {% else %}
-        <p><a class="datelink" href="{% url 'add_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>Add a notification for adopters. &#9998;&#xFE0E;</a></p>
-      {% endif %}
-    </div>
-  </li>
-
-  <li class="two-col-flex">
-    <div class="info_box">
-      <p class="datelink"><b>DISPLAYS ONLY FOR {{date_pretty.upper}}</b></p>
-      {% if daily_announcement %}
-        <p><a class="datelink" href="{% url 'edit_daily_announcement' daily_announcement.id date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>{{daily_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
-      {% else %}
-        <p><a class="datelink" href="{% url 'add_daily_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>Add a notification for adopters. &#9998;&#xFE0E;</a></p>
-      {% endif %}
-    </div>
-  </li>
-
-  {% if empty_dates %}
-    <li class="two-col-flex">
-      <div class="outstanding_task">
-        <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> Please check that a full schedule is set for:</p>
-        <ul>
-          {% for d, d_str in empty_dates %}
-          <li><a class="datelink" href="{% url 'calendar_date' d.year d.month d.day %}">{{d_str}}</a></li>
-          {% endfor %}
-        </ul>
+<table id="calendar-messages">
+  <tr>
+    <td class="no-border half-width">
+      <div class="info-box calendar-notes">
+        <table>
+          <tr>
+            <td class="info-box-data">
+              <p class="calendar-notes-header">INTERNAL NOTE FOR {{date_pretty.upper}}</p>
+              {% if internal_announcement %}
+              <span class="alert-symbol">&#9432;&#xFE0E; </span><a href="{% url 'edit_internal_announcement' internal_announcement.id date.year date.month date.day %}">{{internal_announcement.text|safe}} &#9998;&#xFE0E;</a>
+              {% else %}
+              <span class="alert-symbol">&#9432;&#xFE0E; </span><a href="{% url 'add_internal_announcement' date.year date.month date.day %}">Add an internal note. &#9998;&#xFE0E;</a>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td class="info-box-data">
+              <p class="calendar-notes-header"><b>DISPLAYS FOR ALL DATES</b></p>
+              {% if calendar_announcement.text|length > 0 %}
+              <span class="alert-symbol">&#9432;&#xFE0E; </span><a href="{% url 'edit_calendar_announcement' date.year date.month date.day %}">{{calendar_announcement.text|safe}} &#9998;&#xFE0E;</a>
+              {% else %}
+              <span class="alert-symbol">&#9432;&#xFE0E; </span><a href="{% url 'add_calendar_announcement' date.year date.month date.day %}">Add a notification for adopters. &#9998;&#xFE0E;</a>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td class="info-box-data no-border">
+              <p class="calendar-notes-header"><b>DISPLAYS ONLY FOR {{date_pretty.upper}}</b></p>
+              {% if daily_announcement %}
+              <span class="alert-symbol">&#9432;&#xFE0E; </span><a href="{% url 'edit_daily_announcement' daily_announcement.id date.year date.month date.day %}">{{daily_announcement.text|safe}} &#9998;&#xFE0E;</a>
+              {% else %}
+              <span class="alert-symbol">&#9432;&#xFE0E; </span><a href="{% url 'add_daily_announcement' date.year date.month date.day %}">Add a notification for adopters. &#9998;&#xFE0E;</a>
+              {% endif %}
+            </td>
+          </tr>
+          <!-- <tr>
+            <td class="info-box-data no-border">
+              <p class="calendar-notes-header"><a href="{% url 'display_list' %}"><b>OFFSITE DOGS &#9998;&#xFE0E;</b></a></p>
+              {% if offsite_dogs %}
+              <ul>
+                {% for dog in offsite_dogs %}
+                <li>
+                  {{dog.name}} -
+                  {% if dog.appt_only %}
+                  In Foster, By Appointment Only
+                  {% elif dog.host_date.year > 2000 %}
+                  Extended Host, returning {{dog.host_date}}
+                  {% elif dog.foster_date.year > 2000 %}
+                  In Foster, returning {{dog.foster_date}}
+                  {% endif %}
+                </li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              No dogs offsite at this time.
+              {% endif %}
+            </td>
+          </tr> -->
+        </table>
       </div>
-    </li>
-  {% endif %}
-
-  {% if no_outcome_appts %}
-    <li class="two-col-flex">
-      <div class="outstanding_task no_decision">
-        <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> Please enter a decision for:</p>
-        <ul>
-          {% for appt in no_outcome_appts %}
-          <li><a class="datelink" href="{% url 'enter_decision' appt.id appt.date.year appt.date.month appt.date.day%}">{{appt.adopter.full_name}} - {{appt.date}}</a></li>
-          {% endfor %}
-        </ul>
+    </td>
+    <td class="no-border half-width">
+      {% if no_outcome_appts or empty_dates %}
+      <div class="info-box outstanding-task">
+        <table>
+          {% if no_outcome_appts %}
+          <tr>
+            <td class="info-box-data {% if not empty_dates %} no-border {% endif %}">
+              <span class="alert-symbol">&#9888;&#xFE0E;</span> Please enter a decision for:
+              <ul>
+                {% for appt in no_outcome_appts %}
+                <li><a href="{% url 'enter_decision' appt.id appt.date.year appt.date.month appt.date.day%}">{{appt.adopter.full_name}} - {{appt.date}}</a></li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+          {% endif %}
+          {% if empty_dates %}
+          <tr>
+            <td class="info-box-data no-border">
+              <span class="alert-symbol">&#9888;&#xFE0E;</span> Please check that a full schedule is set for:
+              <ul>
+                {% for d, d_str in empty_dates %}
+                <li><a href="{% url 'calendar_date' d.year d.month d.day %}">{{d_str}}</a></li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+          {% endif %}
+        </table>
       </div>
-    </li>
-  {% endif %}
-</ul>
-
-<!--
-
-<div class="info_box">
-  <p class="datelink"><b>INTERNAL NOTE FOR {{date_pretty.upper}}</b></p>
-  {% if internal_announcement %}
-    <p><a class="datelink" href="{% url 'edit_internal_announcement' internal_announcement.id date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>{{internal_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
-  {% else %}
-    <p><a class="datelink" href="{% url 'add_internal_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>Add an internal note. &#9998;&#xFE0E;</a></p>
-  {% endif %}
-</div>
-
-<div class="info_box">
-  <p class="datelink"><b>DISPLAYS FOR ALL DATES</b></p>
-  {% if calendar_announcement.text|length > 0 %}
-    <p><a class="datelink" href="{% url 'edit_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>{{calendar_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
-  {% else %}
-    <p><a class="datelink" href="{% url 'add_calendar_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>Add a notification for adopters. &#9998;&#xFE0E;</a></p>
-  {% endif %}
-</div>
-
-<div class="info_box">
-  <p class="datelink"><b>DISPLAYS ONLY FOR {{date_pretty.upper}}</b></p>
-  {% if daily_announcement %}
-    <p><a class="datelink" href="{% url 'edit_daily_announcement' daily_announcement.id date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>{{daily_announcement.text|safe}} &#9998;&#xFE0E;</a></p>
-  {% else %}
-    <p><a class="datelink" href="{% url 'add_daily_announcement' date.year date.month date.day %}"><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E; </div>Add a notification for adopters. &#9998;&#xFE0E;</a></p>
-  {% endif %}
-</div>
-
-{% if empty_dates %}
-  <div class="outstanding_task">
-    <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> There are some dates in the next two weeks that have less appointments than usual (or none at all). Please check that a full schedule is set:</p>
-    <ul>
-      {% for d, d_str in empty_dates %}
-      <li><a class="datelink" href="{% url 'calendar_date' d.year d.month d.day %}">{{d_str}}</a></li>
-      {% endfor %}
-    </ul>
-  </div>
-{% endif %}
-
-{% if no_outcome_appts %}
-  <div class="outstanding_task">
-    <p><div style="display:inline; font-size: 16pt;">&#9888;&#xFE0E;</div> Some appointments in the past week do not have an outcome entered. Adopters cannot schedule a new appointment until their previous appointment has an outcome. Please update these appointments.</p>
-    <ul>
-      {% for appt in no_outcome_appts %}
-      <li><a class="datelink" href="{% url 'enter_decision' appt.id appt.date.year appt.date.month appt.date.day%}">{{appt.adopter.full_name}} - {{appt.date}}</a></li>
-      {% endfor %}
-    </ul>
-  </div>
-{% endif %} -->
+      {% else %}
+      <div class="info-box completed-all-tasks">
+        <table>
+          <tr>
+            <td class="info-box-data no-border">
+              <span class="alert-symbol">&#x2713;&#xFE0E;</span> Good job! All future dates are open, and all past appointments have decisions entered.
+            </td>
+          </tr>
+        </table>
+      </div>
+      {% endif %}
+    </td>
+  </tr>
+</table>
 
 {% if sn_show %}
-  <div class="short_notice_box">
-    <p><div style="display:inline; font-size: 16pt;">&#9432;&#xFE0E;</div> The following short-notice changes have occurred:</p>
-    <table class="infobox_table">
+  <div class="info-box short-notice">
+    <span class="alert-symbol">&#9432;&#xFE0E;</span> The following short-notice changes have occurred:
+    <table id="short-notice-table">
       <tr>
         <th>Added:</th>
         <th>Canceled:</th>
         <th>Moved:</th>
       </tr>
       <tr>
-        <td>
+        <td class="info-box-data">
           <ul>
             {% for sn in sn_add %}
               {% if sn.current_appt.appt_type in schedulable %}
-                <a target="_blank" href="https://www.shelterluv.com/adoption_request_print/{{sn.current_appt.adopter.application_id}}"><li>{{sn.header_str}} &#128196;&#xFE0E;<br><span style="font-size: 8pt;">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li></a>
+                <a target="_blank" href="https://www.shelterluv.com/adoption_request_print/{{sn.current_appt.adopter.application_id}}"><li>{{sn.header_str}} &#128196;&#xFE0E;<br><span class="short-notice-subscript">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li></a>
               {% else %}
-                <li>{{sn.header_str}}<br><span style="font-size: 8pt;">({{sn.backup_str}})</span></li>
+                <li>{{sn.header_str}}<br><span class="short-notice-subscript">({{sn.backup_str}})</span></li>
               {% endif %}
             {% endfor %}
           </ul>
@@ -135,7 +129,7 @@
         <td>
           <ul>
             {% for sn in sn_cancel %}
-            <li>{{sn.header_str}}<br><span style="font-size: 8pt;">({{sn.backup_str}})</span></li>
+            <li>{{sn.header_str}}<br><span class="short-notice-subscript">({{sn.backup_str}})</span></li>
             {% endfor %}
           </ul>
         </td>
@@ -143,7 +137,7 @@
         <td>
           <ul>
             {% for sn in sn_move %}
-            <li>{{sn.header_str}}<br><span style="font-size: 8pt;">({{sn.backup_str}})</span></li>
+            <li>{{sn.header_str}}<br><span class="short-notice-subscript">({{sn.backup_str}})</span></li>
             {% endfor %}
           </ul>
         </td>
