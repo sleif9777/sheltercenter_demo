@@ -209,7 +209,7 @@ class Appointment(models.Model):
         self.published = False
 
         if self.adopter is not None:
-            self.dt_booking = datetime.datetime.now()
+            self.dt_booking = timezone.localtime(timezone.now()) #datetime.datetime.now()
             self.visits_to_date = copy(self.adopter.visits_to_date)
 
             if self.adopter.acknowledged_faq == False:

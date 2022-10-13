@@ -1,8 +1,9 @@
 import datetime
 import os
 import time
+import zoneinfo
 
-is_windows = os.environ.get('WINDOWS')
+is_windows = bool(int(os.environ.get('WINDOWS')))
 
 def date_str(date):
     if is_windows:
@@ -20,10 +21,14 @@ def weekday_str(date):
     return date.strftime("%A")
 
 def time_str(time):
+    if isinstance(time, datetime.datetime):
+        est = zoneinfo.ZoneInfo('America/New_York')
+        time = time.astimezone(est)
+
     if is_windows:
-        return time.strftime("%#I:%M%p")
+        return time.strftime("%#I:%M%p %Z")
     else:
-        return time.strftime("%-I:%M%p")
+        return time.strftime("%-I:%M%p %Z")
 
 def date_no_year_str(date):
     if is_windows:
