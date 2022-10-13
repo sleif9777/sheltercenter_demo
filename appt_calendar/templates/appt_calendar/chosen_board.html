@@ -35,7 +35,7 @@
               {{appt.adopter.f_name}} {{appt.adopter.l_name}}
               {% if request.user|has_group:"admin" %}
                 <div class="chosen_board_actions" style="display: inline;">
-                  <a href="{% url 'clear_from_cb' appt.id %}">(Cancel)</a>
+                  <a class="chosen_board_actions" href="{% url 'clear_from_cb' appt.id %}">(Cancel)</a>
                 </div>
               {% endif %}
             </td>
@@ -53,7 +53,7 @@
                     </div>
                   {% endif %}
                   {% if request.user|has_group:"admin" %}
-                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a><br>
+                    <a class="chosen_board_actions" href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a><br>
                     {% if appt.all_updates_sent|length > 1 %}
                     <span style="font-size: 9pt; font-style: italic; padding-top: 5px;">
                       <b>Previous Updates:</b><br>
@@ -93,8 +93,8 @@
                 {% elif appt.outcome == "8" %}
                   Adopter Notified<br>
                   Paperwork Scheduled
-                  <div class="chosen_board_actions" style="display: inline;">
-                    <a href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
+                  <div style="display: inline;">
+                    <a class="chosen_board_actions" href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
                   </div>
                 {% endif %}
               </td>
@@ -129,9 +129,7 @@
             <td>
               {{appt.adopter.f_name}} {{appt.adopter.l_name}}
               {% if request.user|has_group:"admin" %}
-                <div class="chosen_board_actions" style="display: inline;">
-                  <a href="{% url 'clear_from_cb' appt.id %}">(Cancel)</a>
-                </div>
+                  <a class="chosen_board_actions" href="{% url 'clear_from_cb' appt.id %}">(Cancel)</a>
               {% endif %}
             </td>
 
@@ -148,7 +146,7 @@
                     </div>
                   {% endif %}
                   {% if request.user|has_group:"admin" %}
-                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a><br>
+                    <a class="chosen_board_actions" href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a><br>
                     {% if appt.all_updates_sent|length > 1 %}
                     <span style="font-size: 9pt; font-style: italic; padding-top: 5px;">
                       <b>Previous Updates:</b><br>
@@ -186,7 +184,7 @@
                     </div>
                   {% endif %}
                   <div class="chosen_board_actions" style="display: inline;">
-                    <a href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
+                    <a class="chosen_board_actions" href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
                   </div>
                 {% elif appt.outcome == "8" %}
                   Adopter Notified<br>
@@ -228,21 +226,19 @@
               {{appt.get_outcome_display}}<br>
               {% if appt.outcome != "9" %}
               <div class="chosen_board_actions">
-                <a href="{% url 'cb_update_status' appt.id 9 %}">Needs vetting</a><br>
+                <a class="chosen_board_actions" href="{% url 'cb_update_status' appt.id 9 %}">Needs vetting</a><br>
               </div>
               {% endif %}
               {% if appt.outcome != "10" %}
               <div class="chosen_board_actions">
-                <a href="{% url 'cb_update_status' appt.id 10 %}">Needs well check</a><br>
+                <a class="chosen_board_actions" href="{% url 'cb_update_status' appt.id 10 %}">Needs well check</a><br>
               </div>
               {% endif %}
             </td>
             <td>
               {{appt.adopter.f_name}} {{appt.adopter.l_name}}
               {% if request.user|has_group:"admin" %}
-                <div class="chosen_board_actions" style="display: inline;">
-                  <a href="{% url 'clear_from_cb' appt.id %}">(Cancel)</a>
-                </div>
+                <a class="chosen_board_actions" href="{% url 'clear_from_cb' appt.id %}">(Cancel)</a>
               {% endif %}
             </td>
 
@@ -259,7 +255,7 @@
                     </div>
                   {% endif %}
                   {% if request.user|has_group:"admin" %}
-                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a><br>
+                    <a class="chosen_board_actions" href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a><br>
                     {% if appt.all_updates_sent|length > 1 %}
                     <span style="font-size: 9pt; font-style: italic; padding-top: 5px;">
                       <b>Previous Updates:</b><br>
@@ -277,8 +273,8 @@
               <td class="chosenboard">
                 {% if appt|is_chosen %}
                   <div class="chosen_board_actions">
-                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_negative' %}">Chosen - Dog Vetted</a><br>
-                    <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_positive' %}">Vetted - Heartworm Positive</a>
+                    <a class="chosen_board_actions" href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_negative' %}">Chosen - Dog Vetted</a><br>
+                    <a class="chosen_board_actions" href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'ready_positive' %}">Vetted - Heartworm Positive</a>
                   </div>
                 {% elif appt.outcome == "7" %}
                   Adopter Notified<br>
@@ -298,7 +294,7 @@
                   Adopter Notified<br>
                   Paperwork Scheduled
                   <div class="chosen_board_actions" style="display: inline;">
-                    <a href="{% url 'mark_complete_cb' appt.id %}">(Complete)</a>
+                    <a class="chosen_board_actions" href="{% url 'mark_complete_cb' appt.id %}">(Complete)</a>
                   </div>
                 {% endif %}
               </td>
