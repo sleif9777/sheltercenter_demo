@@ -9,4 +9,3 @@ django-tinymce
 reportlab
 requests
 tzdata
-zoneinfo
