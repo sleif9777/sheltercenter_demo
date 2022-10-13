@@ -30,7 +30,7 @@
           </p>
         </div>
 
-        <input class="submitform" style="display: block; margin: 15px auto; width: 50%; font-size: 90%; font-weight: bold;" type="submit" name="" value="Log In">
+        <input class="submitform" style="display: block; margin: 15px auto; width: 50%; font-size: 90%; font-weight: bold;" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Log In">
 
       </form>
       {% if other_role == 'Greeters and staff' %}
