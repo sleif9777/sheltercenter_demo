@@ -370,7 +370,6 @@ def manage(request):
     }
 
     return render(request, "adopter/adoptermgmt.html", context)
-    # return redirect('manage_filter', 'lname', 'A')
 
 
 @authenticated_user
