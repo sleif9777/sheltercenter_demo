@@ -159,7 +159,7 @@
         <br><br><b><a class="standalone" href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">Click here to cancel your appointment.</a></b>
       {% endif %}
     {% else %}
-      You do not currently have an appointment. Click any open slot below to schedule your appointment.
+      You do not currently have an appointment. Click any open slot below to schedule your appointment, or select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
     {% endif %}
 
     {% if calendar_announcement.text != "" %}
