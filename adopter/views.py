@@ -462,7 +462,7 @@ def edit_adopter(request, adopter_id):
     adopter_original_email = adopter.primary_email[:]
 
     try:
-        current_appt = Appointment.objects.filter(adopter=adopter).latest('id')
+        current_appt = Appointment.objects.filter(adopter=adopter).latest('date')
         current_appt_str = current_appt.date_and_time_string()
         date = current_appt.date
     except:
