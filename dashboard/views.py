@@ -25,6 +25,9 @@ system_settings = SystemSettings.objects.get(pk=1)
 
 # Create your views here.
 
+def user_settings(request):
+    return render(request, 'dashboard/user_settings.html')
+
 def register(request):
 
     form = CreateAdminForm()

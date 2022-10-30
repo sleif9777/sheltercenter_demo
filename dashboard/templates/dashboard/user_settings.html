@@ -1,0 +1,375 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block content %}
+<div class="main">
+  <div class="page_header">
+    <h1>Settings</h1>
+  </div>
+
+  <h2>Appointment Card View</h2>
+
+  <div style="display: flex;">
+    <div style="flex: 50%;">
+      <form action="">
+        <h3>Visit Info</h3>
+        <input type="checkbox" id="cbx-number-of-visits">
+        <label for="cbx-number-of-visits">
+          Number of visits <br>
+        </label>
+        <input type="checkbox" id="cbx-bring-parent">
+        <label for="cbx-bring-parent">
+          Bring parent? <br>
+        </label>
+        <input type="checkbox" id="cbx-mobility">
+        <label for="cbx-mobility">
+          Mobility accomodations? <br>
+        </label>
+        <input type="checkbox" id="cbx-bringing-dog">
+        <label for="cbx-bringing-dog">
+          Bringing dog <br>          
+        </label>
+        <input type="checkbox" id="cbx-has-cat">
+        <label for="cbx-has-cat">
+          Has a cat <br>
+        </label>
+        <h3>Notes</h3>
+        <input type="checkbox" id="cbx-internal-notes">
+        <label for="cbx-internal-notes">
+          Internal notes <br>
+        </label>
+        <input type="checkbox" id="cbx-adopter-notes">
+        <label for="cbx-adopter-notes">
+          Adopter-provided notes <br>
+        </label>
+        <input type="checkbox" id="cbx-shelterluv-notes">
+        <label for="cbx-shelterluv-notes">
+          Application-provided notes <br>
+        </label>
+        <h3>About</h3>
+        <input type="checkbox" id="cbx-city-state">
+        <label for="cbx-city-state">
+          City/State <br>
+        </label>
+        <input type="checkbox" id="cbx-household-activity">
+        <label for="cbx-household-activity">
+          Household Activity <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Housing <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Fence? <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Booking timestamp <br>
+        </label>
+        <h3>Preferences</h3>
+        <input type="checkbox" id="">
+        <label for="">
+          Gender <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Weight <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Age group <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Hypoallergenic <br>
+        </label>
+        <h3>Contact</h3>
+        <input type="checkbox" id="">
+        <label for="">
+          Breed Restrictions <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Dogs Were Adopted <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Limited Small Dogs <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Limited Small Puppies <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Lives With Parents <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Limited Puppies <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Limited Low-shed/Hypo <br>
+        </label>
+        <h3>Actions</h3>
+        <input type="checkbox" id="">
+        <label for="">
+          Enter Decision <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Cancel Adopter <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Reschedule Adopter <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Print Application <br>
+        </label>
+        <h3>Follow-Ups</h3>
+        <input type="checkbox" id="">
+        <label for="">
+          Send Follow-Up Email <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Send Follow-Up Email (with Host Info) <br>
+        </label>
+        <input type="checkbox" id="">
+        <label for="">
+          Schedule Next Appointment
+        </label>
+      </form>
+    </div>
+
+    <div class="appointment" style="flex: 50%;">
+        <table class="appt_info_block" id="appt_header_block">
+          <tr>
+            <td class="appt_description left upper"><b><a class="appt_action">
+              {{request.user.profile.full_name}}
+            </a>
+              &#9855;&#xFE0E;
+              &#128021;&#xFE0E;
+              &#128008;&#xFE0E;
+            </td>
+
+            <td class="appt_description right">
+              &#128274;&#xFE0E;&#9998;&#xFE0E;&#128196;&#xFE0E;&#128100;&#xFE0E;<sub style="font-size: 8pt;">&#128683;&#xFE0E;</sub><a>&#10006;&#xFE0E;</td>
+          </tr>
+
+          <tr>
+            <td class="left" style="width: 50%;"><b>(Puppies and/or Adults)</b></td>
+            <td class="right" style="width: 50%;">
+              <!-- displays bringing dog if applicable, bumps up has a cat if applicable -->
+                <b>Bringing dog!<br></b>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="left" style="width: 50%;">
+              <!-- displays number_of_visits if second visit or greater -->
+                <b>Second visit</b><br>
+                <b>Must bring a parent!</b>
+            </td>
+            <td class="right" style="width: 50%;">
+                <b>Has a cat!</b>
+            </td>
+          </tr>
+        </table>
+          <table class="appt_subblock appt_info_block">
+
+          <tr class="info_block_subheader">
+            <th class="left"><a>Notes</a></th>
+            <th class="right"><a">&#9998;&#xFE0E;</a></th>
+          </tr>
+
+            <tr>
+              <td class="left" style="width:20%;"><b>From Adoptions:</b></td>
+              <td class="left"><a> Have Sunny do appointment</a></td>
+            </tr>
+
+            <tr>
+              <td class="left"><b>From {{request.user.profile.first_name}}:</b></td>
+              <td class="left">Open to anyone!</td>
+            </tr>
+
+            <tr>
+              <td class="left"><b>From Shelterluv:</b></td>
+              <td class="left">No preferences!</td>
+            </tr>
+
+        </table>
+        <table class="appt_subblock appt_info_block">
+
+          <tr class="info_block_subheader">
+            <th>About {{request.user.profile.first_name}}</th>
+            <th class="right"></th>
+          </tr>
+
+          <tr>
+            <td>
+                Coming from Wake Forest, NC
+            </td>
+
+            <td class="right">
+                House (Own)
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+                Moderate Activity Household
+            </td>
+
+            <td class="right">
+                Has Fence
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              Appointment booked October 30, 2022 at 2:37PM
+            </td>
+
+            <td class="right">
+            </td>
+          </tr>
+
+        </table>
+
+          <table class="appt_subblock appt_info_block">
+            <tr class="info_block_subheader">
+              <th class="left">{{request.user.profile.first_name}}'s Preferences</th>
+              <th class="right"></th>
+            </tr>
+
+            <tr>
+              <td class="left">
+                  Only interested in females
+              </td>
+              <td class="right">
+                  Adults only
+              </td>
+            </tr>
+
+            <tr>
+              <td class="left">
+                  Looking for over 30 lbs.
+              </td>
+              <td class="right">
+                  Needs hypo/low-shedding!
+              </td>
+            </tr>
+
+          </table>
+
+        <!-- this table would never be the last block -->
+        <table class="appt_subblock appt_info_block">
+
+          <tr class="info_block_subheader">
+            <th><a>Contact {{request.user.profile.first_name}}</a></th>
+            <th class="right"><a>&#9993;&#xFE0E;</a></th>
+          </tr>
+
+          <tr>
+            <td>
+                <a>Breed Restrictions</a>
+            </td>
+
+            <td class="right">
+                <a>Lives With Parents</a>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+                <a>Dogs Were Adopted</a>
+            </td>
+
+            <td class="right">
+                <a>Limited Puppies</a>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+                <a>Limited Small Dogs</a>
+            </td>
+
+            <td class="right">
+                <a>Limited Low-shed/Hypo</a>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+                <a>Limited Small Puppies</a>
+            </td>
+
+            <td class="right">
+              <a>Resend Confirmation</a>
+            </td>
+          </tr>
+
+
+        </table>
+
+        <!-- actions table will always be last (if present) -->
+        <table class="appt_subblock appt_info_block">
+
+          <tr class="info_block_subheader">
+            <th>Actions</th>
+            <th class="right">&#128498;&#xFE0E;</th>
+          </tr>
+
+          <tr>
+            <td>
+                <a>Enter Decision</a>
+            </td>
+
+            <td class="right"><a>Reschedule Adopter</a></td>
+          </tr>
+
+          <tr>
+            <td><a>Cancel Adopter</a></td>
+            <td class="right"><a>Print Application</a></td>
+          </tr>
+
+        </table>
+
+        <!-- actions table will always be last (if present) -->
+        <table class="appt_subblock appt_info_block appt_end_block">
+
+          <tr class="info_block_subheader">
+            <th>Follow-Ups</th>
+            <th class="right">&#8635;&#xFE0E;</th>
+          </tr>
+
+          <tr>
+              <td><a>Send Follow-Up Email</a><br></td>
+
+            <td class="right"><a>Schedule Next Appointment</a></td>
+          </tr>
+
+          <tr>
+              <td><a>Send Follow-Up Email (with Host Info)</a><br></td>
+
+            <td class="right"></td>
+          </tr>
+
+        </table>
+
+      <!-- endif for booked appt blocks   -->
+    <!-- /div for appointment block -->
+    </div>
+  
+  </div>
+
+
+</div>
+{% endblock %}
