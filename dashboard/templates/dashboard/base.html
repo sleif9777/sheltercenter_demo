@@ -16,7 +16,58 @@
         window.location.hash = '#{{go_to_div}}';
       </script>
     {% endif %}
+    
+    <script type="text/javascript">
+      function updateAppointmentBox(checkbox) {
+        var checkboxElement = document.getElementById(checkbox);
+        var cardElement = document.getElementsByClassName(checkbox.slice(4));
 
+        console.log(cardElement);
+
+        if (checkboxElement.checked) {
+          console.log('checked');
+          for (let i = 0; i < cardElement.length; i++) {
+            if (cardElement[i] instanceof HTMLTableRowElement) {
+              cardElement[i].style.display = "table-row";
+            } else {
+              cardElement[i].style.display = "list-item";
+            }
+          }
+        } else {
+          console.log('unchecked');
+          for (let i = 0; i < cardElement.length; i++) {
+            cardElement[i].style.display = "none";
+          }        }
+
+        assignDefaultAlignments("ac-two-col-list");
+
+      }
+
+      function assignDefaultAlignments(sublistID) {
+        var sublists = document.getElementsByClassName(sublistID);
+        for (let sublist = 0; sublist < sublists.length; sublist++) {
+          affectedElements = Array.from(sublists[sublist].getElementsByTagName("li")).filter(isVisible);
+          console.log(affectedElements);
+          for (let i = 0; i < affectedElements.length; i++) {
+            let cutOff = affectedElements.length / 2;
+            console.log(cutOff, i);
+            if (i >= cutOff) {
+              affectedElements[i].style.textAlign = "right";
+            }
+          }
+        }
+      }
+
+      function isVisible(element) {
+        return element.style.display != "none";
+      }
+    
+      window.onload = function() {
+        assignDefaultAlignments("ac-two-col-list");
+
+      }
+    </script>
+    
     <link rel="icon" href="{% static 'media/logo.png' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">

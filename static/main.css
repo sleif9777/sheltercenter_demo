@@ -307,6 +307,7 @@ li.two-col-flex:nth-last-child(2):nth-child(odd) {
   margin: 10px 10px;
   padding: 10px;
   color: #1E6C80;
+  height: fit-content;
 }
 
 .short_notice {
@@ -854,4 +855,10 @@ p.greeting {
 #short-notice-table th {
   text-align: left;
   width: 33.33%;
+}
+
+.ac-two-col-list {
+  columns: 2;
+  list-style-type: none;
+  padding-left: 0;
 }
