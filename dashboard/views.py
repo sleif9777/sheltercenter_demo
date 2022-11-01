@@ -271,9 +271,6 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'sn_show': sn_show,
         'empty_day_db': empty_day_db,
     }
-
-    print(context)
-
     return context
 
 def test_harness(request):

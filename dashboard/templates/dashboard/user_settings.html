@@ -7,8 +7,6 @@
   <div class="page_header">
     <h1>Settings</h1>
   </div>
-
-  
   <div style="display: flex;">
     <div style="width: calc(100% - 600px); padding: 0 10px;">
       <h2>Appointment Card View</h2>
@@ -117,7 +115,7 @@
         </label>
         <h3>Follow-Ups</h3>
         <input type="checkbox" id="cbx-send-follow-up" onclick="updateAppointmentBox(this.id);" checked>
-        <label for="cbx-send-follow-up-email">
+        <label for="cbx-send-follow-up">
           Send Follow-Up Email <br>
         </label>
         <input type="checkbox" id="cbx-send-follow-up-with-host" onclick="updateAppointmentBox(this.id);" checked>
@@ -132,159 +130,148 @@
     </div>
 
     <div class="appointment" style="width: 600px;">
-        <table class="appt_info_block" id="appt_header_block">
-          <tbody>
-            <tr>
-              <td class="appt_description left upper"><b><a class="appt_action">
-                {{request.user.profile.full_name}}
-              </a>
-                &#9855;&#xFE0E;
-                &#128021;&#xFE0E;
-                &#128008;&#xFE0E;
-              </td>
-  
-              <td class="appt_description right">
-                &#128274;&#xFE0E;&#9998;&#xFE0E;&#128196;&#xFE0E;&#128100;&#xFE0E;<sub style="font-size: 8pt;">&#128683;&#xFE0E;</sub><a>&#10006;&#xFE0E;</td>
-            </tr>
+      <table class="appt_info_block" id="appt_header_block">
+        <tbody>
+          <tr>
+            <td class="appt_description left upper"><b><a class="appt_action">
+              {{request.user.profile.full_name}}
+            </a>
+              &#9855;&#xFE0E;
+              &#128021;&#xFE0E;
+              &#128008;&#xFE0E;
+            </td>
 
-            <tr>
-              <td colspan="2">
-                <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
-                  <li class="appt-type">(Puppies and/or Adults)</li>
-                  <li class="number-of-visits">Second visit</li>
-                  <li class="must-bring-parent">Must bring a parent!</li>
-                  <li class="bringing-dog">Bringing dog!</li>
-                  <li class="has-a-cat">Has a cat!</li>
-                </ul>
-              </td>
-            </tr>
+            <td class="appt_description right">
+              &#128274;&#xFE0E;&#9998;&#xFE0E;&#128196;&#xFE0E;&#128100;&#xFE0E;<sub style="font-size: 8pt;">&#128683;&#xFE0E;</sub><a>&#10006;&#xFE0E;</td>
+          </tr>
 
-          </tbody>
-        </table>
-        <table class="appt_subblock appt_info_block">
+          <tr>
+            <td colspan="2">
+              <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
+                <li class="appt-type">(Puppies and/or Adults)</li>
+                <li class="number-of-visits">Second visit</li>
+                <li class="must-bring-parent">Must bring a parent!</li>
+                <li class="bringing-dog">Bringing dog!</li>
+                <li class="has-a-cat">Has a cat!</li>
+              </ul>
+            </td>
+          </tr>
 
+        </tbody>
+      </table>
+      <table class="appt_subblock appt_info_block">
+
+        <tr class="info_block_subheader">
+          <th class="left"><a>Notes</a></th>
+          <th class="right"><a">&#9998;&#xFE0E;</a></th>
+        </tr>
+
+        <tr class="internal-notes">
+          <td class="left" style="width:20%;"><b>From Adoptions:</b></td>
+          <td class="left"><a> Have Sunny do appointment</a></td>
+        </tr>
+
+        <tr class="adopter-notes">
+          <td class="left"><b>From {{request.user.profile.first_name}}:</b></td>
+          <td class="left">Open to anyone!</td>
+        </tr>
+
+        <tr class="shelterluv-notes">
+          <td class="left"><b>From Shelterluv:</b></td>
+          <td class="left">No preferences!</td>
+        </tr>
+
+      </table>
+      <table class="appt_subblock appt_info_block">
+        <tbody>
           <tr class="info_block_subheader">
-            <th class="left"><a>Notes</a></th>
-            <th class="right"><a">&#9998;&#xFE0E;</a></th>
+            <th>About {{request.user.profile.first_name}}</th>
           </tr>
-
-          <tr class="internal-notes">
-            <td class="left" style="width:20%;"><b>From Adoptions:</b></td>
-            <td class="left"><a> Have Sunny do appointment</a></td>
+          <tr>
+            <td>
+              <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
+                <li class="city-state">Coming from Wake Forest, NC</li> 
+                <li class="household-activity">Moderate Activity Household</li>
+                <li class="booking-timestamp">Booked October 31, 2022 at 12:34PM</li>
+                <li class="housing">House (Own)</li>
+                <li class="fence">Has Fence</li>
+              </ul>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
+      <table class="appt_subblock appt_info_block">
+        <tbody>
+          <tr class="info_block_subheader">
+            <th>{{request.user.profile.first_name}}'s Preferences</th>
           </tr>
-
-          <tr class="adopter-notes">
-            <td class="left"><b>From {{request.user.profile.first_name}}:</b></td>
-            <td class="left">Open to anyone!</td>
+          <tr>
+            <td colspan="1">
+              <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
+                <li class="gender-preference">Only interested in females</li> 
+                <li class="weight-preference">Looking for over 30 lbs.</li>
+                <li class="age-preference">Adults Only</li>
+                <li class="hypo-preference">Needs hypo/low-shedding!</li>
+              </ul>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
+      <table class="appt_subblock appt_info_block">
+        <tbody>
+          <tr class="info_block_subheader">
+            <th>Contact {{request.user.profile.first_name}}</th>
           </tr>
-
-          <tr class="shelterluv-notes">
-            <td class="left"><b>From Shelterluv:</b></td>
-            <td class="left">No preferences!</td>
+          <tr>
+            <td colspan="1">
+              <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
+                <li class="breed-restriction-comm">Breed Restrictions</li> 
+                <li class="dogs-adopted-comm">Dogs Were Adopted</li>
+                <li class="limited-small-dogs-comm">Limited Small Dogs</li>
+                <li class="limited-small-puppies-comm">Limited Small Puppies</li>
+                <li class="lives-with-parents-comm">Lives With Parents</li>
+                <li class="limited-puppies-comm">Limited Puppies</li>
+                <li class="limited-hypo-comm">Limited Low-shed/Hypo</li>
+                <li class="resend-confirmation-comm">Resend Confirmation</li>
+              </ul>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
+      <table class="appt_subblock appt_info_block">
+        <tbody>
+          <tr class="info_block_subheader">
+            <th>Actions</th>
           </tr>
-
-        </table>
-
-        <table class="appt_subblock appt_info_block">
-          <tbody>
-            <tr class="info_block_subheader">
-              <th>About {{request.user.profile.first_name}}</th>
-            </tr>
-            <tr>
-              <td>
-                <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
-                  <li class="city-state">Coming from Wake Forest, NC</li> 
-                  <li class="household-activity">Moderate Activity Household</li>
-                  <li class="booking-timestamp">Booked October 31, 2022 at 12:34PM</li>
-                  <li class="housing">House (Own)</li>
-                  <li class="fence">Has Fence</li>
-                </ul>
-              </td>
-            </tr>          
-          </tbody>
-        </table>
-
-        <table class="appt_subblock appt_info_block">
-          <tbody>
-            <tr class="info_block_subheader">
-              <th>{{request.user.profile.first_name}}'s Preferences</th>
-            </tr>
-            <tr>
-              <td colspan="1">
-                <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
-                  <li class="gender-preference">Only interested in females</li> 
-                  <li class="weight-preference">Looking for over 30 lbs.</li>
-                  <li class="age-preference">Adults Only</li>
-                  <li class="hypo-preference">Needs hypo/low-shedding!</li>
-                </ul>
-              </td>
-            </tr>          
-          </tbody>
-        </table>
-
-        <table class="appt_subblock appt_info_block">
-          <tbody>
-            <tr class="info_block_subheader">
-              <th>Contact {{request.user.profile.first_name}}</th>
-            </tr>
-            <tr>
-              <td colspan="1">
-                <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
-                  <li class="breed-restriction-comm">Breed Restrictions</li> 
-                  <li class="dogs-adopted-comm">Dogs Were Adopted</li>
-                  <li class="limited-small-dogs-comm">Limited Small Dogs</li>
-                  <li class="limited-small-puppies-comm">Limited Small Puppies</li>
-                  <li class="lives-with-parents-comm">Lives With Parents</li>
-                  <li class="limited-puppies-comm">Limited Puppies</li>
-                  <li class="limited-hypo-comm">Limited Low-shed/Hypo</li>
-                  <li class="resend-confirmation-comm">Resend Confirmation</li>
-                </ul>
-              </td>
-            </tr>          
-          </tbody>
-        </table>
-
-        <table class="appt_subblock appt_info_block">
-          <tbody>
-            <tr class="info_block_subheader">
-              <th>Actions</th>
-            </tr>
-            <tr>
-              <td colspan="1">
-                <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
-                  <li class="enter-decision">Enter Decision</li> 
-                  <li class="cancel-adopter">Cancel Adopter</li>
-                  <li class="reschedule-adopter">Reschedule Adopter</li>
-                  <li class="print-application">Print Application</li>
-                </ul>
-              </td>
-            </tr>          
-          </tbody>
-        </table>
-
-        <table class="appt_subblock appt_info_block appt_end_block">
-          <tbody>
-            <tr class="info_block_subheader">
-              <th>Actions</th>
-            </tr>
-            <tr>
-              <td colspan="1">
-                <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
-                  <li class="send-follow-up">Send Follow-Up Email</li> 
-                  <li class="send-follow-up-with-host">Send Follow-Up Email (with Host Info)</li> 
-                  <li class="schedule-next">Schedule Next Appointment</li> 
-                </ul>
-              </td>
-            </tr>          
-          </tbody>
-        </table>
-
-      <!-- endif for booked appt blocks   -->
-    <!-- /div for appointment block -->
+          <tr>
+            <td colspan="1">
+              <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
+                <li class="enter-decision">Enter Decision</li> 
+                <li class="cancel-adopter">Cancel Adopter</li>
+                <li class="reschedule-adopter">Reschedule Adopter</li>
+                <li class="print-application">Print Application</li>
+              </ul>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
+      <table class="appt_subblock appt_info_block appt_end_block">
+        <tbody>
+          <tr class="info_block_subheader">
+            <th>Actions</th>
+          </tr>
+          <tr>
+            <td colspan="1">
+              <ul class="ac-two-col-list" style="columns: 2; padding-left: 0; list-style-type: none;">
+                <li class="send-follow-up">Send Follow-Up Email</li> 
+                <li class="send-follow-up-with-host">Send Follow-Up Email (with Host Info)</li> 
+                <li class="schedule-next">Schedule Next Appointment</li> 
+              </ul>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
     </div>
-  
   </div>
-
-
 </div>
 {% endblock %}

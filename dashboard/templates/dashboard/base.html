@@ -4,19 +4,16 @@
     {% load static %}
     {% load auth_extras %}
     <meta charset="utf-8">
-
     {% if page_title %}
       <title>{{page_title}}</title>
     {% else %}
       <title>ShelterCenter</title>
     {% endif %}
-
     {% if go_to_div %}
       <script type="text/javascript">
         window.location.hash = '#{{go_to_div}}';
       </script>
     {% endif %}
-    
     <script type="text/javascript">
       function updateAppointmentBox(checkbox) {
         var checkboxElement = document.getElementById(checkbox);
@@ -69,41 +66,30 @@
 
       }
     </script>
-    
     <link rel="icon" href="{% static 'media/logo.png' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">
   </head>
   <body>
-    <div class="activitymenu">
-      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
-
+    <div class="activity-menu">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>  
       {% block nav %}
-
-        <nav>
-          <div class="actmenu-center">
-            <ul>
-
-              {% if request.user|has_group:"admin" %}
-                {% include 'dashboard/admin_navbar.html' %}
-
-              {% elif request.user|has_group:"greeter" %}
-                {% include 'dashboard/greeter_navbar.html' %}
-
-              {% elif request.user|has_group:"adopter" %}
-                {% include 'dashboard/adopter_navbar.html' %}
-              {% endif %}
-
-              <li class="end"><a href="{% url 'logout' %}">Log Out</a></li>
-            </ul>
-          </div>
-        </nav>
-
+      <nav>
+        <div class="actmenu-center">
+          <ul>
+            {% if request.user|has_group:"admin" %}
+              {% include 'dashboard/admin_navbar.html' %}
+            {% elif request.user|has_group:"greeter" %}
+              {% include 'dashboard/greeter_navbar.html' %}
+            {% elif request.user|has_group:"adopter" %}
+              {% include 'dashboard/adopter_navbar.html' %}
+            {% endif %}
+            <li class="end"><a href="{% url 'logout' %}">Log Out</a></li>
+          </ul>
+        </div>
+      </nav>
       {% endblock %}
-
     </div>
-
     {% block content %} {% endblock %}
-
   </body>
 </html>
