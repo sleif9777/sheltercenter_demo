@@ -1,3 +1,7 @@
+/* ===================================================
+Page foundational layout
+=================================================== */
+
 * {
   margin: 0;
 }
@@ -10,41 +14,231 @@ body {
   width: 100%;
 }
 
-.outstanding_task,
-.outstanding-task {
-  background-color: #ea9999;
-  border: 4px #880000 solid;
-  color: #880000;
+.main {
+  margin-left: 220px;
+  width: calc(100% - 220px);
+}
+
+.textpage,
+.text-page {
+  padding: 10px;
+  width: calc(100% - 240px);
+}
+
+.listpage,
+.list-page {
+  list-style-type: none;
+  padding-left: 0;
+  padding-top: 10px;
+}
+
+.listpage li,
+.list-page li {
+  margin: 2px 0px;
+}
+
+/* Activity menu (left sidebar) and subcomponents
+=================================================== */
+
+.activitymenu,
+.activity-menu {
+  border-right: 1px solid #cccccc;
+  height: 100%;
+  left: 0;
+  overflow-x: hidden;
+  padding: 10px 10px 0px 10px;
+  position: fixed;
+  top: 0;
+  width: 200px;
+  z-index: 1;
+}
+
+/* Logo image in activity menu */
+.activitymenu img,
+.activity-menu img {
+  padding-bottom: 10px;
+}
+
+/* Each list item and innerHTML link in activity menu */
+.activitymenu li,
+.activity-menu li {
+  border-bottom: #A7396E 1px solid;
+  display: inline-block;
+  list-style-type: none;
+  padding: 5px 0;
+  width: 100%;
+}
+
+.activitymenu li.end,
+.activity-menu li.end {
+  border-bottom: none;
+}
+
+.activitymenu a,
+.activity-menu a {
+  color: #A7396E;
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.activitymenu a:hover,
+.activity-menu a:hover {
+  text-decoration: underline;
+}
+
+#navbar-list {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Header and toolbar styling
+  =================================================== */
+
+.page_header,
+.page-header {
+  padding-top: 5px;
+  text-align: center;
+}
+
+.calendar_actions,
+.calendar-actions,
+.page-actions {
+  text-align: center;
+}
+
+.page_header a, 
+.calendar_actions a,
+.page-header a, 
+.calendar-actions a,
+.page-actions a {
+  color: black;
+  margin: 5px;
+  text-decoration: none;
+}
+
+.page_header a:hover, 
+.calendar_actions a:hover,
+.page-header a:hover, 
+.calendar-actions a:hover {
+  color: #A7396E;
+  text-decoration: underline;
+}
+
+/* If no actions available */
+.no_actions,
+.no-actions {
+  padding-bottom: 15px;
+}
+
+/* ==============================
+Alert box styling
+============================== */
+
+.info_box,
+.info-box {
+  background-color: #F2D9E5;
+  border: 4px solid;
+  color: #A7396E;
   margin: auto;
   margin-top: 10px;
   padding: 10px;
   width: 80%;
+}
+
+.info-box table {
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.info_box a,
+.info-box a {
+  text-decoration: none;
+}
+
+.info_box a:hover,
+.info-box a:hover {
+  text-decoration: underline;
+}
+
+.info-box-data {
+  border-bottom: 1px solid;
+}
+
+/* Calendar notes - magenta theme */
+.calendar_notes
+.calendar-notes,
+.calendar-notes a {
+  background-color: #F2D9E5;
+  border-color: #A7396E;
+  color: #A7396E;
+}
+
+/* Completed all tasks - green theme */
+.completed-all-tasks,
+.completed-all-tasks a {
+  background-color: #B8FFE0;
+  border-color: #005C34;
+  color: #005C34;
+}
+
+/* Oustanding tasks - red theme */
+.outstanding_task,
+.outstanding-task,
+.outstanding-task a {
+  background-color: #ea9999;
+  border-color: #800;
+  color: #800;
+}
+
+/* Short notice (overall) - gold theme */
+.short_notice,
+.short-notice,
+.short-notice a {
+  background-color: #FFFCC9;
+  border-color: #7A7400;
+  color: #7A7400;
+}
+
+/* Short notice alert box on calendar
+  =================================================== */
+
+#short-notice-table {
+  margin-top: 5px;
+}
+
+#short-notice-table th {
+  text-align: left;
+  width: 33.33%;
+}
+
+#short-notice-table td {
+  border-bottom: none;
+  vertical-align: top;
 }
 
 .short_notice_box,
-.short-notice-box {
-  background-color: #FFFCC9;
-  border: 4px #7A7400 solid;
-  color: #7A7400;
-  margin: auto;
-  margin-top: 10px;
-  padding: 10px;
-  width: 80%;
-}
-
+.short-notice-box,
 .short_notice_box a,
 .short-notice-box a,
 .short-notice #appt_header_block a,
 .short-notice #appt-header-block a {
+  background-color: #FFFCC9;
+  border-color: #7A7400;
   color: #7A7400;
-  text-decoration: none;
 }
 
-.short_notice_box a:hover,
-.short-notice-box a:hover {
-  color: #7A7400;
-  text-decoration: underline;
+.short-notice-subscript {
+  font-size: 8pt;
 }
+
+/* Remainder */
+
+
 
 #searchBar,
 #search-bar,
@@ -56,21 +250,17 @@ body {
   width: 95%;
 }
 
-.info_box,
-.info-box {
-  background-color: #F2D9E5;
-  border: 4px #A7396E solid;
-  color: #A7396E;
-  margin: auto;
-  margin-top: 10px;
-  padding: 10px;
-  width: 80%;
-}
+
 
 .datelink,
 .date-link {
   color: #990000;
   text-decoration: none;
+}
+
+.datelink:hover,
+.date-link:hover {
+  text-decoration: underline;
 }
 
 @media only screen and (max-width: 980px) {
@@ -159,77 +349,6 @@ body {
 
 }
 
-.datelink:hover,
-.date-link:hover {
-  text-decoration: underline;
-}
-
-.activitymenu,
-.activity-menu {
-  border-right: 1px solid #cccccc;
-  height: 100%;
-  left: 0;
-  overflow-x: hidden;
-  padding: 10px 10px 0px 10px;
-  position: fixed;
-  top: 0;
-  width: 200px;
-  z-index: 1;
-}
-
-.activitymenu img,
-.activity-menu img {
-  padding-bottom: 10px;
-}
-
-.main {
-  margin-left: 220px;
-  width: calc(100% - 220px);
-}
-
-.activitymenu li,
-.activity-menu li {
-  border-bottom: #A7396E 1px solid;
-  display: inline-block;
-  list-style-type: none;
-  padding: 5px 0;
-  width: 100%;
-}
-
-.activitymenu li.end,
-.activity-menu li.end {
-  border-bottom: none;
-}
-
-.activitymenu a,
-.activity-menu a {
-  color: #A7396E;
-  font-size: 18px;
-  text-align: center;
-  text-decoration: none;
-  text-transform: uppercase;
-  width: 100%;
-}
-
-.activitymenu a:hover,
-.activity-menu a:hover {
-  text-decoration: underline;
-}
-
-.actmenu-center {
-  text-align: center;
-  vertical-align: middle;
-}
-
-.actmenu-center ul {
-  padding: 0;
-  margin: 0;
-}
-
-.textpage {
-  padding: 10px;
-  width: calc(100% - 240px);
-}
 
 .timeslot, 
 .week, 
@@ -238,38 +357,7 @@ body {
   text-align: center;
 }
 
-.page_header,
-.page-header {
-  padding-top: 5px;
-  text-align: center;
-}
 
-.no_actions,
-.no-actions {
-  padding-bottom: 15px;
-}
-
-.calendar_actions,
-.calendar-actions {
-  text-align: center;
-}
-
-.page_header a, 
-.calendar_actions a,
-.page-header a, 
-.calendar-actions a {
-  color: black;
-  margin: 5px;
-  text-decoration: none;
-}
-
-.page_header a:hover, 
-.calendar_actions a:hover,
-.page-header a:hover, 
-.calendar-actions a:hover {
-  color: #A7396E;
-  text-decoration: underline;
-}
 
 .timeslot h2 {
   padding-bottom: 5px;
@@ -295,13 +383,6 @@ body {
   margin: 10px 10px;
   padding: 10px;
   width: 90%;
-}
-
-.short_notice,
-.short-notice {
-  background-color: #FFFCC9;
-  border: 2px solid #7A7400;
-  color: #7A7400;
 }
 
 .appt_action,
@@ -388,26 +469,6 @@ body {
   text-decoration: none;
 }
 
-.short_notice .appt_subblock a:hover, 
-.short_notice #appt_header_block a:hover,
-.short_notice .appt-subblock a:hover, 
-.short_notice #appt-header-block a:hover,
-.short-notice .appt-subblock a:hover, 
-.short-notice #appt-header-block a:hover {
-  color: #7A7400;
-  text-decoration: underline;
-}
-
-.short_notice .appt_subblock a, 
-.short_notice #appt_header_block a,
-.short_notice .appt-subblock a, 
-.short_notice #appt_header-block a,
-.short-notice .appt-subblock a, 
-.short-notice #appt_header-block a {
-  color: #7A7400;
-  text-decoration: none;
-}
-
 .appt_subblock table,
 .appt-subblock table {
   border-bottom: 1px solid #1E6C80;
@@ -427,6 +488,31 @@ body {
   text-align: left;
   vertical-align: top;
 }
+
+
+/* Appointment subcomponent styling - short notice
+=================================================== */
+
+.short_notice .appt_subblock a, 
+.short_notice #appt_header_block a,
+.short_notice .appt-subblock a, 
+.short_notice #appt_header-block a,
+.short-notice .appt-subblock a, 
+.short-notice #appt_header-block a {
+  color: #7A7400;
+  text-decoration: none;
+}
+
+.short_notice .appt_subblock a:hover, 
+.short_notice #appt_header_block a:hover,
+.short_notice .appt-subblock a:hover, 
+.short_notice #appt-header-block a:hover,
+.short-notice .appt-subblock a:hover, 
+.short-notice #appt-header-block a:hover {
+  color: #7A7400;
+  text-decoration: underline;
+}
+
 
 .contact_adopter {
   border-bottom: 1px solid #1E6C80;
@@ -637,7 +723,7 @@ a.decision_made:hover {
 .add_adopter input[type=text],
 .add-adopter input[type=checkbox],
 .add-adopter input[type=email], 
-.add-adopter input[type=text], {
+.add-adopter input[type=text] {
   margin-bottom: 10px;
 }
 
@@ -691,9 +777,9 @@ table.infobox-table td {
   border-bottom: 1px solid #7A7400;
 }
 
-.short_notice table.appt_end_block, 
+/* .short_notice table.appt_end_block, 
 .short_notice table.appt-end-block, 
-.short-notice table.appt-end-block, 
+.short-notice table.appt-end-block,  */
 table.appt-end-block,
 table.appt-end-block {
   border-bottom: none;
@@ -708,18 +794,6 @@ table.appt-end-block {
 .appt_description,
 .appt-description {
   font-size: 18pt;
-}
-
-.left {
-  text-align: left;
-}
-
-.right {
-  text-align: right;
-}
-
-.upper {
-  text-transform: uppercase;
 }
 
 #appt_header_block,
@@ -760,16 +834,6 @@ p.greeting {
   font-size: 20pt;
 }
 
-.listpage {
-  list-style-type: none;
-  padding-left: 0;
-  padding-top: 10px;
-}
-
-.listpage li {
-  margin: 2px 0px;
-}
-
 #adopter_mgmt_appt,
 #adopter-mgmt-appt {
   width: 90%;
@@ -805,103 +869,44 @@ p.greeting {
   width: 100%;
 }
 
-.no-border {
-  border: none;
+
+
+.calendar-notes-header {
+  font-weight: bold;
+}
+
+
+
+.ac-two-col-list {
+  columns: 2;
+  list-style-type: none;
+  padding-left: 0;
+}
+
+/* ===================================================
+Universalisms
+=================================================== */
+
+.alert-symbol {
+  font-size: 16pt;
 }
 
 .half-width {
   width: 50%;
 }
 
-.info-box {
-  border: 4px solid;
-  margin: auto;
-  margin-top: 10px;
-  padding: 10px;
-  width: 80%;
-}
-
-.info-box table {
-  margin-bottom: 0;
-  width: 100%;
-}
-
-.calendar-notes,
-.calendar-notes td,
-.calendar-notes a {
-  background-color: #F2D9E5;
-  border-color: #A7396E;
-  color: #A7396E;
-}
-
-.outstanding-task,
-.outstanding-task td,
-.outstanding-task a {
-  background-color: #ea9999;
-  border-color: #800;
-  color: #880000;
-}
-
-.short-notice,
-.short-notice td,
-.short-notice a {
-  background-color: #FFFCC9;
-  border-color: #7A7400;
-  color: #7A7400;
-}
-
-.completed-all-tasks,
-.completed-all-tasks td,
-.completed-all-tasks a {
-  background-color: #B8FFE0;
-  border-color: #005C34;
-  color: #005C34;
-}
-
-.calendar-notes-header {
-  font-weight: bold;
-}
-
-.info-box-data {
-  border-bottom: 1px solid;
-}
-
-.info-box-data.no-border {
-  border-bottom: none;
-}
-
-.alert-symbol {
-  font-size: 16pt;
-}
-
-.info-box-data a {
-  text-decoration: none;
-}
-
-.info-box-data a:hover {
-  text-decoration: underline;
-}
-
-.short-notice-subscript {
-  font-size: 8pt;
-}
-
-#short-notice-table {
-  margin-top: 5px;
-}
-
-#short-notice-table td {
-  border-bottom: none;
-  vertical-align: top;
-}
-
-#short-notice-table th {
+.left {
   text-align: left;
-  width: 33.33%;
 }
 
-.ac-two-col-list {
-  columns: 2;
-  list-style-type: none;
-  padding-left: 0;
+.no-border {
+  border: none;
+}
+
+.right {
+  text-align: right;
+}
+
+.upper {
+  text-transform: uppercase;
 }

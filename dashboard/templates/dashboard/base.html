@@ -75,18 +75,16 @@
       <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>  
       {% block nav %}
       <nav>
-        <div class="actmenu-center">
-          <ul>
-            {% if request.user|has_group:"admin" %}
-              {% include 'dashboard/admin_navbar.html' %}
-            {% elif request.user|has_group:"greeter" %}
-              {% include 'dashboard/greeter_navbar.html' %}
-            {% elif request.user|has_group:"adopter" %}
-              {% include 'dashboard/adopter_navbar.html' %}
-            {% endif %}
-            <li class="end"><a href="{% url 'logout' %}">Log Out</a></li>
-          </ul>
-        </div>
+        <ul id="navbar-list">
+          {% if request.user|has_group:"admin" %}
+            {% include 'dashboard/admin_navbar.html' %}
+          {% elif request.user|has_group:"greeter" %}
+            {% include 'dashboard/greeter_navbar.html' %}
+          {% elif request.user|has_group:"adopter" %}
+            {% include 'dashboard/adopter_navbar.html' %}
+          {% endif %}
+          <li class="end"><a href="{% url 'logout' %}">Log Out</a></li>
+        </ul>
       </nav>
       {% endblock %}
     </div>
