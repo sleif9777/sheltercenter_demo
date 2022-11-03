@@ -161,7 +161,7 @@ class Appointment(models.Model):
         return self.date_string() + " at " + self.time_string()
 
     def dt_booking_string(self):
-        return "Appointment booked {0} at {1}".format(date_str(self.dt_booking), time_str(self.dt_booking))
+        return "Booked {0} at {1}".format(date_num_str(self.dt_booking), time_str(self.dt_booking))
 
     def appt_string(self):
         appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA", "Visit", "Donation Drop-Off"]

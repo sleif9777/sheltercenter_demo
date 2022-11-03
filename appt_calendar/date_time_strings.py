@@ -11,6 +11,12 @@ def date_str(date):
     else:
         return date.strftime("%A, %B %-d, %Y")
 
+def date_num_str(date):
+    if is_windows:
+        return date.strftime("%#m/%#d/%#y")
+    else:
+        return date.strftime("%-m/%-d/%-y")
+
 def date_no_weekday_str(date):
     if is_windows:
         return date.strftime("%B %#d, %Y")
@@ -26,9 +32,9 @@ def time_str(time):
         time = time.astimezone(est)
 
     if is_windows:
-        return time.strftime("%#I:%M%p %Z")
+        return time.strftime("%#I:%M%p")
     else:
-        return time.strftime("%-I:%M%p %Z")
+        return time.strftime("%-I:%M%p")
 
 def date_no_year_str(date):
     if is_windows:

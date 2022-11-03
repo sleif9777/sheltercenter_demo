@@ -14,6 +14,9 @@ body {
   width: 100%;
 }
 
+/* Conditional formatting for full computers
+=================================================== */
+
 .main {
   margin-left: 220px;
   width: calc(100% - 220px);
@@ -36,6 +39,12 @@ body {
 .list-page li {
   margin: 2px 0px;
 }
+
+/* Conditional formatting for tablets
+=================================================== */
+
+/* Conditional formatting for phones
+=================================================== */
 
 /* Activity menu (left sidebar) and subcomponents
 =================================================== */
@@ -133,6 +142,141 @@ body {
 .no_actions,
 .no-actions {
   padding-bottom: 15px;
+}
+
+/* ==============================
+Appointment box styling
+
+TODO: consolidate and organize
+
+============================== */
+
+.appointment {
+  background-color: #e8e8e8;
+  border: 2px solid #cccccc;
+  color: #1E6C80;
+  display: inline-table;
+  height: fit-content;
+  margin: 10px 10px;
+  padding: 10px;
+  width: 90%;
+}
+
+.appt_subblock,
+.appt-subblock {
+  padding-top: 5px;
+}
+
+.appt_subblock em,
+.appt-subblock em {
+  color: #1E6C80;
+}
+
+.appt_subblock a:hover,
+.appt-subblock a:hover {
+  color: #1E6C80;
+  text-decoration: underline;
+}
+
+.appt_subblock a,
+.appt-subblock a {
+  color: #1E6C80;
+  text-decoration: none;
+}
+
+.appt_subblock table,
+.appt-subblock table {
+  border-bottom: 1px solid #1E6C80;
+  text-align: left;
+  width: 100%;
+}
+
+/* .appt_subblock th,
+.appt-subblock th {
+  text-align: left;
+} */
+
+.appt_subblock td,
+.appt-subblock td {
+  border-bottom: none;
+  font-size: 10pt;
+  text-align: left;
+  vertical-align: top;
+}
+
+
+table.appt_info_block, 
+table.appt-info-block {
+  margin-bottom: 0;
+  width: 100%;
+  border-bottom: 1px solid #1E6C80;
+}
+
+table.infobox_table,
+table.infobox-table {
+  width: 100%;
+  margin-bottom: 0px;
+  margin-top: 5px;
+  border-bottom: none;
+}
+
+table.infobox_table th,
+table.infobox-table th {
+  text-align: left;
+  width: 33.33%;
+}
+
+table.infobox_table td,
+table.infobox-table td {
+  border-bottom: none;
+  vertical-align: top;
+}
+
+.short_notice table.appt_info_block,
+.short_notice table.appt-info-block,
+.short-notice table.appt-info-block {
+  border-bottom: 1px solid #7A7400;
+}
+
+.short_notice table.appt_end_block, 
+.short_notice table.appt-end-block, 
+.short-notice table.appt-end-block, 
+table.appt-end-block,
+table.appt-end-block {
+  border-bottom: none;
+}
+
+.info_block_subheader,
+.info-block-subheader {
+  font-size: 14pt;
+  padding-bottom: 5px;
+}
+
+.appt_description,
+.appt-description {
+  font-size: 18pt;
+}
+
+#appt_header_block,
+#appt-header-block {
+  margin-bottom: 0;
+}
+
+#appt_header_block td,
+#appt-header-block td {
+  border-bottom: none;
+}
+
+#appt_header_block a,
+#appt-header-block a {
+  color: #1E6C80;
+  text-decoration: none;
+}
+
+#appt_header_block a:hover,
+#appt-header-block a:hover {
+  color: #1E6C80;
+  text-decoration: underline;
 }
 
 /* ==============================
@@ -374,16 +518,7 @@ Alert box styling
   padding: 10px;
 }
 
-.appointment {
-  background-color: #e8e8e8;
-  border: 2px solid #cccccc;
-  color: #1E6C80;
-  display: inline-table;
-  height: fit-content;
-  margin: 10px 10px;
-  padding: 10px;
-  width: 90%;
-}
+
 
 .appt_action,
 .appt-action {
@@ -440,55 +575,6 @@ Alert box styling
   text-decoration: underline;
 }
 
-.appt_subblock th.right, 
-.appt_subblock td.right,
-.appt-subblock th.right, 
-.appt-subblock td.right {
-  text-align: right;
-}
-
-.appt_subblock,
-.appt-subblock {
-  padding-top: 5px;
-}
-
-.appt_subblock em,
-.appt-subblock em {
-  color: #1E6C80;
-}
-
-.appt_subblock a:hover,
-.appt-subblock a:hover {
-  color: #1E6C80;
-  text-decoration: underline;
-}
-
-.appt_subblock a,
-.appt-subblock a {
-  color: #1E6C80;
-  text-decoration: none;
-}
-
-.appt_subblock table,
-.appt-subblock table {
-  border-bottom: 1px solid #1E6C80;
-  text-align: left;
-  width: 100%;
-}
-
-.appt_subblock th,
-.appt-subblock th {
-  text-align: left;
-}
-
-.appt_subblock td,
-.appt-subblock td {
-  border-bottom: none;
-  font-size: 10pt;
-  text-align: left;
-  vertical-align: top;
-}
-
 
 /* Appointment subcomponent styling - short notice
 =================================================== */
@@ -512,7 +598,6 @@ Alert box styling
   color: #7A7400;
   text-decoration: underline;
 }
-
 
 .contact_adopter {
   border-bottom: 1px solid #1E6C80;
@@ -644,15 +729,7 @@ p.standalone {
   margin-bottom: 5px;
 }
 
-a.standalone {
-  color: #A7396E;
-  text-decoration: none;
-}
 
-a.standalone:hover {
-  color: grey;
-  text-decoration: underline;
-}
 
 .adopter_messages,
 .adopter-messages {
@@ -737,86 +814,8 @@ td {
   border-collapse: collapse;
 }
 
-table {
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 20px;
-  width: 50%;
-}
 
-table.appt_info_block, 
-table.appt-info-block {
-  margin-bottom: 0px;
-  width: 100%;
-  border-bottom: 1px solid #1E6C80;
-}
 
-table.infobox_table,
-table.infobox-table {
-  width: 100%;
-  margin-bottom: 0px;
-  margin-top: 5px;
-  border-bottom: none;
-}
-
-table.infobox_table th,
-table.infobox-table th {
-  text-align: left;
-  width: 33.33%;
-}
-
-table.infobox_table td,
-table.infobox-table td {
-  border-bottom: none;
-  vertical-align: top;
-}
-
-.short_notice table.appt_info_block,
-.short_notice table.appt-info-block,
-.short-notice table.appt-info-block {
-  border-bottom: 1px solid #7A7400;
-}
-
-/* .short_notice table.appt_end_block, 
-.short_notice table.appt-end-block, 
-.short-notice table.appt-end-block,  */
-table.appt-end-block,
-table.appt-end-block {
-  border-bottom: none;
-}
-
-.info_block_subheader,
-.info-block-subheader {
-  font-size: 14pt;
-  padding-bottom: 5px;
-}
-
-.appt_description,
-.appt-description {
-  font-size: 18pt;
-}
-
-#appt_header_block,
-#appt-header-block {
-  margin-bottom: 0;
-}
-
-#appt_header_block td,
-#appt-header-block td {
-  border-bottom: none;
-}
-
-#appt_header_block a,
-#appt-header-block a {
-  color: #1E6C80;
-  text-decoration: none;
-}
-
-#appt_header_block a:hover,
-#appt-header-block a:hover {
-  color: #1E6C80;
-  text-decoration: underline;
-}
 
 .chosen_board_actions,
 .chosen-board-actions {
@@ -869,13 +868,9 @@ p.greeting {
   width: 100%;
 }
 
-
-
 .calendar-notes-header {
   font-weight: bold;
 }
-
-
 
 .ac-two-col-list {
   columns: 2;
@@ -887,12 +882,37 @@ p.greeting {
 Universalisms
 =================================================== */
 
+a {
+  color: #A7396E;
+  text-decoration: none;
+}
+
+a:hover {
+  color: grey;
+  text-decoration: underline;
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+  width: 50%;
+}
+
+th {
+  text-align: left;
+}
+
 .alert-symbol {
   font-size: 16pt;
 }
 
 .half-width {
   width: 50%;
+}
+
+.larger-font {
+  font-size: larger;
 }
 
 .left {
@@ -905,6 +925,10 @@ Universalisms
 
 .right {
   text-align: right;
+}
+
+.top {
+  vertical-align: top;
 }
 
 .upper {
