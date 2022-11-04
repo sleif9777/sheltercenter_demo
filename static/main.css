@@ -22,12 +22,6 @@ body {
   width: calc(100% - 220px);
 }
 
-.textpage,
-.text-page {
-  padding: 10px;
-  width: calc(100% - 240px);
-}
-
 .listpage,
 .list-page {
   list-style-type: none;
@@ -38,6 +32,12 @@ body {
 .listpage li,
 .list-page li {
   margin: 2px 0px;
+}
+
+.textpage,
+.text-page {
+  padding: 10px;
+  width: calc(100% - 240px);
 }
 
 /* Conditional formatting for tablets
@@ -120,20 +120,20 @@ body {
   text-align: center;
 }
 
-.page_header a, 
 .calendar_actions a,
-.page-header a, 
 .calendar-actions a,
+.page_header a, 
+.page-header a, 
 .page-actions a {
   color: black;
   margin: 5px;
   text-decoration: none;
 }
 
-.page_header a:hover, 
 .calendar_actions a:hover,
-.page-header a:hover, 
-.calendar-actions a:hover {
+.calendar-actions a:hover,
+.page_header a:hover, 
+.page-header a:hover {
   color: #A7396E;
   text-decoration: underline;
 }
@@ -162,94 +162,11 @@ TODO: consolidate and organize
   width: 90%;
 }
 
-.appt_subblock,
-.appt-subblock {
-  padding-top: 5px;
-}
-
-.appt_subblock em,
-.appt-subblock em {
-  color: #1E6C80;
-}
-
-.appt_subblock a:hover,
-.appt-subblock a:hover {
-  color: #1E6C80;
-  text-decoration: underline;
-}
-
-.appt_subblock a,
-.appt-subblock a {
-  color: #1E6C80;
-  text-decoration: none;
-}
-
-.appt_subblock table,
-.appt-subblock table {
-  border-bottom: 1px solid #1E6C80;
-  text-align: left;
-  width: 100%;
-}
-
-/* .appt_subblock th,
-.appt-subblock th {
-  text-align: left;
-} */
-
-.appt_subblock td,
-.appt-subblock td {
-  border-bottom: none;
-  font-size: 10pt;
-  text-align: left;
-  vertical-align: top;
-}
-
-
-table.appt_info_block, 
-table.appt-info-block {
-  margin-bottom: 0;
-  width: 100%;
-  border-bottom: 1px solid #1E6C80;
-}
-
-table.infobox_table,
-table.infobox-table {
-  width: 100%;
-  margin-bottom: 0px;
-  margin-top: 5px;
-  border-bottom: none;
-}
-
-table.infobox_table th,
-table.infobox-table th {
-  text-align: left;
-  width: 33.33%;
-}
-
-table.infobox_table td,
-table.infobox-table td {
-  border-bottom: none;
-  vertical-align: top;
-}
-
-.short_notice table.appt_info_block,
-.short_notice table.appt-info-block,
-.short-notice table.appt-info-block {
-  border-bottom: 1px solid #7A7400;
-}
-
-.short_notice table.appt_end_block, 
-.short_notice table.appt-end-block, 
-.short-notice table.appt-end-block, 
-table.appt-end-block,
-table.appt-end-block {
-  border-bottom: none;
-}
-
-.info_block_subheader,
-.info-block-subheader {
-  font-size: 14pt;
-  padding-bottom: 5px;
+.ac-two-col-list,
+.appt-two-col-list {
+  columns: 2;
+  list-style-type: none;
+  padding-left: 0;
 }
 
 .appt_description,
@@ -257,26 +174,65 @@ table.appt-end-block {
   font-size: 18pt;
 }
 
-#appt_header_block,
-#appt-header-block {
+.appt_info_block, 
+.appt-info-block {
+  border-bottom: 1px solid #1E6C80;
   margin-bottom: 0;
+  width: 100%;
+}
+
+.appt-info-block.no-border,
+.short-notice .appt-info-block.no-border {
+  border-bottom: none;
+}
+
+.appt_subblock,
+.appt-subblock {
+  padding-top: 5px;
+}
+
+.appt_subblock a,
+.appt-subblock a,
+.appt_subblock a:hover,
+.appt-subblock a:hover,
+#appt_header_block a,
+#appt-header-block a {
+  color: #1E6C80;
+}
+
+.appt_subblock td,
+.appt-subblock td {
+  border-bottom: none;
+  font-size: 10pt;
+}
+
+.completed-appt-action {
+  color: grey;
+  display: inline-table;
+  text-decoration: line-through;
+}
+
+.info_block_subheader,
+.info-block-subheader {
+  font-size: 14pt;
+}
+
+/* Appointment subcomponent styling - short notice
+=================================================== */
+
+.short-notice .appt-info-block {
+  border-bottom: 1px solid #7A7400;
+}
+
+.short-notice .completed-appt-action,
+.short-notice #appt_header_block a,
+.short-notice #appt-header-block a {
+  color: #7A7400;
 }
 
 #appt_header_block td,
 #appt-header-block td {
   border-bottom: none;
-}
-
-#appt_header_block a,
-#appt-header-block a {
-  color: #1E6C80;
-  text-decoration: none;
-}
-
-#appt_header_block a:hover,
-#appt-header-block a:hover {
-  color: #1E6C80;
-  text-decoration: underline;
 }
 
 /* ==============================
@@ -299,16 +255,6 @@ Alert box styling
   width: 100%;
 }
 
-.info_box a,
-.info-box a {
-  text-decoration: none;
-}
-
-.info_box a:hover,
-.info-box a:hover {
-  text-decoration: underline;
-}
-
 .info-box-data {
   border-bottom: 1px solid;
 }
@@ -316,15 +262,15 @@ Alert box styling
 /* Calendar notes - magenta theme */
 .calendar_notes
 .calendar-notes,
-.calendar-notes a {
+.calendar-notes a,
+.calendar-notes a:hover {
   background-color: #F2D9E5;
   border-color: #A7396E;
   color: #A7396E;
 }
 
 /* Completed all tasks - green theme */
-.completed-all-tasks,
-.completed-all-tasks a {
+.completed-all-tasks {
   background-color: #B8FFE0;
   border-color: #005C34;
   color: #005C34;
@@ -333,7 +279,8 @@ Alert box styling
 /* Oustanding tasks - red theme */
 .outstanding_task,
 .outstanding-task,
-.outstanding-task a {
+.outstanding-task a,
+.outstanding-task a:hover {
   background-color: #ea9999;
   border-color: #800;
   color: #800;
@@ -342,7 +289,8 @@ Alert box styling
 /* Short notice (overall) - gold theme */
 .short_notice,
 .short-notice,
-.short-notice a {
+.short-notice a,
+.short-notice a:hover {
   background-color: #FFFCC9;
   border-color: #7A7400;
   color: #7A7400;
@@ -351,13 +299,12 @@ Alert box styling
 /* Short notice alert box on calendar
   =================================================== */
 
-#short-notice-table {
-  margin-top: 5px;
+.short-notice-subscript {
+  font-size: 8pt;
 }
 
-#short-notice-table th {
-  text-align: left;
-  width: 33.33%;
+#short-notice-table {
+  margin-top: 5px;
 }
 
 #short-notice-table td {
@@ -365,19 +312,8 @@ Alert box styling
   vertical-align: top;
 }
 
-.short_notice_box,
-.short-notice-box,
-.short_notice_box a,
-.short-notice-box a,
-.short-notice #appt_header_block a,
-.short-notice #appt-header-block a {
-  background-color: #FFFCC9;
-  border-color: #7A7400;
-  color: #7A7400;
-}
-
-.short-notice-subscript {
-  font-size: 8pt;
+#short-notice-table th {
+  width: 33.33%;
 }
 
 /* Remainder */
@@ -520,24 +456,7 @@ Alert box styling
 
 
 
-.appt_action,
-.appt-action {
-  display: inline-table;
-  padding: 5px;
-}
 
-.appt_action a,
-.appt-action a {
-  color: #1E6C80;
-  text-decoration: none;
-  margin: 5px;
-}
-
-.appt_action a:hover,
-.appt-action a:hover {
-  color: #1E6C80;
-  text-decoration: underline;
-}
 
 .timeslot_header,
 .timeslot-header {
@@ -576,29 +495,6 @@ Alert box styling
 }
 
 
-/* Appointment subcomponent styling - short notice
-=================================================== */
-
-.short_notice .appt_subblock a, 
-.short_notice #appt_header_block a,
-.short_notice .appt-subblock a, 
-.short_notice #appt_header-block a,
-.short-notice .appt-subblock a, 
-.short-notice #appt_header-block a {
-  color: #7A7400;
-  text-decoration: none;
-}
-
-.short_notice .appt_subblock a:hover, 
-.short_notice #appt_header_block a:hover,
-.short_notice .appt-subblock a:hover, 
-.short_notice #appt-header-block a:hover,
-.short-notice .appt-subblock a:hover, 
-.short-notice #appt-header-block a:hover {
-  color: #7A7400;
-  text-decoration: underline;
-}
-
 .contact_adopter {
   border-bottom: 1px solid #1E6C80;
   border-top: 1px solid #1E6C80;
@@ -621,13 +517,6 @@ Alert box styling
 
 .contact_adopter_quickbuttons {
   display: inline-table;
-}
-
-span.completed_appt_action,
-.completed-appt-action {
-  color: grey;
-  display: inline-table;
-  text-decoration: line-through;
 }
 
 .contact_adopter_quickbutton_links:hover {
@@ -804,15 +693,6 @@ a.decision_made:hover {
   margin-bottom: 10px;
 }
 
-textarea {
-  height: 200px;
-  width: 100%;
-}
-
-td {
-  border-bottom: 1px solid #1E6C80;
-  border-collapse: collapse;
-}
 
 
 
@@ -872,12 +752,6 @@ p.greeting {
   font-weight: bold;
 }
 
-.ac-two-col-list {
-  columns: 2;
-  list-style-type: none;
-  padding-left: 0;
-}
-
 /* ===================================================
 Universalisms
 =================================================== */
@@ -897,6 +771,16 @@ table {
   margin-right: auto;
   margin-bottom: 20px;
   width: 50%;
+}
+
+td {
+  border-bottom: 1px solid #1E6C80;
+  border-collapse: collapse;
+}
+
+textarea {
+  height: 200px;
+  width: 100%;
 }
 
 th {

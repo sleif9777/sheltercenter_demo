@@ -4,12 +4,12 @@
   {% if not appt.available %}
   <table class="appt-info-block" id="appt-header-block">
   {% else %}
-  <table class="appt-info-block appt-end-block" id="appt-header-block">
+  <table class="appt-info-block no-border" id="appt-header-block">
   {% endif %}
     <tbody>
       <tr>
         <td class="appt-description left upper">
-          <a class="appt-action" href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">
+          <a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">
             {% if appt.locked %}&#128274;&#xFE0E;{% endif %}
             {% if appt.short_notice %}&#9888;&#xFE0E;{% endif %}
             {% if show_timestr %}{{appt_str}}{% else %}{{appt}}{% endif %}
@@ -55,7 +55,7 @@
   <table class="appt-subblock appt-info-block">
   <!-- if false, it is an open appointment, paperwork, or surrender and could have notes at most -->
   {% else %}
-  <table class="appt-subblock appt-info-block appt-end-block">
+  <table class="appt-subblock appt-info-block no-border">
   {% endif %}      
     <tbody>
       <tr class="info-block-subheader">
@@ -265,7 +265,7 @@
   </table>
 
   <!-- actions table will always be last (if present) -->
-  <table class="appt-subblock appt-info-block appt-end-block">
+  <table class="appt-subblock appt-info-block no-border">
     <tbody>
       <tr class="info-block-subheader">
         <th>Follow-Ups</th>
