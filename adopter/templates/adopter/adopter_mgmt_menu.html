@@ -1,0 +1,91 @@
+{% load auth_extras %}
+
+<div class="appointment">
+    <table class="appt-info-block" id="appt-header-block">
+        <tr>
+        <td class="appt-description left upper">
+            <b>
+            {% if adopter.adoption_complete %}
+            ADOPTION COMPLETE
+            {% else %}
+            NO APPOINTMENT SET
+            {% endif %}
+            </b>
+        </td>
+    </table>
+    <table class="appt-subblock appt-info-block">
+        <tr class="info_block_subheader">
+            <th class="left">Notes</th>
+            <th class="right"></th>
+        </tr>
+        {% if appt.internal_notes or adopter_notes or adopter.app_interest %}
+            {% if adopter.app_interest %}
+            <tr>
+                <td class="left"><b>From Shelterluv:</b></td>
+                <td class="left">{{adopter.app_interest|linebreaks}}</td>
+            </tr>
+            {% endif %}
+        {% else %}
+        <tr>
+            <td class="left">No notes on file for this adopter.</td>
+        </tr>
+        {% endif %}
+    </table>
+    {% if adopter.application_id %}
+    <table class="appt-subblock appt-info-block">
+        <tr class="info-block-subheader">
+            <th>About {{adopter.f_name}}</th>
+            <th class="right"></th>
+        </tr>
+        <tr>
+            <td>
+            {% if adopter.city != "" and adopter.state != "" %}
+            Coming from {{adopter.city}}, {{adopter.state}}
+            {% else %}
+            No Shelterluv information on file.
+            {% endif %}
+            </td>
+            <td class="right">
+            {% if adopter.housing_type != "" and adopter.housing != "" %}
+            {{adopter.housing_type}} ({{adopter.housing}})
+            {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>
+            {% if adopter.activity_level != "" %}
+            {{adopter.activity_level}} Activity Household
+            {% endif %}
+            </td>
+            <td class="right">
+            {% if adopter.has_fence %}
+            Has Fence
+            {% elif adopter.application_id and not adopter.has_fence %}
+            No Fence
+            {% endif %}
+            </td>
+        </tr>
+    </table>
+    {% endif %}
+    <table class="appt-subblock appt-info-block no-border">
+        <tr class="info-block-subheader">
+            <th>
+                <ul class="appt-two-col-list">
+                    <li><a href="{% url 'contact_adopter' 100 2021 1 1 source %}">Contact {{adopter.f_name}} &#9993;&#xFE0E;</a></li>
+                    <li><a href="{% url 'greeter_reschedule' adopter.id 100 today.year today.month today.day 'edit' %}">Schedule {{adopter.f_name}}</a></li>
+                    <li><a href="https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}" target="_blank">Print Application</a></li>
+                    {% if request.user|has_group:"superuser" %}
+                    <li><a href="https://sheltercenter.dog/admin/adopter/adopter/{{adopter.id}}/change/">Edit in Admin</a></li>
+                    {% endif %}
+                    {% if adopter.status == "1" and not adoption_complete %}
+                    <li><a href="{% url 'resend_invite' adopter.id %}">Resend Invitation</a></li>
+                    <li><a href="{% url 'set_alert_mgr' adopter.id %}">Set Reminder</a></li>
+                    {% endif %}
+                    {% if adopter.adoption_complete %}
+                    <li><a href="{% url 'allow_access' adopter.id %}">Restore Calendar Access</a></li>
+                    {% endif %}
+                </ul>
+            </th>
+        </tr>
+    </table>
+</div>

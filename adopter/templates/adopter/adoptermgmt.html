@@ -8,15 +8,15 @@
   function filterAdopters() {
     // Declare variables
     var input, filter, ul, li, name, email, i, txtValue;
-    input = document.getElementById('searchBar');
+    input = document.getElementById("search-bar");
     filter = input.value.toLowerCase();
-    ul = document.getElementById("adopter_list");
-    li = ul.getElementsByClassName('adopter_listing');
+    ul = document.getElementById("adopter-list");
+    li = ul.getElementsByClassName('adopter-listing-entry');
 
     // Loop through all list items, and hide those who don't match the search query
     for (i = 0; i < li.length; i++) {
-      name = li[i].getElementsByClassName("adopter_name")[0];
-      email = li[i].getElementsByClassName("adopter_email")[0];
+      name = li[i].getElementsByClassName("adopter-name")[0];
+      email = li[i].getElementsByClassName("adopter-email")[0];
       nameTxtValue = name.textContent || name.innerText;
       emailTxtValue = email.textContent || email.innerText;
       if (nameTxtValue.toLowerCase().indexOf(filter) > -1 || emailTxtValue.toLowerCase().indexOf(filter) > -1) {
@@ -32,11 +32,11 @@
   <div class="page-actions">
     <a href="{% url 'send_to_inactive' %}">Send Follow-Up Emails</a>
   </div>
-  <input type="text" class="search-bar" onkeyup="filterAdopters()" placeholder="Search by name or email address.">
+  <input type="text" id="search-bar" onkeyup="filterAdopters()" placeholder="Search by name or email address.">
   <ul class="list-page" id="adopter-list">
     {% for adopter in adopters %}
       <div class="adopter-listing">
-        <li class="adopter-listing">
+        <li class="adopter-listing-entry">
           <a href="{% url 'edit_adopter' adopter.id %}">
             <span class="adopter-name">
             {{adopter}}
@@ -46,7 +46,7 @@
             &#x231B;&#xFE0E;
             {% endif %}
             </span><br>
-            <span class="subscript">{{adopter.primary_email}}</span>
+            <span class="adopter-email subscript">{{adopter.primary_email}}</span>
           </a>
         </li>
       </div>

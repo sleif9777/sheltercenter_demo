@@ -293,6 +293,15 @@ Alert box styling
   color: #7A7400;
 }
 
+/* Table of contents - blue theme */
+.toc,
+.toc a,
+.toc a:hover {
+  background-color: #D2ECF4;
+  border-color: #1E6C80;
+  color: #1E6C80;
+}
+
 /* Short notice alert box on calendar
   =================================================== */
 
@@ -349,7 +358,7 @@ div.adopter-listing {
   break-inside: avoid-column;
 }
 
-li.adopter-listing {
+.adopter-listing-entry {
   border-bottom: 1px solid #BF4580;
 }
 
@@ -358,7 +367,7 @@ li.adopter-listing {
   font-size: 14pt;
 }
 
-.search-bar {
+#search-bar {
   border: 1px solid #ddd; 
   font-size: 16px;
   margin: 12px 0;
@@ -622,10 +631,7 @@ li.adopter-listing {
 }
 
 
-p.standalone,
-.form-constructions {
-  margin-bottom: 5px;
-}
+
 
 .adopter_messages,
 .adopter-messages {
@@ -737,6 +743,15 @@ a {
 a:hover {
   color: grey;
   text-decoration: underline;
+}
+
+p.standalone,
+.btm-margin-5 {
+  margin-bottom: 5px;
+}
+
+.btm-margin-10 {
+  margin-bottom: 10px;
 }
 
 table {
