@@ -81,9 +81,9 @@
       </table>
 
       {% if current_appt.adopter_notes %}
-        <table class="appt_subblock appt-info-block">
+        <table class="appt-subblock appt-info-block">
 
-          <tr class="info_block_subheader">
+          <tr class="info-block-subheader">
             <th class="left"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">Notes</a></th>
             <th class="right"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
           </tr>
@@ -96,8 +96,8 @@
         </table>
       {% endif %}
 
-      <table class="appt_subblock appt-info-block">
-        <tr class="info_block_subheader">
+      <table class="appt-subblock appt-info-block">
+        <tr class="info-block-subheader">
           <th class="left"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">Preferences</a></th>
           <th class="right"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
         </tr>
@@ -144,7 +144,7 @@
 
       </table>
 
-      <table class="appt_subblock appt-info-block appt-end-block">
+      <table class="appt-subblock appt-info-block appt-end-block">
 
         <tr>
           <td class="left"><a href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">Cancel My Appointment</a></td>

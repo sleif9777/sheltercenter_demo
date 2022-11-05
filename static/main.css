@@ -146,9 +146,6 @@ body {
 
 /* ==============================
 Appointment box styling
-
-TODO: consolidate and organize
-
 ============================== */
 
 .appointment {
@@ -299,10 +296,6 @@ Alert box styling
 /* Short notice alert box on calendar
   =================================================== */
 
-.short-notice-subscript {
-  font-size: 8pt;
-}
-
 #short-notice-table {
   margin-top: 5px;
 }
@@ -316,19 +309,67 @@ Alert box styling
   width: 33.33%;
 }
 
-/* Remainder */
+/* ==============================
+Form component box styling
 
+TO DO: organize and consolidate
+============================== */
 
+.add-adopter input {
+  margin-bottom: 10px;
+}
 
-#searchBar,
-#search-bar,
+input[type=submit] {
+  background-color: #e8e8e8;
+  border: 1px solid #cccccc;
+  color: #1E6C80;
+  padding: 5px;
+}
+
+input[type=submit]:hover {
+  background-color: #dddddd;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+input[type=submit].copytemplate,
+input[type=submit].copy-template {
+  font-size: 18pt;
+  font-weight: bold;
+  padding: 10px;
+}
+
+/* ==============================
+List page styling
+
+TO DO: organize and consolidate
+============================== */
+
+div.adopter-listing {
+  break-inside: avoid-column;
+}
+
+li.adopter-listing {
+  border-bottom: 1px solid #BF4580;
+}
+
+.adopter_name,
+.adopter-name {
+  font-size: 14pt;
+}
+
 .search-bar {
   border: 1px solid #ddd; 
   font-size: 16px;
-  margin-bottom: 12px;
+  margin: 12px 0;
   padding: 12px 20px 12px 10px; 
   width: 95%;
 }
+
+
+
+/* Remainder */
+
 
 
 
@@ -580,45 +621,11 @@ Alert box styling
   border-bottom: none;
 }
 
-input[type=submit].copytemplate,
-input[type=submit].copy-template {
-  background-color: #e8e8e8;
-  border: 2px solid #cccccc;
-  color: #1E6C80;
-  display: inline-table;
-  font-size: 18pt;
-  font-weight: bold;
-  padding: 10px;
-}
 
-input[type=submit].copytemplate:hover,
-input[type=submit].copy-template:hover {
-  background-color: #dddddd;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-input[type=submit].submitform
-input[type=submit].submit-form {
-  background-color: #e8e8e8;
-  border: 1px solid #cccccc;
-  color: #1E6C80;
-  display: inline-table;
-  padding: 5px;
-}
-
-input[type=submit].submitform:hover
-input[type=submit].submit-form:hover {
-  background-color: #dddddd;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-p.standalone {
+p.standalone,
+.form-constructions {
   margin-bottom: 5px;
 }
-
-
 
 .adopter_messages,
 .adopter-messages {
@@ -684,14 +691,6 @@ a.decision_made:hover {
   text-decoration: underline;
 }
 
-.add_adopter input[type=checkbox],
-.add_adopter input[type=email], 
-.add_adopter input[type=text],
-.add-adopter input[type=checkbox],
-.add-adopter input[type=email], 
-.add-adopter input[type=text] {
-  margin-bottom: 10px;
-}
 
 
 
@@ -716,32 +715,6 @@ p.greeting {
 #adopter_mgmt_appt,
 #adopter-mgmt-appt {
   width: 90%;
-}
-
-.adopter_list_div,
-.adopter-list-div {
-  break-inside: avoid-column;
-}
-
-.adopter_listing,
-.adopter-listing {
-  border-bottom: 1px solid #BF4580;
-}
-
-.adopter_name,
-.adopter-name {
-  font-size: 14pt;
-}
-
-.adopter_email,
-.adopter-email {
-  font-size: 8pt;
-}
-
-.adopter_listing_actions,
-.adopter-listing-actions {
-  list-style-type: '\2937';
-  padding-left: 10%;
 }
 
 #calendar-messages {
@@ -771,6 +744,11 @@ table {
   margin-right: auto;
   margin-bottom: 20px;
   width: 50%;
+}
+
+table.print-view {
+  font-size: 10pt;
+  width: 100%;
 }
 
 td {
@@ -809,6 +787,10 @@ th {
 
 .right {
   text-align: right;
+}
+
+.subscript {
+  font-size: 8pt;
 }
 
 .top {

@@ -3,31 +3,24 @@
 {% load auth_extras %}
 
 {% block content %}
-  <div class="main textpage">
-
-    <h1 class="page_header no_actions">Add Adopters</h1>
-
-    <form class="add_adopter" enctype="multipart/form-data" action="" method="post">
-      {% csrf_token %}
-      <label for="app_file">Upload a file to add multiple adopters from Shelterluv:</label><br><br>
-      <input type="file" name="app_file" value="app_file"><br><br>
-      <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Add Adopters"><br>
-    </form>
-
-    <br><hr><br>
-
-    <p>Or input each adopter individually:</p><br>
-
-    <form class="add_adopter" action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Add Adopter"><br>
-    </form>
-    <br>
-
-    {% if request.user|has_group:"superuser" %}
-    <a href="{% url 'reconcile' %}" class="standalone">Reconcile</a>
-    {% endif %}
-
-  </div>
+<div class="main text-page">
+  <h1 class="page-header no-actions">Add Adopters</h1>
+  <form enctype="multipart/form-data" action="" method="post">
+    {% csrf_token %}
+    <label for="app_file">Upload a file to add multiple adopters from Shelterluv:</label><br><br>
+    <input type="file" name="app_file" value="app_file"><br><br>
+    <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Add Adopters"><br>
+  </form>
+  <br><hr><br>
+  <p>Or input each adopter individually:</p><br>
+  <form class="add-adopter" action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Add Adopter"><br>
+  </form>
+  <br>
+  {% if request.user|has_group:"superuser" %}
+  <a href="{% url 'reconcile' %}">Reconcile</a>
+  {% endif %}
+</div>
 {% endblock %}

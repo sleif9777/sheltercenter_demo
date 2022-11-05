@@ -27,26 +27,26 @@
     }
   }
 </script>
-<div class="main textpage">
-  <h1 class="page_header">Manage Adopters</h1>
-  <div class="calendar_actions" style="margin-bottom: 15px;">
+<div class="main text-page">
+  <h1 class="page-header">Manage Adopters</h1>
+  <div class="page-actions">
     <a href="{% url 'send_to_inactive' %}">Send Follow-Up Emails</a>
   </div>
-  <input type="text" id="searchBar" onkeyup="filterAdopters()" placeholder="Search by name or email address.">
-  <ul class="listpage" id="adopter_list">
+  <input type="text" class="search-bar" onkeyup="filterAdopters()" placeholder="Search by name or email address.">
+  <ul class="list-page" id="adopter-list">
     {% for adopter in adopters %}
-      <div class="adopter_list_div">
-        <li class="adopter_listing">
-          <a class="standalone" href="{% url 'edit_adopter' adopter.id %}">
-            <span class="adopter_name">
+      <div class="adopter-listing">
+        <li class="adopter-listing">
+          <a href="{% url 'edit_adopter' adopter.id %}">
+            <span class="adopter-name">
             {{adopter}}
             {% if adopter.status == "2" %}
-              &#128683;&#xFE0E;
+            &#128683;&#xFE0E;
             {% elif adopter.status == "3" %}
-              &#x231B;&#xFE0E;
+            &#x231B;&#xFE0E;
             {% endif %}
             </span><br>
-            <span class="adopter_email">{{adopter.primary_email}}</span>
+            <span class="subscript">{{adopter.primary_email}}</span>
           </a>
         </li>
       </div>

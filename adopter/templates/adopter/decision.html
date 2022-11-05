@@ -2,25 +2,21 @@
 {% load static %}
 
 {% block content %}
-  <div class="main textpage">
+<div class="main text-page">
+  <h1 class="page-header no-actions">Your Adoption Request Has Been Reviewed</h1>
+  <p class="btm-margin-5">Hi {{first_name}},</p>
+  <p class="btm-margin-5">Congratulations, your Saving Grace adoption request has been reviewed and accepted. It is time to schedule your appointment. Please review the following information, as many of our FAQs are addressed here.</p>
+  <p class="btm-margin-5">The Adoptions Team<br>Saving Grace Animals for Adoption</p>
 
-    <h1 class="page_header no_actions">Your Adoption Request Has Been Reviewed</h1>
+  {% include 'adopter/faq_content.html' %}
 
-    <p>Hi {{first_name}},</p>
-    <br>
-    <p>Congratulations, your Saving Grace adoption request has been reviewed and accepted. It is time to schedule your appointment. Please review the following information, as many of our FAQs are addressed here.</p>
-
-    <p><br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
-    <br>
-
-    {% include 'adopter/faq_content.html' %}
-
-    <form class="" action="{% url 'acknowledged_faq' %}" method="post">
-      {% csrf_token %}
+  <form action="{% url 'acknowledged_faq' %}" method="post">
+    {% csrf_token %}
+    <span class="btm-margin-5">
       <input type="checkbox" name="read_faq" value="read_faq" required>
-      <label for="read_faq"> I have read the Frequently Asked Questions and am ready to schedule my appointment.</label><br><br>
-      <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Let's schedule my appointment!">
-    </form>
-
-  </div>
+      <label for="read_faq"> I have read the Frequently Asked Questions and am ready to schedule my appointment.</label>
+    </span>
+    <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" value="Let's schedule my appointment!">
+  </form>
+</div>
 {% endblock %}
