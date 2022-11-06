@@ -18,13 +18,15 @@
         <td class="info-box-data no-border">
           <span class="alert-symbol">&#9432;&#xFE0E; </span>
           {% if request.user.adopter.requested_access %}
-          <span class="larger-font">Congratulations on adopting a Saving Grace dog!</span>  <br><br>
+          <span class="larger-font btm-margin-10">Congratulations on adopting a Saving Grace dog!</span>
           We have your received your request to schedule a new appointment.
           {% elif request.user.adopter.requested_surrender %}
-          We have your received your request to surrender your Saving Grace dog. An adoptions manager will be in touch with you for follow-up soon. <br><br>
+          <span class="btm-margin-10">
+            We have your received your request to surrender your Saving Grace dog. An adoptions manager will be in touch with you for follow-up soon<br>
+          </span> 
           Please do not come to Saving Grace until a set time and date have been determined. We need to ensure we have sufficient space and resources for your dog to begin the re-acclimation process. As a result, we cannot accept any walk-in surrenders. You MUST have a scheduled appointment.
           {% else %}
-          <span class="larger-font">Congratulations on adopting a Saving Grace dog!</span>  <br><br>
+          <span class="larger-font btm-margin-10">Congratulations on adopting a Saving Grace dog!</span>
           If you would like to adopt again, <a href="{% url 'request_access' request.user.adopter.id %}" class="standalone">click here to request access to calendar appointments. </a><br>
           If you are seeking to surrender your Saving Grace dog, <a href="{% url 'surrender_form' request.user.adopter.id %}" class="standalone">click here to begin the process. </a>
           {% endif %}
@@ -35,231 +37,101 @@
   {% else %}
     {% if request.user.adopter.has_current_appt %}
     Your appointment is currently set for {{current_appt_str}}.<br>
-
-    <div class="appointment">
-      <!-- header grid, has a bottom border unless it is the only section -->
-      <!-- it will be the only section when the appointment has no notes -->
-      {% if current_appt.adopter_notes %}
-        <table class="appt-info-block" id="appt-header-block">
-      {% else %}
-        <table class="appt-info-block appt-end-block" id="appt-header-block">
-      {% endif %}
-
-        <tr>
-          <td class="appt-description left upper"><b><a class="appt-action" href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">{{current_appt_str}}</a>
-
-          <!-- {% if current_appt.mobility %}
-            &#9855;&#xFE0E;
-          {% endif %}
-          {% if current_appt.bringing_dog %}
-            &#128021;&#xFE0E;
-          {% endif %}
-          {% if current_appt.has_cat %}
-            &#128008;&#xFE0E;
-          {% endif %} -->
-          </td>
-
-          <td class="appt-description right"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a><a href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
-
-        </tr>
-
-        <tr>
-          <td class="left top"><b>({{current_appt.appt_string}})</b></td>
-          <td class="right">
-            {% if current_appt.mobility %}
-              <b>Mobility accomodations<br></b>
-            {% endif %}
-            {% if current_appt.bringing_dog %}
-              <b>Bringing dog!<br></b>
-            {% endif %}
-            {% if current_appt.has_cat %}
-              <b>Has a cat!</b>
-            {% endif %}
-          </td>
-        </tr>
-
-      </table>
-
-      {% if current_appt.adopter_notes %}
-        <table class="appt-subblock appt-info-block">
-
-          <tr class="info-block-subheader">
-            <th class="left"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">Notes</a></th>
-            <th class="right"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
-          </tr>
-
-          <tr>
-            <td class="left">{{current_appt.adopter_notes|linebreaks}}</td>
-            <td></td>
-          </tr>
-
-        </table>
-      {% endif %}
-
-      <table class="appt-subblock appt-info-block">
-        <tr class="info-block-subheader">
-          <th class="left"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">Preferences</a></th>
-          <th class="right"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
-        </tr>
-
-        <tr>
-          <td class="left">
-            {% if current_appt.adopter.gender_preference == "2" %}
-              Only interested in females
-            {% elif current_appt.adopter.gender_preference == "3" %}
-              Only interested in males
-            {% else %}
-              No gender preference
-            {% endif %}
-          </td>
-          <td class="right">
-            {% if current_appt.adopter.age_preference == "2" %}
-              Puppies only
-            {% elif current_appt.adopter.age_preference == "3" %}
-              Adults only
-            {% else %}
-              No age preference
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td class="left">
-            {% if current_appt.adopter.min_weight == 0 and current_appt.adopter.max_weight == 0 %}
-              No weight preference
-            {% elif current_appt.adopter.min_weight > 0 and current_appt.adopter.max_weight == 0 %}
-              Looking for over {{current_appt.adopter.min_weight}} lbs.
-            {% elif current_appt.adopter.max_weight > 0 and current_appt.adopter.min_weight == 0 %}
-              Looking for under {{current_appt.adopter.max_weight}} lbs.
-            {% elif current_appt.adopter.min_weight > 0 and current_appt.adopter.max_weight > 0 %}
-              Looking for between {{current_appt.adopter.min_weight}} and {{current_appt.adopter.max_weight}} lbs.
-            {% endif %}
-          </td>
-          <td class="right">
-            {% if current_appt.adopter.hypo_preferred %}
-              Needs hypo/low-shedding
-            {% endif %}
-          </td>
-        </tr>
-
-      </table>
-
-      <table class="appt-subblock appt-info-block appt-end-block">
-
-        <tr>
-          <td class="left"><a href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">Cancel My Appointment</a></td>
-          <td></td>
-        </tr>
-
-      </table>
-    </div>
-
-    {% if visible == True %}
-      <br><br>Click any open slot below to reschedule your appointment. We only book one appointment per adopter at a time. By booking any appointment below, you will forfeit your current appointment slot.
-      <br><br><b><a class="standalone" href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">Click here to cancel your appointment.</a></b>
-    {% endif %}
-    {% else %}
-      You do not currently have an appointment. Click any open slot below to schedule your appointment, or select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
-    {% endif %}
-
-    {% if calendar_announcement.text != "" %}
-      <div class="info-box calendar-notes">
-        <table>
-          <tr>
-            <td class="info-box-data no-border">
-              <span class="alert-symbol">&#9432;&#xFE0E; </span>{{calendar_announcement.text|safe}}
-            </td>
-          </tr>
-        </table>
-      </div>
-    {% endif %}
-
-    {% if daily_announcement %}
-      <div class="info-box calendar-notes">
-        <table>
-          <tr>
-            <td class="info-box-data no-border">
-              <span class="alert-symbol">&#9432;&#xFE0E; </span>{{daily_announcement.text|safe}}
-            </td>
-          </tr>
-        </table>
-      </div>
-    {% endif %}
-
-    {% if offsite_dogs %}
-      <div class="info-box calendar-notes">
-        <table>
-          <tr>
-            <td class="info-box-data no-border">
-              <span class="alert-symbol">&#9432;&#xFE0E; </span> The following dogs are currently in foster and require pre-arranged appointments. Please click a name below to begin coordinating with us. Do not book an appointment below.
-              <ul>
-                {% for dog in offsite_dogs %}
-                {% if dog.appt_only %}
-                <li><a href="{% url 'contact_us' dog.name %}">{{dog.name}}</a></li>
-                {% endif %}
-                {% endfor %}
-              </ul>
-            </td>
-          </tr>
-
-          <tr>
-            <td class="info-box-data no-border">
-              <span class="alert-symbol">&#9432;&#xFE0E; </span> The following dogs are currently on an Extended Host Weekend or are returning from Foster soon. Please keep these dates in mind if looking to meet one of them:
-              <ul>
-                {% for dog in offsite_dogs %}
-                {% if not dog.appt_only %}
-                <li>
-                  {{dog.name}}
-                  {% if dog.host_date.year > 2000 %}
-                  , returning {{dog.host_date}}
-                  {% elif dog.foster_date.year > 2000 %}
-                  , returning {{dog.foster_date}}
-                  {% endif %}
-                </li>
-                {% endif %}
-                {% endfor %}
-              </ul>
-            </td>
-          </tr>
-        </table>
-      </div>
-    {% endif %}
-
-    {% if date.weekday == 5 or date.weekday == 6 %}
-      <div class="info-box calendar-notes">
-        <table>
-          <tr>
-            <td class="info-box-data no-border">
-              <span class="alert-symbol">&#9432;&#xFE0E; </span>We are not open on weekends.
-            </td>
-          </tr>
-        </table>
-      </div>
-    {% endif %}
-
-    {% if visible == False or empty_day_db %}
-      {% if date.weekday < 5 %}
-        <br><br>
-        <p>We only schedule two weeks in advance, and are not scheduling for this date yet.
-        {% if request.user.adopter.alert_date == date %}
-          We will alert you when appointments for this date are open.
-        {% else %}
-          <a class="standalone" href="{% url 'set_alert_date' date.year date.month date.day %}">Please click here to be alerted when we have opened appointments for this date.</a>
-        {% endif %}
-        </p>
+      {% if visible == True %}
+      Click any open slot below to reschedule your appointment. We only book one appointment per adopter at a time. By booking any appointment below, you will forfeit your current appointment slot. <br>
       {% endif %}
     {% else %}
-      {% if empty_day == True and date.weekday < 5 %}
-      <div class="info-box calendar-notes">
-        <table>
-          <tr>
-            <td class="info-box-data no-border">
-              <span class="alert-symbol">&#9432;&#xFE0E; </span>We're sorry, this date is fully booked. To see more available appointments, please select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
-            </td>
-          </tr>
-        </table>
-      </div>
-      {% endif %}
+    You do not currently have an appointment. Click any open slot below to schedule your appointment, or select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
+    {% endif %}
+
+    {% if request.user.adopter.has_current_appt %}
+    <table id="calendar-messages">
+      <tr>
+        <td class="no-border half-width">
+          {% include 'appt_calendar/appointment_adopter_cal_msg.html' %}
+        </td>
+        <td class="left no-border half-width">
+          <div class="info-box calendar-notes">
+            <table>
+              {% if calendar_announcement.text != "" %}
+              <tr>
+                <td class="info-box-data">
+                  <span class="alert-symbol">&#9432;&#xFE0E; </span>{{calendar_announcement.text|safe}}
+                </td>
+              </tr>
+              {% endif %}
+              {% if daily_announcement %}
+              <tr>
+                <td class="info-box-data no-border">
+                  <span class="alert-symbol">&#9432;&#xFE0E; </span>{{daily_announcement.text|safe}}
+                </td>
+              </tr>
+              {% endif %}
+              {% if offsite_dogs %}
+              <tr>
+                <td class="info-box-data no-border">
+                  <span class="alert-symbol">&#9432;&#xFE0E; </span> The following dogs are currently in foster and require pre-arranged appointments. Please click a name below to begin coordinating with us. Do not book an appointment below.
+                  <ul>
+                    {% for dog in offsite_dogs %}
+                    {% if dog.appt_only %}
+                    <li><a href="{% url 'contact_us' dog.name %}">{{dog.name}}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td class="info-box-data no-border">
+                  <span class="alert-symbol">&#9432;&#xFE0E; </span> The following dogs are currently on an Extended Host Weekend or are returning from Foster soon. Please keep these dates in mind if looking to meet one of them:
+                  <ul>
+                    {% for dog in offsite_dogs %}
+                    {% if not dog.appt_only %}
+                    <li>
+                      {{dog.name}}
+                      {% if dog.host_date.year > 2000 %}
+                      , returning {{dog.host_date}}
+                      {% elif dog.foster_date.year > 2000 %}
+                      , returning {{dog.foster_date}}
+                      {% endif %}
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                  </ul>
+                </td>
+              </tr>
+              {% endif %}
+              {% if date.weekday == 5 or date.weekday == 6 %}
+              <tr>
+                <td class="info-box-data no-border">
+                  <span class="alert-symbol">&#9432;&#xFE0E; </span>We are not open on weekends.
+                </td>
+              </tr>
+              {% endif %}
+              {% if visible == False or empty_day_db %}
+                {% if date.weekday < 5 %}
+                <tr>
+                  <td class="info-box-data no-border">
+                    <span class="alert-symbol">&#9432;&#xFE0E; </span>We only schedule two weeks in advance, and are not scheduling for this date yet.
+                    {% if request.user.adopter.alert_date == date %}
+                      We will alert you when appointments for this date are open.
+                    {% else %}
+                      <a href="{% url 'set_alert_date' date.year date.month date.day %}">Click here to be alerted when we have opened appointments for this date.</a>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endif %}
+              {% elif empty_day == True and date.weekday < 5 %}
+                <tr>
+                  <td class="info-box-data no-border">
+                    <span class="alert-symbol">&#9432;&#xFE0E; </span>We're sorry, this date is fully booked. To see more available appointments, please select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
+                  </td>
+                </tr>
+              {% endif %}
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
     {% endif %}
   {% endif %}
 </div>

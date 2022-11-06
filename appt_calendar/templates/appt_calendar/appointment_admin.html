@@ -36,10 +36,9 @@
 
       <tr>
         <td colspan="2">
-          <ul class="ac-two-col-list">
+          <ul class="appt-two-col-list">
             {% if appt.appt_type != "8" %}<li>({{appt.appt_string}})</li>{% endif %}
-            {% if appt.visits_to_date >= 1 and appt.appt_type in schedulable %}
-            <li>{{appt.number_of_visits}}</li>{% endif %}
+            {% if appt.visits_to_date >= 1 and appt.appt_type in schedulable %}<li>{{appt.number_of_visits}}</li>{% endif %}
             {% if appt.adopter.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}<li>Must bring a parent!</li>{% endif %}
             {% if appt.bringing_dog %}<li>Bringing dog!</li>{% endif %}
             {% if appt.has_cat %}<li>Has a cat!</li>{% endif %}
@@ -108,7 +107,7 @@
       </tr>
       <tr>
         <td>
-          <ul class="ac-two-col-list">
+          <ul class="appt-two-col-list">
             {% if appt.adopter.city == "" and appt.adopter.state == "" %}
             <li>No Shelterluv information on file.</li>
             {% else %}
@@ -138,7 +137,7 @@
       </tr>
       <tr>
         <td>
-          <ul class="ac-two-col-list">
+          <ul class="appt-two-col-list">
             {% if appt.adopter.gender_preference == "2" %}
             <li>Only interested in females</li>
             {% elif appt.adopter.gender_preference == "3" %}
@@ -175,7 +174,7 @@
       </tr>
       <tr>
         <td>
-          <ul class="ac-two-col-list">
+          <ul class="appt-two-col-list">
             {% if appt.adopter.housing != "Own" %}
             <li>
               {% if appt.comm_reminder_breed == False %}
@@ -243,7 +242,7 @@
       </tr>
       <tr>
         <td colspan="1">
-          <ul class="ac-two-col-list">
+          <ul class="appt-two-col-list">
             <li>
               {% if appt.outcome == "1" %}
                 <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
@@ -272,7 +271,7 @@
       </tr>
       <tr>
         <td colspan="1">
-          <ul class="ac-two-col-list">
+          <ul class="appt-two-col-list">
             <li>
               {% if appt.comm_followup == False %}
                 <a href="{% url 'send_followup' appt.id date.year date.month date.day 0 %}">Send Follow-Up Email</a>

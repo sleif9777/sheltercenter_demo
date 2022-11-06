@@ -256,6 +256,10 @@ Alert box styling
   border-bottom: 1px solid;
 }
 
+.info-box-data:last-child {
+  border-bottom: none;
+}
+
 /* Calendar notes - magenta theme */
 .calendar_notes
 .calendar-notes,
@@ -342,7 +346,8 @@ input[type=submit]:hover {
 }
 
 input[type=submit].copytemplate,
-input[type=submit].copy-template {
+input[type=submit].copy-template,
+input[type=submit].large-button {
   font-size: 18pt;
   font-weight: bold;
   padding: 10px;
@@ -495,7 +500,7 @@ div.adopter-listing {
 }
 
 .day, 
-.report {
+.report-button {
   background-color: #48c8d3;
   border: 5px solid #1E6C80;
   border-radius: 15px;
@@ -608,25 +613,31 @@ div.adopter-listing {
   text-align: center;
 }
 
-#chosenboard {
+#chosenboard,
+.report {
   border-collapse: collapse;
+  width: 95%;
 }
 
-#chosenboard th {
+#chosenboard th,
+.report th {
   padding-bottom: 10px;
   text-align: left;
 }
 
-#chosenboard tr {
+#chosenboard tr,
+.report tr {
   border-bottom: 1px solid #1E6C80;
 }
 
-#chosenboard tr.no-border {
+#chosenboard tr.no-border,
+.report tr.no-border {
   border-bottom: none;
   margin-bottom: 15px;
 }
 
-#chosenboard td {
+#chosenboard td,
+.report td {
   border-bottom: none;
 }
 
@@ -697,23 +708,6 @@ a.decision_made:hover {
   text-decoration: underline;
 }
 
-
-
-
-
-
-.chosen_board_actions,
-.chosen-board-actions {
-  color: #A7396E;
-  text-decoration: none;
-}
-
-.chosen_board_actions:hover,
-.chosen-board-actions:hover {
-  color: #fd6da8;
-  text-decoration: underline;
-}
-
 p.greeting {
   font-size: 20pt;
 }
@@ -725,6 +719,10 @@ p.greeting {
 
 #calendar-messages {
   width: 100%;
+}
+
+.info-box-data:last-child {
+  border-bottom: none;
 }
 
 .calendar-notes-header {
@@ -752,6 +750,14 @@ p.standalone,
 
 .btm-margin-10 {
   margin-bottom: 10px;
+}
+
+.center {
+  text-align: center;
+}
+
+.font-10 {
+  font-size: 10pt;
 }
 
 table {
@@ -788,6 +794,10 @@ th {
   width: 50%;
 }
 
+.italic {
+  font-style: italic;
+}
+
 .larger-font {
   font-size: larger;
 }
@@ -800,6 +810,10 @@ th {
   border: none;
 }
 
+.pink {
+  color: #A7396E;
+}
+
 .right {
   text-align: right;
 }
@@ -810,6 +824,10 @@ th {
 
 .top {
   vertical-align: top;
+}
+
+.top-pad-5 {
+  padding-top: 5px;
 }
 
 .upper {
