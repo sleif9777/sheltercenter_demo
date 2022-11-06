@@ -4,7 +4,7 @@
 {% block content %}
 <div class="main text-page">
   <h1 class="page-header no-actions">{{page_header}}</h1>
-  <span class="btm-margin-10">{{form_instructions}}</span>
+  <p class="btm-margin-10">{{form_instructions}}</p>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

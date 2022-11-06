@@ -52,13 +52,13 @@
                 ({{appt.rtr_notif_date}})<br>
               {% endif %}
               {% if appt.heartworm == True %}
-                <a href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
+                <a href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a><br>
               {% else %}
-                <a href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
+                <a href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a><br>
               {% endif %}
             {% elif appt.outcome == "8" %}
               Adopter Notified<br>
-              Paperwork Scheduled
+              Paperwork Scheduled<br>
               <a href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
             {% endif %}
           </td>
@@ -114,9 +114,9 @@
               ({{appt.rtr_notif_date}})<br>
               {% endif %}
               {% if appt.heartworm == True %}
-              <a href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a>
+              <a href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'positive' %}">Add FTA Appointment</a><br>
               {% else %}
-              <a href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a>
+              <a href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a><br>
               {% endif %}
               <a href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
             {% endif %}

@@ -28,21 +28,6 @@ system_settings = SystemSettings.objects.get(pk=1)
 def user_settings(request):
     return render(request, 'dashboard/user_settings.html')
 
-def register(request):
-
-    form = CreateAdminForm()
-
-    if request.method == "POST":
-        form = CreateAdminForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-
-    context = {
-        'form': form,
-    }
-
-    return render(request, 'dashboard/register.html', context)
 
 @unauthenticated_user
 def login_page(request):
