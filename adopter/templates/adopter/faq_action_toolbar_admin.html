@@ -1,7 +1,7 @@
-<th style="font-size: 18pt; text-align: left; padding-bottom: 10px;" class="faq-section left">
+<th class="subsection-header left half-width">
     {{sec.name}}
 </th>
-<th style="font-size: 18pt; text-align: right;" class="timeslot-header">
-    <a class="timeslot_action" href="{% url 'add_faq' sec.id %}">Add Question</a> |
-    <a class="timeslot_action" href="{% url 'delete_faq_section' sec.id %}">Delete Section</a>
+<th class="subsection-header right half-width">
+    <a class="subsection-action" href="{% url 'add_faq' sec.id %}">Add Question</a> |
+    <a class="subsection-action" href="{% url 'delete_faq_section' sec.id %}">Delete Section</a>
 </th>

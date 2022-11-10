@@ -8,12 +8,12 @@
     <script src="https://cdn.tiny.cloud/1/zbvegpc0ft1hz8gayhmf16b101myy5aezzkm142h0qgrrz2v/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
       tinymce.init({
-        selector:'textarea',
         height:'512px',
-        plugins:'link textcolor image',
-        menubar: 'file edit insert view format table tools help',
-        toolbar: 'undo redo | styleselect | bold italic forecolor fontsizeselect | alignleft aligncenter alignright alignjustify | outdent indent | link image',
         image_uploadtab: true,
+        menubar: 'file edit insert view format table tools help',
+        plugins:'link textcolor image',
+        selector:'textarea',
+        toolbar: 'undo redo | styleselect | bold italic forecolor fontsizeselect | alignleft aligncenter alignright alignjustify | outdent indent | link image',
       });
     </script>
     {% csrf_token %}

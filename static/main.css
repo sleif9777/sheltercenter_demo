@@ -22,19 +22,16 @@ body {
   width: calc(100% - 220px);
 }
 
-.listpage,
 .list-page {
   list-style-type: none;
   padding-left: 0;
   padding-top: 10px;
 }
 
-.listpage li,
 .list-page li {
   margin: 2px 0px;
 }
 
-.textpage,
 .text-page {
   padding: 10px;
   width: calc(100% - 240px);
@@ -62,14 +59,10 @@ body {
   z-index: 1;
 }
 
-/* Logo image in activity menu */
-.activitymenu img,
 .activity-menu img {
   padding-bottom: 10px;
 }
 
-/* Each list item and innerHTML link in activity menu */
-.activitymenu li,
 .activity-menu li {
   border-bottom: #A7396E 1px solid;
   display: inline-block;
@@ -78,12 +71,10 @@ body {
   width: 100%;
 }
 
-.activitymenu li.end,
 .activity-menu li.end {
   border-bottom: none;
 }
 
-.activitymenu a,
 .activity-menu a {
   color: #A7396E;
   font-size: 18px;
@@ -93,7 +84,6 @@ body {
   width: 100%;
 }
 
-.activitymenu a:hover,
 .activity-menu a:hover {
   text-decoration: underline;
 }
@@ -108,21 +98,15 @@ body {
 /* Header and toolbar styling
   =================================================== */
 
-.page_header,
 .page-header {
   padding-top: 5px;
   text-align: center;
 }
 
-.calendar_actions,
-.calendar-actions,
 .page-actions {
   text-align: center;
 }
 
-.calendar_actions a,
-.calendar-actions a,
-.page_header a, 
 .page-header a, 
 .page-actions a {
   color: black;
@@ -130,34 +114,50 @@ body {
   text-decoration: none;
 }
 
-.calendar_actions a:hover,
-.calendar-actions a:hover,
-.page_header a:hover, 
 .page-header a:hover {
   color: #A7396E;
   text-decoration: underline;
 }
 
 /* If no actions available */
-.no_actions,
 .no-actions {
   padding-bottom: 15px;
 }
 
 /* ==============================
-Timeslot toolbar styling
+Subsection toolbar styling (for timeslots, FAQs, visitor instructions, etc.)
 ============================== */
 
-.timeslot_header,
-.timeslot-header {
+.subsection {
+  padding: 20px 0px;
+  text-align: center;
+}
+
+.subsection h2 {
+  padding-bottom: 5px;
+  text-align: center;
+}
+
+.subsection-action {
+  color: black;
+}
+
+.subsection-header {
   font-size: 18pt;
 }
 
-.timeslot-table {
+.subsection-header a {
   color: black;
+}
+
+.subsection-table {
   margin: 0;
   padding: 10px;
   width: 100%;
+}
+
+.faq-question a {
+  color: black;
 }
 
 /* ==============================
@@ -175,19 +175,16 @@ Appointment box styling
   width: 90%;
 }
 
-.ac-two-col-list,
 .appt-two-col-list {
   columns: 2;
   list-style-type: none;
   padding-left: 0;
 }
 
-.appt_description,
 .appt-description {
   font-size: 18pt;
 }
 
-.appt_info_block, 
 .appt-info-block {
   border-bottom: 1px solid #1E6C80;
   margin-bottom: 0;
@@ -199,21 +196,16 @@ Appointment box styling
   border-bottom: none;
 }
 
-.appt_subblock,
 .appt-subblock {
   padding-top: 5px;
 }
 
-.appt_subblock a,
 .appt-subblock a,
-.appt_subblock a:hover,
 .appt-subblock a:hover,
-#appt_header_block a,
 #appt-header-block a {
   color: #1E6C80;
 }
 
-.appt_subblock td,
 .appt-subblock td {
   border-bottom: none;
   font-size: 10pt;
@@ -225,9 +217,12 @@ Appointment box styling
   text-decoration: line-through;
 }
 
-.info_block_subheader,
 .info-block-subheader {
   font-size: 14pt;
+}
+
+#adopter-mgmt-appt {
+  width: 90%;
 }
 
 /* Appointment subcomponent styling - short notice
@@ -238,21 +233,14 @@ Appointment box styling
 }
 
 .short-notice .completed-appt-action,
-.short-notice #appt_header_block a,
 .short-notice #appt-header-block a {
   color: #7A7400;
-}
-
-#appt_header_block td,
-#appt-header-block td {
-  border-bottom: none;
 }
 
 /* ==============================
 Alert box styling
 ============================== */
 
-.info_box,
 .info-box {
   background-color: #F2D9E5;
   border: 4px solid;
@@ -276,8 +264,28 @@ Alert box styling
   border-bottom: none;
 }
 
+/* Admin-specific messages */
+
+.calendar-notes-header {
+  font-weight: bold;
+}
+
+#calendar-messages {
+  width: 100%;
+}
+
+/* Adopter-specific messages */
+
+.adopter-messages {
+  padding: 10px;
+  text-align: center;
+}
+
+p.greeting {
+  font-size: 20pt;
+}
+
 /* Calendar notes - magenta theme */
-.calendar_notes
 .calendar-notes,
 .calendar-notes a,
 .calendar-notes a:hover {
@@ -294,7 +302,6 @@ Alert box styling
 }
 
 /* Oustanding tasks - red theme */
-.outstanding_task,
 .outstanding-task,
 .outstanding-task a,
 .outstanding-task a:hover {
@@ -304,7 +311,6 @@ Alert box styling
 }
 
 /* Short notice (overall) - gold theme */
-.short_notice,
 .short-notice,
 .short-notice a,
 .short-notice a:hover {
@@ -320,6 +326,11 @@ Alert box styling
   background-color: #D2ECF4;
   border-color: #1E6C80;
   color: #1E6C80;
+}
+
+#toc-list {
+  list-style-type: disc;
+  padding: 5px 0 5px 40px;
 }
 
 /* Short notice alert box on calendar
@@ -359,8 +370,6 @@ input[type=submit]:hover {
   text-decoration: underline;
 }
 
-input[type=submit].copytemplate,
-input[type=submit].copy-template,
 input[type=submit].large-button {
   font-size: 18pt;
   font-weight: bold;
@@ -381,7 +390,6 @@ div.adopter-listing {
   border-bottom: 1px solid #BF4580;
 }
 
-.adopter_name,
 .adopter-name {
   font-size: 14pt;
 }
@@ -398,32 +406,31 @@ div.adopter-listing {
 Report page styling
 ============================== */
 
-#chosenboard,
 .report {
   border-collapse: collapse;
   width: 95%;
 }
 
-#chosenboard td,
 .report td {
   border-bottom: none;
 }
 
-#chosenboard th,
 .report th {
   padding-bottom: 10px;
   text-align: left;
 }
 
-#chosenboard tr,
 .report tr {
   border-bottom: 1px solid #1E6C80;
 }
 
-#chosenboard tr.no-border,
 .report tr.no-border {
   border-bottom: none;
   margin-bottom: 15px;
+}
+
+#dow-buttons {
+  display: inline;
 }
 
 /* ==============================
@@ -448,21 +455,179 @@ Login page styling
   margin: 15px auto;
 }
 
-/* Remainder */
+/* ===================================================
+Universalisms
+=================================================== */
 
-
-
-
-/* .datelink,
-.date-link {
-  color: #990000;
+a {
+  color: #A7396E;
   text-decoration: none;
 }
 
-.datelink:hover,
-.date-link:hover {
+a:hover {
+  color: grey;
   text-decoration: underline;
-} */
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+  width: 50%;
+}
+
+table.print-view {
+  font-size: 10pt;
+  width: 100%;
+}
+
+td {
+  border-bottom: 1px solid #1E6C80;
+  border-collapse: collapse;
+}
+
+textarea {
+  height: 200px;
+  width: 100%;
+}
+
+th {
+  text-align: left;
+}
+
+.alert-symbol {
+  font-size: 16pt;
+}
+
+.auto-margin {
+  margin: auto;
+}
+
+.block {
+  display: block;
+}
+
+.border-box {
+  box-sizing: border-box;
+}
+
+.btm-margin-5 {
+  margin-bottom: 5px;
+}
+
+.btm-margin-10 {
+  margin-bottom: 10px;
+}
+
+.btm-margin-15 {
+  margin-bottom: 15px;
+}
+
+.center {
+  text-align: center;
+}
+
+.font-10 {
+  font-size: 10pt;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  width: 50%;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.larger-font {
+  font-size: larger;
+}
+
+.left {
+  text-align: left;
+}
+
+.left-pad-10 {
+  padding-left: 10px;
+}
+
+.no-border {
+  border: none;
+}
+
+.no-bullet {
+  list-style-type: none;
+}
+
+.no-pad {
+  padding: 0;
+}
+
+.one-col-list {
+  column-count: 1;
+}
+
+.pad-10 {
+  padding: 10px;
+}
+
+.pink {
+  color: #A7396E;
+}
+
+.right {
+  text-align: right;
+}
+
+.side-margin-5 {
+  margin: 0 5px;
+}
+
+.subscript {
+  font-size: 8pt;
+}
+
+.top {
+  vertical-align: top;
+}
+
+.top-margin-10 {
+  margin-top: 10px;
+}
+
+.top-pad-0 {
+  padding-top: 0;
+}
+
+.top-pad-5 {
+  padding-top: 5px;
+}
+
+.upper {
+  text-transform: uppercase;
+}
+
+.width-70 {
+  width: 70%;
+}
+
+/* check if still used? */
+
+/* still used? */
+.visitor_instruction,
+.visitor-instruction {
+  margin: 10px 0px;
+}
+
+
+
+
+/* Conditional page formatting (needs to be built on) */
+
 
 @media only screen and (max-width: 980px) {
   ul.appt_list,
@@ -551,23 +716,11 @@ Login page styling
 }
 
 
-.timeslot, 
-.week,
-#week {
-  padding: 20px 0px;
-  text-align: center;
-}
 
-.timeslot h2 {
-  padding-bottom: 5px;
-  text-align: center;
-}
+/* Remainder */
 
-#dow-buttons {
-  display: inline;
-}
 
-.day,
+/* .day,
 .report-button {
   background-color: #48c8d3;
   border: 5px solid #1E6C80;
@@ -595,16 +748,16 @@ Login page styling
 .day_action a:hover {
   color: #A7396E;
   text-decoration: underline;
-}
+} */
 
 
-.contact_adopter {
+/* .contact_adopter {
   border-bottom: 1px solid #1E6C80;
   border-top: 1px solid #1E6C80;
   padding: 5px;
-}
+} */
 
-.contact_adopter_header {
+/* .contact_adopter_header {
   font-size: 14pt;
 }
 
@@ -625,7 +778,7 @@ Login page styling
 .contact_adopter_quickbutton_links:hover {
   color: #1E6C80;
   text-decoration: underline;
-}
+} */
 /* 
 .greeter_appt_action_links {
   color: white;
@@ -639,7 +792,7 @@ Login page styling
   text-decoration: underline;
 } */
 
-.day_link a, 
+/* .day_link a, 
 .report_link a,
 .day-link a, 
 .report-link a {
@@ -654,12 +807,12 @@ Login page styling
 .report-link a:hover {
   color: #1E6C80;
   text-decoration: underline;
-}
+} */
 
-.copy_template_button,
+/* .copy_template_button,
 .copy-template-button {
   text-align: center;
-}
+} */
 
 /* #chosenboard,
 .report {
@@ -692,18 +845,8 @@ Login page styling
 
 
 
-.adopter_messages,
-.adopter-messages {
-  padding: 10px;
-  text-align: center;
-}
 
-.visitor_instruction,
-.visitor-instruction {
-  margin: 10px 0px;
-}
-
-.decision_faq_section,
+/* .decision_faq_section,
 .decision-faq-section,
 .decision_faq_section_div,
 .decision-faq-section_div,
@@ -712,25 +855,25 @@ Login page styling
 .faq_section_div,
 .faq-section-div {
   margin-bottom: 10px;
-}
+} */
 
-.decision_faq_header,
+/* .decision_faq_header,
 .decision-faq-header
 .decision_faq_question,
 .decision-faq-question,
 .faq_question,
 .faq-question {
   margin-bottom: 5px;
-}
+} */
 
-.decision_faq_answer,
+/* .decision_faq_answer,
 .decision-faq-answer,
 .faq_answer,
 .faq-answer {
   margin-bottom: 15px;
-}
+} */
 
-.decision {
+/* .decision {
   color: grey;
 }
 
@@ -754,158 +897,7 @@ a.decision_made:hover {
 .decision a:hover {
   color: #1E6C80;
   text-decoration: underline;
-}
+} */
 
-p.greeting {
-  font-size: 20pt;
-}
 
-#adopter_mgmt_appt,
-#adopter-mgmt-appt {
-  width: 90%;
-}
 
-#calendar-messages {
-  width: 100%;
-}
-
-.calendar-notes-header {
-  font-weight: bold;
-}
-
-/* ===================================================
-Universalisms
-=================================================== */
-
-a {
-  color: #A7396E;
-  text-decoration: none;
-}
-
-a:hover {
-  color: grey;
-  text-decoration: underline;
-}
-
-table {
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 20px;
-  width: 50%;
-}
-
-table.print-view {
-  font-size: 10pt;
-  width: 100%;
-}
-
-td {
-  border-bottom: 1px solid #1E6C80;
-  border-collapse: collapse;
-}
-
-textarea {
-  height: 200px;
-  width: 100%;
-}
-
-th {
-  text-align: left;
-}
-
-.alert-symbol {
-  font-size: 16pt;
-}
-
-.auto-margin {
-  margin: auto;
-}
-
-.block {
-  display: block;
-}
-
-.border-box {
-  box-sizing: border-box;
-}
-
-p.standalone,
-.btm-margin-5 {
-  margin-bottom: 5px;
-}
-
-.btm-margin-10 {
-  margin-bottom: 10px;
-}
-
-.center {
-  text-align: center;
-}
-
-.font-10 {
-  font-size: 10pt;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.half-width {
-  width: 50%;
-}
-
-.italic {
-  font-style: italic;
-}
-
-.larger-font {
-  font-size: larger;
-}
-
-.left {
-  text-align: left;
-}
-
-.no-border {
-  border: none;
-}
-
-.pink {
-  color: #A7396E;
-}
-
-.right {
-  text-align: right;
-}
-
-.side-margin-5 {
-  margin: 0 5px;
-}
-
-.subscript {
-  font-size: 8pt;
-}
-
-.top {
-  vertical-align: top;
-}
-
-.top-margin-10 {
-  margin-top: 10px;
-}
-
-.top-pad-0 {
-  padding-top: 0;
-}
-
-.top-pad-5 {
-  padding-top: 5px;
-}
-
-.upper {
-  text-transform: uppercase;
-}
-
-.width-70 {
-  width: 70%;
-}
