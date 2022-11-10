@@ -113,7 +113,7 @@
             {% else %}
             <li class="city-state">Coming from {{appt.adopter.city}}, {{appt.adopter.state}}</li> 
             <li class="household-activity">{{appt.adopter.activity_level}} Activity Household</li>
-            <li class="booking-timestamp">{% if appt.dt_booking.year != 2000 %}{{appt.dt_booking_string}}{% endif %}</li>
+            <li class="booking-timestamp">{{appt.dt_booking_string}}</li>
             <li class="housing">{{appt.adopter.housing_type}} ({{appt.adopter.housing}})</li>
             <li class="fence">
               {% if appt.adopter.has_fence %}

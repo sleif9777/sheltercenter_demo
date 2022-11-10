@@ -14,7 +14,7 @@
     </div>
 
     {% if internal_announcement %}
-    <div class="info-box">
+    <div class="info-box btm-margin-10">
       <span class="alert-symbol">&#128712;&#xFE0E; </span>{{internal_announcement.text|safe}}
     </div>
     {% endif %}
@@ -46,7 +46,8 @@
                 &#128008;&#xFE0E;
               {% endif %}
               <br>
-              <span class="subscript">({{appt.appt_string}})</span>
+              <span class="subscript">({{appt.appt_string}})</span><br>
+              <span class="subscript">{{appt.dt_booking_string}}</span>
             </td>
             <td>{{appt.adopter_notes}}</td>
             <td>{{appt.internal_notes}}</td>
