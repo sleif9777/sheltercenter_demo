@@ -99,8 +99,8 @@ body {
 }
 
 #navbar-list {
-  padding: 0;
   margin: 0;
+  padding: 0;
   text-align: center;
   vertical-align: middle;
 }
@@ -148,17 +148,13 @@ body {
 Timeslot toolbar styling
 ============================== */
 
-.timeslot_action,
-.timeslot-action {
-  color: black;
-}
-
 .timeslot_header,
 .timeslot-header {
   font-size: 18pt;
 }
 
 .timeslot-table {
+  color: black;
   margin: 0;
   padding: 10px;
   width: 100%;
@@ -556,8 +552,8 @@ Login page styling
 
 
 .timeslot, 
-.week, 
-#allreports {
+.week,
+#week {
   padding: 20px 0px;
   text-align: center;
 }
@@ -567,7 +563,11 @@ Login page styling
   text-align: center;
 }
 
-.day, 
+#dow-buttons {
+  display: inline;
+}
+
+.day,
 .report-button {
   background-color: #48c8d3;
   border: 5px solid #1E6C80;
@@ -876,6 +876,10 @@ p.standalone,
 
 .right {
   text-align: right;
+}
+
+.side-margin-5 {
+  margin: 0 5px;
 }
 
 .subscript {

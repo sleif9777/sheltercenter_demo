@@ -2,18 +2,17 @@
 {% load static %}
 
 {% block content %}
-  <div class="main textpage">
-    <div class="page_header no_actions">
-      <h1>Weekly Template</h1>
-    </div>
-    <div class="week">
-      {% for dow in dows.all %}
-        <form class="" action="{% url 'daily' dow.id %}" method="post" style="display: inline;">
-          {% csrf_token %}
-          <input class="copytemplate" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="{{dow}}" style="margin: 0px 5px;">
-        </form>
-      {% endfor %}
-    </div>
-
+<div class="main textpage">
+  <div class="page-header no-actions">
+    <h1>Weekly Template</h1>
   </div>
+  <div id="week">
+    {% for dow in dows.all %}
+    <form action="{% url 'daily' dow.id %}" method="post" id="dow-buttons">
+      {% csrf_token %}
+      <input class="large-button side-margin-5" type="submit" onClick="this.form.submit(); this.disabled=true;" value="{{dow}}">
+    </form>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}

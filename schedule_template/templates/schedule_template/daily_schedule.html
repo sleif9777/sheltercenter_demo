@@ -12,19 +12,19 @@
     <table class="timeslot-table">
       <th class="timeslot-header left">{{timeslot}}</th>
       <th class="timeslot-header right">
-        <a class="timeslot_action" href="{% url 'add_appointment' daily_sched.id timeslot.id %}">Add Appointment</a> |
-        <a class="timeslot_action" href="{% url 'delete_timeslot' daily_sched.id timeslot.id %}">Delete Timeslot</a></th>
+        <a class="timeslot-action" href="{% url 'add_appointment' daily_sched.id timeslot.id %}">Add Appointment</a> |
+        <a class="timeslot-action" href="{% url 'delete_timeslot' daily_sched.id timeslot.id %}">Delete Timeslot</a></th>
       </th>
     </table>
     {% for time, appointment in appointments.items %}
       {% if timeslot.time == time.time %}
         {% if appointment|length <= 1 %}
-        <ul class="appt_solo">
+        <ul class="appt-solo">
         {% else %}
-        <ul class="appt_list">
+        <ul class="appt-list">
         {% endif %}
         {% for appt in appointment %}
-          <li class="appt_slot">
+          <li class="appt-slot">
             <div class="appointment">
               <table class="appt-info-block no-border" id="appt-header-block">
                 <tr>
@@ -49,8 +49,8 @@
     <table class="timeslot-table">
       <th class="timeslot-header left">{{timeslot}}</th>
       <th class="timeslot-header right">
-        <a class="timeslot_action" href="{% url 'add_appointment' daily_sched.id timeslot.id %}">Add Appointment</a> |
-        <a class="timeslot_action" href="{% url 'delete_timeslot' daily_sched.id timeslot.id %}">Delete Timeslot</a></th>
+        <a class="timeslot-action" href="{% url 'add_appointment' daily_sched.id timeslot.id %}">Add Appointment</a> |
+        <a class="timeslot-action" href="{% url 'delete_timeslot' daily_sched.id timeslot.id %}">Delete Timeslot</a></th>
       </th>
     </table>
   </div>
