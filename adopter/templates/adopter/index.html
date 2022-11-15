@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  </head>
+  <body>
+    <div style="height: 2%;">
+      <p class="pad-10 right">Login</p>
+    </div>
+    <div class="auto-margin" style="width: 350px;">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" class="full-width center" alt=""></a>
+      <br>
+    </div>
+    <div class="auto-margin full-width center" style="padding-top: 2%;">
+      <p>Welcome to our scheduling portal!</p><br>
+      <form method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" onClick="this.form.submit(); this.disabled=true;" class="submit-form" value="Enter">
+      </form>
+    </div>
+  </body>
+</html>

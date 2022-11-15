@@ -118,7 +118,7 @@
           <ul>
             {% for sn in sn_add %}
               {% if sn.current_appt.appt_type in schedulable %}
-                <a target="_blank" href="https://www.shelterluv.com/adoption_request_print/{{sn.current_appt.adopter.application_id}}"><li>{{sn.header_str}} &#128196;&#xFE0E;<br><span class="short-notice-subscript">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li></a>
+                <a target="_blank" href="https://www.shelterluv.com/adoption_request_print/{{sn.current_appt.adopter.application_id}}"><li>{{sn.header_str}} &#128196;&#xFE0E;<br><span class="subscript">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li></a>
               {% else %}
                 <li>{{sn.header_str}}<br><span class="subscript">({{sn.backup_str}})</span></li>
               {% endif %}

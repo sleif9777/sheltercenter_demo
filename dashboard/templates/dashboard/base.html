@@ -60,6 +60,14 @@
       function isVisible(element) {
         return element.style.display != "none";
       }
+
+      function openNav() {
+        document.getElementById("activity-menu").style.height = "100%";
+      }
+
+      function closeNav() {
+        document.getElementById("activity-menu").style.height = "0";
+      }
     
       window.onload = function() {
         assignDefaultAlignments("ac-two-col-list");
@@ -73,7 +81,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
-    <div class="activity-menu">
+    <div id="activity-menu">
       <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>  
       {% block nav %}
       <nav>
@@ -89,6 +97,14 @@
         </ul>
       </nav>
       {% endblock %}
+    </div>
+    <div id="narrow-screen-nav" class="full-width" style="background-color: lightpink;">
+      <table class="full-width">
+        <th class="left">Saving Grace Scheduling Portal</th>
+        <th class="right">
+          <span class="interactive" onClick="openNav()">&#9776; Menu</span>
+        </th>
+      </table>
     </div>
     {% block content %} {% endblock %}
   </body>

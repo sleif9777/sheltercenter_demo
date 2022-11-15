@@ -76,14 +76,14 @@
 
         {% if appt.adopter_notes %}
         <tr>
-          <td class="left"><b>From {{appt.adopter.f_name}}:</b></td>
+          <td class="left" style="width:20%;"><b>From {{appt.adopter.f_name}}:</b></td>
           <td class="left">{{appt.adopter_notes|linebreaks}}</td>
         </tr>
         {% endif %}
 
         {% if appt.adopter.app_interest and appt.appt_type in schedulable %}
         <tr>
-          <td class="left"><b>From Shelterluv:</b></td>
+          <td class="left" style="width:20%;"><b>From Shelterluv:</b></td>
           <td class="left">{{appt.adopter.app_interest_str|linebreaks}}</td>
         </tr>
         {% endif %}

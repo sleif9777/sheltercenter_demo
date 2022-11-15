@@ -17,11 +17,6 @@ body {
 /* Conditional formatting for full computers
 =================================================== */
 
-.main {
-  margin-left: 220px;
-  width: calc(100% - 220px);
-}
-
 .list-page {
   list-style-type: none;
   padding-left: 0;
@@ -46,24 +41,15 @@ body {
 /* Activity menu (left sidebar) and subcomponents
 =================================================== */
 
-.activitymenu,
-.activity-menu {
-  border-right: 1px solid #cccccc;
-  height: 100%;
+#activity-menu {
   left: 0;
   overflow-x: hidden;
-  padding: 10px 10px 0px 10px;
   position: fixed;
   top: 0;
-  width: 200px;
   z-index: 1;
 }
 
-.activity-menu img {
-  padding-bottom: 10px;
-}
-
-.activity-menu li {
+#activity-menu li {
   border-bottom: #A7396E 1px solid;
   display: inline-block;
   list-style-type: none;
@@ -71,11 +57,11 @@ body {
   width: 100%;
 }
 
-.activity-menu li.end {
+#activity-menu li.end {
   border-bottom: none;
 }
 
-.activity-menu a {
+#activity-menu a {
   color: #A7396E;
   font-size: 18px;
   text-align: center;
@@ -84,7 +70,7 @@ body {
   width: 100%;
 }
 
-.activity-menu a:hover {
+#activity-menu a:hover {
   text-decoration: underline;
 }
 
@@ -170,9 +156,8 @@ Appointment box styling
   color: #1E6C80;
   display: inline-table;
   height: fit-content;
-  margin: 10px 10px;
+  margin: 10px 8px;
   padding: 10px;
-  width: 90%;
 }
 
 .appt-two-col-list {
@@ -258,10 +243,6 @@ Alert box styling
 
 .info-box-data {
   border-bottom: 1px solid;
-}
-
-.info-box-data:last-child {
-  border-bottom: none;
 }
 
 /* Admin-specific messages */
@@ -464,6 +445,7 @@ a {
 
 a:hover {
   color: grey;
+  cursor: pointer;
   text-decoration: underline;
 }
 
@@ -480,7 +462,6 @@ table.print-view {
 }
 
 td {
-  border-bottom: 1px solid #1E6C80;
   border-collapse: collapse;
 }
 
@@ -535,6 +516,11 @@ th {
 
 .half-width {
   width: 50%;
+}
+
+.interactive {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .italic {
@@ -615,13 +601,40 @@ th {
 
 /* Conditional page formatting (needs to be built on) */
 
+@media only screen and (max-width: 1200px) {
+  #narrow-screen-nav {
+    width: 100%;
+  }
 
-@media only screen and (max-width: 980px) {
+  #activity-menu {
+    background-color: rgba(0,0,0, 0.9);
+    height: 0;
+    width: 100%;
+    transition: 0.5s;
+  }
+
+
+  #activity-menu img {
+    display: none;
+  }
+
+  .main {
+    width: 100%;
+  }
+
   ul.appt_list,
   ul.appt-list {
     column-count: 1;
     list-style-type: none;
     padding: 0;
+  }
+
+  ul.appt-list li {
+    width: 100%;
+  }
+
+  .appointment {
+    width: calc(100% - 40px);
   }
 
   ul.appt_solo,
@@ -656,7 +669,27 @@ th {
 
 }
 
-@media only screen and (min-width: 981px) {
+@media only screen and (min-width: 1201px) {
+  #narrow-screen-nav {
+    display: none;
+  }
+
+  #activity-menu {
+    border-right: 1px solid #cccccc;
+    height: 100%;
+    padding: 10px 10px 0px 10px;
+    width: 200px;
+  }
+
+  #activity-menu img {
+    padding-bottom: 10px;
+  }
+  
+  .main {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+
   ul.appt_list,
   ul.appt-list {
     column-count: 2;
