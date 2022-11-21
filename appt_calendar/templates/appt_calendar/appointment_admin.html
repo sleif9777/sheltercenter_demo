@@ -51,10 +51,10 @@
   {% if not appt.available %}
 
   {% if appt.appt_type in schedulable and appt.adopter %}
-  <table class="appt-subblock appt-info-block">
+  <table class="appt-subblock appt-info-block notes-subblock">
   <!-- if false, it is an open appointment, paperwork, or surrender and could have notes at most -->
   {% else %}
-  <table class="appt-subblock appt-info-block no-border">
+  <table class="appt-subblock appt-info-block no-border notes-subblock">
   {% endif %}      
     <tbody>
       <tr class="info-block-subheader">
@@ -100,7 +100,7 @@
 
   <!-- if appt is booked, show actions and contacts -->
   {% if appt.appt_type in schedulable and appt.available == False %}
-  <table class="appt-subblock appt-info-block">
+  <table class="appt-subblock appt-info-block about-subblock">
     <tbody>
       <tr class="info-block-subheader">
         <th>About {{appt.adopter.f_name}}</th>
@@ -130,7 +130,7 @@
   </table>
 
   {% if appt.adopter.show_preferences %}
-  <table class="appt-subblock appt-info-block">
+  <table class="appt-subblock appt-info-block preferences-subblock">
     <tbody>
       <tr class="info-block-subheader">
         <th>{{appt.adopter.f_name}}'s Preferences</th>
@@ -139,24 +139,24 @@
         <td>
           <ul class="appt-two-col-list">
             {% if appt.adopter.gender_preference == "2" %}
-            <li>Only interested in females</li>
+            <li class="gender-preference">Only interested in females</li>
             {% elif appt.adopter.gender_preference == "3" %}
-            <li>Only interested in males</li>
+            <li class="gender-preference">Only interested in males</li>
             {% endif %}
             {% if appt.adopter.age_preference == "2" %}
-            <li>Puppies only</li>
+            <li class="age-preference">Puppies only</li>
             {% elif appt.adopter.age_preference == "3" %}
-            <li>Adults only</li>
+            <li class="gender-preference">Adults only</li>
             {% endif %}
             {% if appt.adopter.min_weight > 0 and appt.adopter.max_weight == 0 %}
-            <li>Looking for over {{appt.adopter.min_weight}} lbs.</li>
+            <li class="weight-preference">Looking for over {{appt.adopter.min_weight}} lbs.</li>
             {% elif appt.adopter.max_weight > 0 and appt.adopter.min_weight == 0 %}
-            <li>Looking for under {{appt.adopter.max_weight}} lbs.</li>
+            <li class="weight-preference">Looking for under {{appt.adopter.max_weight}} lbs.</li>
             {% elif appt.adopter.min_weight > 0 and appt.adopter.max_weight > 0 %}
-            <li>Looking for between {{appt.adopter.min_weight}} and {{appt.adopter.max_weight}} lbs.</li>
+            <li class="weight-preference">Looking for between {{appt.adopter.min_weight}} and {{appt.adopter.max_weight}} lbs.</li>
             {% endif %}
             {% if appt.adopter.hypo_preferred %}
-            <li>Needs hypo/low-shedding!</li>
+            <li class="hypo-preference">Needs hypo/low-shedding!</li>
             {% endif %}
           </ul>
         </td>
@@ -176,7 +176,7 @@
         <td>
           <ul class="appt-two-col-list">
             {% if appt.adopter.housing != "Own" %}
-            <li>
+            <li class="breed-restriction-comm">
               {% if appt.comm_reminder_breed == False %}
               <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'reminder_breed' %}">Breed Restrictions</a>
               {% else %}
@@ -185,7 +185,7 @@
             </li>
             {% endif %}
             {% if appt.adopter.lives_with_parents %}
-            <li>
+            <li class="lives-with-parents-comm">
               {% if appt.comm_reminder_parents == False %}
               <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'reminder_parents' %}">Lives With Parents</a>
               {% else %}
@@ -193,35 +193,35 @@
               {% endif %}
             </li>
             {% endif %}
-            <li>
+            <li class="dogs-adopted-comm">
               {% if appt.comm_adopted_dogs == False %}
                 <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dogs_were_adopted' %}">Dogs Were Adopted</a>
               {% else %}
                 <span class="completed-appt-action">Dogs Were Adopted</span>
               {% endif %}
             </li>
-            <li>
+            <li class="limited-puppies-comm">
               {% if appt.comm_limited_puppies == False %}
                 <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_puppies' %}">Limited Puppies</a>
               {% else %}
                 <p class="completed-appt-action">Limited Puppies</p>
               {% endif %}
             </li>
-            <li>
+            <li class="limited-small-dogs-comm">
               {% if appt.comm_limited_small == False %}
                 <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_small' %}">Limited Small Dogs</a>
               {% else %}
                 <p class="completed-appt-action">Limited Small Dogs</p>
               {% endif %}
             </li>
-            <li>
+            <li class="limited-hypo-comm">
               {% if appt.comm_limited_hypo == False %}
                 <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_hypo' %}">Limited Low-shed/Hypo</a>
               {% else %}
                 <p class="completed-appt-action">Limited Low-shed/Hypo</p>
               {% endif %}
             </li>
-            <li>
+            <li class="limited-small-puppies">
               {% if appt.comm_limited_small_puppies == False %}
                 <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_small_puppies' %}">Limited Small Puppies</a>
               {% else %}
@@ -235,7 +235,7 @@
     </tbody>
   </table>
 
-  <table class="appt-subblock appt-info-block">
+  <table class="appt-subblock appt-info-block actions-subblock">
     <tbody>
       <tr class="info-block-subheader">
         <th>Actions</th>
@@ -264,7 +264,7 @@
   </table>
 
   <!-- actions table will always be last (if present) -->
-  <table class="appt-subblock appt-info-block no-border">
+  <table class="appt-subblock appt-info-block no-border follow_ups-subblock">
     <tbody>
       <tr class="info-block-subheader">
         <th>Follow-Ups</th>
@@ -272,21 +272,21 @@
       <tr>
         <td colspan="1">
           <ul class="appt-two-col-list">
-            <li>
+            <li class="send-follow-up">
               {% if appt.comm_followup == False %}
                 <a href="{% url 'send_followup' appt.id date.year date.month date.day 0 %}">Send Follow-Up Email</a>
               {% else %}
                 <span class="completed-appt-action">Send Follow-Up Email</span>
               {% endif %}
             </li>
-            <li>
+            <li class="send-follow-up-with-host">
               {% if appt.comm_followup == False %}
                 <a href="{% url 'send_followup' appt.id date.year date.month date.day 1 %}">Send Follow-Up Email (with Host Info)</a>
               {% else %}
                 <span class="completed-appt-action">Send Follow-Up Email (with Host Info)</span>
               {% endif %}
             </li>
-            <li>
+            <li class="schedule-next">
               <a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a>
             </li>
           </ul>

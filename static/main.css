@@ -97,7 +97,7 @@ body {
 .page-actions a {
   color: black;
   margin: 5px;
-  text-decoration: none;
+  text-decoration: dashed;
 }
 
 .page-header a:hover {
@@ -158,6 +158,7 @@ Appointment box styling
   height: fit-content;
   margin: 10px 8px;
   padding: 10px;
+  width: 90%;
 }
 
 .appt-two-col-list {
@@ -440,7 +441,7 @@ Universalisms
 
 a {
   color: #A7396E;
-  text-decoration: none;
+  text-decoration: dashed;
 }
 
 a:hover {
@@ -520,6 +521,9 @@ th {
 
 .interactive {
   cursor: pointer;
+}
+
+.interactive:hover {
   text-decoration: underline;
 }
 
@@ -567,6 +571,10 @@ th {
   text-align: right;
 }
 
+.right-pad-10 {
+  padding-right: 10px;
+}
+
 .side-margin-5 {
   margin: 0 5px;
 }
@@ -603,19 +611,50 @@ th {
 
 @media only screen and (max-width: 1200px) {
   #narrow-screen-nav {
+    background-color: #F2D9E5;
     width: 100%;
+  }
+
+  #narrow-screen-nav table {
+    color: black;
+    font-family: 'Bubblegum Sans',Helvetica,Arial,Lucida,sans-serif;
+    font-size: 28pt;
+    margin-bottom: 0;
+  }
+
+  #narrow-screen-nav img {
+    height: 70px;
+    vertical-align: middle;
   }
 
   #activity-menu {
-    background-color: rgba(0,0,0, 0.9);
+    background-color: rgba(255,255,255, 0.95);
     height: 0;
-    width: 100%;
     transition: 0.5s;
+    width: 100%;
   }
 
+  #collapsible {
+    position: absolute;
+    top: 50%;
+    transform: translate(0,-50%);
+  }
 
   #activity-menu img {
     display: none;
+  }
+
+  #activity-menu li {
+    border: none;
+  }
+
+  #activity-menu a {
+    font-size: 18pt;
+  }
+
+  #activity-menu-close {
+    font-size: 36pt;
+    margin-right: 10px;
   }
 
   .main {
@@ -666,7 +705,6 @@ th {
     column-count: 2;
     padding: 0;
   }
-
 }
 
 @media only screen and (min-width: 1201px) {
@@ -683,6 +721,10 @@ th {
 
   #activity-menu img {
     padding-bottom: 10px;
+  }
+
+  #activity-menu-close {
+    display: none;
   }
   
   .main {

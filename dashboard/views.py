@@ -26,7 +26,16 @@ system_settings = SystemSettings.objects.get(pk=1)
 # Create your views here.
 
 def user_settings(request):
-    return render(request, 'dashboard/user_settings.html')
+    form = AppointmentCardPreferences(request.POST or None, instance=request.user.profile)
+    
+    if form.is_valid():
+        form.save()
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'dashboard/user_settings.html', context)
 
 
 @unauthenticated_user
