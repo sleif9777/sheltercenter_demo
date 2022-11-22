@@ -9,23 +9,18 @@
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">
   </head>
   <body>
-    <div class="calendar_header">
+    <div class="calendar-header">
       <h1>{{date_pretty}}</h1>
     </div>
 
-    <div class="info_box">
-      {% if internal_announcement %}
-        <p class="datelink"><div style="display:inline; font-size: 16pt;">&#128712;&#xFE0E; </div>{{internal_announcement.text|safe}}</p>
-      {% endif %}
+    {% if internal_announcement %}
+    <div class="info-box btm-margin-10">
+      <span class="alert-symbol">&#128712;&#xFE0E; </span>{{internal_announcement.text|safe}}
     </div>
+    {% endif %}
 
-    {% if empty_day == True %}
-    <div class="textpage">
-      No appointments today.
-    </div>
-    {% else %}
-
-    <table style="width:100%;font-size:10pt;">
+    {% if not empty_day %}
+    <table class="print-view">
       <tr>
         <th style="width:5%;">Time</th>
         <th style="width:15%;">Adopter/Dog</th>
@@ -37,41 +32,40 @@
       {% for timeslot, appointments in timeslots.items %}
         {% for appt in appointments %}
           {% if appt.dog or appt.adopter %}
-            <tr class="appt_row">
-              <td>{{appt.time_string}}</td>
-              <td>
-                {{appt}}
-                {% if appt.mobility %}
-                  &#9855;&#xFE0E;
-                {% endif %}
-                {% if appt.bringing_dog %}
-                  &#128021;&#xFE0E;
-                {% endif %}
-                {% if appt.has_cat %}
-                  &#128008;&#xFE0E;
-                {% endif %}
-                <br>
-                <span style="font-size: 8pt;">({{appt.appt_string}})</span>
-              </td>
-              <td>{{appt.adopter_notes}}</td>
-              <td>{{appt.internal_notes}}</td>
-              <td>
-                {% if appt.appt_type in schedulable %}
-                  {{appt.adopter.app_interest}}
-                {% endif %}
-              </td>
-              <td>
-                {% if appt.adopter.visits_to_date > 1 %}
-                  {{appt.number_of_visits}}
-                {% endif %}
-              </td>
-            </tr>
+          <tr>
+            <td>{{appt.time_string}}</td>
+            <td>
+              {{appt}}
+              {% if appt.mobility %}
+                &#9855;&#xFE0E;
+              {% endif %}
+              {% if appt.bringing_dog %}
+                &#128021;&#xFE0E;
+              {% endif %}
+              {% if appt.has_cat %}
+                &#128008;&#xFE0E;
+              {% endif %}
+              <br>
+              <span class="subscript">({{appt.appt_string}})</span><br>
+              <span class="subscript">{{appt.dt_booking_string}}</span>
+            </td>
+            <td>{{appt.adopter_notes}}</td>
+            <td>{{appt.internal_notes}}</td>
+            <td>
+              {% if appt.appt_type in schedulable %}
+                {{appt.adopter.app_interest}}
+              {% endif %}
+            </td>
+            <td>
+              {% if appt.adopter.visits_to_date > 1 %}
+                {{appt.number_of_visits}}
+              {% endif %}
+            </td>
+          </tr>
           {% endif %}
         {% endfor %}
       {% endfor %}
-      <br><br>
     </table>
     {% endif %}
-
   </body>
 </html>

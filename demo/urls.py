@@ -24,19 +24,14 @@ from appt_calendar import views
 from dashboard import views as views
 
 urlpatterns = [
+    path('', adopter.views.home_page, name="home_page"),
     path('admin/', admin.site.urls),
-    #path("", views.home, name='home'),
-    #path("schedule/", views.schedule, name='schedule'),
-    #path("scheduletest/", views.scheduletest, name='scheduletest'),
-    #path("config/createtimeslot/", scheduleconfig.views.createtimeslot, name="createtimeslot"),
     path('calendar/template/', include('schedule_template.urls')),
     path('calendar/', include('appt_calendar.urls')),
     path('adopter/', include('adopter.urls')),
     path('emails/', include('email_mgr.urls')),
     path('visit_comms/', include('visit_and_faq.urls')),
     path('wishlist/', include('wishlist.urls')),
-    path('', adopter.views.home_page, name="home_page"),
-    path('register/', views.register, name="register"),
     path('login/', views.login_page, name="login"),
     path('settings/', views.user_settings, name='user_settings'),
     path('logout/', views.logout_user, name="logout"),

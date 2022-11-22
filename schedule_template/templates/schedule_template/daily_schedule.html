@@ -2,77 +2,55 @@
 {% load static %}
 
 {% block content %}
-  <div class="main textpage">
-
-    <div class="page_header">
-      <h1>{{daily_sched.dow_string}}</h1>
-    </div>
-
-    <div class="calendar_actions">
-      <a href="{% url 'add_timeslot' daily_sched.id %}">Add Timeslot</a>
-    </div>
-
-    {% for timeslot in timeslots %}
-      <div class="timeslot">
-
-        <!-- two-column table displaying timeslot and timeslot-level actions -->
-        <table style = "width:100%; padding: 10px; margin: 0;">
-          <th style="font-size: 18pt; text-align: left;" class="timeslotheader">{{timeslot}}</th>
-          <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
-          <a class="timeslot_action" href="{% url 'add_appointment' daily_sched.id timeslot.id %}">Add Appointment</a> |
-          <a class="timeslot_action" href="{% url 'delete_timeslot' daily_sched.id timeslot.id %}">Delete Timeslot</a></th>
-        </table>
-
-        {% for time, appointment in appointments.items %}
-          {% if timeslot.time == time.time %}
-
-            {% if appointment|length <= 1 %}
-            <ul class="appt_solo">
-            <!-- else use appt_list for two-column responsive layout  -->
-            {% else %}
-            <ul class="appt_list">
-            {% endif %}
-
-            {% for appt in appointment %}
-              <li class="appt_slot">
-                <div class="appointment">
-
-                  <table class="appt_info_block appt_end_block" id="appt_header_block">
-
-                    <tr>
-                      <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_appointment' daily_sched.id appt.id %}">{{appt}}</a></td>
-
-                      <td class="appt_description right"><a href="{% url 'edit_appointment' daily_sched.id appt.id %}">&#9998;&#xFE0E;</a> <a href="{% url 'delete_appointment' daily_sched.id appt.id %}">&#10006;&#xFE0E;</a></td>
-                    </tr>
-
-                    <tr>
-                      <td class="left"><b>({{appt.appt_string}})</b></td>
-                      <td class="right"></td>
-                    </tr>
-
-                  </table>
-
-                <!-- /div for appointment block -->
-                </div>
-              </li>
-            {% empty %}
-              No appointments yet.
-            {% endfor %}
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% endfor %}
-
-    <div class="timeslot">
-
-        <!-- two-column table displaying timeslot and timeslot-level actions -->
-        <table style = "width:100%; padding: 10px; margin: 0;">
-          <th style="font-size: 18pt; text-align: left;" class="timeslotheader"></th>
-          <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
-          <a class="timeslot_action" href="{% url 'add_timeslot' daily_sched.id %}">Add Timeslot</a>
-        </table>
-
-    </div>
-
+<div class="main text-page">
+  <h1 class="page-header">{{daily_sched.dow_string}}</h1>
+  <div class="page-actions">
+    <a href="{% url 'add_timeslot' daily_sched.id %}">Add Timeslot</a>
   </div>
+  {% for timeslot in timeslots %}
+  <div class="subsection">
+    <table class="subsection-table">
+      <th class="subsection-header left">{{timeslot}}</th>
+      <th class="subsection-header right">
+        <a class="subsection-action" href="{% url 'add_appointment' daily_sched.id timeslot.id %}">Add Appointment</a> |
+        <a class="subsection-action" href="{% url 'delete_timeslot' daily_sched.id timeslot.id %}">Delete Timeslot</a></th>
+      </th>
+    </table>
+    {% for time, appointment in appointments.items %}
+      {% if timeslot.time == time.time %}
+        {% if appointment|length <= 1 %}
+        <ul class="appt-solo">
+        {% else %}
+        <ul class="appt-list">
+        {% endif %}
+        {% for appt in appointment %}
+          <li class="appt-slot">
+            <div class="appointment">
+              <table class="appt-info-block no-border" id="appt-header-block">
+                <tr>
+                  <td class="appt-description left upper"><a class="appt-action" href="{% url 'edit_appointment' daily_sched.id appt.id %}">{{appt}}</a></td>
+                  <td class="appt-description right"><a href="{% url 'edit_appointment' daily_sched.id appt.id %}">&#9998;&#xFE0E;</a> <a href="{% url 'delete_appointment' daily_sched.id appt.id %}">&#10006;&#xFE0E;</a></td>
+                </tr>
+                <tr>
+                  <td class="left"><b>({{appt.appt_string}})</b></td>
+                </tr>
+              </table>
+            </div>
+          </li>
+        {% empty %}
+          No appointments yet.
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+  <div class="subsection">
+    <table class="subsection-table">
+      <th class="subsection-header right">
+        <a class="subsection-action" href="{% url 'add_timeslot' daily_sched.id %}">Add Timeslot</a>
+      </th>
+    </table>
+  </div>
+</div>
 {% endblock %}

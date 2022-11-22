@@ -1,7 +1,5 @@
-<form class="" action="" method="post">
+<form method="post">
   {% csrf_token %}
-
-  <p>{{form}}</p>
-
+  {{form.as_p}}
   <input type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Submit">
 </form>

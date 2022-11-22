@@ -2,19 +2,16 @@
 {% load static %}
 
 {% block content %}
-  <div class="main textpage">
-
-    <h1 class="page_header no_actions">Contact Us</h1>
-
-    <p class="standalone">You can use the message field below to submit a message directly to our Adoptions team.</p>
-    <p class="standalone">Before submitting, <a class="standalone" href="{% url 'faq' %}">please read our FAQ page!</a> Our team can be slow to respond to emails and you may find the answer to your question more quickly by reading our FAQs thoroughly.</p>
+<div class="main text-page">
+  <h1 class="page-header no-actions">Contact Us</h1>
+  <p class="btm-margin-5">You can use the message field below to submit a message directly to our Adoptions team.</p>
+  <p class="btm-margin-5">Before submitting, <a href="{% url 'faq' %}">please read our FAQ page!</a> Our team can be slow to respond to emails and you may find the answer to your question more quickly by reading our FAQs thoroughly.</p>
+  <br>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
     <br>
-    <form class="" action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <br>
-      <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Submit">
-    </form>
-
-  </div>
+    <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Submit">
+  </form>
+</div>
 {% endblock %}

@@ -1,5 +1,15 @@
-<form class="" action="" method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Submit">
-</form>
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="main text-page">
+  <h1 class="page-header no-actions">{{page_header}}</h1>
+  <p class="btm-margin-10">{{form_instructions}}</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <br>
+    <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" value="Submit">
+  </form>
+</div>
+{% endblock %}

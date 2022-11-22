@@ -26,23 +26,17 @@ system_settings = SystemSettings.objects.get(pk=1)
 # Create your views here.
 
 def user_settings(request):
-    return render(request, 'dashboard/user_settings.html')
-
-def register(request):
-
-    form = CreateAdminForm()
-
-    if request.method == "POST":
-        form = CreateAdminForm(request.POST)
-
-        if form.is_valid():
-            form.save()
+    form = AppointmentCardPreferences(request.POST or None, instance=request.user.profile)
+    
+    if form.is_valid():
+        form.save()
 
     context = {
         'form': form,
     }
 
-    return render(request, 'dashboard/register.html', context)
+    return render(request, 'dashboard/user_settings.html', context)
+
 
 @unauthenticated_user
 def login_page(request):
@@ -271,9 +265,6 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'sn_show': sn_show,
         'empty_day_db': empty_day_db,
     }
-
-    print(context)
-
     return context
 
 def test_harness(request):
@@ -305,13 +296,6 @@ def edit_signature(request):
 
     return render(request, "email_mgr/add_template.html", context)
 
-def edit_help(request):
-
-    return render(request, "email_mgr/edit_help.html", context)
-
-def help(request):
-
-    return render(request, "email_mgr/help.html", context)
 
 def fake500(request):
 

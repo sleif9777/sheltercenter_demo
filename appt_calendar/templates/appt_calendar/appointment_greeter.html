@@ -1,85 +1,49 @@
-<div class="appointment {% if appt.short_notice %} short_notice {% endif %}">
-
-  <!-- header grid, has a bottom border unless it is the only section -->
-  <!-- it will be the only section when the appointment is not booked and has no notes -->
-  {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest and appt.appt_type in schedulable %}
-    <table class="appt_info_block" id="appt_header_block">
+<div class="appointment {% if appt.short_notice %} short-notice {% endif %}" id="appt{{appt.id}}">
+  {% if not appt.available %}
+  <table class="appt-info-block" id="appt-header-block">
   {% else %}
-    <table class="appt_info_block appt_end_block" id="appt_header_block">
+  <table class="appt-info-block no-border" id="appt-header-block">
   {% endif %}
-
     <tr>
-      <td class="appt_description left upper"><b><p class="appt_action">{% if appt.short_notice %} &#9888;&#xFE0E; {% endif %}{{appt}}</p>
-      {% if appt.mobility %}
-        &#9855;&#xFE0E;
-      {% endif %}
-      {% if appt.bringing_dog %}
-        &#128021;&#xFE0E;
-      {% endif %}
-      {% if appt.has_cat %}
-        &#128008;&#xFE0E;
-      {% endif %}
-      </td>
-
-      <td class="appt_description right"></td>
-    </tr>
-
-    <tr>
-      <td class="left" style="width: 50%;"><b>({{appt.appt_string}})</b></td>
-      <td class="right" style="width: 50%;">
-        <!-- displays bringing dog if applicable, bumps up has a cat if applicable -->
-        {% if appt.bringing_dog %}
-          <b>Bringing dog!<br></b>
-        {% elif appt.has_cat and not appt.bringing_dog %}
-          <b>Has a cat!</b>
-        {% endif %}
+      <td class="appt-description left upper">
+        {% if appt.short_notice %}&#9888;&#xFE0E;{% endif %}
+        {% if show_timestr %}{{appt_str}}{% else %}{{appt}}{% endif %}
+        {% if appt.mobility %}&#9855;&#xFE0E;{% endif %}
+        {% if appt.bringing_dog %}&#128021;&#xFE0E;{% endif %}
+        {% if appt.has_cat %}&#128008;&#xFE0E;{% endif %}
       </td>
     </tr>
-
     <tr>
-      <td class="left" style="width: 50%;">
-        <!-- displays number_of_visits if second visit or greater -->
-        {% if appt.visits_to_date > 1 %}
-          <b>{{appt.number_of_visits}}</b>
-        {% endif %}
-        {% if appt.adopter.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}
-          <b>Must bring a parent!</b>
-        {% endif %}
-      </td>
-      <td class="right" style="width: 50%;">
-        <!-- displays has a cat if applicable and bringing dog -->
-        {% if appt.bringing_dog and appt.has_cat %}
-          <b>Has a cat!</b>
-        {% endif %}
+      <td>
+        <ul class="appt-two-col-list">
+          {% if appt.appt_type != "8" %}<li>({{appt.appt_string}})</li>{% endif %}
+          {% if appt.visits_to_date >= 1 and appt.appt_type in schedulable %}<li>{{appt.number_of_visits}}</li>{% endif %}
+          {% if appt.adopter.lives_with_parents and appt.visits_to_date == 0 and appt.appt_type in schedulable %}<li>Must bring a parent!</li>{% endif %}
+          {% if appt.bringing_dog %}<li>Bringing dog!</li>{% endif %}
+          {% if appt.has_cat %}<li>Has a cat!</li>{% endif %}
+        </ul>
       </td>
     </tr>
-
-  <!-- end header table -->
   </table>
 
-
   {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest and appt.appt_type in schedulable %}
-
     <!-- if the appt has an adopter attached, there should be options for contact and other actions -->
     {% if appt.appt_type in schedulable and appt.available == False %}
-      <table class="appt_subblock appt_info_block">
+    <table class="appt-subblock appt-info-block">
     <!-- if not, it is an open appointment, paperwork, or surrender and could have notes at most -->
     {% else %}
-      <table class="appt_subblock appt_info_block appt_end_block">
+    <table class="appt-subblock appt-info-block no-border">
     {% endif %}
-
-      <tr class="info_block_subheader">
+      <tr class="info-block-subheader">
         <th class="left"><p>Notes</p></th>
         <th class="right"></th>
       </tr>
-
       {% if appt.internal_notes %}
       <tr>
         <td class="left" style="width:20%;"><b>From Adoptions:</b></td>
-        <td class="left"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
+        <td class="left">{{appt.internal_notes|linebreaks}}</td>
       </tr>
       {% endif %}
-
       {% if appt.adopter_notes %}
       <tr>
         <td class="left" style="width:20%;"><b>From {{appt.adopter.f_name}}:</b></td>
@@ -93,49 +57,52 @@
         <td class="left">{{appt.adopter.app_interest_str|linebreaks}}</td>
       </tr>
       {% endif %}
-
     </table>
   {% endif %}
 
   <!-- if appt is booked, show actions and contacts -->
   {% if appt.appt_type in schedulable and appt.available == False %}
-
-    <!-- actions table will always be last (if present) -->
-    <table class="appt_subblock appt_info_block appt_end_block">
-
-      <tr class="info_block_subheader">
+  <!-- actions table will always be last (if present) -->
+  <table class="appt-subblock appt-info-block no-border follow_ups-subblock">
+    <tbody>
+      <tr class="info-block-subheader">
         <th>Follow-Ups</th>
-        <th class="right">&#8635;&#xFE0E;</th>
       </tr>
-
       <tr>
         <td>
-          {% if appt.outcome == "1" %}
-            <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
-          {% else %}
-            {% if appt.outcome == "5" %}
-              <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
-            {% else %}
-              <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog.upper}}</a>
-            {% endif %}
-          {% endif %}
+          <ul class="appt-two-col-list">
+            <li>
+              {% if appt.outcome == "1" %}
+                <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
+              {% else %}
+                {% if appt.outcome == "5" or appt.outcome == "6" or appt.outcome == "11" %}
+                  <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
+                {% else %}
+                  <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}: {{appt.dog.upper}}</a>
+                {% endif %}
+              {% endif %}
+            </li>
+            <li class="send-follow-up">
+              {% if appt.comm_followup == False %}
+                <a href="{% url 'send_followup' appt.id date.year date.month date.day 0 %}">Send Follow-Up Email</a>
+              {% else %}
+                <span class="completed-appt-action">Send Follow-Up Email</span>
+              {% endif %}
+            </li>
+            <li class="send-follow-up-with-host">
+              {% if appt.comm_followup == False %}
+                <a href="{% url 'send_followup' appt.id date.year date.month date.day 1 %}">Send Follow-Up Email (with Host Info)</a>
+              {% else %}
+                <span class="completed-appt-action">Send Follow-Up Email (with Host Info)</span>
+              {% endif %}
+            </li>
+            <li class="schedule-next">
+              <a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a>
+            </li>
+          </ul>
         </td>
-
-        <td class="right"><a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a></td>
-      </tr>
-
-      <tr>
-        {% if appt.comm_followup == False %}
-          <td><a href="{% url 'send_followup' appt.id date.year date.month date.day 0 %}">Send Follow-Up Email</a><br></td>
-          <td class="right"><a href="{% url 'send_followup' appt.id date.year date.month date.day 1 %}">Send Follow-Up Email (with Host Info)</a><br></td>
-        {% else %}
-          <td><p class="completed_appt_action">Send Follow-Up Email</p></td>
-          <td class="right"><p class="completed_appt_action">Send Follow-Up Email (with Host Info)</p></td>
-        {% endif %}
-      </tr>
-
-    </table>
-
-  <!-- endif for booked appt blocks   -->
+      </tr>      
+    </tbody>
+  </table>
   {% endif %}
 </div>

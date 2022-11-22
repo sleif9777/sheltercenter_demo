@@ -5,8 +5,8 @@
 {% block content %}
   <div class="main">
 
-  <!-- displays a calendar date and arrows to move back and forth -->
-    <div class="page_header">
+    <!-- displays a calendar date and arrows to move back and forth -->
+    <div class="page-header">
       <h1>
         {% if request.user|has_group:"superuser" or request.user|has_group:"admin" or request.user|has_group:"greeter" %}
           <a href="{% url 'calendar_date' previous_day.year previous_day.month previous_day.day %}">&#9664;&#xFE0E;</a>  {{date_pretty}}  <a href="{% url 'calendar_date' next_day.year next_day.month next_day.day %}">&#9654;&#xFE0E;</a>
@@ -22,8 +22,8 @@
       </h1>
     </div>
 
-  <!-- displays actions underneath the date -->
-    <div class="calendar_actions">
+    <!-- displays actions underneath the date -->
+    <div class="page-actions">
       {% if request.user|has_group:"superuser" or request.user|has_group:"admin" or request.user|has_group:"greeter" %}
         {% include 'appt_calendar/calendar_actions_admin_greeter.html' %}
       {% elif request.user|has_group:"adopter" %}
@@ -40,59 +40,56 @@
     {% endif %}
 
     {% if empty_day == True and request.user|has_group:"admin" and date.weekday < 5 %}
-      <div class="copy_template_button">
+      <div class="copy-template-button">
         <br>
         <form class="" action="{% url 'copy_temp_to_cal' date.year date.month date.day %}" method="post">
           {% csrf_token %}
-          <input class="copytemplate" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Copy From My {{weekday}} Template">
+          <input class="copy-template" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Copy From My {{weekday}} Template">
         </form>
       </div>
     {% elif request.user|show_calendar:visible %}
       {% for timeslot, appointments in timeslots.items %}
-        <div class="timeslot" id="ts{{timeslot.id}}">
+      <div class="timeslot" id="ts{{timeslot.id}}">
 
-          {% if request.user|has_group:"admin" %}
-            {% include 'appt_calendar/calendar_timeslot_toolbar_admin.html' %}
-          {% else %}
-            {% include 'appt_calendar/calendar_timeslot_toolbar.html' %}
-          {% endif %}
+        {% if request.user|has_group:"admin" %}
+          {% include 'appt_calendar/calendar_timeslot_toolbar_admin.html' %}
+        {% else %}
+          {% include 'appt_calendar/calendar_timeslot_toolbar.html' %}
+        {% endif %}
 
-          <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment -->
-          {% if appointments|length <= 1 %}
-          <ul class="appt_solo">
-          <!-- else use appt_list for two-column responsive layout  -->
-          {% else %}
-          <ul class="appt_list">
-          {% endif %}
+        <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment, else use appt_list for two-column responsive layout -->
+        {% if appointments|length <= 1 %}
+        <ul class="appt-solo">
+        <!-- else use appt_list for two-column responsive layout  -->
+        {% else %}
+        <ul class="appt-list">
+        {% endif %}
 
-          {% for appt in appointments %}
-            <!-- create a list item -->
-            <li class="appt_slot">
-              {% if request.user|has_group:"admin" %}
-                {% include 'appt_calendar/appointment_admin.html' %}
-              {% elif request.user|has_group:"greeter" %}
-                {% include 'appt_calendar/appointment_greeter.html' %}
-              {% elif request.user|has_group:"adopter" %}
-                {% include 'appt_calendar/appointment_adopter.html' %}
-              {% endif %}
-            </li>
-          <!-- endfor and /ul for appointments -->
-          {% endfor %}
-          </ul>
-        <!-- /div and endfor for timeslot   -->
-        </div>
+        {% for appt in appointments %}
+          <li class="appt-slot">
+            {% if request.user|has_group:"admin" %}
+              {% include 'appt_calendar/appointment_admin.html' %}
+            {% elif request.user|has_group:"greeter" %}
+              {% include 'appt_calendar/appointment_greeter.html' %}
+            {% elif request.user|has_group:"adopter" %}
+              {% include 'appt_calendar/appointment_adopter.html' %}
+            {% endif %}
+          </li>
+        {% endfor %}
+        </ul>
+      </div>
       {% endfor %}
 
       {% if request.user|has_group:"admin" and date.weekday < 5 %}
-        <div class="timeslot">
-            <!-- two-column table displaying timeslot and timeslot-level actions -->
-            <table style = "width:100%; padding: 10px; margin: 0;">
-              <th style="font-size: 18pt; text-align: left;" class="timeslotheader"></th>
-              <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
-                <a class="timeslot_action" href="{% url 'add_timeslot' date.year date.month date.day %}">Add Timeslot</a>
-              </th>
-            </table>
-        </div>
+      <div class="subsection">
+        <!-- two-column table displaying timeslot and timeslot-level actions -->
+        <table class="subsection-table">
+          <th class="subsection-header left"></th>
+          <th class="subsection-header right">
+            <a class="subsection-action" href="{% url 'add_timeslot' date.year date.month date.day %}">Add Timeslot</a>
+          </th>
+        </table>
+      </div>
       {% endif %}
     {% endif %}
   </div>

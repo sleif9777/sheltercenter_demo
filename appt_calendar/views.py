@@ -194,10 +194,12 @@ def jump_to_date_greeter(request, adopter_id, appt_id, source):
 
     context = {
         'form': form,
+        'form_instructions': "Select a date to jump to on the calendar.",
+        'page_header': "Jump To Date",
         'page_title': "Jump To Date",
     }
 
-    return render(request, "appt_calendar/jump_to_date.html", context)
+    return render(request, "appt_calendar/render_form.html", context)
 
 @authenticated_user
 def jump_to_date(request):
@@ -213,10 +215,12 @@ def jump_to_date(request):
 
     context = {
         'form': form,
+        'form_instructions': "Select a date to jump to on the calendar.",
+        'page_header': "Jump To Date",
         'page_title': "Jump To Date",
     }
 
-    return render(request, "appt_calendar/jump_to_date.html", context)
+    return render(request, "appt_calendar/render_form.html", context)
 
 @authenticated_user
 def calendar_date(request, date_year, date_month, date_day):
@@ -365,16 +369,6 @@ def report_print(request, date_year, date_month, date_day):
     context['page_title'] = "Daily Report"
 
     return render(request, "appt_calendar/daily_report_print.html/", context)
-
-@authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
-def daily_report_all_appts(request, date_year, date_month, date_day):
-    return redirect('daily_report_adopted_chosen_fta')
-    context = gc(request.user, 'full', None, date_year, date_month, date_day)
-
-    context['page_title'] = "All Appointments Report"
-
-    return render(request, "appt_calendar/daily_report_all_appts.html/", context)
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
@@ -942,10 +936,12 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
 
     context = {
         'form': form,
+        'form_instructions': "Enter a decision for this appointment.",
+        'page_header': "Enter Decision",
         'page_title': "Enter Decision",
     }
 
-    return render(request, "appt_calendar/enter_decision_form.html", context)
+    return render(request, "appt_calendar/render_form.html", context)
 
 @authenticated_user
 def remove_adopter(request, date_year, date_month, date_day, appt_id):
@@ -1240,12 +1236,14 @@ def add_timeslot(request, date_year, date_month, date_day):
         form = NewTimeslotModelForm(request.POST or None, initial={'daypart': "1"})
 
     context = {
-        'form': form,
         'date': date,
+        'form': form,
+        'form_instructions': "Select a time to add as a timeslot to the calendar.",
+        'page_header': "Add Timeslot",
         'page_title': "Add Timeslot",
     }
 
-    return render(request, "appt_calendar/new_timeslot_form.html", context)
+    return render(request, "appt_calendar/render_form.html", context)
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -1348,19 +1346,9 @@ def surrender_form(request, adopter_id):
 
     context = {
         'form': form,
-        'page_title': "Surrender Request",
+        'form_instructions': "Please fill out this form to the best of your ability.",
+        'page_header': "Surrender Form",
+        'page_title': "Surrender Form",
     }
 
-    return render(request, "appt_calendar/surrender_form.html", context)
-
-# @authenticated_user
-# @allowed_users(allowed_roles={'admin', 'superuser'})
-# def gen_applications(request, date_year, date_month, date_day):
-#     date = datetime.date(date_year, date_month, date_day)
-#     filename = 'Applications{0}{1}{2}.pdf'.format(date_year, date_month, date_day)
-#     pdf = canvas.Canvas(filename)
-#
-#     pdf.setTitle('Applications for {0}'.format(date_str(date)))
-#     pdf.save()
-#
-#     return redirect('calendar_date', date_year, date_month, date_day)
+    return render(request, "appt_calendar/render_form.html", context)

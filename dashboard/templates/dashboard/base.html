@@ -4,53 +4,145 @@
     {% load static %}
     {% load auth_extras %}
     <meta charset="utf-8">
-
     {% if page_title %}
       <title>{{page_title}}</title>
     {% else %}
       <title>ShelterCenter</title>
     {% endif %}
-
     {% if go_to_div %}
       <script type="text/javascript">
         window.location.hash = '#{{go_to_div}}';
       </script>
     {% endif %}
+    <script type="text/javascript">
+      function getCardElementName(checkboxElementID) {
+        return checkboxElementID.slice(11).replace(/_/g, "-");
+      }
 
+      function updateAppointmentBox(checkbox) {
+        var checkboxElement = document.getElementById(checkbox);
+        var cardElement = document.getElementsByClassName(getCardElementName(checkboxElement.id));
+
+        if (checkboxElement.checked) {
+          for (let i = 0; i < cardElement.length; i++) {
+            if (cardElement[i] instanceof HTMLTableRowElement) {
+              cardElement[i].style.display = "table-row";
+            } else {
+              cardElement[i].style.display = "list-item";
+            }
+          }
+        } else {
+          for (let i = 0; i < cardElement.length; i++) {
+            cardElement[i].style.display = "none";
+          }        
+        }
+
+        assignDefaultAlignments("appt-two-col-list");
+
+      }
+
+      function assignDefaultAlignments(sublistID) {
+        var sublists = document.getElementsByClassName(sublistID);
+        for (let sublist = 0; sublist < sublists.length; sublist++) {
+          affectedElements = Array.from(sublists[sublist].getElementsByTagName("li")).filter(isVisible);
+          for (let i = 0; i < affectedElements.length; i++) {
+            let cutOff = affectedElements.length / 2;
+            if (i >= cutOff) {
+              affectedElements[i].style.textAlign = "right";
+            } else {
+              affectedElements[i].style.textAlign = "left";
+            }
+          }
+        }
+      }
+
+      function loadInitialApptCardState(card_settings, subblock_settings) {
+        let settings = Object.keys(card_settings);
+        let blocks = Object.keys(subblock_settings);
+        
+        settings.forEach((setting) => {
+          if (card_settings[setting] == 0) {
+            var cardElements = document.getElementsByClassName(setting);
+            for (let i = 0; i < cardElements.length; i++) {
+              cardElements[i].style.display = "none";
+            } 
+          }
+        })
+
+        blocks.forEach((block) => {
+          if (subblock_settings[block] == 0) {
+            var cardElements = document.getElementsByClassName(block + "-subblock");
+            for (let i = 0; i < cardElements.length; i++) {
+              cardElements[i].style.display = "none";
+            } 
+          }
+        })
+
+        if (subblock_settings['follow_ups'] == 0) {
+          actionSubblocks = document.getElementsByClassName('actions-subblock');
+          for (let i = 0; i < actionSubblocks.length; i++) {
+            actionSubblocks[i].style.borderBottom = "none";
+          }
+        }
+      }
+
+      function isVisible(element) {
+        return element.style.display != "none";
+      }
+
+      function openNav() {
+        document.getElementById("activity-menu").style.height = "100%";
+      }
+
+      function closeNav() {
+        document.getElementById("activity-menu").style.height = "0";
+      }
+    
+      window.onload = function() {
+        {% if request.user|has_group:"admin" %}
+        loadInitialApptCardState({{request.user.profile.get_card_settings|safe}}, {{request.user.profile.get_card_subblock_settings|safe}});
+        {% endif %}
+        assignDefaultAlignments("appt-two-col-list");
+      }
+    </script>
     <link rel="icon" href="{% static 'media/logo.png' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Bubblegum+Sans">
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
-    <div class="activitymenu">
-      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>
-
+    <div id="activity-menu">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>  
       {% block nav %}
-
+      <div id="collapsible">
+        <div class="full-width right">
+          <a href="javascript:void(0)" id="activity-menu-close" onclick="closeNav()">&times;</a>
+        </div>
         <nav>
-          <div class="actmenu-center">
-            <ul>
-
-              {% if request.user|has_group:"admin" %}
-                {% include 'dashboard/admin_navbar.html' %}
-
-              {% elif request.user|has_group:"greeter" %}
-                {% include 'dashboard/greeter_navbar.html' %}
-
-              {% elif request.user|has_group:"adopter" %}
-                {% include 'dashboard/adopter_navbar.html' %}
-              {% endif %}
-
-              <li class="end"><a href="{% url 'logout' %}">Log Out</a></li>
-            </ul>
-          </div>
+          <ul id="navbar-list">
+            {% if request.user|has_group:"admin" %}
+              {% include 'dashboard/admin_navbar.html' %}
+            {% elif request.user|has_group:"greeter" %}
+              {% include 'dashboard/greeter_navbar.html' %}
+            {% elif request.user|has_group:"adopter" %}
+              {% include 'dashboard/adopter_navbar.html' %}
+            {% endif %}
+            <li class="end"><a href="{% url 'logout' %}">Log Out</a></li>
+          </ul>
         </nav>
-
+      </div>
       {% endblock %}
-
     </div>
-
+    <div id="narrow-screen-nav" class="full-width">
+      <table class="full-width">
+        <th class="left">
+          <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt=""></a>  
+        </th>
+        <th class="right">
+          <span class="interactive" onClick="openNav()">&#9776; Menu</span>
+        </th>
+      </table>
+    </div>
     {% block content %} {% endblock %}
-
   </body>
 </html>

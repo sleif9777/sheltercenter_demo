@@ -2,32 +2,27 @@
 {% load static %}
 
 {% block content %}
-  <div class="main textpage">
-
-    <h1 class="page_header no_actions">{{title}}</h1>
-
-    {% if section %}
-      <p class="standalone">This content will be added to the {{section}} section.</p>
-    {% endif %}
-
-    <form class="" action="" method="post">
-      <script src="https://cdn.tiny.cloud/1/zbvegpc0ft1hz8gayhmf16b101myy5aezzkm142h0qgrrz2v/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-      <script>
-        tinymce.init({
-          selector:'textarea',
-          height:'512px',
-          plugins:'link textcolor image',
-          menubar: 'file edit insert view format table tools help',
-          toolbar: 'undo redo | styleselect | bold italic forecolor fontsizeselect | alignleft aligncenter alignright alignjustify | outdent indent | link image',
-          image_uploadtab: true,
-          images_upload_url: 'static/media/'
-        });
-      </script>
-      {% csrf_token %}
-      {{ form.as_p }}
-      <br>
-      <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Submit">
-    </form>
-
-  </div>
+<div class="main text-page">
+  <h1 class="page-header no-actions">{{title}}</h1>
+  {% if section %}
+    <span class="btm-margin-10">This content will be added to the {{section}} section.</span>
+  {% endif %}
+  <form method="post">
+    <script src="https://cdn.tiny.cloud/1/zbvegpc0ft1hz8gayhmf16b101myy5aezzkm142h0qgrrz2v/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+      tinymce.init({
+        height: '512px',
+        image_uploadtab: true,
+        images_upload_url: 'static/media/',
+        menubar: 'file edit insert view format table tools help',
+        plugins: 'link textcolor image',
+        selector: 'textarea',
+        toolbar: 'undo redo | styleselect | bold italic forecolor fontsizeselect | alignleft aligncenter alignright alignjustify | outdent indent | link image',
+      });
+    </script>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="submit-form top-margin-10" type="submit" onClick="this.form.submit(); this.disabled=true;" value="Submit">
+  </form>
+</div>
 {% endblock %}

@@ -1,36 +1,8 @@
 <div class="appointment">  
-  {% if appt.available == True and appt.appt_type in schedulable %}
-  <table class="appt-info-block no-border" id="appt-header-block">
-    <tr>
-      <td class="appt-description left upper">
-        {% if appt.locked %}
-        &#128274;&#xFE0E; <a href="{% url 'contact_us' appt.id %}">CONTACT US TO BOOK</a>
-        {% elif not request.user.adopter.has_current_appt %}
-        <a href="{% url 'book_cal_appointment' appt.id date.year date.month date.day %}">CLICK TO BOOK</a>
-        {% else %}
-        <a href="{% url 'adopter_reschedule' request.user.adopter.id appt.id date.year date.month date.day 'calendar' %}">CLICK TO RESCHEDULE</a>
-        {% endif %}
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <ul class="appt-two-col-list">
-          <li>({{appt.appt_string}})</li>
-        </ul>
-      </td>
-    </tr>
-    {% if request.user.adopter.has_current_appt %}
-    <tr>
-      <td class="left font-10 top-pad-5">By scheduling this appointment, you will forfeit your current appt for {{current_appt_str}}.</td>
-      <td></td>
-    </tr>
-    {% endif %}
-  </table>
-  {% elif current_appt %}
   <table class="appt-info-block" id="appt-header-block">
     <tr>
       <td class="appt-description left upper">
-        <b><a class="appt_action" href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">{{current_appt}}</a>
+        <b><a class="appt_action" href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">{{current_appt_str}}</a>
       </td>
       <td class="appt-description right">
         <a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a><a href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a>
@@ -105,5 +77,4 @@
       <td></td>
     </tr>
   </table>
-  {% endif %}
 </div>

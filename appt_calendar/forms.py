@@ -86,7 +86,7 @@ class BookAppointmentForm(forms.ModelForm):
         ]
         widgets = {
             'adopter': forms.HiddenInput(),
-            'adopter_notes': forms.Textarea(attrs={'placeholder': 'Please note that providing the names of specific dogs does not guarantee you the opportunity to meet/adopt them. All dogs are available on a first-come-first-serve basis and can potentially be adopted prior to your appointment. The Adoptions team emphasizes that keeping an open mind and not narrowing your scope to only one or two dogs from the website is the best way to experience our program.', 'rows': 3}),
+            'adopter_notes': forms.Textarea(attrs={'rows': 3}),
         }
         labels = {
             'adopter_notes': "",

@@ -8,37 +8,31 @@
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">
   </head>
   <body>
-    <div class="login_form" style="width: 400px; margin:auto; padding-top: 15px;">
-      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt="" style="display:block; margin: auto;"></a>
-
-      <h3 class="page_header">Scheduling Portal</h3>
-      <div class="page_header" style="padding-top: 0; font-size: 10px;">Powered by ShelterCenter</div>
-
-      <form class="" action="" method="post" style="margin-top: 10px;">
-        {% csrf_token %}
-
-        <div style="margin: auto; width: 70%;">
-          <p>
-            <label for="username">Enter your {{login_cred}}:</label><br>
-            <input type="text" placeholder="{{cred_placeholder}}" style="width: 100%; box-sizing: border-box;" name="username" value="">
-          </p>
-        <br>
-
-          <p>
-            <label for="password">Enter your {{pw_cred}}:</label><br>
-            <input type="password" placeholder="{{pw_placeholder}}" name="password" style="width: 100%; box-sizing: border-box;" value="">
-          </p>
-        </div>
-
-        <input class="submitform" style="display: block; margin: 15px auto; width: 50%; font-size: 90%; font-weight: bold;" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Log In">
-
-      </form>
-      {% if other_role == 'Greeters and staff' %}
-        <a class="standalone" style="display: block; margin: auto; text-align: center;" href="{% url 'staff_login' %}">{{other_role}} - click here to log in</a>
-      {% else %}
-        <a class="standalone" style="display: block; margin: auto; text-align: center;" href="{% url 'login' %}">{{other_role}} - click here to log in</a>
-      {% endif %}
-
+    <div class="login-form">
+      <a href="https://savinggracenc.org/" target="_blank">
+        <img src="{% static 'media/logo.png' %}" alt="">
+      </a>
+      <h3 class="page-header">Scheduling Portal</h3>
+      <div class="page-header font-10 top-pad-0">Powered by ShelterCenter</div>
+        <form class="top-margin-10" action="" method="post">
+          {% csrf_token %}
+          <div class="auto-margin width-70">
+            <p>
+              <label for="username">Enter your {{login_cred}}:</label><br>
+              <input type="text" placeholder="{{cred_placeholder}}" class="full-width border-box" name="username" value="">
+            </p><br>
+            <p>
+              <label for="password">Enter your {{pw_cred}}:</label><br>
+              <input type="password" placeholder="{{pw_placeholder}}" class="full-width border-box" name="password" value="">
+            </p>
+          </div>
+          <input class="submit-form" class="half-width" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Log In">
+        </form>
+        {% if other_role == 'Greeters and staff' %}
+        <a class="auto-margin block center" href="{% url 'staff_login' %}">{{other_role}} - click here to log in</a>
+        {% else %}
+        <a class="auto-margin block center" href="{% url 'login' %}">{{other_role}} - click here to log in</a>
+        {% endif %}
     </div>
   </body>
 </html>

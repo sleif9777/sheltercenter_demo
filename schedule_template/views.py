@@ -83,7 +83,16 @@ def add_timeslot(request, dow_id):
         'page_title': "Add Timeslot",
     }
 
-    return render(request, "schedule_template/timeslot_form.html", context)
+    context = {
+        'dow': dow,
+        'form': form,
+        'form_instructions': "Add a timeslot.",
+        'page_header': "Add Timeslot",
+        'page_title': "Add Timeslot",
+    }
+
+    return render(request, "appt_calendar/render_form.html", context)
+
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -99,13 +108,15 @@ def add_appointment(request, dow_id, timeslot_id):
         form = GenericAppointmentModelFormPrefilled(initial={'day_of_week': dow.day_of_week, 'time': timeslot.time})
 
     context = {
-        'form': form,
         'dow': dow,
-        'timeslot': timeslot,
+        'form': form,
+        'form_instructions': "Add an appointment to the timeslot.",
+        'page_header': "Add Appointment",
         'page_title': "Add Appointment",
+        'timeslot': timeslot,
     }
 
-    return render(request, "schedule_template/render_form.html", context)
+    return render(request, "appt_calendar/render_form.html", context)
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -120,7 +131,9 @@ def edit_appointment(request, dow_id, appt_id):
 
     context = {
         'form': form,
+        'form_instructions': "Fill in the details below.",
+        'page_header': "Edit Appointment",
         'page_title': "Edit Appointment",
     }
 
-    return render(request, "schedule_template/render_form.html", context)
+    return render(request, "appt_calendar/render_form.html", context)
