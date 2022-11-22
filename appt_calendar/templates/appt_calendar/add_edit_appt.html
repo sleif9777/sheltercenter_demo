@@ -2,24 +2,21 @@
 {% load static %}
 
 {% block content %}
-  <div class="main textpage">
-
-    <h1 class="page_header no_actions">{{title}}</h1>
-    <p>You may modify your notes here:</p>
-
-    <form class="" action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      {% if adopter_form %}
-        <br>
-        {{adopter_form.as_p}}
-        <br>
-        <em>**Low-shed and hypoallergenic dogs do not come into our program often and are wildly popular. If you can be flexible about this, you will have a much easier time finding a match.</em>
-        <br>
-      {% endif %}
+<div class="main text-page">
+  <h1 class="page-header no-actions">{{title}}</h1>
+  <p>You may modify your notes here:</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if adopter_form %}
       <br>
-      <input class="submitform" type="submit" name="" value="Submit">
-    </form>
-
-  </div>
+      {{adopter_form.as_p}}
+      <br>
+      <em>**Low-shed and hypoallergenic dogs do not come into our program often and are wildly popular. If you can be flexible about this, you will have a much easier time finding a match.</em>
+      <br>
+    {% endif %}
+    <br>
+    <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" value="Submit">
+  </form>
+</div>
 {% endblock %}

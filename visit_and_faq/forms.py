@@ -1,6 +1,7 @@
 from django import forms
-from .models import *
 from tinymce.widgets import TinyMCE
+
+from .models import *
 
 class FAQSectionForm(forms.ModelForm):
     class Meta:

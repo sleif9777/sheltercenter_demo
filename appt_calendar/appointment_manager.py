@@ -1,5 +1,6 @@
-from adopter.adopter_manager import *
 from copy import copy
+
+from adopter.adopter_manager import *
 
 def reset_appt(appt):
     # clears all information out of an appointment and republishes it for booking

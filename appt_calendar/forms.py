@@ -1,8 +1,10 @@
-from django import forms
 import datetime
+
+from django import forms
+
 from .models import *
 from adopter.models import Adopter
-import demo.settings as settings
+from demo import settings as settings
 
 class AppointmentModelFormPrefilled(forms.ModelForm):
     class Meta:
@@ -84,7 +86,7 @@ class BookAppointmentForm(forms.ModelForm):
         ]
         widgets = {
             'adopter': forms.HiddenInput(),
-            'adopter_notes': forms.Textarea(attrs={'placeholder': 'Please note that providing the names of specific dogs does not guarantee you the opportunity to meet/adopt them. All dogs are available on a first-come-first-serve basis and can potentially be adopted prior to your appointment. The Adoptions team emphasizes that keeping an open mind and not narrowing your scope to only one or two dogs from the website is the best way to experience our program.', 'rows': 3}),
+            'adopter_notes': forms.Textarea(attrs={'rows': 3}),
         }
         labels = {
             'adopter_notes': "",
@@ -123,6 +125,50 @@ class EditAppointmentForm(forms.ModelForm):
 
 class JumpToDateForm(forms.Form):
     date = forms.DateField(widget = forms.SelectDateWidget())
+
+
+class SurrenderForm(forms.Form):
+    sg_name = forms.CharField(
+        label="Name of pet while at Saving Grace"
+    )
+    pet_name = forms.CharField(
+        required=False,
+        label="Current name of pet (if renamed)"
+    )
+    microchip = forms.CharField(
+        label="Microchip #"
+    )
+    adoption_date = forms.CharField(
+        label="Date of adoption"
+    )
+    reason_for_return = forms.CharField(
+        label="Why are you surrendering this dog? Please give as much detail as possible so we can know how to best help",
+        widget=forms.Textarea
+    )
+    utd_vet_records = forms.CharField(
+        label="Is your dog up to date on all vet records?",
+        widget=forms.Textarea
+    )
+    # vet_records = forms.ChoiceField(
+    #     label="Is your dog up to date on all vet records?",
+    #     widget=forms.Textarea
+    # )
+    sought_training = forms.CharField(
+        label="Did you seek training or professional guidance with your dog?",
+        widget=forms.Textarea
+    )
+    aggression_hx = forms.CharField(
+        label="Please explain if there have been any aggression concerns towards people or other dogs",
+        widget=forms.Textarea
+    )
+    observations = forms.CharField(
+        label="Please share your observations of your dog that will help us determine if they will be successful in our program once again",
+        widget=forms.Textarea
+    )
+    ideal_adopter = forms.CharField(
+        label="What type of adopter do you believe would serve your dog best?",
+        widget=forms.Textarea
+    )
 
 class DailyAnnouncementForm(forms.ModelForm):
     class Meta:

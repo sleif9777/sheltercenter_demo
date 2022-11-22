@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
   <head>
     {% load static %}
     <meta charset="utf-8">
@@ -8,28 +7,21 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet"  href="{%  static  'main.css'  %}">
   </head>
-
   <body>
-
-    <div class="" style="height: 2%;">
-      <p style="text-align: right; padding: 5px;">Login</p>
+    <div style="height: 2%;">
+      <p class="pad-10 right">Login</p>
     </div>
-
-    <div class="" style="margin: auto; width: 350px;">
-      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" alt="" style="width: 100%;"></a>
+    <div class="auto-margin" style="width: 350px;">
+      <a href="https://savinggracenc.org/" target="_blank"><img src="{% static 'media/logo.png' %}" class="full-width center" alt=""></a>
       <br>
     </div>
-
-    <div class="" style="margin: auto; width: 100%; text-align: center; padding-top: 2%;">
+    <div class="auto-margin full-width center" style="padding-top: 2%;">
       <p>Welcome to our scheduling portal!</p><br>
-
-      <form class="" action="" method="post">
+      <form method="post">
         {% csrf_token %}
         {{form.as_p}}
-        <input type="submit" class="submitform" name="" value="Enter">
+        <input type="submit" onClick="this.form.submit(); this.disabled=true;" class="submit-form" value="Enter">
       </form>
     </div>
-
   </body>
-
 </html>

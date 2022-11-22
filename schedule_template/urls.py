@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 from appt_calendar import views as cal_views
 

@@ -1,11 +1,11 @@
-from django.db import models
 import datetime
-from num2words import num2words
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.contrib.auth.models import User
-from wishlist.models import Dog
 
-# Create your models here.
+from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from num2words import num2words
+
+from wishlist.models import Dog
 
 class Adopter(models.Model):
     STATUSES = [
@@ -52,6 +52,7 @@ class Adopter(models.Model):
     friend_of_foster = models.BooleanField(default = False)
     carryover_shelterluv = models.BooleanField(default = False)
     chosen_dog = models.CharField(default="", max_length=200, blank=True)
+    waiting_for_chosen = models.BooleanField(default=False)
 
     #preference attributes
     min_weight = models.IntegerField(default = 0,)
@@ -67,6 +68,9 @@ class Adopter(models.Model):
     has_current_appt = models.BooleanField(default = False)
     alert_date = models.DateField(default=datetime.date(datetime.date.today().year,1,1), blank=True)
     visits_to_date = models.IntegerField(default=0)
+    adoption_complete = models.BooleanField(default=False)
+    requested_access = models.BooleanField(default=False)
+    requested_surrender = models.BooleanField(default=False)
     status = models.CharField(default="1", max_length=1, choices=STATUSES)
 
     def number_of_visits(self):
@@ -89,6 +93,12 @@ class Adopter(models.Model):
     def adopter_list_name(self):
         return self.l_name + ", " + self.f_name
 
+    def app_interest_str(self):
+        if len(self.app_interest) > 50:
+            return self.app_interest[:48] + "..."
+        else:
+            return self.app_interest
+
     def chg_appt_status(self):
         self.has_current_appt = not self.has_current_appt
         self.save()
@@ -98,6 +108,20 @@ class Adopter(models.Model):
 
     def __str__(self):
         return self.full_name()
+
+    def show_preferences(self):
+        if self.min_weight != 0:
+            return True
+        if self.max_weight != 0:
+            return True
+        if self.hypo_preferred:
+            return True
+        if self.gender_preference != "1":
+            return True
+        if self.age_preference != "1":
+            return True
+
+        return False
 
     class Meta:
         ordering = ('f_name', 'l_name')

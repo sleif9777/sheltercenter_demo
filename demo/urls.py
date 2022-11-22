@@ -14,43 +14,37 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-from appt_calendar import views #as cal_views
-from adopter import views #as adopt_views
-from dashboard import views as views
-from . import settings
-import adopter, visit_and_faq
+from django.urls import include, path
 from django.conf.urls.static import static
 
-#import scheduleconfig.views
-#import schedule_template.views
-#import appt_calendar.views
-#import adopter_mgmt.views
-
+import adopter, visit_and_faq
+from . import settings
+from adopter import views
+from appt_calendar import views
+from dashboard import views as views
 
 urlpatterns = [
+    path('', adopter.views.home_page, name="home_page"),
     path('admin/', admin.site.urls),
-    #path("", views.home, name='home'),
-    #path("schedule/", views.schedule, name='schedule'),
-    #path("scheduletest/", views.scheduletest, name='scheduletest'),
-    #path("config/createtimeslot/", scheduleconfig.views.createtimeslot, name="createtimeslot"),
     path('calendar/template/', include('schedule_template.urls')),
     path('calendar/', include('appt_calendar.urls')),
     path('adopter/', include('adopter.urls')),
     path('emails/', include('email_mgr.urls')),
     path('visit_comms/', include('visit_and_faq.urls')),
     path('wishlist/', include('wishlist.urls')),
-    path('', adopter.views.home_page, name="home_page"),
-    path('register/', views.register, name="register"),
     path('login/', views.login_page, name="login"),
+    path('settings/', views.user_settings, name='user_settings'),
     path('logout/', views.logout_user, name="logout"),
     path('test/', views.test_harness, name="test_harness"),
     path('login/staff/', views.staff_login, name="staff_login"),
     path('images/', views.images, name="images"),
     path('help/', visit_and_faq.views.help, name="help"),
+    path('fake500/', views.fake500, name="fake500"),
     path('tinymce/', include('tinymce.urls')),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
+
+handler500 = 'dashboard.views.error_500'

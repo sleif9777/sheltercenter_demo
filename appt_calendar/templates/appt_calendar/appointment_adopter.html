@@ -1,143 +1,109 @@
-<div class="appointment">
-  <!-- header grid, has a bottom border unless it is the only section -->
-  <!-- it will be the only section when the appointment is not booked and has no notes -->
-  {% if appt.adopter_notes %}
-    <table class="appt_info_block" id="appt_header_block">
-  {% else %}
-    <table class="appt_info_block appt_end_block" id="appt_header_block">
-  {% endif %}
-
-    {% if appt.available == True and appt.appt_type in schedulable %}
-      <tr>
+<div class="appointment">  
+  {% if appt.available == True and appt.appt_type in schedulable %}
+  <table class="appt-info-block no-border" id="appt-header-block">
+    <tr>
+      <td class="appt-description left upper">
         {% if appt.locked %}
-          <td class="appt_description left upper"><b>&#128274;&#xFE0E; <a href="{% url 'contact_us' %}">CONTACT US TO BOOK</a></b></td>
+        &#128274;&#xFE0E; <a href="{% url 'contact_us' appt.id %}">CONTACT US TO BOOK</a>
+        {% elif not request.user.adopter.has_current_appt %}
+        <a href="{% url 'book_cal_appointment' appt.id date.year date.month date.day %}">CLICK TO BOOK</a>
         {% else %}
-          {% if current_appt == None %}
-            <td class="appt_description left upper"><b><a href="{% url 'book_cal_appointment' appt.id date.year date.month date.day %}">CLICK TO BOOK</a></b></td>
-          {% else %}
-            <td class="appt_description left upper"><b><a href="{% url 'adopter_reschedule' request.user.adopter.id appt.id date.year date.month date.day 'calendar' %}">CLICK TO RESCHEDULE</a></b></td>
-          {% endif %}
+        <a href="{% url 'adopter_reschedule' request.user.adopter.id appt.id date.year date.month date.day 'calendar' %}">CLICK TO RESCHEDULE</a>
         {% endif %}
-      </tr>
-
-      <tr>
-        <td class="left"><b>({{appt.appt_string}})</b></td>
-        <td class="right"></td>
-      </tr>
-
-      {% if current_appt != None %}
-        <tr>
-          <td class="left" style="font-size: 10pt; padding-top: 5px;">By scheduling this appointment, you will forfeit your current appt for {{current_appt_str}}.</td>
-          <td></td>
-        </tr>
-      {% endif %}
-
-    {% elif current_appt %}
-      <tr>
-        <td class="appt_description left upper"><b><a class="appt_action" href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">{{current_appt}}</a>
-<!--
-        {% if current_appt.mobility %}
-          &#9855;&#xFE0E;
-        {% endif %}
-        {% if current_appt.bringing_dog %}
-          &#128021;&#xFE0E;
-        {% endif %}
-        {% if current_appt.has_cat %}
-          &#128008;&#xFE0E;
-        {% endif %} -->
-        </td>
-
-        <td class="appt_description right"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a><a href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a></td>
-
-      </tr>
-
-      <tr>
-        <td class="left" style="vertical-align: top; width: 50%;"><b>({{current_appt.appt_string}})</b></td>
-        <td class="right" style="width: 50%;">
-          {% if current_appt.mobility %}
-            <b>Mobility accomodations<br></b>
-          {% endif %}
-          {% if current_appt.bringing_dog %}
-            <b>Bringing dog!<br></b>
-          {% endif %}
-          {% if current_appt.has_cat %}
-            <b>Has a cat!</b>
-          {% endif %}
-        </td>
-      </tr>
-
-      </table>
-
-      {% if current_appt.adopter_notes %}
-      <table class="appt_subblock appt_info_block">
-
-        <tr class="info_block_subheader">
-          <th class="left"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">Notes</a></th>
-          <th class="right"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
-        </tr>
-
-        <tr>
-          <td class="left">{{current_appt.adopter_notes|linebreaks}}</td>
-          <td></td>
-        </tr>
-
-      </table>
-      {% endif %}
-
-      <table class="appt_subblock appt_info_block">
-        <tr class="info_block_subheader">
-          <th class="left"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">Preferences</a></th>
-          <th class="right"><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a></th>
-        </tr>
-
-        <tr>
-          <td class="left">
-            {% if current_appt.adopter.gender_preference == "2" %}
-              Only interested in females
-            {% elif current_appt.adopter.gender_preference == "3" %}
-              Only interested in males
-            {% else %}
-              No gender preference
-            {% endif %}
-          </td>
-          <td class="right">
-            {% if current_appt.adopter.age_preference == "2" %}
-              Puppies only
-            {% elif current_appt.adopter.age_preference == "3" %}
-              Adults only
-            {% else %}
-              No age preference
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td class="left">
-            {% if current_appt.adopter.min_weight == 0 and current_appt.adopter.max_weight == 0 %}
-              No weight preference
-            {% elif current_appt.adopter.min_weight > 0 and current_appt.adopter.max_weight == 0 %}
-              Looking for over {{current_appt.adopter.min_weight}} lbs.
-            {% elif current_appt.adopter.max_weight > 0 and current_appt.adopter.min_weight == 0 %}
-              Looking for under {{current_appt.adopter.max_weight}} lbs.
-            {% elif current_appt.adopter.min_weight > 0 and current_appt.adopter.max_weight > 0 %}
-              Looking for between {{current_appt.adopter.min_weight}} and {{current_appt.adopter.max_weight}} lbs.
-            {% endif %}
-          </td>
-          <td class="right">
-            {% if current_appt.adopter.hypo_preferred %}
-              Needs hypo/low-shedding
-            {% endif %}
-          </td>
-        </tr>
-
-      </table>
-
-      <table class="appt_subblock appt_info_block appt_end_block">
-
-      <tr>
-        <td class="left"><a href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">Cancel My Appointment</a></td>
-        <td></td>
-      </tr>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <ul class="appt-two-col-list">
+          <li>({{appt.appt_string}})</li>
+        </ul>
+      </td>
+    </tr>
+    {% if request.user.adopter.has_current_appt %}
+    <tr>
+      <td class="left font-10 top-pad-5">By scheduling this appointment, you will forfeit your current appt for {{current_appt_str}}.</td>
+      <td></td>
+    </tr>
     {% endif %}
   </table>
+  {% elif current_appt %}
+  <table class="appt-info-block" id="appt-header-block">
+    <tr>
+      <td class="appt-description left upper">
+        <b><a class="appt_action" href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">{{current_appt}}</a>
+      </td>
+      <td class="appt-description right">
+        <a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a><a href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">&#10006;&#xFE0E;</a>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <ul class="appt-two-col-list">
+          <li>({{current_appt.appt_string}})</li>
+          {% if current_appt.mobility %}
+          <li>Mobility accomodations</li>
+          {% endif %}
+          {% if current_appt.bringing_dog %}
+          <li>Bringing dog!</li>
+          {% endif %}
+          {% if current_appt.has_cat %}
+          <li>Has a cat!</li>
+          {% endif %}
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  {% if current_appt.adopter_notes %}
+  <table class="appt-subblock appt-info-block">
+    <tr class="info-block-subheader">
+      <th><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">Notes &#9998;&#xFE0E;</a></th>
+    </tr>
+    <tr>
+      <td class="left">{{current_appt.adopter_notes|linebreaks}}</td>
+    </tr>
+  </table>
+  {% endif %}
+
+  <table class="appt-subblock appt-info-block">
+    <tr class="info-block-subheader">
+      <th><a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">Preferences  &#9998;&#xFE0E;</a></th>
+    </tr>
+    <tr>
+      <td>
+        <ul class="appt-two-col-list">
+          {% if current_appt.adopter.gender_preference == "2" %}
+          <li>Only interested in females</li>
+          {% elif current_appt.adopter.gender_preference == "3" %}
+          <li>Only interested in males</li>
+          {% endif %}
+          {% if current_appt.adopter.age_preference == "2" %}
+          <li>Puppies only</li>
+          {% elif current_appt.adopter.age_preference == "3" %}
+          <li>Adults only</li>
+          {% endif %}
+          {% if current_appt.adopter.min_weight > 0 and current_appt.adopter.max_weight == 0 %}
+          <li>Looking for over {{current_appt.adopter.min_weight}} lbs.</li>
+          {% elif current_appt.adopter.max_weight > 0 and current_appt.adopter.min_weight == 0 %}
+          <li>Looking for under {{current_appt.adopter.max_weight}} lbs.</li>
+          {% elif current_appt.adopter.min_weight > 0 and current_appt.adopter.max_weight > 0 %}
+          <li>Looking for between {{current_appt.adopter.min_weight}} and {{current_appt.adopter.max_weight}} lbs.</li>
+          {% endif %}
+          {% if current_appt.adopter.hypo_preferred %}
+          <li>Needs hypo/low-shedding!</li>
+          {% endif %}
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <table class="appt-subblock appt-info-block no-border">
+    <tr>
+      <td class="left">
+        <a href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">Cancel My Appointment</a>
+      </td>
+      <td></td>
+    </tr>
+  </table>
+  {% endif %}
 </div>

@@ -1,0 +1,18 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="main textpage">
+  <h1 class="page_header no_actions">Surrender Form</h1>
+
+  <p class="standalone">Please fill out this form to the best of your ability.</p>
+  <br>
+
+  <form class="" action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <br>
+    <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Submit">
+  </form>
+</div>
+{% endblock %}

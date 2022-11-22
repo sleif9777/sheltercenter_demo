@@ -1,18 +1,24 @@
-from django.shortcuts import render, get_object_or_404, redirect
+import csv
+import datetime
+import os
+import sys
+import time
+
+from django.contrib.auth.models import Group, User
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
+
+from .adopter_manager import *
+from .forms import *
 from .models import Adopter
 from appt_calendar.models import Appointment
-from .forms import *
-from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-import datetime, time, csv, os, sys
-from random import randint
+from dashboard.decorators import *
 from email_mgr.models import *
 from email_mgr.dictionary import *
 from email_mgr.email_sender import *
-from .adopter_manager import *
+from random import randint
+from schedule_template.models import *
 from visit_and_faq.models import *
-from django.contrib.auth.models import Group, User
-from dashboard.decorators import *
 
 system_settings = SystemSettings.objects.get(pk=1)
 
@@ -148,23 +154,18 @@ def handle_existing(existing_adopter, status, app_interest):
     special_circumstances = (existing_adopter.adopting_foster or existing_adopter.friend_of_foster or existing_adopter.adopting_host)
     accepted_last_4_days = existing_adopter.accept_date in [today - datetime.timedelta(days = x) for x in range(4)]
 
-    print(special_circumstances, existing_adopter.adopting_foster, existing_adopter.friend_of_foster, existing_adopter.adopting_host)
-
     #if the adopter is approved...
     if existing_adopter.status == "1" and status in ["1", "Accepted"]:
-        print('hit')
         if app_interest not in ["", "dogs", "Dogs", "Dog"]:
             existing_adopter.app_interest = app_interest
             existing_adopter.save()
 
         #...and was accepted over a year ago, send new invite
         if existing_adopter.accept_date < (today - datetime.timedelta(days = 365)):
-            print('swing')
             existing_adopter.accept_date = datetime.date.today()
             create_invite_email(existing_adopter)
         #...and was accepted under a year ago, but more than two days ago, send push
         elif not accepted_last_4_days and not special_circumstances:
-            print('miss')
             create_invite_email(existing_adopter)
 
     #if moved from pending to approved, send invite
@@ -206,14 +207,9 @@ def add_from_file(file):
 
             #else handle message
             else:
-                print(existing_adopter.full_name(), existing_adopter.accept_date)
                 handle_existing(existing_adopter, row[4], row[11])
         except Exception as f:
-            print('f', f)
             adopter = create_adopter_from_row(row)
-
-            print(adopter.full_name())
-            print(adopter.status)
 
             try:
                 create_new_user_from_adopter(adopter)
@@ -237,7 +233,6 @@ def add_from_file(file):
 def add_from_form(adopter):
     #for testing purposes, do not put into prod
     if str(os.environ.get('SANDBOX')) == "1":
-        print('i')
         adopter.primary_email = "sheltercenterdev+" + adopter.f_name.replace(" ", "").lower() + adopter.l_name.replace(" ", "").lower() + "@gmail.com"
 
     #set an auth code that isn't divisible by 100
@@ -255,12 +250,10 @@ def add_from_form(adopter):
             create_new_user_from_adopter(adopter)
             if adopter.adopting_foster or adopter.friend_of_foster or adopter.adopting_host:
                 shellappt = create_shell_appt(adopter)
-                print(shellappt.id)
                 return shellappt
             else:
                 return None
         except Exception as h:
-            print('h', h)
             pass
 
 def create_shell_appt(adopter):
@@ -301,10 +294,7 @@ def add(request):
             add_from_file(file)
     #except no file, add manually without application
     except Exception as g:
-        print('g', g)
         if form.is_valid():
-            print(form.cleaned_data)
-
             try:
                 fname = form.cleaned_data["f_name"]
                 lname = form.cleaned_data["l_name"]
@@ -324,28 +314,25 @@ def add(request):
 
                 #else handle message
                 else:
-                    print('here')
                     handle_existing(existing_adopter, status, app_interest)
             except Exception as b:
-                print("b", b)
                 form.save()
                 adopter = Adopter.objects.latest('id')
                 shellappt = add_from_form(adopter)
 
-                if adopter.adopting_foster:
-                    return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
-                elif adopter.friend_of_foster:
-                    return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
-                elif adopter.adopting_host:
-                    print('host')
-                    return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
-                elif adopter.out_of_state == True:
-                    invite_oos_etemp(adopter)
-                elif adopter.carryover_shelterluv:
-                    carryover_temp(adopter)
-                else:
-                    print('invite')
-                    invite(adopter)
+                if adopter.status in ["1", "Accepted"]:
+                    if adopter.adopting_foster:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_foster')
+                    elif adopter.friend_of_foster:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_friend_of_foster')
+                    elif adopter.adopting_host:
+                        return redirect('contact_adopter', shellappt.id, shellappt.date.year, shellappt.date.month, shellappt.date.day, 'add_form_adopting_host')
+                    elif adopter.out_of_state == True:
+                        invite_oos_etemp(adopter)
+                    elif adopter.carryover_shelterluv:
+                        carryover_temp(adopter)
+                    else:
+                        invite(adopter)
 
 
     form = AdopterForm()
@@ -375,19 +362,15 @@ def login(request):
 @allowed_users(allowed_roles={'admin'})
 def manage(request):
     adopters = Adopter.objects.all()
-    alphabet = [chr(x) for x in range(65, 91)]
-    digits = [chr(x) for x in range(48, 58)]
 
     context = {
         'adopters': adopters,
         'role': 'admin',
-        'alphabet': alphabet,
-        'digits': digits,
-        'lname_fname': False,
         'page_title': "Manage Adopters",
     }
 
     return render(request, "adopter/adoptermgmt.html", context)
+
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})
@@ -396,7 +379,7 @@ def manage_filter(request, filter, char):
         adopters = Adopter.objects.filter(f_name__startswith=char)
         lname_fname = False
     elif filter == 'lname':
-        adopters = Adopter.objects.filter(l_name__startswith=char).order_by('l_name')
+        adopters = Adopter.objects.filter(l_name__startswith=char.upper()).order_by('l_name')
         lname_fname = True
     elif filter == "email":
         char = char.lower()
@@ -405,6 +388,7 @@ def manage_filter(request, filter, char):
 
     alphabet = [chr(x) for x in range(65, 91)]
     digits = [chr(x) for x in range(48, 58)]
+    print(adopters)
 
     context = {
         'adopters': adopters,
@@ -475,6 +459,59 @@ def edit_adopter(request, adopter_id):
     form = AdopterForm(request.POST or None, instance=adopter)
 
     adopter_curr_status = adopter.status[:]
+    adopter_original_email = adopter.primary_email[:]
+
+    try:
+        current_appt = Appointment.objects.filter(adopter=adopter).latest('date')
+        current_appt_str = current_appt.date_and_time_string()
+        date = current_appt.date
+    except:
+        current_appt = None
+        current_appt_str = None
+        date = None
+
+    if form.is_valid():
+        form.save()
+
+        if adopter.status != adopter_curr_status and adopter.status == "1":
+            if adopter.out_of_state == True:
+                invite_oos_etemp(adopter)
+            else:
+                invite(adopter)
+
+        if adopter.primary_email != adopter_original_email:
+            adopter.user.username = adopter.primary_email
+            adopter.user.save()
+
+        return redirect('adopter_manage')
+    else:
+        form = AdopterForm(request.POST or None, instance=adopter)
+
+    source = 'mgmt_' + str(adopter.id)
+
+    context = {
+        'form': form,
+        'adopter': adopter,
+        'appt': current_appt,
+        'date': date,
+        'appt_str': current_appt_str,
+        'schedulable': ["1", "2", "3"],
+        'source': source,
+        'show_timestr': True,
+        'today': datetime.date.today(),
+        'page_title': "Edit Adopter"
+    }
+
+    return render(request, "adopter/edit_adopter.html", context)
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
+def edit_adopter_w_alert(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+    form = AdopterForm(request.POST or None, instance=adopter)
+
+    adopter_curr_status = adopter.status[:]
 
     try:
         current_appt = Appointment.objects.filter(adopter=adopter).latest('id')
@@ -510,10 +547,12 @@ def edit_adopter(request, adopter_id):
         'source': source,
         'show_timestr': True,
         'today': datetime.date.today(),
+        'alert': 'True',
         'page_title': "Edit Adopter"
     }
 
     return render(request, "adopter/edit_adopter.html", context)
+
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
@@ -559,14 +598,14 @@ def visitor_instructions(request):
 
 @authenticated_user
 @allowed_users(allowed_roles={'adopter'})
-def contact(request):
+def contact(request, appt_id=None):
     all_dows = Daily_Schedule.objects
     form = ContactUsForm(request.POST or None)
     if form.is_valid():
         data = form.cleaned_data
         adopter = request.user.adopter
         message = data['message']
-        new_contact_us_msg(adopter, message)
+        new_contact_us_msg(adopter, message, appt_id)
         return redirect('adopter_home')
 
     context = {
@@ -625,6 +664,10 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         template = EmailTemplate.objects.get(template_name="Application Accepted (Friend of Foster)")
     elif source == 'add_form_adopting_host':
         template = EmailTemplate.objects.get(template_name="Application Accepted (Host Weekend)")
+    elif source == 'reminder_breed':
+        template = EmailTemplate.objects.get(template_name="Reminder: Breed Restrictions")
+    elif source == 'reminder_parents':
+        template = EmailTemplate.objects.get(template_name="Reminder: Lives With Parents")
 
     try:
         template = replacer(template.text.replace('*SIGNATURE*', request.user.profile.signature), adopter, appt)
@@ -642,6 +685,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         if source in ["update", "ready_positive", "ready_negative"]:
 
             appt.last_update_sent = today
+            appt.all_updates_sent.insert(0, date_str(today))
 
             if source in ['ready_positive', 'ready_negative']:
                 appt.outcome = "7"
@@ -654,7 +698,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
             return redirect('chosen_board')
 
-        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'calendar', 'confirm_appt']:
+        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'calendar', 'confirm_appt', 'reminder_breed', 'reminder_parents']:
 
             if source == "limited_puppies":
                 appt.comm_limited_puppies = True
@@ -666,6 +710,10 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
                 appt.comm_limited_small_puppies = True
             elif source == "dogs_were_adopted":
                 appt.comm_adopted_dogs = True
+            elif source == 'reminder_breed':
+                appt.comm_reminder_breed = True
+            elif source == 'reminder_parents':
+                appt.comm_reminder_parents = True
 
             appt.save()
 

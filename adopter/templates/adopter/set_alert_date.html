@@ -2,18 +2,13 @@
 {% load static %}
 
 {% block content %}
-  <div class="main textpage">
-    <h1 class="page_header no_actions">Set Reminder for {{adopter.full_name}}</h1>
-
-    <p class="standalone">Select the date {{adopter.f_name}} would like to come in. They will be notified when we publish appointments for that date.</p>
-    <br>
-    <form class="" action="" method="post">
-      {% csrf_token %}
-
-      <p>{{form}}</p>
-
-      <input class="submitform" type="submit" name="" value="Submit">
-    </form>
-
-  </div>
+<div class="main text-page">
+  <h1 class="page-header no-actions">Set Reminder for {{adopter.full_name}}</h1>
+  <span class="btm-margin-5">Select the date {{adopter.f_name}} would like to come in. They will be notified when we publish appointments for that date.</span>
+  <form method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" value="Submit">
+  </form>
+</div>
 {% endblock %}

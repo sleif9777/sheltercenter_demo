@@ -1,0 +1,263 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block content %}
+<div class="main">
+  <div class="page-header">
+    <h1>Settings</h1>
+  </div>
+  <div style="display: flex;">
+    <div style="width: calc(100% - 600px); padding: 0 10px;">
+      <h2>Appointment Card View</h2>
+      <form action="" id="card-view-form" method="post">
+        {% csrf_token %}
+        <input type="submit" onClick="this.form.submit();" name="" id="">
+        <h3>Visit Info</h3>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_number_of_visits.id_for_label }}" name="{{ form.ac_show_number_of_visits.html_name }}" onclick="updateAppointmentBox('id_ac_show_number_of_visits');" {% if form.ac_show_number_of_visits.value %}checked{% endif %}>
+        <label for="id_ac_show_number_of_visits">
+          Number of visits
+        </label>
+        <h3>Notes</h3>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_internal_notes.id_for_label }}" name="{{ form.ac_show_internal_notes.html_name }}" onclick="updateAppointmentBox('id_ac_show_internal_notes');" {% if form.ac_show_internal_notes.value %}checked{% endif %}>
+        <label for="id_ac_show_internal_notes">
+          Internal notes <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_adopter_notes.id_for_label }}" name="{{ form.ac_show_adopter_notes.html_name }}" onclick="updateAppointmentBox('id_ac_show_adopter_notes');" {% if form.ac_show_adopter_notes.value %}checked{% endif %}>
+        <label for="id_ac_show_adopter_notes">
+          Adopter notes <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_shelterluv_notes.id_for_label }}" name="{{ form.ac_show_shelterluv_notes.html_name }}" onclick="updateAppointmentBox('id_ac_show_shelterluv_notes');" {% if form.ac_show_shelterluv_notes.value %}checked{% endif %}>
+        <label for="id_ac_show_shelterluv_notes">
+          Shelterluv notes <br>
+        </label>
+        <h3>About</h3>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_city_state.id_for_label }}" name="{{ form.ac_show_city_state.html_name }}" onclick="updateAppointmentBox('id_ac_show_city_state');" {% if form.ac_show_city_state.value %}checked{% endif %}>
+        <label for="id_ac_show_city_state">
+          City/State <br>
+        </label>        
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_household_activity.id_for_label }}" name="{{ form.ac_show_household_activity.html_name }}" onclick="updateAppointmentBox('id_ac_show_household_activity');" {% if form.ac_show_household_activity.value %}checked{% endif %}>
+        <label for="id_ac_show_household_activity">
+          Household Activity <br>
+        </label>        
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_housing.id_for_label }}" name="{{ form.ac_show_housing.html_name }}" onclick="updateAppointmentBox('id_ac_show_housing');" {% if form.ac_show_housing.value %}checked{% endif %}>
+        <label for="id_ac_show_housing">
+          Housing <br>
+        </label>        
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_fence.id_for_label }}" name="{{ form.ac_show_fence.html_name }}" onclick="updateAppointmentBox('id_ac_show_fence');" {% if form.ac_show_fence.value %}checked{% endif %}>
+        <label for="id_ac_show_fence">
+          Fence? <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_booking_timestamp.id_for_label }}" name="{{ form.ac_show_booking_timestamp.html_name }}" onclick="updateAppointmentBox('id_ac_show_booking_timestamp');" {% if form.ac_show_booking_timestamp.value %}checked{% endif %}>
+        <label for="id_ac_show_booking_timestamp">
+          Booking timestamp <br>
+        </label>
+        <h3>Preferences</h3>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_gender_preference.id_for_label }}" name="{{ form.ac_show_gender_preference.html_name }}" onclick="updateAppointmentBox('id_ac_show_gender_preference');" {% if form.ac_show_gender_preference.value %}checked{% endif %}>
+        <label for="id_ac_show_gender_preference">
+          Gender <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_weight_preference.id_for_label }}" name="{{ form.ac_show_weight_preference.html_name }}" onclick="updateAppointmentBox('id_ac_show_weight_preference');" {% if form.ac_show_weight_preference.value %}checked{% endif %}>
+        <label for="id_ac_show_weight_preference">
+          Weight <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_age_preference.id_for_label }}" name="{{ form.ac_show_age_preference.html_name }}" onclick="updateAppointmentBox('id_ac_show_age_preference');" {% if form.ac_show_age_preference.value %}checked{% endif %}>
+        <label for="id_ac_show_age_preference">
+          Age group <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_hypo_preference.id_for_label }}" name="{{ form.ac_show_hypo_preference.html_name }}" onclick="updateAppointmentBox('id_ac_show_hypo_preference');" {% if form.ac_show_hypo_preference.value %}checked{% endif %}>
+        <label for="id_ac_show_hypo_preference">
+          Hypoallergenic <br>
+        </label>
+        <h3>Contact</h3>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_breed_restriction_comm.id_for_label }}" name="{{ form.ac_show_breed_restriction_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_breed_restriction_comm');" {% if form.ac_show_breed_restriction_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_breed_restriction_comm">
+          Breed Restrictions <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dogs_adopted_comm.id_for_label }}" name="{{ form.ac_show_dogs_adopted_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dogs_adopted_comm');" {% if form.ac_show_dogs_adopted_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_dogs_adopted_comm">
+          Dogs Were Adopted <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_limited_small_dogs_comm.id_for_label }}" name="{{ form.ac_show_limited_small_dogs_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_limited_small_dogs_comm');" {% if form.ac_show_limited_small_dogs_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_limited_small_dogs_comm">
+          Limited Small Dogs <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_limited_small_puppies_comm.id_for_label }}" name="{{ form.ac_show_limited_small_puppies_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_limited_small_puppies_comm');" {% if form.ac_show_limited_small_puppies_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_limited_small_puppies_comm">
+          Limited Small Puppies <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_lives_with_parents_comm.id_for_label }}" name="{{ form.ac_show_lives_with_parents_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_lives_with_parents_comm');" {% if form.ac_show_lives_with_parents_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_lives_with_parents_comm">
+          Lives With Parents <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_limited_puppies_comm.id_for_label }}" name="{{ form.ac_show_limited_puppies_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_limited_puppies_comm');" {% if form.ac_show_limited_puppies_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_limited_puppies_comm">
+          Limited Puppies <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_limited_hypo_comm.id_for_label }}" name="{{ form.ac_show_limited_hypo_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_limited_hypo_comm');" {% if form.ac_show_limited_hypo_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_limited_hypo_comm">
+          Limited Low-shed/Hypo <br>
+        </label>
+        <h3>Follow-Ups</h3>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_send_follow_up.id_for_label }}" name="{{ form.ac_show_send_follow_up.html_name }}" onclick="updateAppointmentBox('id_ac_show_send_follow_up');" {% if form.ac_show_send_follow_up.value %}checked{% endif %}>
+        <label for="id_ac_show_send_follow_up">
+          Send Follow-Up Email <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_send_follow_up_with_host.id_for_label }}" name="{{ form.ac_show_send_follow_up_with_host.html_name }}" onclick="updateAppointmentBox('id_ac_show_send_follow_up_with_host');" {% if form.ac_show_send_follow_up_with_host.value %}checked{% endif %}>
+        <label for="id_ac_show_send_follow_up_with_host">
+          Send Follow-Up Email (with Host Info) <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_schedule_next.id_for_label }}" name="{{ form.ac_show_schedule_next.html_name }}" onclick="updateAppointmentBox('id_ac_show_schedule_next');" {% if form.ac_show_schedule_next.value %}checked{% endif %}>
+        <label for="id_ac_show_schedule_next">
+          Schedule Next Appointment <br>
+        </label>
+      </form>
+      <!-- <form action="">{{form.as_p}}</form> -->
+    </div>
+
+    <div class="appointment" style="width: 600px;">
+      <table class="appt-info-block" id="appt-header-block">
+        <tbody>
+          <tr>
+            <td class="appt-description left upper"><b><a class="appt-action">
+              {{request.user.profile.full_name}}
+            </a>
+              &#9855;&#xFE0E;
+              &#128021;&#xFE0E;
+              &#128008;&#xFE0E;
+            </td>
+
+            <td class="appt-description right">
+              &#128274;&#xFE0E;&#9998;&#xFE0E;&#128196;&#xFE0E;&#128100;&#xFE0E;<sub style="font-size: 8pt;">&#128683;&#xFE0E;</sub><a>&#10006;&#xFE0E;</td>
+          </tr>
+
+          <tr>
+            <td colspan="2">
+              <ul class="appt-two-col-list">
+                <li class="appt-type">(Puppies and/or Adults)</li>
+                <li class="number-of-visits">Second visit</li>
+                <li class="must-bring-parent">Must bring a parent!</li>
+                <li class="bringing-dog">Bringing dog!</li>
+                <li class="has-a-cat">Has a cat!</li>
+              </ul>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+      <table class="appt-subblock appt-info-block">
+
+        <tr class="info-block-subheader">
+          <th class="left"><a>Notes</a></th>
+          <th class="right"><a">&#9998;&#xFE0E;</a></th>
+        </tr>
+
+        <tr class="internal-notes">
+          <td class="left" style="width:20%;"><b>From Adoptions:</b></td>
+          <td class="left"><a> Have Sunny do appointment</a></td>
+        </tr>
+
+        <tr class="adopter-notes">
+          <td class="left"><b>From {{request.user.profile.first_name}}:</b></td>
+          <td class="left">Open to anyone!</td>
+        </tr>
+
+        <tr class="shelterluv-notes">
+          <td class="left"><b>From Shelterluv:</b></td>
+          <td class="left">No preferences!</td>
+        </tr>
+
+      </table>
+      <table class="appt-subblock appt-info-block">
+        <tbody>
+          <tr class="info-block-subheader">
+            <th>About {{request.user.profile.first_name}}</th>
+          </tr>
+          <tr>
+            <td>
+              <ul class="appt-two-col-list">
+                <li class="city-state">Coming from Wake Forest, NC</li> 
+                <li class="household-activity">Moderate Activity Household</li>
+                <li class="booking-timestamp">Booked October 31, 2022 at 12:34PM</li>
+                <li class="housing">House (Own)</li>
+                <li class="fence">Has Fence</li>
+              </ul>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
+      <table class="appt-subblock appt-info-block">
+        <tbody>
+          <tr class="info-block-subheader">
+            <th>{{request.user.profile.first_name}}'s Preferences</th>
+          </tr>
+          <tr>
+            <td colspan="1">
+              <ul class="appt-two-col-list">
+                <li class="gender-preference">Only interested in females</li> 
+                <li class="weight-preference">Looking for over 30 lbs.</li>
+                <li class="age-preference">Adults Only</li>
+                <li class="hypo-preference">Needs hypo/low-shedding!</li>
+              </ul>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
+      <table class="appt-subblock appt-info-block">
+        <tbody>
+          <tr class="info-block-subheader">
+            <th>Contact {{request.user.profile.first_name}}</th>
+          </tr>
+          <tr>
+            <td colspan="1">
+              <ul class="appt-two-col-list">
+                <li class="breed-restriction-comm">Breed Restrictions</li> 
+                <li class="dogs-adopted-comm">Dogs Were Adopted</li>
+                <li class="limited-small-dogs-comm">Limited Small Dogs</li>
+                <li class="limited-small-puppies-comm">Limited Small Puppies</li>
+                <li class="lives-with-parents-comm">Lives With Parents</li>
+                <li class="limited-puppies-comm">Limited Puppies</li>
+                <li class="limited-hypo-comm">Limited Low-shed/Hypo</li>
+                <li class="resend-confirmation-comm">Resend Confirmation</li>
+              </ul>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
+      <table class="appt-subblock appt-info-block">
+        <tbody>
+          <tr class="info-block-subheader">
+            <th>Actions</th>
+          </tr>
+          <tr>
+            <td colspan="1">
+              <ul class="appt-two-col-list">
+                <li class="enter-decision">Enter Decision</li> 
+                <li class="cancel-adopter">Cancel Adopter</li>
+                <li class="reschedule-adopter">Reschedule Adopter</li>
+                <li class="print-application">Print Application</li>
+              </ul>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
+      <table class="appt-subblock appt-info-block no-border">
+        <tbody>
+          <tr class="info-block-subheader">
+            <th>Follow-Ups</th>
+          </tr>
+          <tr>
+            <td colspan="1">
+              <ul class="appt-two-col-list">
+                <li class="send-follow-up">Send Follow-Up Email</li> 
+                <li class="send-follow-up-with-host">Send Follow-Up Email (with Host Info)</li> 
+                <li class="schedule-next">Schedule Next Appointment</li> 
+              </ul>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

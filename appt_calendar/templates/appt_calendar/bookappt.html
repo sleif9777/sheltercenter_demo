@@ -2,41 +2,30 @@
 {% load static %}
 
 {% block content %}
-  <div class="main textpage">
-
-    <h1 class="page_header no_actions">Book Appointment</h1>
-
-    <!-- <p class="standalone">You can use this space to provide any preferences ahead of your appointment. This can include desired size, gender, or age. You can also provide the names of dogs you wish to see during your appointment that you have noticed on our website or social media. If you have no particular specifics and are open to meeting all dogs, you can note this as well.</p> -->
-    <!-- <br> -->
-    <form class="" action="" method="post">
-      <!-- <p>Please note that providing the names of specific dogs does not guarantee you the opportunity to meet/adopt them. All dogs are available on a first-come-first-serve basis and can potentially be adopted prior to your appointment. The Adoptions team emphasizes that keeping an open mind and not narrowing your scope to only one or two dogs from the website is the best way to experience our program.</p> -->
-      <!-- <br> -->
-      <h3>Who are you interested in meeting?</h3><br>
-      {% csrf_token %}
+<div class="main text-page">
+  <h1 class="page-header no-actions">Book Appointment</h1>
+  <form method="post">
+    <div class="info-box calendar-notes btm-margin-5">
+      <table>
+        <tr>
+          <td class="info-box-data no-border">
+            <span class="alert-symbol">&#9432;&#xFE0E; </span>Please note that providing the names of specific dogs does not guarantee you the opportunity to meet/adopt them. All dogs are available on a first-come-first-serve basis and can potentially be adopted prior to your appointment. The Adoptions team emphasizes that keeping an open mind and not narrowing your scope to only one or two dogs from the website is the best way to experience our program.
+          </td>
+        </tr>
+      </table>
+    </div>
+    <h3 class="btm-margin-5">Who are you interested in meeting?</h3>
+    {% csrf_token %}
+    <span class="btm-margin-5">
       {{ form.as_p }}
-      <br>
+    </span>
+    <span class="btm-margin-10">
       {{ adopter_form.as_p }}
-      <br>
-      <em>**Low-shed and hypoallergenic dogs do not come into our program often and are wildly popular. If you can be flexible about this, you will have a much easier time finding a match.</em>
-      <br>
-      <br>
-      <!-- <h3>Please confirm the following:</h3><br>
-      <label for="dogs_not_held">I understand that dogs are not placed on hold for prospective adopters, and any dog I am interested may be adopted prior to my visit. Saving Grace does not have the capacity to keep track of wishlists, may not update me if a dog I express interest in is adopted prior, and emphasizes keeping options open instead of focusing on only one or two dogs from the website. </label>
-      <input type="checkbox" name="ready_to_adopt" value="dogs_not_held" required><br><br>
-      {% if request.user.adopter.lives_with_parents and request.user.adopter.visits_to_date == 0 %}
-        <label for="must_bring_parent">I understand that my parents must attend the appointment with me. </label>
-        <input type="checkbox" name="ready_to_adopt" value="must_bring_parent" required><br><br>
-      {% endif %}
-      <label for="ready_to_adopt">I understand that the dog I select will not be placed on hold unless there are outstanding veterinary needs. Saving Grace cannot accept a deposit to care for a dog that is ready to leave the program. I will come into my appointment prepared to take a dog home immediately following, even if this is not the eventual outcome. </label>
-      <input type="checkbox" name="ready_to_adopt" value="ready_to_adopt" required><br><br>
-      <label for="children_attending">I understand that it is important for any young children in the home to attend the appointment so that we may find a child-compatible match, or I acknowledge that there are no young children in the home. </label>
-      <input type="checkbox" name="ready_to_adopt" value="children_attending" required><br><br> -->
-      <!-- <h3>Do you have any questions we can answer before your appointment?</h3>
-      <p style="margin: 5px 0 10px 0;"><a class="standalone" target="blank" href="{% url 'faq' %}">Please read our FAQ page!</a> Many of the questions we get often are answered here.</p>
-      <p style="margin: 5px 0 10px 0;"><b><em>"Is (dog name) still available?"</em></b> - Any dogs listed on our website are available, any dogs removed are not. This is automatically updated by our database in real time. We do have other dogs that have not had a chance to be written about or photographed.</p>
-      <textarea placeholder="Submit any questions here. (Optional)" name="outstanding_questions" rows="8" cols="80"></textarea> -->
-      <input class="submitform" type="submit" name="" value="Submit">
-    </form>
-
-  </div>
+    </span>
+    <span class="btm-margin-5">
+      <em>**Low-shed and hypoallergenic dogs do not come into our program often and are wildly popular. If you can be flexible about this, you will have a much easier time finding a match.</em><br>
+    </span>
+    <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" value="Submit">
+  </form>
+</div>
 {% endblock %}

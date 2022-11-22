@@ -1,17 +1,24 @@
-import smtplib, ssl, datetime, time, os, mimetypes
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
-from appt_calendar.models import Appointment
-from appt_calendar.date_time_strings import *
-from io import StringIO
-from html.parser import HTMLParser
-from .email_sender import *
-from .models import EmailTemplate
-from .dictionary import *
+import datetime
+import os
+import mimetypes
+import smtplib
+import ssl
+import time
+
 from django.core.mail import EmailMultiAlternatives
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from html.parser import HTMLParser
+from io import StringIO
 from mimetypes import guess_type
 from os.path import basename
+
+from appt_calendar.models import Appointment
+from appt_calendar.date_time_strings import *
+from .email_sender import *
+from .dictionary import *
+from .models import EmailTemplate
 
 
 class MLStripper(HTMLParser):
@@ -178,6 +185,142 @@ def dates_are_open(adopter, date):
 
     send_email(text, html, "default", subject, email, None)
 
+
+def confirm_access_request(adopter):
+    name = adopter.f_name
+    subject = "You have requested calendar access"
+    email = adopter.primary_email
+
+    text = """\
+    Hi {0},\n
+    We have received your request to restore your calendar access and will notify you once ready.\n
+    Thank you for choosing to come back to Saving Grace. We look forward to helping you find a new family member soon!\n
+    All the best, \n
+    The Adoptions Team
+    Saving Grace Animals for Adoption
+    """.format(name)
+
+    html = """\
+    <html>
+      <body>
+        <p>Hi {0},</p>
+        <p>We have received your request to restore your calendar access and will notify you once ready.</p>
+        <p>Thank you for choosing to come back to Saving Grace. We look forward to helping you find a new family member soon!</p>
+        <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
+      </body>
+    </html>
+    """.format(name)
+
+    send_email(text, html, "default", subject, email, None)
+
+
+def access_requested(adopter):
+    name = adopter.f_name
+    subject = "{0} has requested calendar access".format(name)
+    email = adopter.primary_email
+
+    plain_url = 'http://sheltercenter.dog/calendar/allow_access/adopter/{0}/'.format(adopter.id)
+    url = '<a target="_blank" href="http://sheltercenter.dog/calendar/allow_access/adopter/{0}/">Click here to grant calendar access.</a>'.format(adopter.id)
+
+    text = """\
+    {0} would like to return to adopt again.\n
+    Copy and paste this URL to grant access: {1}\n
+    Ignore if access should not be granted (i.e. shitlisted).
+    """.format(adopter.full_name(), plain_url)
+
+    html = """\
+    <html>
+      <body>
+        <p>{0} would like to return to adopt again.</p>
+        <p>{1}</p>
+        <p>Ignore if access should not be granted (i.e. shitlisted).</p>
+      </body>
+    </html>
+    """.format(adopter.full_name(), url)
+
+    send_email(text, html, "default", subject, get_base_email(), None)
+
+
+def access_restored(adopter):
+    subject = "Let's Book Your Saving Grace Adoption Appointment! ({0})".format(adopter.full_name().upper())
+    name = adopter.f_name
+    email = adopter.primary_email
+
+    text = """\
+    Hi {0},\n
+    Saving Grace has restored your calendar access and looks forward to helping you find another furry friend to join your family!\n
+    Please visit www.sheltercenter.dog to book an appointment. Your authorization code is {1}.\n
+    All the best, \n
+    The Adoptions Team
+    Saving Grace Animals for Adoption
+    """.format(name, adopter.auth_code)
+
+    html = """\
+    <html>
+      <body>
+        <p>Hi {0},</p>
+        <p>Saving Grace has restored your calendar access and looks forward to helping you find another furry friend to join your family!</p>
+        <p>Please visit www.sheltercenter.dog to book an appointment. Your authorization code is {1}.</p>
+        <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
+      </body>
+    </html>
+    """.format(name, adopter.auth_code)
+
+    send_email(text, html, "default", subject, email, None)
+
+
+def surrender_emails(adopter, data):
+    name = adopter.full_name()
+    subject = "Surrender Request from {0}".format(name)
+    email = adopter.primary_email
+
+    text = """\
+    Hi {0},\n
+    Saving Grace has received your surrender request. We are sorry to hear you cannot continue your commitment to {1} (fka {2}).\n
+    An adoptions manager will be in touch with you for follow-up soon.\n
+    Please do not come to Saving Grace until a set time and date have been determined. We need to ensure we have sufficient space and resources to re-acclimate your dog. As a result, we cannot accept any walk-in surrenders. You MUST have an scheduled appointment.\n
+    All the best, \n
+    The Adoptions Team\n
+    Saving Grace Animals for Adoption\n\n
+
+    Adopter Name: {3}\n
+    Dog's Saving Grace Name: {2}\n
+    Dog's Current Name: {1}\n
+    Microchip #: {4}\n
+    Date of Adoption: {5}
+    Reason for Surrender: {6}\n
+    Is your dog up to date on all vet records?: {7}\n
+    Did you seek training or professional guidance with your dog?: {8}\n
+    Please explain if there have been any aggression concerns towards people or other dogs?: {9}\n
+    Please share your observations of your dog that will help us determine if they will be successful in our program once again: {10}\n
+    What type of adopter do you feel would serve your dog best?: {11}\n
+    """.format(adopter.f_name, data['pet_name'], data['sg_name'], name, data['microchip'], data['adoption_date'], data['reason_for_return'], data['utd_vet_records'], data['sought_training'], data['aggression_hx'], data['observations'], data['ideal_adopter'])
+
+    html = """\
+    Hi {0},<br><br>
+    Saving Grace has received your surrender request. We are sorry to hear you cannot continue your commitment to {1} (aka {2}).<br><br>
+    An adoptions manager will be in touch with you for follow-up soon. Please do not come to Saving Grace until a set time and date have been determined. We need to ensure we have sufficient space and resources to re-acclimate your dog. As a result, we cannot accept any walk-in surrenders. You MUST have an scheduled appointment.<br><br>
+    All the best, <br>
+    The Adoptions Team<br>
+    Saving Grace Animals for Adoption<br><br>
+
+    <b>Adopter Name:</b> {3}<br>
+    <b>Dog's Saving Grace Name:</b> {2}<br>
+    <b>Dog's Current Name:</b> {1}<br>
+    <b>Microchip #:</b> {4}<br>
+    <b>Date of Adoption:</b> {5}<br>
+    <b>Reason for Surrender:</b> {6}<br>
+    <b>Is your dog up to date on all vet records?:</b> {7}<br>
+    <b>Did you seek training or professional guidance with your dog?:</b> {8}<br>
+    <b>Please explain if there have been any aggression concerns towards people or other dogs?:</b> {9}<br>
+    <b>Please share your observations of your dog that will help us determine if they will be successful in our program once again:</b> {10}<br>
+    <b>What type of adopter do you feel would serve your dog best?:</b> {11}<br>
+    """.format(adopter.f_name, data['sg_name'], data['pet_name'], name, data['microchip'], data['adoption_date'], data['reason_for_return'], data['utd_vet_records'], data['sought_training'], data['aggression_hx'], data['observations'], data['ideal_adopter'])
+
+    send_email(text, html, "default", subject, email, None)
+    send_email(text, html, email, subject, get_base_email(), None)
+
+
 def new_contact_adopter_msg(adopter, message, files, subject):
     if subject == None:
         subject = "New message from the Saving Grace adoptions team"
@@ -189,9 +332,16 @@ def new_contact_adopter_msg(adopter, message, files, subject):
 
     send_email(text, message, "default", subject, email, files)
 
-def new_contact_us_msg(adopter, message):
+def new_contact_us_msg(adopter, message, appt_id=None):
     subject = "New message from " + adopter.full_name()
     reply_to = adopter.primary_email
+
+    if appt_id is not None:
+        appt = Appointment.objects.get(pk=appt_id)
+        req_appt_str = "<p><b>Requested Appointment:</b> {0}</p>".format(appt.date_and_time_string())
+        appt_requested(adopter, appt)
+    else:
+        req_appt_str = "<em>This adopter is already approved and uploaded to ShelterCenter.</em>"
 
     text = """\
     Adopter: """ + adopter.full_name() + """\n
@@ -200,13 +350,39 @@ def new_contact_us_msg(adopter, message):
     html = """\
     <html>
       <body>
-        <h2>New Message from """ + adopter.full_name() + """</h2>
-        <p><b>Message:</b> """ + message + """</p>
+        <h2>New Message from {0}</h2>
+        {1}<br>
+        <p><b>Message:</b> {2}</p>
       </body>
     </html>
-    """
+    """.format(adopter.full_name(), req_appt_str, message)
 
     send_email(text, html, reply_to, subject, get_base_email(), None)
+
+def appt_requested(adopter, appt):
+    subject = "You Have Requested An Appointment"
+    name = adopter.f_name
+    email = adopter.primary_email
+
+    text = """\
+    Hi {0},\n
+    You have requested an appointment for {1}. This is not a confirmation, please do not plan to come until we have followed up. We will follow up as soon as we see your message.\n
+    All the best, \n
+    The Adoptions Team
+    Saving Grace Animals for Adoption
+    """.format(name, appt.date_and_time_string())
+
+    html = """\
+    <html>
+      <body>
+        <p>Hi {0},</p>
+        <p>You have requested an appointment for {1}. <b>This is not a confirmation, please do not plan to come until we have followed up.</b> We will follow-up within 24 hours.</p>
+        <p>All the best,<br>The Adoptions Team<br>Saving Grace Animals for Adoption</p>
+      </body>
+    </html>
+    """.format(name, appt.date_and_time_string())
+
+    send_email(text, html, "default", subject, email, None)
 
 def questions_msg(adopter, appt, questions):
     subject = "Question from " + adopter.full_name()

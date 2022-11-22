@@ -1,6 +1,9 @@
-from appt_calendar.date_time_strings import *
-import os, datetime
+import datetime
+import os
+
 from django.contrib.auth.models import User
+
+from appt_calendar.date_time_strings import *
 
 def replacer(html, adopter, appt):
     print(appt)
@@ -57,7 +60,7 @@ def replacer(html, adopter, appt):
         next_business_day = today.weekday() + 1
         global_replacements['*NEXT_BUS_DAY*'] = "tomorrow"
 
-    if next_business_day == 2:
+    if next_business_day == 3:
         global_replacements['*NEXT_BUS_DAY_OPEN*'] = next_bd_open(13, 0)
     else:
         global_replacements['*NEXT_BUS_DAY_OPEN*'] = next_bd_open(12, 0)

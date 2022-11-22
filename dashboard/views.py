@@ -1,37 +1,42 @@
-from django.shortcuts import render, redirect
-import datetime, time
-from schedule_template.models import Daily_Schedule, TimeslotTemplate, AppointmentTemplate, SystemSettings
-from appt_calendar.models import *
-from adopter.models import Adopter
-from appt_calendar.forms import *
-from email_mgr.email_sender import *
-from appt_calendar.date_time_strings import *
-from appt_calendar.appointment_manager import *
-from django.contrib.auth.forms import UserCreationForm
+import datetime
+import json
+import random
+import requests
+import time
+
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import redirect, render 
+
 from .decorators import *
 from .models import *
 from .forms import *
+from adopter.models import Adopter
+from appt_calendar.appointment_manager import *
+from appt_calendar.date_time_strings import *
+from appt_calendar.forms import *
+from appt_calendar.models import *
+from email_mgr.email_sender import *
+from schedule_template.models import AppointmentTemplate, Daily_Schedule, TimeslotTemplate, SystemSettings
+from wishlist.models import Dog
+from wishlist.views import get_and_update_dogs
 
 system_settings = SystemSettings.objects.get(pk=1)
 
 # Create your views here.
 
-def register(request):
-
-    form = CreateAdminForm()
-
-    if request.method == "POST":
-        form = CreateAdminForm(request.POST)
-
-        if form.is_valid():
-            form.save()
+def user_settings(request):
+    form = AppointmentCardPreferences(request.POST or None, instance=request.user.profile)
+    
+    if form.is_valid():
+        form.save()
 
     context = {
         'form': form,
     }
 
-    return render(request, 'dashboard/register.html', context)
+    return render(request, 'dashboard/user_settings.html', context)
+
 
 @unauthenticated_user
 def login_page(request):
@@ -139,10 +144,6 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
                 empty_dates += [[d, date_str(d)]]
 
         #check when adopters were last uploaded
-        print("Today", today)
-        print("Range", [today - datetime.timedelta(days=x) for x in range(2)])
-        print("Datapoint", system_settings.last_adopter_upload)
-        print("Bool", system_settings.last_adopter_upload not in [today - datetime.timedelta(days=x) for x in range(2)])
         if system_settings.last_adopter_upload not in [today - datetime.timedelta(days=x) for x in range(2)]:
             upload_current = False
 
@@ -168,7 +169,6 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     #retrieve the daily announcement if one exists
     try:
         calendar_announcement = CalendarAnnouncement.objects.get(pk=1)
-        print(calendar_announcement.text)
     except:
         calendar_announcement = None
 
@@ -181,6 +181,8 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     #create a list of timeslots
     timeslots_query = [timeslot for timeslot in Timeslot.objects.filter(date = date)]
     timeslots = {}
+
+    empty_day_db = True if timeslots_query == [] else False
 
     #admins and greeters should see all appointments
     if 'greeter' in user_groups or 'admin' in user_groups:
@@ -230,19 +232,13 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         empty_day = False
 
     sn_add = ShortNotice.objects.filter(date = date, sn_status = "1")
-    print('sn_add', sn_add)
     sn_cancel = ShortNotice.objects.filter(date = date, sn_status = "2")
-    print('sn_add', sn_add)
     sn_move = ShortNotice.objects.filter(date = date, sn_status = "3")
-    print('sn_add', sn_add)
 
     if len(ShortNotice.objects.filter(date=date)) > 0:
         sn_show = True
     else:
         sn_show = False
-
-    print(ShortNotice.objects.filter(date=date))
-    print('sn_show', sn_show)
 
     context = {
         "date": date,
@@ -267,10 +263,8 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'sn_cancel': sn_cancel,
         'sn_move': sn_move,
         'sn_show': sn_show,
+        'empty_day_db': empty_day_db,
     }
-
-    print(context)
-
     return context
 
 def test_harness(request):
@@ -302,10 +296,39 @@ def edit_signature(request):
 
     return render(request, "email_mgr/add_template.html", context)
 
-def edit_help(request):
 
-    return render(request, "email_mgr/edit_help.html", context)
+def fake500(request):
 
-def help(request):
+    return render(request, "dashboard/fake500.html")
 
-    return render(request, "email_mgr/help.html", context)
+def error_500(request):
+    headers = {
+        'X-Api-Key': os.environ.get('SHELTERLUV_API_KEY'),
+    }
+
+    dogs_request = requests.get('https://www.shelterluv.com/api/v1/animals?status_type=publishable', headers=headers).json()
+    display_dog = random.choice(list(dogs_request['animals']))
+
+    dog_img = display_dog['CoverPhoto']
+    dog_name = display_dog['Name']
+    dog_sex = display_dog['Sex']
+    dog_breed = display_dog['Breed']
+
+    try:
+        dog_weight = "{0} lbs., ".format(display_dog['CurrentWeightPounds'])
+    except:
+        return ""
+
+    age_months = int(display_dog['Age'])
+    dog_age = "Age {0}Y {1}M".format(age_months // 12, age_months % 12)
+
+    context = {
+        'dog_img': dog_img,
+        'dog_name': dog_name,
+        'dog_sex': dog_sex,
+        'dog_breed': dog_breed,
+        'dog_weight': dog_weight,
+        'dog_age': dog_age,
+    }
+
+    return render(request, 'dashboard/500.html', context)

@@ -1,149 +1,41 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load auth_extras %}
 
 {% block content %}
-  <div class="main textpage">
-
-    <h1 class="page_header no_actions">{{adopter.full_name}}</h1>
-
-    {% if adopter.has_current_appt %}
-
-    <ul class="appt_solo" id="adopter_mgmt_appt">
-
-      <li class="appt_slot">
-
-        {% include 'appt_calendar/appointment_admin.html' %}
-
-      </li>
-
-    </ul>
-
-    {% elif adopter.status == "1" %}
-
-    <ul class="appt_solo" id="adopter_mgmt_appt">
-
-      <li class="appt_slot">
-
-        <div class="appointment">
-
-          <!-- header grid, has a bottom border unless it is the only section -->
-          <!-- it will be the only section when the appointment is not booked and has no notes -->
-          {% if appt.internal_notes or adopter_notes or adopter.app_interest %}
-            <table class="appt_info_block" id="appt_header_block">
-          {% else %}
-            <table class="appt_info_block appt_end_block" id="appt_header_block">
-          {% endif %}
-
-            <tr>
-              <td class="appt_description left upper"><b>NO APPOINTMENT SET</b></td>
-
-              <td class="appt_description right"></td>
-            </tr>
-
-          <!-- end header table -->
-          </table>
-
-            <table class="appt_subblock appt_info_block">
-
-            <tr class="info_block_subheader">
-              <th class="left">Notes</th>
-              <th class="right"></th>
-            </tr>
-
-            {% if appt.internal_notes or adopter_notes or adopter.app_interest %}
-
-              {% if adopter.app_interest %}
-              <tr>
-                <td class="left"><b>From Shelterluv:</b></td>
-                <td class="left">{{adopter.app_interest|linebreaks}}</td>
-              </tr>
-              {% endif %}
-            {% else %}
-              <tr>
-                <td class="left">No notes on file for this adopter.</td>
-              </tr>
-            {% endif %}
-
-          </table>
-        <!-- if appt is booked, show actions and contacts -->
-
-        <!-- if the adopter has a shelterluv application attached, there should be application info -->
-        {% if adopter.application_id %}
-          <table class="appt_subblock appt_info_block">
-
-            <tr class="info_block_subheader">
-              <th>About {{adopter.f_name}}</th>
-              <th class="right"></th>
-            </tr>
-
-            <tr>
-              <td>
-                {% if adopter.city != "" and adopter.state != "" %}
-                  Coming from {{adopter.city}}, {{adopter.state}}
-                {% else %}
-                  No Shelterluv information on file.
-                {% endif %}
-              </td>
-
-              <td class="right">
-                {% if adopter.housing_type != "" and adopter.housing != "" %}
-                  {{adopter.housing_type}} ({{adopter.housing}})
-                {% endif %}
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                {% if adopter.activity_level != "" %}
-                  {{adopter.activity_level}} Activity Household
-                {% endif %}
-              </td>
-
-              <td class="right">
-                {% if adopter.has_fence %}
-                  Has Fence
-                {% elif adopter.application_id and not adopter.has_fence %}
-                  No Fence
-                {% endif %}
-              </td>
-            </tr>
-
-          </table>
-          {% endif %}
-
-          <table class="appt_subblock appt_info_block appt_end_block">
-
-            <tr class="info_block_subheader">
-              <th>
-                <a href="{% url 'contact_adopter' 100 2021 1 1 source %}">Contact {{adopter.f_name}} &#9993;&#xFE0E;</a><br>
-                <a href="{% url 'greeter_reschedule' adopter.id 100 today.year today.month today.day 'edit' %}">Schedule {{adopter.f_name}}</a><br>
-                <a href="https://www.shelterluv.com/adoption_request_print/{{adopter.application_id}}" target="_blank">Print Application</a>
-              </th>
-            </tr>
-          </table>
-
-          <!-- endif for booked appt blocks   -->
-
-        <!-- /div for appointment block -->
-        </div>
-
-
-      </li>
-
-    </ul>
-    {% else %}
-      <div class="info_box" style="margin-bottom: 10px;">
-        <p class="datelink"><div style="display: inline; font-size: 16pt;">&#9432;&#xFE0E;</div> This adopter was not approved. If you have approved a previously-denied application from this adopter, please change their status.</p>
-      </div>
-    {% endif %}
-
-
-    <form class="" action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <br>
-      <input class="submitform" type="submit" name="" value="Submit">
-    </form>
-
+<div class="main text-page">
+  <h1 class="page-header no-actions">{{adopter.full_name}}</h1>
+  {% if adopter.has_current_appt %}
+  <ul class="appt-solo" id="adopter-mgmt-appt">
+    <li class="appt-slot">
+      {% include 'appt_calendar/appointment_admin.html' %}
+    </li>
+  </ul>
+  {% elif adopter.status == "1" %}
+  <ul class="appt-solo" id="adopter-mgmt-appt">
+    <li class="appt-slot">
+      {% include 'adopter/adopter_mgmt_menu.html' %}
+    </li>
+  </ul>
+  {% else %}
+  <div class="info-box btm-margin-10">
+    <span class="alert-symbol">&#9432;&#xFE0E;</span> This adopter was not approved. If you have approved a previously-denied application from this adopter, please change their status.
   </div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <br>
+    <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;"  value="Submit">
+  </form>
+</div>
+
+{% if alert %}
+<footer>
+  <script type="text/javascript">
+    alert("Calendar access restored for {{adopter.full_name}}.")
+  </script>
+</footer>
+{% endif %}
 {% endblock %}

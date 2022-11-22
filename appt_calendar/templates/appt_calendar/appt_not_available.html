@@ -3,28 +3,18 @@
 {% load auth_extras %}
 
 {% block content %}
-  <div class="main textpage">
-    <h1 class="page_header no_actions">Book Appointment</h1>
-
-    <p class="standalone">Oops! It appears someone else booked this appointment already and it is no longer available.</p>
-
+<div class="main text-page">
+  <h1 class="page-header no-actions">Book Appointment</h1>
+  <span class="btm-margin-5">Oops! It appears someone else booked this appointment already and it is no longer available.</span>
+  <div class="center top-pad-5">
     {% if request.user|has_group:"adopter" %}
-      <div class="copy_template_button">
-        <br>
-        <form class="" action="{% url 'calendar' %}" method="post">
-          {% csrf_token %}
-          <input class="copytemplate" type="submit" name="" value="Return to Calendar">
-        </form>
-      </div>
+    <form action="{% url 'calendar' %}" method="post">
     {% else %}
-      <div class="copy_template_button">
-        <br>
-        <form class="" action="{% url 'greeter_reschedule' adopter.id appt.id date.year date.month date.day %}" method="post">
-          {% csrf_token %}
-          <input class="copytemplate" type="submit" name="" value="Return to Calendar">
-        </form>
-      </div>
+    <form action="{% url 'greeter_reschedule' adopter.id appt.id date.year date.month date.day %}" method="post">
     {% endif %}
-
+      {% csrf_token %}
+      <input class="large-button" type="submit" onClick="this.form.submit(); this.disabled=true;" value="Return to Calendar">
+    </form>
   </div>
+</div>
 {% endblock %}

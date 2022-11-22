@@ -2,16 +2,13 @@
 {% load static %}
 
 {% block content %}
-  <div class="main textpage">
-
-    <h1 class="page_header no_actions">Enter Decision</h1>
-
-    <form class="" action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <br>
-      <input class="submitform" type="submit" name="" value="Submit">
-    </form>
-
-  </div>
+<div class="main text-page">
+  <h1 class="page-header no-actions">Enter Decision</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <br>
+    <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" value="Submit">
+  </form>
+</div>
 {% endblock %}

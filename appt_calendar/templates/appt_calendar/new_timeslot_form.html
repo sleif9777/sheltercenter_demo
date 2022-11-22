@@ -2,18 +2,16 @@
 {% load static %}
 
 {% block content %}
-  <div class="main textpage">
-    <h1 class="page_header no_actions">Add Timeslot</h1>
+<div class="main textpage">
+  <h1 class="page_header no_actions">Add Timeslot</h1>
 
-    <p class="standalone">Select a time to add as a timeslot to the calendar.</p>
-    <br>
-    <form class="" action="" method="post">
-      {% csrf_token %}
+  <p class="standalone">Select a time to add as a timeslot to the calendar.</p>
+  <br>
+  <form method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input class="submitform" type="submit" onClick="this.form.submit(); this.disabled=true;" value="Submit">
+  </form>
 
-      <p>{{form}}</p>
-
-      <input class="submitform" type="submit" name="" value="Submit">
-    </form>
-
-  </div>
+</div>
 {% endblock %}

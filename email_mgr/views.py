@@ -1,10 +1,13 @@
+import datetime
+import time
+
 from django.shortcuts import render, get_object_or_404, redirect
-import datetime, time
+from html.parser import HTMLParser
+from io import StringIO
+
+from .email_sender import *
 from .forms import *
 from .models import *
-from io import StringIO
-from html.parser import HTMLParser
-from .email_sender import *
 from dashboard.decorators import *
 
 class MLStripper(HTMLParser):
