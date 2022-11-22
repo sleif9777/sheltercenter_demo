@@ -2,8 +2,6 @@ from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-
 class Profile(models.Model):
     first_name = models.CharField(default="", max_length=200)
     last_name = models.CharField(default="", max_length=200)
@@ -46,7 +44,6 @@ class Profile(models.Model):
 
     def get_card_settings(self):
         attributes = {
-
             'number-of-visits': int(self.ac_show_number_of_visits),
             'internal-notes': int(self.ac_show_internal_notes),
             'adopter-notes': int(self.ac_show_adopter_notes),
@@ -102,14 +99,11 @@ class Profile(models.Model):
             self.ac_show_schedule_next
         ]
 
-
         subblocks = {
             'notes': int(all(setting for setting in notes)),
             'about': int(all(setting for setting in about)),
             'preferences': int(all(setting for setting in preferences)),
             'follow_ups': int(all(setting for setting in follow_ups))
         }
-
-        print(subblocks)
 
         return subblocks
