@@ -105,44 +105,44 @@
 </table>
 
 {% if sn_show %}
-  <div class="info-box short-notice">
-    <span class="alert-symbol">&#9432;&#xFE0E;</span> The following short-notice changes have occurred:
-    <table id="short-notice-table">
-      <tr>
-        <th>Added:</th>
-        <th>Canceled:</th>
-        <th>Moved:</th>
-      </tr>
-      <tr>
-        <td class="info-box-data">
-          <ul>
-            {% for sn in sn_add %}
-              {% if sn.current_appt.appt_type in schedulable %}
-                <a target="_blank" href="https://www.shelterluv.com/adoption_request_print/{{sn.current_appt.adopter.application_id}}"><li>{{sn.header_str}} &#128196;&#xFE0E;<br><span class="subscript">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li></a>
-              {% else %}
-                <li>{{sn.header_str}}<br><span class="subscript">({{sn.backup_str}})</span></li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </td>
+<div class="info-box short-notice">
+  <span class="alert-symbol">&#9432;&#xFE0E;</span> The following short-notice changes have occurred:
+  <table id="short-notice-table">
+    <tr>
+      <th>Added:</th>
+      <th>Canceled:</th>
+      <th>Moved:</th>
+    </tr>
+    <tr>
+      <td class="info-box-data">
+        <ul>
+          {% for sn in sn_add %}
+            {% if sn.current_appt.appt_type in schedulable %}
+              <a target="_blank" href="https://www.shelterluv.com/adoption_request_print/{{sn.current_appt.adopter.application_id}}"><li>{{sn.header_str}} &#128196;&#xFE0E;<br><span class="subscript">({{sn.current_appt.appt_string}} - {{sn.current_appt.time_string}})</span></li></a>
+            {% else %}
+              <li>{{sn.header_str}}<br><span class="subscript">({{sn.backup_str}})</span></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </td>
 
-        <td>
-          <ul>
-            {% for sn in sn_cancel %}
-            <li>{{sn.header_str}}<br><span class="subscript">({{sn.backup_str}})</span></li>
-            {% endfor %}
-          </ul>
-        </td>
+      <td>
+        <ul>
+          {% for sn in sn_cancel %}
+          <li>{{sn.header_str}}<br><span class="subscript">({{sn.backup_str}})</span></li>
+          {% endfor %}
+        </ul>
+      </td>
 
-        <td>
-          <ul>
-            {% for sn in sn_move %}
-            <li>{{sn.header_str}}<br><span class="subscript">({{sn.backup_str}})</span></li>
-            {% endfor %}
-          </ul>
-        </td>
+      <td>
+        <ul>
+          {% for sn in sn_move %}
+          <li>{{sn.header_str}}<br><span class="subscript">({{sn.backup_str}})</span></li>
+          {% endfor %}
+        </ul>
+      </td>
 
-      </tr>
-    </table>
-  </div>
+    </tr>
+  </table>
+</div>
 {% endif %}

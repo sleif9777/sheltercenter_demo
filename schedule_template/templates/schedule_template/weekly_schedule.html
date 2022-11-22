@@ -6,7 +6,7 @@
   <div class="page-header no-actions">
     <h1>Weekly Template</h1>
   </div>
-  <div id="week">
+  <div class="center">
     {% for dow in dows.all %}
     <form action="{% url 'daily' dow.id %}" method="post" id="dow-buttons">
       {% csrf_token %}

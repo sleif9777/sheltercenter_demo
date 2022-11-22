@@ -68,21 +68,21 @@
 
       {% if appt|show_notes %}
         {% if appt.internal_notes %}
-        <tr>
+        <tr class="internal-notes">
           <td class="left" style="width:20%;"><b>From Adoptions:</b></td>
           <td class="left"><a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}"> {{appt.internal_notes|linebreaks}}</a></td>
         </tr>
         {% endif %}
 
         {% if appt.adopter_notes %}
-        <tr>
+        <tr class="adopter-notes">
           <td class="left" style="width:20%;"><b>From {{appt.adopter.f_name}}:</b></td>
           <td class="left">{{appt.adopter_notes|linebreaks}}</td>
         </tr>
         {% endif %}
 
         {% if appt.adopter.app_interest and appt.appt_type in schedulable %}
-        <tr>
+        <tr class="shelterluv-notes">
           <td class="left" style="width:20%;"><b>From Shelterluv:</b></td>
           <td class="left">{{appt.adopter.app_interest_str|linebreaks}}</td>
         </tr>
@@ -270,7 +270,7 @@
         <th>Follow-Ups</th>
       </tr>
       <tr>
-        <td colspan="1">
+        <td>
           <ul class="appt-two-col-list">
             <li class="send-follow-up">
               {% if appt.comm_followup == False %}

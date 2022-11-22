@@ -37,7 +37,7 @@
       </tr>
       {% for q in qs %}
       <tr>
-        <td class="left no-border">
+        <td class="left no-border" colspan="2">
           <h3 class="faq-question" id="q{{q.id}}">
             {{q.question}}
             {% if request.user|has_group:"admin" %}

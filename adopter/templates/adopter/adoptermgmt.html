@@ -28,10 +28,7 @@
   }
 </script>
 <div class="main text-page">
-  <h1 class="page-header">Manage Adopters</h1>
-  <div class="page-actions">
-    <a href="{% url 'send_to_inactive' %}">Send Follow-Up Emails</a>
-  </div>
+  <h1 class="page-header no-actions">Manage Adopters</h1>
   <input type="text" id="search-bar" onkeyup="filterAdopters()" placeholder="Search by name or email address.">
   <ul class="list-page" id="adopter-list">
     {% for adopter in adopters %}

@@ -37,7 +37,7 @@
           }        
         }
 
-        assignDefaultAlignments("ac-two-col-list");
+        assignDefaultAlignments("appt-two-col-list");
 
       }
 
@@ -47,7 +47,6 @@
           affectedElements = Array.from(sublists[sublist].getElementsByTagName("li")).filter(isVisible);
           for (let i = 0; i < affectedElements.length; i++) {
             let cutOff = affectedElements.length / 2;
-            console.log(cutOff, i);
             if (i >= cutOff) {
               affectedElements[i].style.textAlign = "right";
             } else {
@@ -100,7 +99,9 @@
       }
     
       window.onload = function() {
+        {% if request.user|has_group:"admin" %}
         loadInitialApptCardState({{request.user.profile.get_card_settings|safe}}, {{request.user.profile.get_card_subblock_settings|safe}});
+        {% endif %}
         assignDefaultAlignments("appt-two-col-list");
       }
     </script>

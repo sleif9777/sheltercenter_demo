@@ -44,12 +44,13 @@
     You do not currently have an appointment. Click any open slot below to schedule your appointment, or select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
     {% endif %}
 
-    {% if request.user.adopter.has_current_appt %}
     <table id="calendar-messages">
       <tr>
+        {% if request.user.adopter.has_current_appt %}
         <td class="no-border half-width">
           {% include 'appt_calendar/appointment_adopter_cal_msg.html' %}
         </td>
+        {% endif %}
         <td class="left no-border half-width">
           <div class="info-box calendar-notes">
             <table>
@@ -108,7 +109,7 @@
               </tr>
               {% endif %}
               {% if visible == False or empty_day_db %}
-                {% if date.weekday < 5 %}
+                {% if date.weekday < 5 and delta > 13 %}
                 <tr>
                   <td class="info-box-data no-border">
                     <span class="alert-symbol">&#9432;&#xFE0E; </span>We only schedule two weeks in advance, and are not scheduling for this date yet.
@@ -132,6 +133,5 @@
         </td>
       </tr>
     </table>
-    {% endif %}
   {% endif %}
 </div>
