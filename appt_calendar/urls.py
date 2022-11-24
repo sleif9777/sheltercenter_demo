@@ -37,6 +37,7 @@ urlpatterns = [
     path("paperwork/<int:date_year>/<int:date_month>/<int:date_day>/appt/<int:appt_id>/hw/<str:hw_status>/", views.paperwork_calendar, name="paperwork_calendar"),
     path("set_alert/<int:date_year>/<int:date_month>/<int:date_day>/", views.set_alert_date, name="set_alert_date"),
     path("set_alert_greeter/adopter/<int:adopter_id>/<int:date_year>/<int:date_month>/<int:date_day>/", views.set_alert_date_greeter, name="set_alert_date_greeter"),
+    path("check_in/<int:appt_id>/<int:date_year>/<int:date_month>/<int:date_day>/", views.check_in_appt, name="check_in_appt"),
     path("toggle/<int:appt_id>/<int:date_year>/<int:date_month>/<int:date_day>/", views.toggle_lock, name="toggle_lock"),
     path("toggle_all/<int:date_year>/<int:date_month>/<int:date_day>/<int:lock>/", views.toggle_all, name="toggle_all"),
     path("toggle_time/<int:timeslot_id>/<int:date_year>/<int:date_month>/<int:date_day>/<int:lock>/", views.toggle_time, name="toggle_time"),
@@ -45,6 +46,7 @@ urlpatterns = [
     path("reports/home/", views.daily_reports_home, name="daily_reports_home"),
     path("reports/adoption_chosen_fta/<int:date_year>/<int:date_month>/<int:date_day>/", views.daily_report_adopted_chosen_fta, name="daily_report_adopted_chosen_fta"),
     path("reports/adoption_chosen_fta/<int:date_year>/<int:date_month>/<int:date_day>/print/", views.report_print, name="report_print"),
+    path("reports/checked_in_appts/", views.checked_in_appts, name="checked_in_appts"),
 
     #chosen_board
     path("chosen_board/", views.chosen_board, name="chosen_board"),

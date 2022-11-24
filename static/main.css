@@ -97,7 +97,7 @@ body {
 .page-actions a {
   color: black;
   margin: 5px;
-  text-decoration: dashed;
+  text-decoration-style: dotted;
 }
 
 .page-header a:hover {
@@ -441,7 +441,7 @@ Universalisms
 
 a {
   color: #A7396E;
-  text-decoration: dashed;
+  text-decoration-style: dotted;
 }
 
 a:hover {
@@ -609,6 +609,8 @@ th {
 
 /* Conditional page formatting (needs to be built on) */
 
+
+
 @media only screen and (max-width: 1200px) {
   #narrow-screen-nav {
     background-color: #F2D9E5;
@@ -657,18 +659,18 @@ th {
     margin-right: 10px;
   }
 
-  .main {
-    width: 100%;
-  }
-
   ul.appt_list,
   ul.appt-list {
-    column-count: 1;
+    column-count: 2;
     list-style-type: none;
     padding: 0;
   }
 
   ul.appt-list li {
+    width: 100%;
+  }
+
+  .main {
     width: 100%;
   }
 
@@ -775,4 +777,31 @@ th {
     padding: 0;
   }
 
+}
+
+@media only screen and (max-width: 900px) {
+  ul.appt_list,
+  ul.appt-list {
+    column-count: 1;
+    list-style-type: none;
+    padding: 0;
+  }
+
+  ul.appt-list li {
+    width: 100%;
+  }
+
+  #short-notice-table .subscript {
+    display: none;
+  }
+
+  #short-notice-table ul {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #short-notice-table li {
+    list-style-type: none;
+    font-size: 10pt;
+  }
 }

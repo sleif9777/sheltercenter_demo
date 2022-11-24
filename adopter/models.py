@@ -33,6 +33,7 @@ class Adopter(models.Model):
     secondary_email = models.EmailField(default="", blank=True)
     city = models.CharField(default="", max_length=200, blank=True)
     state = models.CharField(default="", max_length=2, blank=True)
+    phone_number = models.CharField(default="See application", max_length=20, blank=True)
 
     #application attributes
     application_id = models.CharField(default="", max_length=20, blank=True)

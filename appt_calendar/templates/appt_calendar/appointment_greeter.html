@@ -26,6 +26,32 @@
     </tr>
   </table>
 
+  {% if appt.appt_type in schedulable %}
+  <table class="appt-subblock appt-info-block">
+    <tr class="info-block-subheader">
+      <th>Contact Info</th>
+    </tr>
+    <tr>
+      <td>
+        <ul class="appt-two-col-list">
+          <li>{{appt.adopter.primary_email}}</li>
+          <li>
+            {% if appt.adopter.phone_number != "See application" %}
+            {{appt.adopter.phone_number}}
+            {% else %}
+            See application for phone number.
+            {% endif %}
+          </li>
+          {% if appt.checked_in %}
+          <li>{{appt.adopter_description}}</li>
+          <li><b>Counselor:</b> {{appt.counselor}}</li>
+          {% endif %}
+        </ul>
+      </td>
+    </tr>
+  </table>
+  {% endif %}
+
   {% if appt.internal_notes or appt.adopter_notes or appt.adopter.app_interest and appt.appt_type in schedulable %}
     <!-- if the appt has an adopter attached, there should be options for contact and other actions -->
     {% if appt.appt_type in schedulable and appt.available == False %}
@@ -73,7 +99,11 @@
           <ul class="appt-two-col-list">
             <li>
               {% if appt.outcome == "1" %}
+              {% if appt.checked_in %}
                 <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
+              {% else %}
+                <a href="{% url 'check_in_appt' appt.id date.year date.month date.day%}">Check In</a>
+              {% endif %}
               {% else %}
                 {% if appt.outcome == "5" or appt.outcome == "6" or appt.outcome == "11" %}
                   <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>

@@ -28,6 +28,10 @@ class AppointmentCardPreferences(forms.ModelForm):
         model = Profile
         fields = [
             'ac_show_number_of_visits',
+            'ac_show_adopter_email',
+            'ac_show_adopter_phone',
+            'ac_show_adopter_description',
+            'ac_show_counselor',
             'ac_show_internal_notes',
             'ac_show_adopter_notes',
             'ac_show_shelterluv_notes',
@@ -51,7 +55,3 @@ class AppointmentCardPreferences(forms.ModelForm):
             'ac_show_send_follow_up_with_host',
             'ac_show_schedule_next',
         ]
-
-        labels = {
-            'signature': 'Set your email signature here:'
-        }

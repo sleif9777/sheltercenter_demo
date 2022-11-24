@@ -18,6 +18,23 @@
         <label for="id_ac_show_number_of_visits">
           Number of visits
         </label>
+        <h3>Contact Info</h3>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_adopter_email.id_for_label }}" name="{{ form.ac_show_adopter_email.html_name }}" onclick="updateAppointmentBox('id_ac_show_adopter_email');" {% if form.ac_show_adopter_email.value %}checked{% endif %}>
+        <label for="id_ac_show_adopter_email">
+          Adopter email <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_adopter_phone.id_for_label }}" name="{{ form.ac_show_adopter_phone.html_name }}" onclick="updateAppointmentBox('id_ac_show_adopter_phone');" {% if form.ac_show_adopter_phone.value %}checked{% endif %}>
+        <label for="id_ac_show_adopter_phone">
+          Adopter phone <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_adopter_description.id_for_label }}" name="{{ form.ac_show_adopter_description.html_name }}" onclick="updateAppointmentBox('id_ac_show_adopter_description');" {% if form.ac_show_adopter_description.value %}checked{% endif %}>
+        <label for="id_ac_show_adopter_description">
+          Adopter description <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_counselor.id_for_label }}" name="{{ form.ac_show_counselor.html_name }}" onclick="updateAppointmentBox('id_ac_show_counselor');" {% if form.ac_show_counselor.value %}checked{% endif %}>
+        <label for="id_ac_show_counselor">
+          Counselor
+        </label>
         <h3>Notes</h3>
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_internal_notes.id_for_label }}" name="{{ form.ac_show_internal_notes.html_name }}" onclick="updateAppointmentBox('id_ac_show_internal_notes');" {% if form.ac_show_internal_notes.value %}checked{% endif %}>
         <label for="id_ac_show_internal_notes">
@@ -144,6 +161,21 @@
           </tr>
 
         </tbody>
+      </table>
+      <table class="appt-info-block appt-subblock">
+        <tr class="info-block-subheader">
+          <th>Contact Info</th>
+        </tr>
+        <tr>
+          <td>
+            <ul class="appt-two-col-list">
+              <li class="adopter-email">leifersam9@gmail.com</li>
+              <li class="adopter-phone">(631) 278-9777</li>
+              <li class="adopter-description">Red jacket</li>
+              <li class="counselor"><b>Counselor:</b> Val</li>
+            </ul>
+          </td>
+        </tr>
       </table>
       <table class="appt-subblock appt-info-block">
 

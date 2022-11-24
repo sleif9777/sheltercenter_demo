@@ -1,4 +1,5 @@
 {% load appt_extras %}
+{% load auth_extras %}
 
 <div class="appointment {% if appt.short_notice %} short-notice {% endif %}" id="appt{{appt.id}}">
   {% if not appt.available %}
@@ -51,6 +52,30 @@
   {% if not appt.available %}
 
   {% if appt.appt_type in schedulable and appt.adopter %}
+  <table class="appt-subblock appt-info-block contact-subblock">
+    <tr class="info-block-subheader">
+      <th>Contact Info</th>
+    </tr>
+    <tr>
+      <td>
+        <ul class="appt-two-col-list">
+          <li class="adopter-email">{{appt.adopter.primary_email}}</li>
+          <li class="adopter-phone">
+            {% if appt.adopter.phone_number != "See application" %}
+            {{appt.adopter.phone_number}}
+            {% else %}
+            See application for phone number.
+            {% endif %}
+          </li>
+          {% if appt.checked_in %}
+          <li class="adopter-description">{{appt.adopter_description}}</li>
+          <li class="counselor"><b>Counselor:</b> {{appt.counselor}}</li>
+          {% endif %}
+        </ul>
+      </td>
+    </tr>
+  </table>
+
   <table class="appt-subblock appt-info-block notes-subblock">
   <!-- if false, it is an open appointment, paperwork, or surrender and could have notes at most -->
   {% else %}
@@ -221,7 +246,7 @@
                 <p class="completed-appt-action">Limited Low-shed/Hypo</p>
               {% endif %}
             </li>
-            <li class="limited-small-puppies">
+            <li class="limited-small-puppies-comm">
               {% if appt.comm_limited_small_puppies == False %}
                 <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_small_puppies' %}">Limited Small Puppies</a>
               {% else %}
@@ -245,7 +270,11 @@
           <ul class="appt-two-col-list">
             <li>
               {% if appt.outcome == "1" %}
-                <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
+                {% if appt.checked_in %}
+                  <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
+                {% else %}
+                  <a href="{% url 'check_in_appt' appt.id date.year date.month date.day%}">Check In</a> &#x2022; <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
+                {% endif %}
               {% else %}
                 {% if appt.outcome == "5" or appt.outcome == "6" or appt.outcome == "11" %}
                   <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
@@ -257,6 +286,10 @@
             <li><a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'calendar' %}">Reschedule Adopter</a></li>
             <li><a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">Cancel Adopter</a></li>
             <li><a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">Print Application</a></li>
+            {% if request.user|has_group:"superuser" %}
+            <li><a href="https://sheltercenter.dog/admin/adopter/adopter/{{appt.adopter.id}}/change/">Edit Adopter in Admin</a></li> 
+            <li><a href="http://sheltercenter.dog/admin/appt_calendar/appointment/{{appt.id}}/change/">Edit Appointment in Admin</a></li>
+            {% endif %}
           </ul>
         </td>
       </tr>  

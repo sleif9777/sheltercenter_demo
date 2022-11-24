@@ -15,12 +15,12 @@
 
     {% if internal_announcement %}
     <div class="info-box btm-margin-10">
-      <span class="alert-symbol">&#128712;&#xFE0E; </span>{{internal_announcement.text|safe}}
+      <span class="alert-symbol">&#9432;&#xFE0E; </span>{{internal_announcement.text|safe}}
     </div>
     {% endif %}
 
     {% if not empty_day %}
-    <table class="print-view">
+    <table class="print-view report">
       <tr>
         <th style="width:5%;">Time</th>
         <th style="width:15%;">Adopter/Dog</th>
@@ -35,17 +35,25 @@
           <tr>
             <td>{{appt.time_string}}</td>
             <td>
-              {{appt}}
-              {% if appt.mobility %}
-                &#9855;&#xFE0E;
-              {% endif %}
-              {% if appt.bringing_dog %}
-                &#128021;&#xFE0E;
-              {% endif %}
-              {% if appt.has_cat %}
-                &#128008;&#xFE0E;
-              {% endif %}
+              <b>
+                {{appt}}
+                {% if appt.mobility %}
+                  &#9855;&#xFE0E;
+                {% endif %}
+                {% if appt.bringing_dog %}
+                  &#128021;&#xFE0E;
+                {% endif %}
+                {% if appt.has_cat %}
+                  &#128008;&#xFE0E;
+                {% endif %}
+              </b>
               <br>
+              {% if appt.appt_type in schedulable %}
+                <span class="subscript">{{appt.adopter.primary_email}}</span><br>
+                {% if appt.adopter.phone_number != "See application" %}
+                <span class="subscript">{{appt.adopter.phone_number}}</span><br>
+                {% endif %}
+              {% endif %}
               <span class="subscript">({{appt.appt_string}})</span><br>
               <span class="subscript">{{appt.dt_booking_string}}</span>
             </td>

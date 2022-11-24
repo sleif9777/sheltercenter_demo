@@ -2,8 +2,6 @@ from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-
 class Profile(models.Model):
     first_name = models.CharField(default="", max_length=200)
     last_name = models.CharField(default="", max_length=200)
@@ -12,6 +10,10 @@ class Profile(models.Model):
 
     #appointment card attributes
     ac_show_number_of_visits = models.BooleanField(default=True)
+    ac_show_adopter_email = models.BooleanField(default=True)
+    ac_show_adopter_phone = models.BooleanField(default=True)
+    ac_show_adopter_description = models.BooleanField(default=True)
+    ac_show_counselor = models.BooleanField(default=True)
     ac_show_internal_notes = models.BooleanField(default=True)
     ac_show_adopter_notes = models.BooleanField(default=True)
     ac_show_shelterluv_notes = models.BooleanField(default=True)
@@ -46,8 +48,11 @@ class Profile(models.Model):
 
     def get_card_settings(self):
         attributes = {
-
             'number-of-visits': int(self.ac_show_number_of_visits),
+            'adopter-email': int(self.ac_show_adopter_email),
+            'adopter-phone': int(self.ac_show_adopter_phone),
+            'adopter-description': int(self.ac_show_adopter_description),
+            'counselor': int(self.ac_show_counselor),
             'internal-notes': int(self.ac_show_internal_notes),
             'adopter-notes': int(self.ac_show_adopter_notes),
             'shelterluv-notes': int(self.ac_show_shelterluv_notes),
@@ -75,6 +80,13 @@ class Profile(models.Model):
         return attributes
 
     def get_card_subblock_settings(self):
+        contact = [
+            self.ac_show_adopter_email,
+            self.ac_show_adopter_phone,
+            self.ac_show_adopter_description,
+            self.ac_show_counselor
+        ]
+
         notes = [
             self.ac_show_internal_notes,
             self.ac_show_adopter_notes,
@@ -102,14 +114,12 @@ class Profile(models.Model):
             self.ac_show_schedule_next
         ]
 
-
         subblocks = {
-            'notes': int(all(setting for setting in notes)),
-            'about': int(all(setting for setting in about)),
-            'preferences': int(all(setting for setting in preferences)),
-            'follow_ups': int(all(setting for setting in follow_ups))
+            'contact': int(any(setting for setting in contact)),
+            'notes': int(any(setting for setting in notes)),
+            'about': int(any(setting for setting in about)),
+            'preferences': int(any(setting for setting in preferences)),
+            'follow_ups': int(any(setting for setting in follow_ups))
         }
-
-        print(subblocks)
 
         return subblocks

@@ -41,6 +41,7 @@ def create_adopter_from_row(row):
     #add application detais
     new_adopter.city = row[18].title()
     new_adopter.state = row[19]
+    new_adopter.phone_number = row[22]
     new_adopter.housing_type = row[33]
     new_adopter.housing = row[35]
     new_adopter.activity_level = row[32]

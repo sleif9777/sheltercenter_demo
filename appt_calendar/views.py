@@ -436,6 +436,15 @@ def mark_complete_on_chosen_board(request, appt_id):
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
+def checked_in_appts(request):
+    today = datetime.date.today()
+    # context = gc(request.user, 'full', None, today.year, today.month, today.day)
+    context = gc(request.user, 'full', None, 2022, 11, 25)
+
+    return render(request, "appt_calendar/checked_in_appts.html/", context)
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def daily_report_adopted_chosen_fta(request, date_year, date_month, date_day):
     context = gc(request.user, 'full', None, date_year, date_month, date_day)
 
@@ -449,6 +458,8 @@ def send_followup(request, appt_id, date_year, date_month, date_day, host):
 
     appt.outcome = "5"
     appt.comm_followup = True
+    appt.checked_in = False
+    appt.checked_out_time = datetime.datetime.now().time()
     appt.save()
 
     adopter = appt.adopter
@@ -927,6 +938,9 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
         adopter.save()
 
         appt.last_update_sent = appt.date
+        appt.checked_in = False
+        appt.checked_out_time = datetime.datetime.now().time()
+        appt.dog = appt.dog.title()
         appt.save()
 
         return redirect('calendar_date_appt', date_year, date_month, date_day, appt.id)
@@ -1253,8 +1267,34 @@ def toggle_lock(request, appt_id, date_year, date_month, date_day):
     appt.save()
 
     return redirect('calendar_date_appt', date_year, date_month, date_day, appt_id)
-    # return redirect('calendar_date', date_year, date_month, date_day)
-    # return HttpResponseRedirect('?next=calendar/{0}/{1}/{2}/#{3}'.format(date_year, date_month, date_day, appt_id))
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def check_in_appt(request, appt_id, date_year, date_month, date_day):
+    appt = Appointment.objects.get(pk=appt_id)
+    appt.checked_in = True
+    appt.checked_in_time = datetime.datetime.now().time()
+    appt.save()
+
+    form = AppointmentCheckInForm(request.POST or None, instance=appt)
+
+    if form.is_valid():
+        form.save()
+
+        return redirect('calendar_date_appt', date_year, date_month, date_day, appt_id)
+    else:
+        form = AppointmentCheckInForm(request.POST or None, instance=appt)
+
+    context = {
+        'form': form,
+        'form_instructions': "Fill in the information to check in {0}'s appointment.".format(appt.adopter.full_name()),
+        'page_header': "Check In Appointment",
+        'page_title': "Check In Appointment",
+    }
+
+    return render(request, "appt_calendar/render_form.html", context)
+
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})

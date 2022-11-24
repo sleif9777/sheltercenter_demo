@@ -52,6 +52,13 @@ class Appointment(models.Model):
     short_notice = models.BooleanField(default=False)
     time = models.TimeField(default=datetime.time(12,00))
 
+    #check-in information
+    adopter_description = models.CharField(default="", max_length=50, blank=True)
+    checked_in = models.BooleanField(default=False)
+    checked_in_time = models.TimeField(default=datetime.time(00,00))
+    checked_out_time = models.TimeField(default=datetime.time(00,00))
+    counselor = models.CharField(default="", max_length=20, blank=True)
+
     #booking information
     adopter = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL, limit_choices_to={'has_current_appt': False, 'status': "1"})
     available = models.BooleanField(default=True) #is not filled
