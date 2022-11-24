@@ -24,10 +24,13 @@
   <h2>All Appointments</h2>
   <table class="report">
     <tr class="no-border">
-      <th style="width:15%;">Time</th>
-      <th style="width:30%;">Adopter</th>
-      <th style="width:30%;">Outcome</th>
-      <th style="width:25%;">Dog</th>
+      <th style="width:10%;">Time</th>
+      <th style="width:18.5%;">Adopter</th>
+      <th style="width:10%;">Check-In</th>
+      <th style="width:15%;">Counselor</th>
+      <th style="width:10%">Check-Out</th>
+      <th style="width:22%;">Outcome</th>
+      <th style="width:12.5%;">Dog</th>
     </tr>
     {% for timeslot, appointments in timeslots.items %}
       {% for appt in appointments %}
@@ -35,6 +38,9 @@
           <tr>
             <td>{{appt.time}}</td>
             <td>{{appt.adopter}}</td>
+            <td>{{appt.checked_in_time}}</td>
+            <td>{{appt.counselor}}</td>
+            <td>{{appt.checked_out_time}}</td>
             <td>{{appt.get_outcome_display}}</td>
             <td>{{appt.dog}}</td>
           </tr>
