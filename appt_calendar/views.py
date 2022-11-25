@@ -958,41 +958,45 @@ def remove_adopter(request, date_year, date_month, date_day, appt_id):
     date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
     adopter = appt.adopter
+    user_groups = get_groups(request.user)
 
-    if appt.appt_type in ["1", "2", "3"]:
-        cancel(adopter, appt)
-
-    adopter.has_current_appt = False
-    adopter.save()
-
-    appt.reset()
-
-    if short_notice(appt):
-        try:
-            sn_obj = ShortNotice.objects.get(date = appt.date, adopter = adopter)
-            sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
-            sn_obj.sn_status = "2"
-            sn_obj.save()
-            sn_obj.set_backup()
-        except Exception as e:
-            sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = appt, date = appt.date, sn_status = "2")
-            sn_obj.set_backup()
-
-        notify_adoptions_cancel(appt, adopter)
-
-    if get_groups(request.user) == {'adopter'}:
-        appt_str = appt.date_and_time_string()
-
-        context = {
-            'adopter': adopter,
-            'appt_str': appt_str,
-            'page_title': "Appointment Canceled",
-        }
-
-        return render(request, "appt_calendar/adopter_self_cancel.html", context)
-
-    else:
+    if user_groups == {"adopter"} and request.user.adopter != adopter:
         return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
+    else:
+        if appt.appt_type in ["1", "2", "3"]:
+            cancel(adopter, appt)
+
+        adopter.has_current_appt = False
+        adopter.save()
+
+        appt.reset()
+
+        if short_notice(appt):
+            try:
+                sn_obj = ShortNotice.objects.get(date = appt.date, adopter = adopter)
+                sn_obj.prev_appt, sn_obj.current_appt = sn_obj.current_appt, None
+                sn_obj.sn_status = "2"
+                sn_obj.save()
+                sn_obj.set_backup()
+            except Exception as e:
+                sn_obj = ShortNotice.objects.create(adopter = adopter, prev_appt = appt, date = appt.date, sn_status = "2")
+                sn_obj.set_backup()
+
+            notify_adoptions_cancel(appt, adopter)
+
+        if get_groups(request.user) == {'adopter'}:
+            appt_str = appt.date_and_time_string()
+
+            context = {
+                'adopter': adopter,
+                'appt_str': appt_str,
+                'page_title': "Appointment Canceled",
+            }
+
+            return render(request, "appt_calendar/adopter_self_cancel.html", context)
+
+        else:
+            return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
 
 @authenticated_user
 def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date_day, source):

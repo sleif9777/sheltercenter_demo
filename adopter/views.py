@@ -183,53 +183,63 @@ def get_email_from_row(row):
         return row[28].lower()
 
 
-def add_from_file(file):
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser'})
+def too_many_rows(request):
+    print("swing")
+    return render(request, "adopter/too_many_rows.html")
+
+
+def add_from_file(request, file):
     errors = []
 
     decoded_file = file.read().decode('utf-8').splitlines()
     reader = list(csv.reader(decoded_file))
     errors = []
 
-    for row in reader[1:]:
-        try:
+    if len(reader[1:]) > 50:
+        return True
+    else:
+        for row in reader[1:]:
             try:
-                existing_user = User.objects.get(username = get_email_from_row(row))
-                existing_adopter = Adopter.objects.get(user=existing_user)
-            except:
-                existing_adopter = Adopter.objects.filter(primary_email=get_email_from_row(row)).latest('id')
+                try:
+                    existing_user = User.objects.get(username = get_email_from_row(row))
+                    existing_adopter = Adopter.objects.get(user=existing_user)
+                except:
+                    existing_adopter = Adopter.objects.filter(primary_email=get_email_from_row(row)).latest('id')
 
-            #update to newest application
-            existing_adopter.application_id = row[0]
-            existing_adopter.save()
+                #update to newest application
+                existing_adopter.application_id = row[0]
+                existing_adopter.save()
 
-            #if blocked, add to error report
-            if existing_adopter.status == "2":
-                errors += [existing_adopter]
+                #if blocked, add to error report
+                if existing_adopter.status == "2":
+                    errors += [existing_adopter]
 
-            #else handle message
-            else:
-                handle_existing(existing_adopter, row[4], row[11])
-        except Exception as f:
-            adopter = create_adopter_from_row(row)
+                #else handle message
+                else:
+                    handle_existing(existing_adopter, row[4], row[11])
+            except Exception as f:
+                adopter = create_adopter_from_row(row)
 
-            try:
-                create_new_user_from_adopter(adopter)
-            except:
-                pass
+                try:
+                    create_new_user_from_adopter(adopter)
+                except:
+                    pass
 
-            if adopter.status == "1":
-                #create Application
-                create_invite_email(adopter)
-            else:
-                errors += [adopter]
+                if adopter.status == "1":
+                    #create Application
+                    create_invite_email(adopter)
+                else:
+                    errors += [adopter]
 
-    system_settings.last_adopter_upload = datetime.date.today()
-    system_settings.save()
+        system_settings.last_adopter_upload = datetime.date.today()
+        system_settings.save()
 
-    if errors != []:
-        upload_errors(errors)
+        if errors != []:
+            upload_errors(errors)
 
-    return redirect('outbox')
+        return redirect('outbox')
 
 def add_from_form(adopter):
     #for testing purposes, do not put into prod
@@ -292,7 +302,10 @@ def add(request):
     try:
         if request.method == 'POST' and request.FILES['app_file']:
             file = request.FILES['app_file']
-            add_from_file(file)
+            too_long = add_from_file(request, file)
+            print(too_long)
+            if too_long:
+                return render(request, "adopter/too_many_rows.html")
     #except no file, add manually without application
     except Exception as g:
         if form.is_valid():
