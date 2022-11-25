@@ -100,6 +100,22 @@
         </table>
       </div>
       {% endif %}
+      {% if timeslots|length > 0 %}
+      <div class="info-box timeslot-redirect">
+        <table>
+          <tr>
+            <td class="info-box-data no-border">
+              <p class="calendar-notes-header">JUMP TO TIMESLOT</p>
+              <ul>
+                {% for timeslot in timeslots %}
+                <li><a href="#ts{{timeslot.id}}">{{timeslot}}</a></li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+        </table>
+      </div>
+      {% endif %}
     </td>
   </tr>
 </table>

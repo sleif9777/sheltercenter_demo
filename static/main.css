@@ -310,6 +310,23 @@ p.greeting {
   color: #1E6C80;
 }
 
+/* Timeslot redirect - purple theme */
+.timeslot-redirect,
+.timeslot-redirect a,
+.timeslot-redirect a:hover {
+  background-color: #D6ADFF;
+  border-color: #6D00C7;
+  color: #6D00C7;
+}
+
+.timeslot-redirect li {
+  display: inline;
+}
+
+.timeslot-redirect ul {
+  padding: 0;
+}
+
 #toc-list {
   list-style-type: disc;
   padding: 5px 0 5px 40px;
