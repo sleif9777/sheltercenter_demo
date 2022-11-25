@@ -438,7 +438,7 @@ def reschedule(adopter, appt):
 
 def greeter_reschedule_email(adopter, appt):
     subject = "Your follow-up appointment has been scheduled: " + adopter.full_name().upper()
-    template = EmailTemplate.objects.get(template_name="Greeter Reschedule")
+    template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
 
     scrub_and_send(subject, template, adopter, appt)
 

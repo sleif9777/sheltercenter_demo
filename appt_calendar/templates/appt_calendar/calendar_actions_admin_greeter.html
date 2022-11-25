@@ -6,6 +6,7 @@
 {% endif %}
 <a href="{% url 'daily_report_adopted_chosen_fta' date.year date.month date.day %}">Daily Report</a>
 {% if request.user|has_group:"admin" %}
+<a href="" onclick="openAllApplications({{application_ids|safe}});">Open Applications</a>
 <a href="{% url 'calendar_print' date.year date.month date.day %}" target="_blank">Print View</a>
 <a href="{% url 'add_timeslot' date.year date.month date.day %}">Add Timeslot</a>
 <a href="{% url 'toggle_all' date.year date.month date.day 1 %}">Lock All</a>
