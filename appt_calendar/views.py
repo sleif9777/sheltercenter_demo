@@ -911,7 +911,6 @@ def edit_appointment_from_mgmt(request, date_year, date_month, date_day, appt_id
 def enter_decision(request, appt_id, date_year, date_month, date_day):
     appt = Appointment.objects.get(pk=appt_id)
     form = ApptOutcomeForm(request.POST or None, instance=appt)
-    today = datetime.date.today()
 
     if form.is_valid():
         form.save()
@@ -931,9 +930,6 @@ def enter_decision(request, appt_id, date_year, date_month, date_day):
 
         if appt.outcome in ["2", "4"]:
             adopter.adoption_complete = True
-            #
-            # if appt.outcome == "3":
-            #     chosen(adopter, appt)
 
         adopter.save()
 
