@@ -179,8 +179,11 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         visible_to_adopters = False
 
     #create a list of timeslots
-    timeslots_query = [timeslot for timeslot in Timeslot.objects.filter(date = date)]
+    timeslots_query = [timeslot for timeslot in Timeslot.objects.filter(date=date)]
     timeslots = {}
+
+    all_appointments = Appointment.objects.filter(date=date, appt_type__in=["1", "2", "3"], available=False)
+    application_ids = [[appt.adopter.application_id, appt.adopter.full_name()] for appt in all_appointments]
 
     empty_day_db = True if timeslots_query == [] else False
 
@@ -188,10 +191,10 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     if 'greeter' in user_groups or 'admin' in user_groups:
         if load == 'full':
             for time in timeslots_query:
-                timeslots[time] = list(time.appointments.filter(date = date, time = time.time))
+                timeslots[time] = list(time.appointments.filter(date=date, time=time.time))
         elif load == 'reschedule':
             for time in timeslots_query:
-                timeslots[time] = list(time.appointments.filter(date = date, time = time.time, appt_type__in = ["1", "2", "3"]))
+                timeslots[time] = list(time.appointments.filter(date=date, time=time.time, appt_type__in=["1", "2", "3"]))
                 timeslots[time] = [appt for appt in timeslots[time] if appt.adopter is None]
 
                 #delete unnecessary timeslots
@@ -264,7 +267,9 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'sn_move': sn_move,
         'sn_show': sn_show,
         'empty_day_db': empty_day_db,
+        'application_ids': application_ids,
     }
+
     return context
 
 def test_harness(request):

@@ -1124,18 +1124,6 @@ def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date
                 except:
                     pass
             elif 'admin' in user_groups:
-
-                # try:
-                #     if short_notice(current_appt) and short_notice(new_appt):
-                #         new_appt.mark_short_notice()
-                #         notify_adoptions_time_change(adopter, current_appt, new_appt)
-                #     elif short_notice(current_appt):
-                #         notify_adoptions_reschedule_cancel(adopter, current_appt, new_appt)
-                # except:
-                #     if short_notice(new_appt):
-                #         new_appt.mark_short_notice()
-                #         notify_adoptions_reschedule_add(adopter, current_appt, new_appt)
-
                 try:
                     if short_notice(current_appt) and short_notice(new_appt):
                         new_appt.mark_short_notice()

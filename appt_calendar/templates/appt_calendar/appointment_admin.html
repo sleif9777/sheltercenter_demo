@@ -285,7 +285,7 @@
             </li>
             <li><a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'calendar' %}">Reschedule Adopter</a></li>
             <li><a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">Cancel Adopter</a></li>
-            <li><a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">Print Application</a></li>
+            <lihttps://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}><a href="" target="_blank">Print Application</a></li>
             {% if request.user|has_group:"superuser" %}
             <li><a href="https://sheltercenter.dog/admin/adopter/adopter/{{appt.adopter.id}}/change/">Edit Adopter in Admin</a></li> 
             <li><a href="http://sheltercenter.dog/admin/appt_calendar/appointment/{{appt.id}}/change/">Edit Appointment in Admin</a></li>

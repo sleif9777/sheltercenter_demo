@@ -15,6 +15,18 @@
       </script>
     {% endif %}
     <script type="text/javascript">
+      function openAllApplications(appointments) {
+        var noApplication = []
+        for (let i = 0; i < appointments.length; i++) {
+          if (appointments[i][0] == "") {
+            noApplication.push(appointments[i][1]);
+          } else {
+            window.open(`https://www.shelterluv.com/adoption_request_print/${appointments[i][0]}`);
+          }
+        }
+        window.alert(`The following adopters must be looked up manually: ${noApplication.join(', ')}`)
+      }
+
       function getCardElementName(checkboxElementID) {
         return checkboxElementID.slice(11).replace(/_/g, "-");
       }
