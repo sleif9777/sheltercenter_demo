@@ -67,7 +67,7 @@ def set_alert_date(request, date_year, date_month, date_day):
 
     alert_date_set(adopter, date)
 
-    return redirect('calendar_date', date.year, date.month, date.day)
+    return redirect('edit_adopter', adopter.id)
 
 @authenticated_user
 def set_alert_date_greeter(request, adopter_id, date_year, date_month, date_day):
