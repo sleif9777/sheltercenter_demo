@@ -442,7 +442,7 @@ def resend_confirmation(request, appt_id):
 
     confirm_etemp(appt.adopter, appt)
 
-    return redirect('calendar_date', appt.date.year, appt.date.month, appt.date.day)
+    return redirect('calendar_date_appt', appt.date.year, appt.date.month, appt.date.day, appt.id)
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin'})
@@ -731,7 +731,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
             appt.save()
 
-            return redirect('calendar_date', date_year, date_month, date_day)
+            return redirect('calendar_date_appt', date_year, date_month, date_day, appt.id)
 
         elif 'mgmt' in source:
             return redirect('edit_adopter', adopter.id)
