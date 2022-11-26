@@ -21,7 +21,7 @@
           if (appointments[i][0] == "") {
             noApplication.push(appointments[i][1]);
           } else {
-            window.open(`https://www.shelterluv.com/adoption_request_print/${appointments[i][0]}`);
+            window.open(`https://www.shelterluv.com/adoption_request_print/${appointments[i][0]}`, '_blank');
           }
         }
         window.alert(`The following adopters must be looked up manually: ${noApplication.join(', ')}`)
