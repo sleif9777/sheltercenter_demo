@@ -196,8 +196,10 @@ def add_from_file(request, file):
     decoded_file = file.read().decode('utf-8').splitlines()
     reader = list(csv.reader(decoded_file))
     errors = []
+    print(len(reader))
 
     if len(reader) > 70:
+        print('hit')
         return True
     else:
         for row in reader[1:]:
@@ -280,7 +282,6 @@ def create_shell_appt(adopter):
     adopter.acknowledged_faq = True
     adopter.save()
 
-    print('done!', shellappt.id)
     return shellappt
 
 
@@ -304,7 +305,7 @@ def add(request):
             file = request.FILES['app_file']
             too_long = add_from_file(request, file)
             print(too_long)
-            if too_long:
+            if type(too_long) == bool:
                 return render(request, "adopter/too_many_rows.html")
     #except no file, add manually without application
     except Exception as g:
