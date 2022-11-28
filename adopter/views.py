@@ -197,7 +197,7 @@ def add_from_file(request, file):
     reader = list(csv.reader(decoded_file))
     errors = []
 
-    if len(reader[1:]) > 50:
+    if len(reader[1:]) > 70:
         return True
     else:
         for row in reader[1:]:
