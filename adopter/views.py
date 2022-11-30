@@ -198,7 +198,7 @@ def add_from_file(request, file):
     errors = []
     print(len(reader))
 
-    if len(reader) > 70:
+    if len(reader) > 100:
         print('hit')
         return True
     else:
