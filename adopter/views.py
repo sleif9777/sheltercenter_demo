@@ -652,6 +652,10 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
     if source in ["calendar", "update"] or 'mgmt' in source:
         template = EmailTemplate.objects.get(template_name="Contact Adopter")
+    elif source == 'cough':
+        template = EmailTemplate.objects.get(template_name="Update for Adopter: Cough")
+    elif source == 'nasal_discharge':
+        template = EmailTemplate.objects.get(template_name="Update for Adopter: Nasal Discharge")
     elif source == "ready_positive":
         template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Positive)")
         subject = "{0} is ready to come home!".format(appt.dog)
