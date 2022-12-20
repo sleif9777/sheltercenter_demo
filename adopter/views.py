@@ -650,43 +650,50 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     file2 = None
     subject = None
 
-    if source in ["calendar", "update"] or 'mgmt' in source:
-        template = EmailTemplate.objects.get(template_name="Contact Adopter")
-    elif source == 'cough':
-        template = EmailTemplate.objects.get(template_name="Update for Adopter: Cough")
-    elif source == 'nasal_discharge':
-        template = EmailTemplate.objects.get(template_name="Update for Adopter: Nasal Discharge")
-    elif source == "ready_positive":
-        template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Positive)")
-        subject = "{0} is ready to come home!".format(appt.dog)
-        file1 = template.file1
-        file2 = template.file2
-    elif source == "confirm_appt":
-        template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
-        subject = "Your appointment is confirmed: {0}".format(adopter.full_name().upper())
-    elif source == "ready_negative":
-        template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Negative)")
-        subject = "{0} is ready to come home!".format(appt.dog)
-    elif source == "limited_puppies":
-        template = EmailTemplate.objects.get(template_name="Limited Puppies")
-    elif source == "limited_small":
-        template = EmailTemplate.objects.get(template_name="Limited Small Dogs")
-    elif source == "limited_small_puppies":
-        template = EmailTemplate.objects.get(template_name="Limited Small Breed Puppies")
-    elif source == "limited_hypo":
-        template = EmailTemplate.objects.get(template_name="Limited Hypo")
-    elif source == 'dogs_were_adopted':
-        template = EmailTemplate.objects.get(template_name="Dogs Were Adopted")
-    elif source == 'add_form_adopting_foster':
-        template = EmailTemplate.objects.get(template_name="Application Accepted (Adopting Foster)")
-    elif source == 'add_form_friend_of_foster':
-        template = EmailTemplate.objects.get(template_name="Application Accepted (Friend of Foster)")
-    elif source == 'add_form_adopting_host':
-        template = EmailTemplate.objects.get(template_name="Application Accepted (Host Weekend)")
-    elif source == 'reminder_breed':
-        template = EmailTemplate.objects.get(template_name="Reminder: Breed Restrictions")
-    elif source == 'reminder_parents':
-        template = EmailTemplate.objects.get(template_name="Reminder: Lives With Parents")
+    match source:     
+        case 'cough':
+            template = EmailTemplate.objects.get(template_name="Update for Adopter: Cough")
+        case 'nasal_discharge':
+            template = EmailTemplate.objects.get(template_name="Update for Adopter: Nasal Discharge")
+        case "ready_positive":
+            template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Positive)")
+            subject = "{0} is ready to come home!".format(appt.dog)
+            file1 = template.file1
+            file2 = template.file2
+        case "confirm_appt":
+            template = EmailTemplate.objects.get(template_name="Appointment Confirmation")
+            subject = "Your appointment is confirmed: {0}".format(adopter.full_name().upper())
+        case "ready_negative":
+            template = EmailTemplate.objects.get(template_name="Ready to Roll (Heartworm Negative)")
+            subject = "{0} is ready to come home!".format(appt.dog)
+        case "limited_puppies":
+            template = EmailTemplate.objects.get(template_name="Limited Puppies")
+        case "limited_small":
+            template = EmailTemplate.objects.get(template_name="Limited Small Dogs")
+        case "limited_small_puppies":
+            template = EmailTemplate.objects.get(template_name="Limited Small Breed Puppies")
+        case "limited_hypo":
+            template = EmailTemplate.objects.get(template_name="Limited Hypo")
+        case 'dogs_were_adopted':
+            template = EmailTemplate.objects.get(template_name="Dogs Were Adopted")
+        case 'dog_in_extended_host':
+            template = EmailTemplate.objects.get(template_name="Dog In Extended Host")
+        case 'dog_in_medical_foster':
+            template = EmailTemplate.objects.get(template_name="Dog In Medical Foster")
+        case 'dog_is_popular':
+            template = EmailTemplate.objects.get(template_name="Dog Is Popular")
+        case 'add_form_adopting_foster':
+            template = EmailTemplate.objects.get(template_name="Application Accepted (Adopting Foster)")
+        case 'add_form_friend_of_foster':
+            template = EmailTemplate.objects.get(template_name="Application Accepted (Friend of Foster)")
+        case 'add_form_adopting_host':
+            template = EmailTemplate.objects.get(template_name="Application Accepted (Host Weekend)")
+        case 'reminder_breed':
+            template = EmailTemplate.objects.get(template_name="Reminder: Breed Restrictions")
+        case 'reminder_parents':
+            template = EmailTemplate.objects.get(template_name="Reminder: Lives With Parents")
+        case _:
+            template = EmailTemplate.objects.get(template_name="Contact Adopter")
 
     try:
         template = replacer(template.text.replace('*SIGNATURE*', request.user.profile.signature), adopter, appt)
@@ -717,22 +724,29 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
             return redirect('chosen_board')
 
-        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'calendar', 'confirm_appt', 'reminder_breed', 'reminder_parents']:
+        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'dog_in_extended_host', 'dog_in_medical_foster', 'dog_is_popular', 'calendar', 'confirm_appt', 'reminder_breed', 'reminder_parents']:
 
-            if source == "limited_puppies":
-                appt.comm_limited_puppies = True
-            elif source == "limited_small":
-                appt.comm_limited_small = True
-            elif source == "limited_hypo":
-                appt.comm_limited_hypo = True
-            elif source == "limited_small_puppies":
-                appt.comm_limited_small_puppies = True
-            elif source == "dogs_were_adopted":
-                appt.comm_adopted_dogs = True
-            elif source == 'reminder_breed':
-                appt.comm_reminder_breed = True
-            elif source == 'reminder_parents':
-                appt.comm_reminder_parents = True
+            match source:
+                case "limited_puppies":
+                    appt.comm_limited_puppies = True
+                case "limited_small":
+                    appt.comm_limited_small = True
+                case "limited_hypo":
+                    appt.comm_limited_hypo = True
+                case "limited_small_puppies":
+                    appt.comm_limited_small_puppies = True
+                case "dogs_were_adopted":
+                    appt.comm_adopted_dogs = True
+                case "dog_in_extended_host":
+                    appt.comm_dog_in_extended_host = True
+                case "dog_in_medical_foster":
+                    appt.comm_dog_in_medical_foster = True
+                case "dog_is_popular":
+                    appt.comm_dog_is_popular = True
+                case 'reminder_breed':
+                    appt.comm_reminder_breed = True
+                case 'reminder_parents':
+                    appt.comm_reminder_parents = True
 
             appt.save()
 

@@ -28,11 +28,14 @@ class Profile(models.Model):
     ac_show_hypo_preference = models.BooleanField(default=True)
     ac_show_breed_restriction_comm = models.BooleanField(default=True)
     ac_show_dogs_adopted_comm = models.BooleanField(default=True)
+    ac_show_dog_in_extended_host_comm = models.BooleanField(default=True)
+    ac_show_dog_in_medical_foster_comm = models.BooleanField(default=True)
+    ac_show_dog_is_popular_comm = models.BooleanField(default=True)
+    ac_show_limited_hypo_comm = models.BooleanField(default=True)
+    ac_show_limited_puppies_comm = models.BooleanField(default=True)
     ac_show_limited_small_dogs_comm = models.BooleanField(default=True)
     ac_show_limited_small_puppies_comm = models.BooleanField(default=True)
     ac_show_lives_with_parents_comm = models.BooleanField(default=True)
-    ac_show_limited_puppies_comm = models.BooleanField(default=True)
-    ac_show_limited_hypo_comm = models.BooleanField(default=True)
     ac_show_send_follow_up = models.BooleanField(default=True)
     ac_show_send_follow_up_with_host = models.BooleanField(default=True)
     ac_show_schedule_next = models.BooleanField(default=True)
@@ -67,11 +70,14 @@ class Profile(models.Model):
             'hypo-preference': int(self.ac_show_hypo_preference),
             'breed-restriction-comm': int(self.ac_show_breed_restriction_comm),
             'dogs-adopted-comm': int(self.ac_show_dogs_adopted_comm),
+            'dog-in-extended-host-comm': int(self.ac_show_dog_in_extended_host_comm),
+            'dog-in-medical-foster-comm': int(self.ac_show_dog_in_medical_foster_comm),
+            'dog-is-popular-comm': int(self.ac_show_dog_is_popular_comm),
+            'limited-hypo-comm': int(self.ac_show_limited_hypo_comm),
+            'limited-puppies-comm': int(self.ac_show_limited_puppies_comm),
             'limited-small-dogs-comm': int(self.ac_show_limited_small_dogs_comm),
             'limited-small-puppies-comm': int(self.ac_show_limited_small_puppies_comm),
             'lives-with-parents-comm': int(self.ac_show_lives_with_parents_comm),
-            'limited-puppies-comm': int(self.ac_show_limited_puppies_comm),
-            'limited-hypo-comm': int(self.ac_show_limited_hypo_comm),
             'send-follow-up': int(self.ac_show_send_follow_up),
             'send-follow-up-with-host': int(self.ac_show_send_follow_up_with_host),
             'schedule-next': int(self.ac_show_schedule_next)

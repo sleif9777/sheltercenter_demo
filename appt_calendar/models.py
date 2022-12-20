@@ -72,6 +72,9 @@ class Appointment(models.Model):
 
     #communication attributes
     comm_adopted_dogs = models.BooleanField(default=False)
+    comm_dog_in_extended_host = models.BooleanField(default=False)
+    comm_dog_in_medical_foster = models.BooleanField(default=False)
+    comm_dog_is_popular = models.BooleanField(default=False)
     comm_followup = models.BooleanField(default=False)
     comm_limited_hypo = models.BooleanField(default=False)
     comm_limited_other = models.BooleanField(default=False)

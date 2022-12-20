@@ -209,20 +209,39 @@
               {% endif %}
             </li>
             {% endif %}
-            {% if appt.adopter.lives_with_parents %}
-            <li class="lives-with-parents-comm">
-              {% if appt.comm_reminder_parents == False %}
-              <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'reminder_parents' %}">Lives With Parents</a>
-              {% else %}
-              <span class="completed-appt-action">Lives With Parents</span>
-              {% endif %}
-            </li>
-            {% endif %}
             <li class="dogs-adopted-comm">
               {% if appt.comm_adopted_dogs == False %}
                 <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dogs_were_adopted' %}">Dogs Were Adopted</a>
               {% else %}
                 <span class="completed-appt-action">Dogs Were Adopted</span>
+              {% endif %}
+            </li>
+            <li class="dog-in-extended-host-comm">
+              {% if appt.comm_dog_in_extended_host == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_in_extended_host' %}">Dog In Ext. Host</a>
+              {% else %}
+                <span class="completed-appt-action">Dog In Ext. Host</span>
+              {% endif %}
+            </li>
+            <li class="dog-in-medical-foster-comm">
+              {% if appt.comm_dog_in_medical_foster == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_in_medical_foster' %}">Dog In Med. Foster</a>
+              {% else %}
+                <span class="completed-appt-action">Dog Were Adopted</span>
+              {% endif %}
+            </li>
+            <li class="dog-is-popular-comm">
+              {% if appt.comm_dog_is_popular == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_is_popular' %}">Dog Is Popular</a>
+              {% else %}
+                <span class="completed-appt-action">Dog Is Popular</span>
+              {% endif %}
+            </li>
+            <li class="limited-hypo-comm">
+              {% if appt.comm_limited_hypo == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_hypo' %}">Limited Low-shed/Hypo</a>
+              {% else %}
+                <p class="completed-appt-action">Limited Low-shed/Hypo</p>
               {% endif %}
             </li>
             <li class="limited-puppies-comm">
@@ -239,13 +258,6 @@
                 <p class="completed-appt-action">Limited Small Dogs</p>
               {% endif %}
             </li>
-            <li class="limited-hypo-comm">
-              {% if appt.comm_limited_hypo == False %}
-                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_hypo' %}">Limited Low-shed/Hypo</a>
-              {% else %}
-                <p class="completed-appt-action">Limited Low-shed/Hypo</p>
-              {% endif %}
-            </li>
             <li class="limited-small-puppies-comm">
               {% if appt.comm_limited_small_puppies == False %}
                 <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_small_puppies' %}">Limited Small Puppies</a>
@@ -253,6 +265,15 @@
                 <p class="completed-appt-action">Limited Small Puppies</p>
               {% endif %}
             </li>
+            {% if appt.adopter.lives_with_parents %}
+            <li class="lives-with-parents-comm">
+              {% if appt.comm_reminder_parents == False %}
+              <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'reminder_parents' %}">Lives With Parents</a>
+              {% else %}
+              <span class="completed-appt-action">Lives With Parents</span>
+              {% endif %}
+            </li>
+            {% endif %}
             <li><a href="{% url 'resend_confirmation' appt.id %}">Resend Confirmation</a></li>
           </ul>
         </td>
