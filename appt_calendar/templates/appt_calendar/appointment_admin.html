@@ -232,7 +232,7 @@
             </li>
             <li class="dog-is-popular-comm">
               {% if appt.comm_dog_is_popular == False %}
-                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_is_popular' %}">Dog Is Popular</a>
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_is_popular_x_in_line' %}">Dog Is Popular</a>
               {% else %}
                 <span class="completed-appt-action">Dog Is Popular</span>
               {% endif %}

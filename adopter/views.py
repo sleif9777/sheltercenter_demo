@@ -680,8 +680,12 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
             template = EmailTemplate.objects.get(template_name="Dog In Extended Host")
         case 'dog_in_medical_foster':
             template = EmailTemplate.objects.get(template_name="Dog In Medical Foster")
-        case 'dog_is_popular':
-            template = EmailTemplate.objects.get(template_name="Dog Is Popular")
+        case 'dog_is_popular_x_in_line':
+            template = EmailTemplate.objects.get(template_name="Dog Is Popular (X in Line)")
+        case 'dog_is_popular_chances_are_low':
+            template = EmailTemplate.objects.get(template_name="Dog Is Popular (Chances are Low)")
+        case 'dog_not_here_yet':
+            template = EmailTemplate.objects.get(template_name="Dog Not Here Yet")
         case 'add_form_adopting_foster':
             template = EmailTemplate.objects.get(template_name="Application Accepted (Adopting Foster)")
         case 'add_form_friend_of_foster':
