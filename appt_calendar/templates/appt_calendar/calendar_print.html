@@ -55,7 +55,9 @@
                 {% endif %}
               {% endif %}
               <span class="subscript">({{appt.appt_string}})</span><br>
-              <span class="subscript">{{appt.dt_booking_string}}</span>
+              {% if appt.appt_type in schedulable %}
+                <span class="subscript">{{appt.dt_booking_string}}</span>
+              {% endif %}
             </td>
             <td>{{appt.adopter_notes}}</td>
             <td>{{appt.internal_notes}}</td>

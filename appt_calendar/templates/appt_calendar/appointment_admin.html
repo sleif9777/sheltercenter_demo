@@ -230,9 +230,23 @@
                 <span class="completed-appt-action">Dog Were Adopted</span>
               {% endif %}
             </li>
+            <li class="dog-is-popular-low-chances-comm">
+              {% if appt.comm_dog_is_popular_low_chances == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_is_popular_low_chances' %}">Dog Is Popular (Low Chances)</a>
+              {% else %}
+                <span class="completed-appt-action">Dog Is Popular (Low Chances)</span>
+              {% endif %}
+            </li>
             <li class="dog-is-popular-comm">
               {% if appt.comm_dog_is_popular == False %}
-                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_is_popular_x_in_line' %}">Dog Is Popular</a>
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_is_popular_x_in_line' %}">Dog Is Popular (X in Line)</a>
+              {% else %}
+                <span class="completed-appt-action">Dog Is Popular (X in Line)</span>
+              {% endif %}
+            </li>
+            <li class="dog-not-here-yet-comm">
+              {% if appt.comm_dog_not_here_yet == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_not_here_yet' %}">Dog Not Here Yet</a>
               {% else %}
                 <span class="completed-appt-action">Dog Is Popular</span>
               {% endif %}

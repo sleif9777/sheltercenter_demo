@@ -30,7 +30,9 @@ class Profile(models.Model):
     ac_show_dogs_adopted_comm = models.BooleanField(default=True)
     ac_show_dog_in_extended_host_comm = models.BooleanField(default=True)
     ac_show_dog_in_medical_foster_comm = models.BooleanField(default=True)
+    ac_show_dog_is_popular_low_chances_comm = models.BooleanField(default=True)
     ac_show_dog_is_popular_comm = models.BooleanField(default=True)
+    ac_show_dog_not_here_yet_comm = models.BooleanField(default=True)
     ac_show_limited_hypo_comm = models.BooleanField(default=True)
     ac_show_limited_puppies_comm = models.BooleanField(default=True)
     ac_show_limited_small_dogs_comm = models.BooleanField(default=True)
@@ -73,6 +75,8 @@ class Profile(models.Model):
             'dog-in-extended-host-comm': int(self.ac_show_dog_in_extended_host_comm),
             'dog-in-medical-foster-comm': int(self.ac_show_dog_in_medical_foster_comm),
             'dog-is-popular-comm': int(self.ac_show_dog_is_popular_comm),
+            'dog-is-popular-low-chances-comm': int(self.ac_show_dog_is_popular_low_chances_comm),
+            'dog-not-here-yet-comm': int(self.ac_show_dog_not_here_yet_comm),
             'limited-hypo-comm': int(self.ac_show_limited_hypo_comm),
             'limited-puppies-comm': int(self.ac_show_limited_puppies_comm),
             'limited-small-dogs-comm': int(self.ac_show_limited_small_dogs_comm),

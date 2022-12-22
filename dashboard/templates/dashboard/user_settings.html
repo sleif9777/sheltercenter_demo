@@ -107,9 +107,17 @@
         <label for="id_ac_show_dog_in_medical_foster_comm">
           Dog In Medical Foster <br>
         </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dog_is_popular_low_chances_comm.id_for_label }}" name="{{ form.ac_show_dog_is_popular_low_chances_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dog_is_popular_low_chances_comm');" {% if form.ac_show_dog_is_popular_low_chances_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_dog_is_popular_low_chances_comm">
+          Dog Is Popular (Low Chances) <br>
+        </label>
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dog_is_popular_comm.id_for_label }}" name="{{ form.ac_show_dog_is_popular_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dog_is_popular_comm');" {% if form.ac_show_dog_is_popular_comm.value %}checked{% endif %}>
         <label for="id_ac_show_dog_is_popular_comm">
-          Dog Is Popular <br>
+          Dog Is Popular (X in Line) <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dog_not_here_yet_comm.id_for_label }}" name="{{ form.ac_show_dog_not_here_yet_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dog_not_here_yet_comm');" {% if form.ac_show_dog_not_here_yet_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_dog_not_here_yet_comm">
+          Dog Not Here Yet <br>
         </label>
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_limited_hypo_comm.id_for_label }}" name="{{ form.ac_show_limited_hypo_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_limited_hypo_comm');" {% if form.ac_show_limited_hypo_comm.value %}checked{% endif %}>
         <label for="id_ac_show_limited_hypo_comm">
@@ -263,7 +271,9 @@
                 <li class="dogs-adopted-comm">Dogs Were Adopted</li>
                 <li class="dog-in-extended-host-comm">Dog In Extended Host</li>
                 <li class="dog-in-medical-foster-comm">Dog In Medical Foster</li>
-                <li class="dog-is-popular-comm">Dog Is Popular</li>
+                <li class="dog-is-popular-low-chances-comm">Dog Is Popular (Low Chances)</li>
+                <li class="dog-is-popular-comm">Dog Is Popular (X in Line)</li>
+                <li class="dog-not-here-yet-comm">Dog Not Here Yet</li>
                 <li class="limited-hypo-comm">Limited Low-shed/Hypo</li>
                 <li class="limited-puppies-comm">Limited Puppies</li>
                 <li class="limited-small-dogs-comm">Limited Small Dogs</li>

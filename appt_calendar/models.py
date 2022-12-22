@@ -75,6 +75,8 @@ class Appointment(models.Model):
     comm_dog_in_extended_host = models.BooleanField(default=False)
     comm_dog_in_medical_foster = models.BooleanField(default=False)
     comm_dog_is_popular = models.BooleanField(default=False)
+    comm_dog_is_popular_low_chances = models.BooleanField(default=False)
+    comm_dog_not_here_yet = models.BooleanField(default=False)
     comm_followup = models.BooleanField(default=False)
     comm_limited_hypo = models.BooleanField(default=False)
     comm_limited_other = models.BooleanField(default=False)

@@ -682,8 +682,8 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
             template = EmailTemplate.objects.get(template_name="Dog In Medical Foster")
         case 'dog_is_popular_x_in_line':
             template = EmailTemplate.objects.get(template_name="Dog Is Popular (X in Line)")
-        case 'dog_is_popular_chances_are_low':
-            template = EmailTemplate.objects.get(template_name="Dog Is Popular (Chances are Low)")
+        case 'dog_is_popular_low_chances':
+            template = EmailTemplate.objects.get(template_name="Dog Is Popular (Low Chances)")
         case 'dog_not_here_yet':
             template = EmailTemplate.objects.get(template_name="Dog Not Here Yet")
         case 'add_form_adopting_foster':
@@ -728,7 +728,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
 
             return redirect('chosen_board')
 
-        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'dog_in_extended_host', 'dog_in_medical_foster', 'dog_is_popular', 'calendar', 'confirm_appt', 'reminder_breed', 'reminder_parents']:
+        elif source in ['limited_puppies', 'limited_small', 'limited_hypo', 'limited_small_puppies', 'dogs_were_adopted', 'dog_in_extended_host', 'dog_in_medical_foster', 'dog_is_popular', 'dog_is_popular_low_chances', 'dog_not_here_yet', 'calendar', 'confirm_appt', 'reminder_breed', 'reminder_parents']:
 
             match source:
                 case "limited_puppies":
