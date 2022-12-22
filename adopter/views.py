@@ -712,7 +712,7 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         message = data['message']
         new_contact_adopter_msg(adopter, message, [file1, file2], subject)
 
-        if source in ["update", "ready_positive", "ready_negative"]:
+        if source in ["update", "ready_positive", "ready_negative", "cough", "nasal_discharge"]:
 
             appt.last_update_sent = today
             appt.all_updates_sent.insert(0, date_str(today))
