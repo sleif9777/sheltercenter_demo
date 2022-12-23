@@ -97,6 +97,7 @@ body {
 .page-actions a {
   color: black;
   margin: 5px;
+  text-decoration: none;
 }
 
 .page-header a:hover {
@@ -457,6 +458,7 @@ Universalisms
 
 a {
   color: #A7396E;
+  text-decoration: none;
 }
 
 a:hover {
