@@ -150,7 +150,8 @@ Subsection toolbar styling (for timeslots, FAQs, visitor instructions, etc.)
 Appointment box styling
 ============================== */
 
-.appointment {
+.appointment,
+.dog-card {
   background-color: #e8e8e8;
   border: 2px solid #cccccc;
   color: #1E6C80;
@@ -167,11 +168,13 @@ Appointment box styling
   padding-left: 0;
 }
 
-.appt-description {
+.appt-description,
+.dog-description {
   font-size: 18pt;
 }
 
-.appt-info-block {
+.appt-info-block,
+.dog-info-block {
   border-bottom: 1px solid #1E6C80;
   margin-bottom: 0;
   width: 100%;
@@ -375,6 +378,11 @@ input[type=submit].large-button {
   padding: 10px;
 }
 
+input[type=submit].medium-button {
+  font-size: 14pt;
+  padding: 10px;
+}
+
 /* ==============================
 List page styling
 ============================== */
@@ -465,6 +473,10 @@ a:hover {
   color: grey;
   cursor: pointer;
   text-decoration: underline;
+}
+
+.bold {
+  font-weight: bold;
 }
 
 table {
@@ -676,7 +688,6 @@ th {
     margin-right: 10px;
   }
 
-  ul.appt_list,
   ul.appt-list {
     column-count: 2;
     list-style-type: none;
@@ -684,6 +695,16 @@ th {
   }
 
   ul.appt-list li {
+    width: 100%;
+  }
+
+  ul.dog-list {
+    column-count: 3;
+    list-style-type: none;
+    padding: 0;
+  }
+
+  ul.dog-list li {
     width: 100%;
   }
 

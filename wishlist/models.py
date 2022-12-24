@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 
+# DEPRECATED, DO NOT USE
 class Dog(models.Model):
     shelterluv_id = models.CharField(default="", max_length = 200)
     name = models.CharField(default="", null=True, max_length=20)
@@ -26,6 +27,7 @@ class Dog(models.Model):
         except:
             return ""
 
+# USE THIS INSTEAD
 class DogProfile(models.Model):
     name = models.CharField(default = "", max_length = 200)
     shelterluv_id = models.CharField(default = "", max_length = 200)
@@ -64,6 +66,7 @@ class DogProfile(models.Model):
             return self.foster_date.strftime("%Y-%m-%d")
         else:
             return
+
 
     class Meta:
         ordering = ('name', 'id',)

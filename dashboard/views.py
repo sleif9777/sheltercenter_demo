@@ -11,14 +11,14 @@ from django.shortcuts import redirect, render
 from .decorators import *
 from .models import *
 from .forms import *
-from adopter.models import Adopter
+from adopter.models import *
 from appt_calendar.appointment_manager import *
 from appt_calendar.date_time_strings import *
 from appt_calendar.forms import *
 from appt_calendar.models import *
 from email_mgr.email_sender import *
-from schedule_template.models import AppointmentTemplate, Daily_Schedule, TimeslotTemplate, SystemSettings
-from wishlist.models import Dog
+from schedule_template.models import *
+from wishlist.models import *
 from wishlist.views import get_and_update_dogs
 
 system_settings = SystemSettings.objects.get(pk=1)
@@ -48,6 +48,7 @@ def login_page(request):
 
         if user is not None:
             login(request, user)
+            get_and_update_dogs()
 
             user_groups = set(group.name for group in user.groups.iterator())
 
@@ -243,6 +244,8 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     else:
         sn_show = False
 
+    offsite_dogs = DogProfile.objects.filter(offsite=True, shelterluv_status="Available for Adoption").order_by('name')
+
     context = {
         "date": date,
         "date_pretty": date_pretty,
@@ -268,6 +271,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'sn_show': sn_show,
         'empty_day_db': empty_day_db,
         'application_ids': application_ids,
+        'offsite_dogs': offsite_dogs
     }
 
     return context

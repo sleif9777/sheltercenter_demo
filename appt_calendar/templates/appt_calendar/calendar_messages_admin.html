@@ -24,7 +24,7 @@
             </td>
           </tr>
           <tr>
-            <td class="info-box-data no-border">
+            <td class="info-box-data">
               <p class="calendar-notes-header"><b>DISPLAYS ONLY FOR {{date_pretty.upper}}</b></p>
               {% if daily_announcement %}
               <span class="alert-symbol">&#9432;&#xFE0E; </span><a href="{% url 'edit_daily_announcement' daily_announcement.id date.year date.month date.day %}">{{daily_announcement.text|safe}} &#9998;&#xFE0E;</a>
@@ -33,7 +33,7 @@
               {% endif %}
             </td>
           </tr>
-          <!-- <tr>
+          <tr>
             <td class="info-box-data no-border">
               <p class="calendar-notes-header"><a href="{% url 'display_list' %}"><b>OFFSITE DOGS &#9998;&#xFE0E;</b></a></p>
               {% if offsite_dogs %}
@@ -55,7 +55,7 @@
               No dogs offsite at this time.
               {% endif %}
             </td>
-          </tr> -->
+          </tr>
         </table>
       </div>
     </td>

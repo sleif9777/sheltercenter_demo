@@ -1,0 +1,41 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block content%}
+  <div class="main">
+    <h1 class="page-header">List of All Dogs</h1>
+
+    <div class="info-box calendar-notes btm-margin-5">
+      <table>
+        <tr>
+          <td class="info-box-data no-border">
+            <span class="alert-symbol">&#9432;&#xFE0E; </span>Select dogs here to be notified about if they become unavailable prior to your appointment. Please note that marking dogs here DOES NOT equate to any sort of "hold" for your appointment. All dogs are available on a first-come-first-serve basis and can potentially be adopted prior to your appointment. The Adoptions team emphasizes that keeping an open mind and not narrowing your scope to only one or two dogs from the website is the best way to experience our program.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <form class="" action="" method="post">
+      {% csrf_token %}
+      <div class="center">
+        <input type="submit" class="medium-button side-margin-5" onClick="this.form.submit(); this.disabled=true;" name="" value="Save">
+      </div>
+
+      {% if user_wishlist|length > 0 %}
+      <ul class="dog-list">
+        {% for dog in user_wishlist %}
+          <li class="appt-slot">{% include 'wishlist/dog_card.html' %}</li>
+        {% endfor %}
+      </ul>
+      <hr>
+      {% endif %}
+
+      <ul class="dog-list">
+        {% for dog in other_available_dogs %}
+          <li class="appt-slot">{% include 'wishlist/dog_card.html' %}</li>
+        {% endfor %}
+      </ul>
+    </form>
+  </div>
+{% endblock %}

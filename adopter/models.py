@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from num2words import num2words
 
-from wishlist.models import Dog
+from wishlist.models import *
 
 class Adopter(models.Model):
     STATUSES = [
@@ -43,7 +43,7 @@ class Adopter(models.Model):
     activity_level = models.CharField(default="", max_length=200, blank=True)
     has_fence = models.BooleanField(default=False, blank=True)
     app_interest = models.CharField(default="", max_length=2000, blank=True)
-    wishlist = models.ManyToManyField(Dog, null=True, blank=True)
+    wishlist = models.ManyToManyField(DogProfile, null=True, blank=True)
 
     #adoption-related attributes
     out_of_state = models.BooleanField(default = False)
