@@ -41,7 +41,8 @@
       Click any open slot below to reschedule your appointment. We only book one appointment per adopter at a time. By booking any appointment below, you will forfeit your current appointment slot. <br>
       {% endif %}
     {% else %}
-    You do not currently have an appointment. Click any open slot below to schedule your appointment, or select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
+    You do not currently have an appointment.<br>
+    Click any open slot below to schedule your appointment, or select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
     {% endif %}
 
     <table id="calendar-messages">
@@ -63,10 +64,37 @@
               {% endif %}
               {% if daily_announcement %}
               <tr>
-                <td class="info-box-data no-border">
+                <td class="info-box-data">
                   <span class="alert-symbol">&#9432;&#xFE0E; </span>{{daily_announcement.text|safe}}
                 </td>
               </tr>
+              {% endif %}
+              {% if date.weekday == 5 or date.weekday == 6 %}
+              <tr>
+                <td class="info-box-data">
+                  <span class="alert-symbol">&#9432;&#xFE0E; </span>We are not open on weekends.
+                </td>
+              </tr>
+              {% endif %}
+              {% if visible == False or empty_day_db %}
+                {% if date.weekday < 5 and delta > 13 %}
+                <tr>
+                  <td class="info-box-data">
+                    <span class="alert-symbol">&#9432;&#xFE0E; </span>We only schedule two weeks in advance, and are not scheduling for this date yet.
+                    {% if request.user.adopter.alert_date == date %}
+                      We will alert you when appointments for this date are open.
+                    {% else %}
+                      <a href="{% url 'set_alert_date' date.year date.month date.day %}">Click here to be alerted when we have opened appointments for this date.</a>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endif %}
+              {% elif empty_day == True and date.weekday < 5 %}
+                <tr>
+                  <td class="info-box-data">
+                    <span class="alert-symbol">&#9432;&#xFE0E; </span>We're sorry, this date is fully booked. To see more available appointments, please select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
+                  </td>
+                </tr>
               {% endif %}
               {% if offsite_dogs %}
               <tr>
@@ -81,52 +109,27 @@
                   </ul>
                 </td>
               </tr>
-              <tr>
-                <td class="info-box-data no-border">
-                  <span class="alert-symbol">&#9432;&#xFE0E; </span> The following dogs are currently on an Extended Host Weekend or are returning from Foster soon. Please keep these dates in mind if looking to meet one of them:
-                  <ul>
-                    {% for dog in offsite_dogs %}
-                    {% if not dog.appt_only %}
-                    <li>
-                      {{dog.name}}
-                      {% if dog.host_date.year > 2000 %}
-                      , returning {{dog.host_date}}
-                      {% elif dog.foster_date.year > 2000 %}
-                      , returning {{dog.foster_date}}
-                      {% endif %}
-                    </li>
-                    {% endif %}
-                    {% endfor %}
-                  </ul>
-                </td>
-              </tr>
-              {% endif %}
-              {% if date.weekday == 5 or date.weekday == 6 %}
-              <tr>
-                <td class="info-box-data no-border">
-                  <span class="alert-symbol">&#9432;&#xFE0E; </span>We are not open on weekends.
-                </td>
-              </tr>
-              {% endif %}
-              {% if visible == False or empty_day_db %}
-                {% if date.weekday < 5 and delta > 13 %}
+                {% if host_or_foster_dogs %}
                 <tr>
                   <td class="info-box-data no-border">
-                    <span class="alert-symbol">&#9432;&#xFE0E; </span>We only schedule two weeks in advance, and are not scheduling for this date yet.
-                    {% if request.user.adopter.alert_date == date %}
-                      We will alert you when appointments for this date are open.
-                    {% else %}
-                      <a href="{% url 'set_alert_date' date.year date.month date.day %}">Click here to be alerted when we have opened appointments for this date.</a>
-                    {% endif %}
+                    <span class="alert-symbol">&#9432;&#xFE0E; </span> The following dogs are currently on an extended Host Weekend or are returning from foster soon. Please keep these dates in mind if looking to meet one of them:
+                    <ul>
+                      {% for dog in offsite_dogs %}
+                      {% if not dog.appt_only %}
+                      <li>
+                        {{dog.name}}
+                        {% if dog.host_date.year > 2000 %}
+                        , returning {{dog.host_date}}
+                        {% elif dog.foster_date.year > 2000 %}
+                        , returning {{dog.foster_date}}
+                        {% endif %}
+                      </li>
+                      {% endif %}
+                      {% endfor %}
+                    </ul>
                   </td>
                 </tr>
                 {% endif %}
-              {% elif empty_day == True and date.weekday < 5 %}
-                <tr>
-                  <td class="info-box-data no-border">
-                    <span class="alert-symbol">&#9432;&#xFE0E; </span>We're sorry, this date is fully booked. To see more available appointments, please select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
-                  </td>
-                </tr>
               {% endif %}
             </table>
           </div>

@@ -130,7 +130,8 @@ def update_dog_from_form_data(id, form_data):
 @authenticated_user
 @allowed_users(allowed_roles={'superuser', 'admin'})
 def display_list_admin(request):
-    all_available_dogs = get_and_update_dogs()
+    # get_and_update_dogs()
+    all_available_dogs = get_all_available_dogs()
 
     if request.method == "POST":
         form_data = dict(request.POST)

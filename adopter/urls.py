@@ -9,6 +9,7 @@ urlpatterns = [
     path("select/", views.login, name="select_adopter"),
     path("contact/", views.contact, name="contact_us"),
     path("contact/<int:appt_id>", views.contact, name="contact_us"),
+    path("contact/<str:dog_name>", views.contact, name="contact_us"),
     path("add/", views.add, name="add_adopter"),
     path("reconcile/", views.reconcile_missing_users, name="reconcile"),
     path("upload_error/", views.too_many_rows, name="too_many_rows"),

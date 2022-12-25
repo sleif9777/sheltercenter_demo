@@ -611,41 +611,36 @@ def visitor_instructions(request):
 
     return render(request, "adopter/visitor_instructions.html", context)
 
+
 @authenticated_user
 @allowed_users(allowed_roles={'adopter'})
-def contact(request, appt_id=None):
-    all_dows = Daily_Schedule.objects
-    form = ContactUsForm(request.POST or None)
+def contact(request, appt_id=None, dog_name=None):
+    if appt_id:
+        dt_string = Appointment.objects.get(pk=appt_id).date_and_time_string()
+        default_message = "I would like to book for {0}.".format(dt_string)
+    elif dog_name:
+        default_message = "I am interested in meeting {0} (available by appointment only). My availability is...".format(dog_name)
+    else:
+        default_message = ""
+
+    form = ContactUsForm(request.POST or None, initial={'message': default_message})
+
     if form.is_valid():
-        data = form.cleaned_data
         adopter = request.user.adopter
+        data = form.cleaned_data
         message = data['message']
-        new_contact_us_msg(adopter, message, appt_id)
+        new_contact_us_msg(adopter, message, appt_id, dog_name)
         return redirect('adopter_home')
 
     context = {
         'form': form,
-        'all_dows': all_dows,
         'page_title': "Contact Us",
     }
 
     return render(request, "adopter/contactteam.html", context)
 
-@authenticated_user
-@allowed_users(allowed_roles={'admin'})
-def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
-    today = datetime.date.today()
-    try:
-        appt = Appointment.objects.get(pk=appt_id)
-    except:
-        appt = None
 
-    if 'mgmt' not in source:
-        adopter = appt.adopter
-    else:
-        adopter_id = source.split('_')[1]
-        adopter = Adopter.objects.get(pk=adopter_id)
-
+def get_template_from_source(source, adopter, appt, signature):
     file1 = None
     file2 = None
     subject = None
@@ -699,11 +694,35 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         case _:
             template = EmailTemplate.objects.get(template_name="Contact Adopter")
 
+    template = replacer(template.text.replace('*SIGNATURE*', signature), adopter, appt)
+
+    return template, file1, file2, subject
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin'})
+def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
+    today = datetime.date.today()
+    
     try:
-        template = replacer(template.text.replace('*SIGNATURE*', request.user.profile.signature), adopter, appt)
+        appt = Appointment.objects.get(pk=appt_id)
     except:
-        base_user = User.objects.get(username="base")
-        template = replacer(template.text.replace('*SIGNATURE*', base_user.profile.signature), adopter, appt)
+        appt = None
+
+    if 'mgmt' not in source:
+        adopter = appt.adopter
+    else:
+        adopter_id = source.split('_')[1]
+        adopter = Adopter.objects.get(pk=adopter_id)
+
+    try:
+        user_for_signature = request.user.profile
+    except:
+        user_for_signature = User.objects.get(username="base").profile
+        
+    signature = user_for_signature.signature
+
+    template, file1, file2, subject = get_template_from_source(source, adopter, appt, signature)
 
     form = ContactAdopterForm(request.POST or None, initial={'message': template})
 

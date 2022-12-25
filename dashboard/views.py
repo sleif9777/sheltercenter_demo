@@ -110,10 +110,8 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
 
     try:
         current_appt = Appointment.objects.filter(adopter=user.adopter).latest('id')
-        current_appt_str = current_appt.date_and_time_string()
     except:
         current_appt = None
-        current_appt_str = None
 
     #set the date from the integers, create a formatted string
     date = datetime.date(date_year, date_month, date_day)
@@ -143,10 +141,6 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
             #moot if it's a weekend
             if len(check_for_appts) <= 10 and d.weekday() < 5:
                 empty_dates += [[d, date_str(d)]]
-
-        #check when adopters were last uploaded
-        if system_settings.last_adopter_upload not in [today - datetime.timedelta(days=x) for x in range(2)]:
-            upload_current = False
 
         #check for any appointments in past 7 days without outcomes
         for d in [today - datetime.timedelta(days=x) for x in range(7, 0, -1)]:
@@ -198,6 +192,9 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
                 timeslots[time] = list(time.appointments.filter(date=date, time=time.time, appt_type__in=["1", "2", "3"]))
                 timeslots[time] = [appt for appt in timeslots[time] if appt.adopter is None]
 
+                for appt in timeslots[time]:
+                    print(appt.adopter.wishlist)
+
                 #delete unnecessary timeslots
                 if timeslots[time] == []:
                     timeslots.pop(time)
@@ -245,6 +242,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         sn_show = False
 
     offsite_dogs = DogProfile.objects.filter(offsite=True, shelterluv_status="Available for Adoption").order_by('name')
+    host_or_foster_dogs = DogProfile.objects.filter(offsite=True, appt_only=False, shelterluv_status="Available for Adoption").order_by('name')
 
     context = {
         "date": date,
@@ -255,7 +253,6 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         "timeslots": timeslots,
         "empty_day": empty_day,
         "empty_dates": empty_dates,
-        "upload_current": upload_current,
         "schedulable": ["1", "2", "3"],
         "visible": visible_to_adopters,
         "delta": delta_from_today,
@@ -271,7 +268,8 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
         'sn_show': sn_show,
         'empty_day_db': empty_day_db,
         'application_ids': application_ids,
-        'offsite_dogs': offsite_dogs
+        'offsite_dogs': offsite_dogs,
+        'host_or_foster_dogs': host_or_foster_dogs
     }
 
     return context

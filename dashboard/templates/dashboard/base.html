@@ -98,6 +98,21 @@
         }
       }
 
+      function toggleCols() {
+        var checkboxElement = document.getElementById('hide-cols-cbx');
+        var colElements = document.getElementsByClassName('hide-cols-elements');
+
+        if (!checkboxElement.checked) {
+          for (let i = 0; i < colElements.length; i++) {
+            colElements[i].style.display = "table-cell";
+          }
+        } else {
+          for (let i = 0; i < colElements.length; i++) {
+            colElements[i].style.display = "none";
+          }        
+        }
+      }
+
       function isVisible(element) {
         return element.style.display != "none";
       }

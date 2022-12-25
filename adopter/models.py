@@ -100,6 +100,10 @@ class Adopter(models.Model):
         else:
             return self.app_interest
 
+    def wishlist_str(self):
+        wishlist_names = [dog.name for dog in self.wishlist.all()]
+        return ', '.join(wishlist_names) if len(wishlist_names) > 0 else None
+
     def chg_appt_status(self):
         self.has_current_appt = not self.has_current_appt
         self.save()

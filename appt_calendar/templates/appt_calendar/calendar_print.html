@@ -24,9 +24,7 @@
       <tr>
         <th style="width:5%;">Time</th>
         <th style="width:15%;">Adopter/Dog</th>
-        <th style="width:23%;">Notes from Adopter</th>
-        <th style="width:24%;">Notes from Adoptions Team</th>
-        <th style="width:23%;">Notes from Shelterluv</th>
+        <th style="width:50%;">Notes</th>
         <th style="width:10%;"># of Visits</th>
       </tr>
       {% for timeslot, appointments in timeslots.items %}
@@ -59,13 +57,16 @@
                 <span class="subscript">{{appt.dt_booking_string}}</span>
               {% endif %}
             </td>
-            <td>{{appt.adopter_notes}}</td>
-            <td>{{appt.internal_notes}}</td>
             <td>
-              {% if appt.appt_type in schedulable %}
-                {{appt.adopter.app_interest}}
+              {% if appt.adopter_notes %}
+                {{appt.adopter_notes}} <em>({{appt.adopter.f_name}})</em> <br>
               {% endif %}
-            </td>
+              {% if appt.internal_notes %}
+                {{appt.internal_notes}} <em>(Adoptions)</em><br>
+              {% endif %}
+              {% if appt.appt_type in schedulable %}
+                {{appt.adopter.app_interest}} <em>(Shelterluv)</em>
+              {% endif %}
             <td>
               {% if appt.adopter.visits_to_date > 1 %}
                 {{appt.number_of_visits}}

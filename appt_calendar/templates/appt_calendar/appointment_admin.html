@@ -112,6 +112,13 @@
           <td class="left">{{appt.adopter.app_interest_str|linebreaks}}</td>
         </tr>
         {% endif %}
+
+        {% if appt.adopter.wishlist_str %}
+        <tr class="wishlist">
+          <td class="left" style="width:20%;"><b>Tracking List:</b></td>
+          <td class="left">{{appt.adopter.wishlist_str}}</td>
+        </tr>
+        {% endif %}
       {% else %}
         <tr>
           <td class="left">

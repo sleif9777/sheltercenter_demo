@@ -3,6 +3,27 @@
 {% load appt_extras %}
 {% load auth_extras %}
 
+<!-- <script>
+  function toggleCols() {
+    var checkboxElement = document.getElementById('hide-cols-cbx');
+    var colElements = document.getElementsByClassName('hide-cols-elements');
+
+    if (!checkboxElement.checked) {
+      for (let i = 0; i < colElements.length; i++) {
+        if (colElements[i] instanceof HTMLTableRowElement) {
+          colElements[i].style.display = "table-row";
+        } else {
+          colElements[i].style.display = "list-item";
+        }
+      }
+    } else {
+      for (let i = 0; i < colElements.length; i++) {
+        colElements[i].style.display = "none";
+      }        
+    }
+  }
+</script> -->
+
 {% block content %}
 <div class="main text-page">
   <div class="page-header {% if not request.user|has_group:'admin' %} no-actions {% endif %}">
@@ -15,6 +36,7 @@
   <div class="page-actions">
     <a href="{% url 'daily_report_adopted_chosen_fta' today.year today.month today.day %}">Return to Today</a>
     <a target="_blank" href="{% url 'report_print' date.year date.month date.day %}">Print View</a>
+    <input type="checkbox" name="hide-cols" id="hide-cols-cbx" onclick="toggleCols();"><label for="hide-cols"> Hide Check-In, Counselor, and Check-Out?</label>
   </div>
   {% endif %}
 
@@ -26,9 +48,9 @@
     <tr class="no-border">
       <th style="width:10%;">Time</th>
       <th style="width:18.5%;">Adopter</th>
-      <th style="width:10%;">Check-In</th>
-      <th style="width:15%;">Counselor</th>
-      <th style="width:10%">Check-Out</th>
+      <th class="hide-cols-elements" style="width:10%;">Check-In</th>
+      <th class="hide-cols-elements" style="width:15%;">Counselor</th>
+      <th class="hide-cols-elements" style="width:10%">Check-Out</th>
       <th style="width:22%;">Outcome</th>
       <th style="width:12.5%;">Dog</th>
     </tr>
@@ -38,9 +60,9 @@
           <tr>
             <td>{{appt.time}}</td>
             <td>{{appt.adopter}}</td>
-            <td>{{appt.checked_in_time}}</td>
-            <td>{{appt.counselor}}</td>
-            <td>{{appt.checked_out_time}}</td>
+            <td class="hide-cols-elements">{{appt.checked_in_time}}</td>
+            <td class="hide-cols-elements">{{appt.counselor}}</td>
+            <td class="hide-cols-elements">{{appt.checked_out_time}}</td>
             <td>{{appt.get_outcome_display}}</td>
             <td>{{appt.dog}}</td>
           </tr>
