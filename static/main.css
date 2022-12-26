@@ -475,10 +475,6 @@ a:hover {
   text-decoration: underline;
 }
 
-.bold {
-  font-weight: bold;
-}
-
 table {
   margin-left: auto;
   margin-right: auto;
@@ -514,6 +510,10 @@ th {
 
 .block {
   display: block;
+}
+
+.bold {
+  font-weight: bold;
 }
 
 .border-box {
@@ -606,6 +606,11 @@ th {
 
 .side-margin-5 {
   margin: 0 5px;
+}
+
+.strikethrough-italic {
+  font-style: italic;
+  text-decoration: line-through;
 }
 
 .subscript {

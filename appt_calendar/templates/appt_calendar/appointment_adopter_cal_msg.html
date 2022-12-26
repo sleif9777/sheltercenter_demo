@@ -1,3 +1,5 @@
+{% load wishlist_extras %}
+
 <div class="appointment">  
   <table class="appt-info-block" id="appt-header-block">
     <tr>
@@ -75,6 +77,32 @@
         <a href="{% url 'remove_adopter' current_appt.id date.year date.month date.day %}">Cancel My Appointment</a>
       </td>
       <td></td>
+    </tr>
+  </table>
+</div>
+<div class="info-box short-notice">
+  <table class="appt-info-block" id="appt-header-block">
+    <tr>
+      <td class="appt-description left upper">
+        <b><a class="appt_action" href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">MY WATCH LIST</a>
+      </td>
+      <td class="appt-description right">
+        <a href="{% url 'edit_cal_appointment' current_appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a>
+      </td>
+    </tr>
+  </table>
+  <table class="appt-info-block no-border">
+    <tr>
+      <td colspan="2" class="info-box-data left no-border">
+        <ul>
+          {% for dog in request.user.adopter.wishlist.iterator %}
+          <li>
+            <span class="{{dog|wishlist_class:date}}">{{dog.name}}{{dog|wishlist_str:date}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+        <span class="subscript"><em>*Available on a first-come-first-serve basis. Marking them on your watch list does not equate to any sort of "hold" prior to an appointment.</em></span>
+      </td>
     </tr>
   </table>
 </div>

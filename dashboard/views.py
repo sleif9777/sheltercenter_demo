@@ -19,7 +19,7 @@ from appt_calendar.models import *
 from email_mgr.email_sender import *
 from schedule_template.models import *
 from wishlist.models import *
-from wishlist.views import get_and_update_dogs
+from wishlist.views import *
 
 system_settings = SystemSettings.objects.get(pk=1)
 
@@ -273,6 +273,7 @@ def generate_calendar(user, load, adopter_id, date_year, date_month, date_day):
     }
 
     return context
+
 
 def test_harness(request):
     context = generate_calendar('admin', 'full', None, 2022, 4, 4)

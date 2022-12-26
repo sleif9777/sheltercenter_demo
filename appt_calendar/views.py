@@ -24,7 +24,7 @@ from dashboard.views import generate_calendar as gc
 from email_mgr.email_sender import *
 from schedule_template.models import *
 
-system_settings = SystemSettings.objects.get(pk=1)
+# GLOBAL VARIABLE
 today = datetime.date.today()
 
 # REFACTORED
