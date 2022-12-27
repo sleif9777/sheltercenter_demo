@@ -5,8 +5,9 @@ import sys
 import time
 
 from django.contrib.auth.models import Group, User
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
+from random import randint
 
 from .adopter_manager import *
 from .forms import *
@@ -16,7 +17,6 @@ from dashboard.decorators import *
 from email_mgr.models import *
 from email_mgr.dictionary import *
 from email_mgr.email_sender import *
-from random import randint
 from schedule_template.models import *
 from visit_and_faq.models import *
 
@@ -670,7 +670,7 @@ def get_template_from_source(source, adopter, appt, signature):
         case "limited_hypo":
             template = EmailTemplate.objects.get(template_name="Limited Hypo")
         case 'dogs_were_adopted':
-            template = EmailTemplate.objects.get(template_name="Dogs Were Adopted")
+            template = EmailTemplate.objects.get(template_name="Watch List (BETA)")
         case 'dog_in_extended_host':
             template = EmailTemplate.objects.get(template_name="Dog In Extended Host")
         case 'dog_in_medical_foster':
@@ -721,7 +721,6 @@ def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
         user_for_signature = User.objects.get(username="base").profile
         
     signature = user_for_signature.signature
-
     template, file1, file2, subject = get_template_from_source(source, adopter, appt, signature)
 
     form = ContactAdopterForm(request.POST or None, initial={'message': template})

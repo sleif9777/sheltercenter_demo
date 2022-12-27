@@ -34,7 +34,7 @@
             </td>
           </tr>
           <tr>
-            <td class="info-box-data no-border">
+            <td class="info-box-data {% if not popular_dogs %} no-border {% endif %}">
               <p class="calendar-notes-header"><a href="{% url 'display_list' %}"><b>OFFSITE DOGS &#9998;&#xFE0E;</b></a></p>
               {% if offsite_dogs %}
               <ul>
@@ -56,6 +56,18 @@
               {% endif %}
             </td>
           </tr>
+          {% if popular_dogs %}
+          <tr>
+            <td class="info-box-data no-border">
+              <p class="calendar-notes-header"><b>POPULAR DOGS</b></p>
+              <ul>
+                {% for dog in popular_dogs %}
+                <li>{{dog.name}}</li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+          {% endif %}
         </table>
       </div>
     </td>

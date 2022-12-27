@@ -35,7 +35,6 @@ urlpatterns = [
     path('login/', views.login_page, name="login"),
     path('settings/', views.user_settings, name='user_settings'),
     path('logout/', views.logout_user, name="logout"),
-    path('test/', views.test_harness, name="test_harness"),
     path('login/staff/', views.staff_login, name="staff_login"),
     path('images/', views.images, name="images"),
     path('help/', visit_and_faq.views.help, name="help"),

@@ -9,13 +9,20 @@ from django.shortcuts import render
 from .models import *
 from dashboard.decorators import *
 
-def update_from_shelterluv():
-    headers = {
-        'X-Api-Key': os.environ.get('SHELTERLUV_API_KEY'),
-    }
 
+def get_groups(user_obj):
+    try:
+        user_groups = set(group.name for group in user_obj.groups.all().iterator())
+    except:
+        user_groups = set()
+
+    return user_groups
+
+
+def update_from_shelterluv():
     dogs = []
     has_more = True
+    headers = {'X-Api-Key': os.environ.get('SHELTERLUV_API_KEY')}
     offset = 0
 
     while has_more:
@@ -50,14 +57,20 @@ def get_all_available_dogs():
 
 def remove_expired_dates():
     today = datetime.datetime.today()
+    default_date = datetime.date(2000, 1, 1)
+    shifted_date = datetime.date(2000, 1, 2) # to exclude true 1/1/2000 default
     
-    for dog in DogProfile.objects.filter(host_date__lte=today):
-        dog.host_date = datetime.date(2000, 1, 1)
+    for dog in DogProfile.objects.filter(
+            host_date__range=(shifted_date, today)):
+        print('remove_expired_dates host', dog.name)
+        dog.host_date = default_date
         dog.offsite = True if dog.appt_only else False
         dog.save()
 
-    for dog in DogProfile.objects.filter(foster_date__lte=today):
-        dog.foster_date = datetime.date(2000, 1, 1)
+    for dog in DogProfile.objects.filter(
+            foster_date__range=(shifted_date, today)):
+        print('remove_expired_dates foster', dog.name)
+        dog.foster_date = default_date
         dog.offsite = True if dog.appt_only else False
         dog.save()
 
@@ -73,7 +86,7 @@ def get_date_from_form_data(data):
 @authenticated_user
 @allowed_users(allowed_roles={'superuser', 'admin', 'adopter'})
 def display_list(request):
-    user_groups = set(group.name for group in request.user.groups.all().iterator())
+    user_groups = get_groups(request.user)
 
     if 'adopter' in user_groups:
         return redirect('display_list_adopter')
@@ -130,7 +143,7 @@ def update_dog_from_form_data(id, form_data):
 @authenticated_user
 @allowed_users(allowed_roles={'superuser', 'admin'})
 def display_list_admin(request):
-    # get_and_update_dogs()
+    get_and_update_dogs()
     all_available_dogs = get_all_available_dogs()
 
     if request.method == "POST":

@@ -95,10 +95,6 @@
         <label for="id_ac_show_dogs_adopted_comm">
           Dogs Were Adopted <br>
         </label>
-        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dogs_adopted_comm.id_for_label }}" name="{{ form.ac_show_dogs_adopted_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dogs_adopted_comm');" {% if form.ac_show_dogs_adopted_comm.value %}checked{% endif %}>
-        <label for="id_ac_show_dogs_adopted_comm">
-          Dogs Were Adopted <br>
-        </label>
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dog_in_extended_host_comm.id_for_label }}" name="{{ form.ac_show_dog_in_extended_host_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dog_in_extended_host_comm');" {% if form.ac_show_dog_in_extended_host_comm.value %}checked{% endif %}>
         <label for="id_ac_show_dog_in_extended_host_comm">
           Dog In Extended Host <br>

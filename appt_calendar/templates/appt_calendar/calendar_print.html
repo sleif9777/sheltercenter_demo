@@ -24,7 +24,8 @@
       <tr>
         <th style="width:5%;">Time</th>
         <th style="width:15%;">Adopter/Dog</th>
-        <th style="width:50%;">Notes</th>
+        <th style="width:25%;">Notes</th>
+        <th style="width:25%;">Interested In...</th>
         <th style="width:10%;"># of Visits</th>
       </tr>
       {% for timeslot, appointments in timeslots.items %}
@@ -67,6 +68,12 @@
               {% if appt.appt_type in schedulable %}
                 {{appt.adopter.app_interest}} <em>(Shelterluv)</em>
               {% endif %}
+            </td>
+            <td>
+              {% if appt.adopter.wishlist_str %}
+              {{appt.adopter.wishlist_str}}
+              {% endif %}
+            </td>
             <td>
               {% if appt.adopter.visits_to_date > 1 %}
                 {{appt.number_of_visits}}

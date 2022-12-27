@@ -136,7 +136,7 @@ def greeter_reschedule(
         "source": source,
     }
 
-    calendar = gc(request.user, 'reschedule', None, date_year, date_month, date_day)
+    calendar = gc(request.user, 'reschedule', date_year, date_month, date_day)
     context.update(calendar)
     return render(request, "appt_calendar/calendar_greeter_reschedule.html/", context)
 
@@ -268,7 +268,7 @@ def get_adopter_context(adopter):
 @authenticated_user
 def calendar_date(
     request, date_year, date_month, date_day, appt_id=None, ts_id=None):
-    context = gc(request.user, 'full', None, date_year, date_month, date_day)
+    context = gc(request.user, 'full', date_year, date_month, date_day)
     user_groups = get_groups(request.user)
 
     if appt_id or ts_id:
@@ -290,7 +290,7 @@ def calendar_date(
 # DEPRECATE?
 @authenticated_user
 def calendar_date_appt(request, date_year, date_month, date_day, appt_id):
-    context = gc(request.user, 'full', None, date_year, date_month, date_day)
+    context = gc(request.user, 'full', date_year, date_month, date_day)
     user_groups = get_groups(request.user)
 
     try:
@@ -311,7 +311,7 @@ def calendar_date_appt(request, date_year, date_month, date_day, appt_id):
 # DEPRECATE?
 @authenticated_user
 def calendar_date_ts(request, date_year, date_month, date_day, ts_id):
-    context = gc(request.user, 'full', None, date_year, date_month, date_day)
+    context = gc(request.user, 'full', date_year, date_month, date_day)
     user_groups = get_groups(request.user)
 
     try:
@@ -335,7 +335,7 @@ def paperwork_calendar(
         request, date_year, date_month, date_day, appt_id, hw_status):
     appt = Appointment.objects.get(pk=appt_id)
     fta_or_adoption = "FTA" if hw_status == "positive" else "Adoption"
-    calendar = gc(request.user, 'full', None, date_year, date_month, date_day)
+    calendar = gc(request.user, 'full', date_year, date_month, date_day)
     context = {
         "appt": appt,
         "hw_status": hw_status,
@@ -350,7 +350,7 @@ def paperwork_calendar(
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def calendar_print(request, date_year, date_month, date_day):
-    context = gc(request.user, 'full', None, date_year, date_month, date_day)
+    context = gc(request.user, 'full', date_year, date_month, date_day)
     context['page_title'] = "Print Calendar"
     return render(request, "appt_calendar/calendar_print.html/", context)
 
@@ -359,7 +359,7 @@ def calendar_print(request, date_year, date_month, date_day):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def report_print(request, date_year, date_month, date_day):
-    context = gc(request.user, 'full', None, date_year, date_month, date_day)
+    context = gc(request.user, 'full', date_year, date_month, date_day)
     context['page_title'] = "Daily Report"
     return render(request, "appt_calendar/daily_report_print.html/", context)
 
@@ -454,7 +454,7 @@ def mark_complete_on_chosen_board(request, appt_id):
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def checked_in_appts(request):
     global today
-    context = gc(request.user, 'full', None, today.year, today.month, today.day)
+    context = gc(request.user, 'full', today.year, today.month, today.day)
     return render(request, "appt_calendar/checked_in_appts.html/", context)
 
 
@@ -462,7 +462,7 @@ def checked_in_appts(request):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def daily_report_adopted_chosen_fta(request, date_year, date_month, date_day):
-    context = gc(request.user, 'full', None, date_year, date_month, date_day)
+    context = gc(request.user, 'full', date_year, date_month, date_day)
     return render(request, "appt_calendar/daily_report_adopted_chosen_fta.html/", context)
 
 
