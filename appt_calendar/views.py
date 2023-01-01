@@ -1441,7 +1441,7 @@ def allow_access(request, adopter_id):
     )
 
     access_restored(adopter)
-    return redirect('edit_adopter_w_alert', adopter.id)
+    return redirect('edit_adopter', adopter.id, alert=True)
 
 
 # REFACTORED
