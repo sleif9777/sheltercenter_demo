@@ -777,7 +777,7 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
     if form.is_valid():
         form.save()
 
-        if adopter_form:
+        if adopter_form and adopter_form.is_valid():
             adopter_form.save()
 
         try:
