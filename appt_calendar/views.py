@@ -137,7 +137,9 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 
         if form.is_valid():
             form.save()
-            adopter_form.save()
+            
+            if adopter_form.is_valid():
+                adopter_form.save()
 
             print(request.POST)
 
