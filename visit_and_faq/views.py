@@ -10,11 +10,7 @@ from dashboard.decorators import *
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def landing(request):
-
-    context = {
-    }
-
-    return render(request, "visit_and_faq/home.html", context)
+    return render(request, "visit_and_faq/home.html")
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -29,8 +25,8 @@ def add_faq_section(request):
 
     context = {
         'form': form,
-        'title': "Add FAQ Section",
         'page_title': "Add FAQ Section",
+        'title': "Add FAQ Section",
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
@@ -58,9 +54,9 @@ def add_faq(request, sec_id):
 
     context = {
         'form': form,
-        'title': "Add FAQ",
         'page_title': "Add FAQ",
-        'section': section.name
+        'section': section.name,
+        'title': "Add FAQ",
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
@@ -70,6 +66,7 @@ def add_faq(request, sec_id):
 def edit_faq(request, faq_id):
     faq = FAQ.objects.get(pk=faq_id)
     form = FAQForm(request.POST or None, instance=faq)
+    
     if form.is_valid():
         form.save()
         return redirect('faq_test')
@@ -78,9 +75,8 @@ def edit_faq(request, faq_id):
 
     context = {
         'form': form,
-        'title': "Edit FAQ",
         'page_title': "Edit FAQ",
-
+        'title': "Edit FAQ",
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
@@ -106,8 +102,8 @@ def add_visitor_instr(request):
 
     context = {
         'form': form,
-        'title': "Add Visit Instruction",
         'page_title': "Add Visit Instruction",
+        'title': "Add Visit Instruction",
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
@@ -125,8 +121,8 @@ def edit_visitor_instr(request, instr_id):
 
     context = {
         'form': form,
-        'title': "Edit Visit Instruction",
         'page_title': "Edit Visit Instruction",
+        'title': "Edit Visit Instruction",
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
@@ -181,9 +177,9 @@ def add_helptopic(request, sec_id):
 
     context = {
         'form': form,
-        'title': "Add Help Topic",
         'page_title': "Add Help Topic",
-        'section': section.name
+        'section': section.name,
+        'title': "Add Help Topic",
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
@@ -201,9 +197,8 @@ def edit_helptopic(request, topic_id):
 
     context = {
         'form': form,
-        'title': "Edit Help Topic",
         'page_title': "Edit Help Topic",
-
+        'title': "Edit Help Topic",
     }
 
     return render(request, "visit_and_faq/add_edit_comm.html", context)
@@ -218,10 +213,12 @@ def delete_helptopic(request, topic_id):
 
 @authenticated_user
 def help(request):
+    all_sections = HelpSection.objects.all().iterator()
     help_dict = {}
 
-    for sec in HelpSection.objects.all().iterator():
-        help_dict[sec] = [t for t in sec.topics.iterator()]
+    for sec in all_sections:
+        all_topics = sec.topics.iterator()
+        help_dict[sec] = [t for t in all_topics]
 
     context = {
         'help_dict': help_dict,

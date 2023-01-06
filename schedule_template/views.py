@@ -22,7 +22,7 @@ def weekly(request):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def daily(request, dow_id):
-    daily_sched = get_object_or_404(Daily_Schedule, pk=dow_id)
+    daily_sched = Daily_Schedule.objects.get(pk=dow_id)
     all_timeslots = daily_sched.timeslots.all()
     daily_sched_timeslots = [time for time in all_timeslots]
     daily_sched_appts = {}

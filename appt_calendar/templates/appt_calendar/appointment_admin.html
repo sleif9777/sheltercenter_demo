@@ -295,6 +295,7 @@
               {% endif %}
             </li>
             {% endif %}
+            <li><a href="{% url 'resend_invite' adopter.id %}">Resend Approval Email</a></li>
             <li><a href="{% url 'resend_confirmation' appt.id %}">Resend Confirmation</a></li>
           </ul>
         </td>

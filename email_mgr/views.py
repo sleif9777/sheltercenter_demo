@@ -30,9 +30,11 @@ def strip_tags(html):
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def email_home(request):
     templates = EmailTemplate.objects.filter(active=True)
+
+    print([template.template_name for template in templates])
     context = {
-        'templates': templates,
         'page_title': "Email Templates",
+        'templates': templates,
     }
 
     return render(request, "email_mgr/email_home.html/", context)
@@ -96,8 +98,8 @@ def send_outbox(request):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def edit_template(request, template_id):
-    form = EmailTemplateForm(request.POST or None, instance=template)
     template = EmailTemplate.objects.get(pk=template_id)
+    form = EmailTemplateForm(request.POST or None, instance=template)
 
     if form.is_valid():
         form.save()

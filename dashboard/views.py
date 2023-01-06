@@ -90,6 +90,7 @@ def logout_user(request):
     logout(request)
     return redirect('login')
 
+
 # OTHER PAGES
 # depracate?
 @authenticated_user
@@ -199,6 +200,8 @@ def generate_calendar(user, load, date_year, date_month, date_day):
         admin_info_dict = gen_cal_get_admin_info_dict()
         context.update(admin_info_dict)
 
+    # print(context)
+
     return context
 
 
@@ -245,8 +248,8 @@ def filter_timeslots_adopter(timeslots_query, date, adopter):
             timeslots[time] = []
         else:
             timeslots[time] = list(time.appointments.filter(
+                adopter=None,
                 appt_type__in=["1", "2", "3"],
-                adopter__in=[adopter, None],
                 date=date, 
                 time=time.time, 
             ))
@@ -254,7 +257,7 @@ def filter_timeslots_adopter(timeslots_query, date, adopter):
         #delete unnecessary timeslots
         if timeslots[time] == []:
             timeslots.pop(time)
-
+    
     return timeslots
 
 
@@ -298,9 +301,15 @@ def gen_cal_get_announcements_dict(date):
 
 
 def gen_cal_get_current_appt(user):
-    # return the latest appointment by adopter or none
+    # return the latest appointment by schedulable adopter or none
     try:
-        return Appointment.objects.filter(adopter=user.adopter).latest('id')
+        appt = Appointment.objects.filter(
+            adopter=user.adopter,
+            appt_type__in=["1", "2", "3"],
+            outcome="5"
+        ).latest('id')
+        appt.verify_closed()
+        return appt
     except:
         return None
 
@@ -382,8 +391,7 @@ def gen_cal_get_timeslots_dict(date, load, user, user_groups):
     application_ids = [[appt.adopter.application_id, appt.adopter.full_name()] 
         for appt in all_appointments]
     is_staff = 'greeter' in user_groups or 'admin' in user_groups
-    timeslots_query = [slot for slot in Timeslot.objects.filter(date=date)]
-    
+    timeslots_query = [slot for slot in Timeslot.objects.filter(date=date)]    
     empty_day_db = True if timeslots_query == [] else False
 
     if is_staff:

@@ -166,10 +166,6 @@ class SurrenderForm(forms.Form):
         label="Is your dog up to date on all vet records?",
         widget=forms.Textarea
     )
-    # vet_records = forms.ChoiceField(
-    #     label="Is your dog up to date on all vet records?",
-    #     widget=forms.Textarea
-    # )
     sought_training = forms.CharField(
         label="Did you seek training or professional guidance with your dog?",
         widget=forms.Textarea

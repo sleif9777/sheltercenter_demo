@@ -83,7 +83,7 @@
                     {% endif %}
                     {% if adopter.status == "1" and not adopter.adoption_complete and not adopter.waiting_for_chosen %}
                     <li><a href="{% url 'greeter_reschedule' adopter.id 100 today.year today.month today.day 'edit' %}">Schedule {{adopter.f_name}}</a></li>
-                    <li><a href="{% url 'resend_invite' adopter.id %}">Resend Invitation</a></li>
+                    <li><a href="{% url 'resend_invite' adopter.id %}">Resend Approval Email</a></li>
                     <li><a href="{% url 'set_alert_mgr' adopter.id %}">Set Reminder</a></li>
                     {% endif %}
                     {% if adopter.adoption_complete %}

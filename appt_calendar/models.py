@@ -60,7 +60,15 @@ class Appointment(models.Model):
     counselor = models.CharField(default="", max_length=20, blank=True)
 
     #booking information
-    adopter = models.ForeignKey(Adopter, null=True, blank=True, on_delete=models.SET_NULL, limit_choices_to={'has_current_appt': False, 'status': "1"})
+    adopter = models.ForeignKey(
+        Adopter, 
+        null=True, 
+        blank=True, 
+        on_delete=models.SET_NULL, 
+        limit_choices_to={
+            'has_current_appt': False, 
+            'status': "1"}
+        )
     available = models.BooleanField(default=True) #is not filled
     dt_booking = models.DateTimeField(default=datetime.datetime(2000,1,1,0,0), blank=True)
     locked = models.BooleanField(default=False) #when published = True, if locked, public can see but not interact
@@ -94,7 +102,7 @@ class Appointment(models.Model):
 
     #post-visit attributes
     all_updates_sent = ArrayField(
-        models.CharField(max_length=30, blank=True), default=[]
+        models.CharField(max_length=30, blank=True), default=[], blank=True
     )
     dog = models.CharField(default="", max_length=200, blank=True) #this can also be used in surrenders
     dog_fka = models.CharField(default="", max_length=200, blank=True) #only used for surrenders
@@ -104,16 +112,26 @@ class Appointment(models.Model):
     paperwork_complete = models.BooleanField(default=False)
     rtr_notif_date = models.CharField(default="", max_length=200, blank=True)
 
+    def verify_closed(self):
+        if not self.adopter.has_current_appt:
+            self.adopter.has_current_appt = True
+            self.adopter.save()
+        if self.published:
+            self.published = False
+        if self.available:
+            self.available = False
+        
+        self.save()
+
+
     def __repr__(self):
         display_string = ""
-        render_appt_type = self.appt_string()
 
-        if int(self.appt_type) <= 3:
-            if self.adopter is not None:
+        if self.schedulable():
+            if self.adopter:
                 display_string += str(self.adopter).upper()
             else:
                 display_string += "OPEN"
-
         elif int(self.appt_type) in range(3, 8): #exclude drop-off appts
             if self.dog == "":
                 display_string += "MORE DETAILS NEEDED"
@@ -163,6 +181,9 @@ class Appointment(models.Model):
 
         return ordinal
 
+    def schedulable(self):
+        return self.appt_type in ["1", "2", "3"]
+
     def date_string(self):
         return date_str(self.date)
 
@@ -170,13 +191,15 @@ class Appointment(models.Model):
         return time_str(self.time)
 
     def date_and_time_string(self):
-        return self.date_string() + " at " + self.time_string()
+        return "{0} at {1}".format(self.date_string(), self.time_string())
 
     def dt_booking_string(self):
-        return "Booked {0} at {1}".format(date_num_str(self.dt_booking), time_str(self.dt_booking))
+        return "Booked {0} at {1}".format(
+            date_num_str(self.dt_booking), time_str(self.dt_booking))
 
     def appt_string(self):
-        appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA", "Visit", "Donation Drop-Off"]
+        appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", 
+            "Adoption", "FTA", "Visit", "Donation Drop-Off"]
         return appt_type[int(self.appt_type) - 1]
 
     def mark_short_notice(self):
@@ -184,8 +207,6 @@ class Appointment(models.Model):
         self.save()
 
     def reset(self):
-        # clears all information out of an appointment and republishes it for booking
-
         self.adopter = None
         self.available = True
         self.dt_booking = datetime.datetime(2000,1,1,0,0)
@@ -196,11 +217,19 @@ class Appointment(models.Model):
         self.internal_notes = ""
 
         self.comm_adopted_dogs = False
+        self.comm_dog_in_extended_host = False
+        self.comm_dog_in_medical_foster = False
+        self.comm_dog_is_popular = False
+        self.comm_dog_is_popular_low_chances = False
+        self.comm_dog_not_here_yet = False
+        self.comm_followup = False
         self.comm_limited_hypo = False
         self.comm_limited_other = False
         self.comm_limited_puppies = False
         self.comm_limited_small = False
         self.comm_limited_small_puppies = False
+        self.comm_reminder_breed = False
+        self.comm_reminder_parents = False
 
         self.bringing_dog = False
         self.has_cat = False
@@ -214,17 +243,18 @@ class Appointment(models.Model):
         self.save()
 
     def delist(self):
-        # sets the adopter upon booking and changes their appt status,
-        # turns off the publish and available attributes of an appt
+        if self.schedulable() and self.adopter and not self.adopter.has_current_appt:
+            self.adopter.has_current_appt = True
+            self.adopter.save()
 
         self.available = False
         self.published = False
 
-        if self.adopter is not None:
-            self.dt_booking = timezone.localtime(timezone.now()) #datetime.datetime.now()
+        if self.adopter:
+            self.dt_booking = timezone.localtime(timezone.now())
             self.visits_to_date = copy(self.adopter.visits_to_date)
 
-            if self.adopter.acknowledged_faq == False:
+            if not self.adopter.acknowledged_faq:
                 self.adopter.acknowledged_faq = True
                 self.adopter.save()
 

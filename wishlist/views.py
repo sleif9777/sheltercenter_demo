@@ -1,4 +1,3 @@
-import json
 import operator
 import os
 import requests
@@ -10,21 +9,21 @@ from .models import *
 from dashboard.decorators import *
 
 
-def get_groups(user_obj):
+def get_groups(user):
     try:
-        user_groups = set(group.name for group in user_obj.groups.all().iterator())
+        user_groups = set(group.name for group in user.groups.all().iterator())
     except:
         user_groups = set()
 
     return user_groups
 
 
-def update_from_shelterluv():
+def get_all_available_dogs_from_shelterluv():
     dogs = []
     has_more = True
     headers = {'X-Api-Key': os.environ.get('SHELTERLUV_API_KEY')}
     offset = 0
-
+    
     while has_more:
         request_address = 'https://www.shelterluv.com/api/v1/animals?offset={0}&status_type=publishable'.format(offset)
         dogs_request = requests.get(request_address, headers=headers).json()
@@ -32,15 +31,56 @@ def update_from_shelterluv():
         offset += 100
         has_more = dogs_request['has_more']
 
-    for dog_json in dogs:        
-        DogProfile.objects.update_or_create(
-            shelterluv_id = dog_json['Internal-ID'],
+    return dogs
+
+
+def update_from_shelterluv():
+    original_available_dogs = set(get_all_available_dogs())
+    current_available_dogs = set()
+    dogs = get_all_available_dogs_from_shelterluv()
+
+    for dog_json in dogs:       
+        dog, created = DogProfile.objects.update_or_create(
+            shelterluv_id=dog_json['Internal-ID'],
             defaults={
                 'name': dog_json['Name'],
                 'info': dog_json,
                 'shelterluv_status': dog_json['Status']
             }
         )
+
+        if not created:
+            current_available_dogs.add(dog)
+
+    adopted_dogs = original_available_dogs - current_available_dogs
+    
+    for dog in adopted_dogs:
+        DogProfile.objects.update_or_create(
+            pk=dog.id,
+            defaults={
+                "appt_only": False,
+                "foster_date": datetime.date(2000,1,1),
+                "host_date": datetime.date(2000,1,1),
+                "offsite": False,
+                "shelterluv_status": "No Longer Available"
+            }
+        )
+
+
+def update_nla_dogs():
+    dogs = DogProfile.objects.filter(shelterluv_status="No Longer Available")
+
+    for dog in dogs:
+        DogProfile.objects.update_or_create(
+            pk=dog.id,
+            defaults={
+                "appt_only": False,
+                "foster_date": datetime.date(2000,1,1),
+                "host_date": datetime.date(2000,1,1),
+                "offsite": False,
+                "shelterluv_status": "No Longer Available"
+            }
+        )        
 
 
 def get_and_update_dogs():
@@ -62,14 +102,12 @@ def remove_expired_dates():
     
     for dog in DogProfile.objects.filter(
             host_date__range=(shifted_date, today)):
-        print('remove_expired_dates host', dog.name)
         dog.host_date = default_date
         dog.offsite = True if dog.appt_only else False
         dog.save()
 
     for dog in DogProfile.objects.filter(
             foster_date__range=(shifted_date, today)):
-        print('remove_expired_dates foster', dog.name)
         dog.foster_date = default_date
         dog.offsite = True if dog.appt_only else False
         dog.save()

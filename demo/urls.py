@@ -24,7 +24,7 @@ from appt_calendar import views
 from dashboard import views as views
 
 urlpatterns = [
-    path('', adopter.views.home_page, name="home_page"),
+    path('', views.login_page, name="home_page"),
     path('admin/', admin.site.urls),
     path('calendar/template/', include('schedule_template.urls')),
     path('calendar/', include('appt_calendar.urls')),

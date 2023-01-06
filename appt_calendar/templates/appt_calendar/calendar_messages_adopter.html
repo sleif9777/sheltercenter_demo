@@ -1,3 +1,5 @@
+{% load wishlist_extras %}
+
 <div class="adopter-messages">
   <p class="greeting"><b>Hello, {{request.user.adopter.f_name}}!</b></p><br>
 
@@ -47,9 +49,37 @@
 
     <table id="calendar-messages">
       <tr>
-        {% if request.user.adopter.has_current_appt %}
+        {% if request.user.adopter.has_current_appt or request.user.adopter.wishlist.count > 0 %}
         <td class="no-border half-width">
-          {% include 'appt_calendar/appointment_adopter_cal_msg.html' %}
+          {% if request.user.adopter.has_current_appt %}
+            {% include 'appt_calendar/appointment_adopter_cal_msg.html' %}
+          {% endif %}
+          <div class="info-box short-notice">
+            <table class="appt-info-block" id="appt-header-block">
+              <tr>
+                <td class="appt-description left upper">
+                  <b><a class="appt_action" href="{% url 'display_list' %}">MY WATCH LIST</a>
+                </td>
+                <td class="appt-description right">
+                  <a href="{% url 'display_list' %}">&#9998;&#xFE0E;</a>
+                </td>
+              </tr>
+            </table>
+            <table class="appt-info-block no-border">
+              <tr>
+                <td colspan="2" class="info-box-data left no-border">
+                  <ul>
+                    {% for dog in request.user.adopter.wishlist.iterator %}
+                    <li>
+                      <span class="{{dog|wishlist_class:date}}">{{dog.name}}{{dog|wishlist_str:date}}</span>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                  <span class="subscript"><em>*Available on a first-come-first-serve basis. Marking them on your watch list does not equate to any sort of "hold" prior to an appointment.</em></span>
+                </td>
+              </tr>
+            </table>
+          </div>
         </td>
         {% endif %}
         <td class="left no-border half-width">

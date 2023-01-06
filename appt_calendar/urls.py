@@ -6,8 +6,8 @@ urlpatterns = [
     #calendar view pages
     path("", views.calendar, name="calendar"),
     path("<int:date_year>/<int:date_month>/<int:date_day>/", views.calendar_date, name="calendar_date"),
-    path("<int:date_year>/<int:date_month>/<int:date_day>/appt/<int:appt_id>", views.calendar_date, name="calendar_date"),
-    path("<int:date_year>/<int:date_month>/<int:date_day>/ts/<int:ts_id>", views.calendar_date, name="calendar_date"),
+    path("<int:date_year>/<int:date_month>/<int:date_day>/appt/<int:appt_id>", views.calendar_date_appt, name="calendar_date_appt"),
+    path("<int:date_year>/<int:date_month>/<int:date_day>/ts/<int:ts_id>", views.calendar_date_ts, name="calendar_date_ts"),
     path("<int:date_year>/<int:date_month>/<int:date_day>/copy/", views.copy_temp_to_cal, name="copy_temp_to_cal"),
     path("<int:date_year>/<int:date_month>/<int:date_day>/print/", views.calendar_print, name="calendar_print"),
     path('schedule_next/adopter/<int:adopter_id>/appt/<int:appt_id>/jump_to_date/<str:source>/', views.jump_to_date_greeter, name="jump_to_date_greeter"),
@@ -53,6 +53,7 @@ urlpatterns = [
     path("chosen_board/clear/<int:appt_id>/", views.remove_from_chosen_board, name="clear_from_cb"),
     path("chosen_board/complete/<int:appt_id>/", views.mark_complete_on_chosen_board, name="mark_complete_cb"),
     path("chosen_board/update/<int:appt_id>/<str:outcome>/", views.cb_update_status, name="cb_update_status"),
+    path("chosen_board/no_longer_ready/<int:appt_id>/", views.revert_to_needs_well_check, name="revert_to_needs_well_check"),
 
     #adopter access pages
     path("request_access/adopter/<int:adopter_id>/", views.request_access, name="request_access"),

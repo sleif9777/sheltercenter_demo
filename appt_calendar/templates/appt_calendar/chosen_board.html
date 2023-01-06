@@ -118,6 +118,7 @@
               {% else %}
               <a href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a><br>
               {% endif %}
+              <a href="{% url 'revert_to_needs_well_check' appt.id %}">Put Back as Chosen</a><br>
               <a href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
             {% endif %}
           </td>

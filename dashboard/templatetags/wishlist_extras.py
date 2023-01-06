@@ -29,6 +29,7 @@ def wishlist_str(dog, date):
 
     if dog.shelterluv_status != "Available for Adoption":
         string += " - no longer available"
+        return string
     
     if dog.offsite:
         if dog.appt_only:

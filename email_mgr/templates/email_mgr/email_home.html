@@ -12,8 +12,8 @@
     <a href="{% url 'edit_sig' %}">Edit Signature</a>
   </div>
   <ul class="list-page">
-    {% for e_temp in e_templates %}
-      <li><a href="{% url 'edit_email_template' e_temp.id %}">{{e_temp.template_name}}</a> - <em>{{e_temp.description}}</em></li>
+    {% for template in templates %}
+      <li><a href="{% url 'edit_email_template' template.id %}">{{template.template_name}}</a> - <em>{{template.description}}</em></li>
     {% endfor %}
   </ul>
 </div>

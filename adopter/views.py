@@ -1,3 +1,4 @@
+import copy
 import csv
 import datetime
 import os
@@ -135,6 +136,23 @@ def eval_app_interest(response):
     return True if unique and short else False
 
 
+@authenticated_user
+@allowed_users(allowed_roles={'superuser'})
+def login(request):
+    adopters = Adopter.objects.all()
+
+    context = {
+        'adopters': adopters,
+        'page_title': "Log In",
+    }
+
+    return render(request, "adopter/login.html", context)
+
+
+def home_page(request):
+    return redirect('login')
+
+
 #can be refactored for genericity
 def create_invite_email(adopter, inactive=False):
     message = PendingMessage()
@@ -216,7 +234,6 @@ def remove_spaces_and_lower(f_name, l_name):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def too_many_rows(request):
-    print("swing")
     return render(request, "adopter/too_many_rows.html")
 
 
@@ -362,8 +379,6 @@ def handle_redirect_from_add_form(adopter, shellappt):
         redirect_to_contact(shellappt, 'add_form_friend_of_foster')
     elif adopter.adopting_host:
         redirect_to_contact(shellappt, 'add_form_adopting_host')
-    elif adopter.out_of_state:
-        invite_oos_etemp(adopter)
     elif adopter.carryover_shelterluv:
         carryover_temp(adopter)
     else:
@@ -479,22 +494,19 @@ def set_alert_mgr(request, adopter_id):
     return render(request, "adopter/set_alert_date.html", context)
 
 
-def handle_valid_edit_adopter_form(form, adopter):
-    adopter_curr_status = adopter.status[:]
-    adopter_original_email = adopter.primary_email[:]
-
+def handle_valid_edit_adopter_form(form, adopter, og_status, og_email):
     form.save()
     
-    email_changed = adopter.primary_email != adopter_original_email
-    status_changed = adopter.status != adopter_curr_status
+    email_changed = adopter.primary_email != og_email
+    status_changed = adopter.status != og_status
     status_approved = accepted_status(adopter)
     changed_to_approved = status_changed and status_approved
 
     if changed_to_approved:
-        invite_oos_etemp(adopter) if adopter.out_of_state else invite(adopter)
+        invite(adopter)
 
     if email_changed:
-        adopter.user.username = adopter.primary_email
+        adopter.user.username = str(adopter.primary_email)
         adopter.user.save()
 
 
@@ -515,13 +527,15 @@ def get_current_appt_info(adopter):
 @allowed_users(allowed_roles={'admin'})
 def edit_adopter(request, adopter_id, alert=False):
     adopter = Adopter.objects.get(pk=adopter_id)
+    status = copy.deepcopy(adopter.status)
+    email = copy.deepcopy(adopter.primary_email)
     source = 'mgmt_{0}'.format(str(adopter.id))
 
     form = AdopterForm(request.POST or None, instance=adopter)
     current_appt, current_appt_str, date = get_current_appt_info(adopter)
 
     if form.is_valid():
-        handle_valid_edit_adopter_form(form, adopter,)
+        handle_valid_edit_adopter_form(form, adopter, status, email)
         return redirect('adopter_manage')
     else:
         form = AdopterForm(request.POST or None, instance=adopter)
@@ -609,7 +623,7 @@ def contact(request, appt_id=None, dog_name=None):
     if form.is_valid():
         adopter = request.user.adopter
         message = form.cleaned_data['message']
-        new_contact_us_msg(adopter, message, appt_id, dog_name)
+        new_contact_us_msg(adopter, message, appt_id)
         return redirect('adopter_home')
 
     context = {
@@ -632,6 +646,9 @@ def get_template_from_source(source, adopter, appt, signature):
         case 'nasal_discharge':
             template = EmailTemplate.objects.get(
                 template_name="Update for Adopter: Nasal Discharge")
+        case 'no_longer_ready':
+            template = EmailTemplate.objects.get(
+                template_name="Update for Adopter: No Longer Ready")            
         case "ready_positive":
             template = EmailTemplate.objects.get(
                 template_name="Ready to Roll (Heartworm Positive)")
@@ -723,6 +740,7 @@ def get_redirect(source):
     chosen_board_source = source in [
         "cough",
         "nasal_discharge",
+        'no_longer_ready',
         "ready_positive", 
         "ready_negative", 
         "update"
