@@ -27,9 +27,23 @@ class Dog(models.Model):
         except:
             return ""
 
+
+# class Litter(models.Model):
+#     name = models.CharField(default="")
+#     any_available = models.BooleanField(default=False)
+
+# TO DO:
+# add dogs as many to many
+# method for check if any available any([dog.available() for dog in self.dogs.iterator()])
+# get or create when pulling in dogs using dog.litter_id
+# functionality - show a manage litters page tracking litter adoptions and allowing batch email sendouts
+# add same batch email to manage dogs
+    
+
+
 # USE THIS INSTEAD
 class DogProfile(models.Model):
-    name = models.CharField(default = "", max_length = 200)
+    name = models.CharField(default="", max_length=200)
     shelterluv_id = models.CharField(default = "", max_length = 200)
     shelterluv_status = models.CharField(default = "Available for Adoption", max_length = 200)
     info = models.JSONField()
@@ -37,6 +51,8 @@ class DogProfile(models.Model):
     appt_only = models.BooleanField(default=False)
     host_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
     foster_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
+    litter_id = models.CharField(default=None, max_length=20, null=True)
+    update_dt = models.DateTimeField(default=datetime.datetime(2000,1,1,0,0), blank=True)
 
     def __repr__(self):
         return self.info['Name']
@@ -54,6 +70,9 @@ class DogProfile(models.Model):
             return "{0} lbs., ".format(weight)
         except:
             return ""
+
+    def available(self):
+        return self.shelterluv_status == "Available for Adoption"
 
     def host_date_str(self):
         if self.host_date.year != 2000:

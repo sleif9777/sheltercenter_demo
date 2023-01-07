@@ -71,7 +71,7 @@
                   <ul>
                     {% for dog in request.user.adopter.wishlist.iterator %}
                     <li>
-                      <span class="{{dog|wishlist_class:date}}">{{dog.name}}{{dog|wishlist_str:date}}</span>
+                      <span class="{{dog|wishlist_class:'string'}}">{{dog.name}}{{dog|wishlist_str:date}}</span>
                     </li>
                     {% endfor %}
                   </ul>

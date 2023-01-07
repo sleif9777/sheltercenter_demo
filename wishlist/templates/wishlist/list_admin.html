@@ -21,6 +21,21 @@
       <div class="center">
         <input type="submit" class="medium-button side-margin-5" onClick="this.form.submit(); this.disabled=true;" name="" value="Save">
       </div>
+      <h2>Recently Adopted</h2>
+      <ul class="dog-list">
+        {% for dog in recently_adopted_dogs %}
+          <li class="appt-slot">{% include 'wishlist/dog_card.html' %}</li>
+        {% endfor %}
+      </ul>
+      <hr>
+      <h2>Recently Posted</h2>
+      <ul class="dog-list">
+        {% for dog in recently_posted_dogs %}
+          <li class="appt-slot">{% include 'wishlist/dog_card.html' %}</li>
+        {% endfor %}
+      </ul>
+      <hr>
+      <h2>All Available Dogs</h2>
       <ul class="dog-list">
         {% for dog in all_available_dogs %}
           <li class="appt-slot">{% include 'wishlist/dog_card.html' %}</li>

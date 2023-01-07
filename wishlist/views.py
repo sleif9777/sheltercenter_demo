@@ -1,3 +1,4 @@
+import datetime
 import operator
 import os
 import requests
@@ -8,6 +9,8 @@ from django.shortcuts import render
 from .models import *
 from dashboard.decorators import *
 
+today = datetime.datetime.today()
+yesterday = datetime.datetime(2023, 1, 5)
 
 def get_groups(user):
     try:
@@ -34,6 +37,13 @@ def get_all_available_dogs_from_shelterluv():
     return dogs
 
 
+def remove_dog_from_wishlist(request, dog_id):
+    dog = DogProfile.objects.get(pk=dog_id)
+    wishlist = request.user.adopter.wishlist
+    wishlist.remove(dog)
+    return redirect('display_list_adopter')
+
+
 def update_from_shelterluv():
     original_available_dogs = set(get_all_available_dogs())
     current_available_dogs = set()
@@ -45,7 +55,11 @@ def update_from_shelterluv():
             defaults={
                 'name': dog_json['Name'],
                 'info': dog_json,
-                'shelterluv_status': dog_json['Status']
+                'litter_id': dog_json['LitterGroupId'],
+                'shelterluv_status': dog_json['Status'],
+                'update_dt': datetime.datetime.fromtimestamp(
+                    int(dog_json['LastUpdatedUnixTime'])
+                )
             }
         )
 
@@ -55,32 +69,69 @@ def update_from_shelterluv():
     adopted_dogs = original_available_dogs - current_available_dogs
     
     for dog in adopted_dogs:
+        dog_info = get_dog_info(dog.shelterluv_id)
+
         DogProfile.objects.update_or_create(
             pk=dog.id,
             defaults={
                 "appt_only": False,
                 "foster_date": datetime.date(2000,1,1),
                 "host_date": datetime.date(2000,1,1),
+                "info": dog_info,
+                'litter_id': dog_info['LitterGroupId'],
                 "offsite": False,
-                "shelterluv_status": "No Longer Available"
+                "shelterluv_status": dog_info['Status'],
+                'update_dt': datetime.datetime.fromtimestamp(
+                    int(dog_info['LastUpdatedUnixTime'])
+                )
             }
         )
 
 
-def update_nla_dogs():
-    dogs = DogProfile.objects.filter(shelterluv_status="No Longer Available")
+def update_all_dogs():
+    dogs = DogProfile.objects.all()
 
     for dog in dogs:
+        dog_info = get_dog_info(dog.shelterluv_id)
         DogProfile.objects.update_or_create(
             pk=dog.id,
             defaults={
                 "appt_only": False,
                 "foster_date": datetime.date(2000,1,1),
                 "host_date": datetime.date(2000,1,1),
+                "info": dog_info,
+                'litter_id': dog_info['LitterGroupId'],
                 "offsite": False,
-                "shelterluv_status": "No Longer Available"
+                "shelterluv_status": dog_info['Status'],
+                'update_dt': datetime.datetime.fromtimestamp(
+                    int(dog_info['LastUpdatedUnixTime'])
+                )
             }
-        )        
+        ) 
+
+
+def filter_dogs_adopted_today():
+    global today, yesterday
+    all_dogs = DogProfile.objects.filter(update_dt__date=yesterday)
+    adopted_dogs = []
+    posted_dogs = []
+
+    for dog in all_dogs:
+        if dog.shelterluv_status == "Available for Adoption":
+            posted_dogs += [dog]
+        else:
+            adopted_dogs += [dog]
+
+    return adopted_dogs, posted_dogs
+
+
+def get_dog_info(shelterluv_id):
+    headers = {'X-Api-Key': os.environ.get('SHELTERLUV_API_KEY')}
+    
+    request_address = 'https://www.shelterluv.com/api/v1/animals/{0}'.format(shelterluv_id)
+    dogs_request = requests.get(request_address, headers=headers).json()
+
+    return dogs_request     
 
 
 def get_and_update_dogs():
@@ -88,8 +139,21 @@ def get_and_update_dogs():
     remove_expired_dates()
 
 
-def get_all_available_dogs():
-    all_available_dogs = [dog for dog in DogProfile.objects.filter(shelterluv_status='Available for Adoption')]
+def get_all_available_dogs(filter_today=False):
+    global today, yesterday
+    update_all_dogs()
+
+    if filter_today:
+        all_available_dogs_query = DogProfile.objects.filter(
+            shelterluv_status='Available for Adoption'
+        ).exclude(
+            update_dt__date=yesterday
+        )
+    else:
+        all_available_dogs_query = DogProfile.objects.filter(
+            shelterluv_status='Available for Adoption')
+
+    all_available_dogs = [dog for dog in all_available_dogs_query]
     all_available_dogs = sorted(all_available_dogs, key=operator.attrgetter('name'))
 
     return all_available_dogs
@@ -121,10 +185,18 @@ def get_date_from_form_data(data):
     return year, month, day
 
 
+def print_bonkers():
+    dog = DogProfile.objects.filter(name="Bonkers")
+    for d in dog:
+        print(get_dog_info(d.shelterluv_id))
+        print(d.shelterluv_status, d.update_dt)
+
+
 @authenticated_user
 @allowed_users(allowed_roles={'superuser', 'admin', 'adopter'})
 def display_list(request):
     user_groups = get_groups(request.user)
+    get_and_update_dogs()
 
     if 'adopter' in user_groups:
         return redirect('display_list_adopter')
@@ -140,12 +212,6 @@ def display_list_adopter(request):
     if request.method == "POST":
         form_data = dict(request.POST)
         del form_data['csrfmiddlewaretoken']
-
-        ids_in_wishlist = [dog.shelterluv_id for dog in user_wishlist.iterator()]
-
-        for id in ids_in_wishlist:
-            if id not in form_data:
-                user_wishlist.remove(DogProfile.objects.get(shelterluv_id=id))
 
         for id in form_data:
             user_wishlist.add(DogProfile.objects.get(shelterluv_id=id))
@@ -181,14 +247,14 @@ def update_dog_from_form_data(id, form_data):
 @authenticated_user
 @allowed_users(allowed_roles={'superuser', 'admin'})
 def display_list_admin(request):
-    get_and_update_dogs()
-    all_available_dogs = get_all_available_dogs()
+    all_available_dogs = get_all_available_dogs(filter_today=True)
+    recently_adopted_dogs, recently_posted_dogs = filter_dogs_adopted_today()
 
     if request.method == "POST":
         form_data = dict(request.POST)
         del form_data['csrfmiddlewaretoken']
 
-        form_data = dict([(k, v) for k, v in form_data.items() if v[0] is not ""])
+        form_data = dict([(k, v) for k, v in form_data.items() if v[0] != ""])
 
         for dog in DogProfile.objects.filter(appt_only=True):
             if dog.shelterluv_id not in form_data.keys():
@@ -202,6 +268,8 @@ def display_list_admin(request):
 
     context = {
         'all_available_dogs': all_available_dogs,
+        'recently_adopted_dogs': recently_adopted_dogs,
+        'recently_posted_dogs': recently_posted_dogs,
     }
 
     return render(request, "wishlist/list_admin.html", context)

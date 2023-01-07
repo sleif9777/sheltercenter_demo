@@ -191,7 +191,8 @@ Appointment box styling
 
 .appt-subblock a,
 .appt-subblock a:hover,
-#appt-header-block a {
+#appt-header-block a,
+.dog-info-block a {
   color: #1E6C80;
 }
 
@@ -544,6 +545,10 @@ th {
   width: 100%;
 }
 
+.greyscale {
+  filter: grayscale(1);
+}
+
 .half-width {
   width: 50%;
 }
@@ -642,8 +647,6 @@ th {
 }
 
 /* Conditional page formatting (needs to be built on) */
-
-
 
 @media only screen and (max-width: 1200px) {
   #narrow-screen-nav {

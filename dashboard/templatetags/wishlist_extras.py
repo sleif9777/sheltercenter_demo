@@ -16,10 +16,14 @@ def calc_popularity(dog):
 
 
 @register.filter(name='wishlist_class')
-def wishlist_class(dog, date):
+def wishlist_class(dog, element_type):
     # Dogs no longer available
     if dog.shelterluv_status != "Available for Adoption":
-        return "strikethrough-italic"
+        match element_type:
+            case "string":
+                return "strikethrough-italic"
+            case "image":
+                return "greyscale"
 
 
 @register.filter(name='wishlist_str')
