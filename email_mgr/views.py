@@ -84,7 +84,7 @@ def send_outbox(request):
         for pm in pending_messages:
             receiver_email = pm.email
             message = prepare_pending_message(
-                pm, receiver_email, server, sender_email)
+                pm, receiver_email, sender_email)
             server.sendmail(sender_email, receiver_email, message.as_string())
             pm.delete()
 

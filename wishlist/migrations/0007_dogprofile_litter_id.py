@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='dogprofile',
             name='litter_id',
-            field=models.CharField(default=None, max_length=20, null=True),
+            field=models.CharField(default=None, max_length=20, null=True, blank=True),
         ),
     ]

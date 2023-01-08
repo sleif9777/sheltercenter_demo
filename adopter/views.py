@@ -15,9 +15,9 @@ from .forms import *
 from .models import Adopter
 from appt_calendar.models import Appointment
 from dashboard.decorators import *
-from email_mgr.models import *
 from email_mgr.dictionary import *
 from email_mgr.email_sender import *
+from email_mgr.models import *
 from schedule_template.models import *
 from visit_and_faq.models import *
 
@@ -153,7 +153,6 @@ def home_page(request):
     return redirect('login')
 
 
-#can be refactored for genericity
 def create_invite_email(adopter, inactive=False):
     message = PendingMessage()
     message.email = adopter.primary_email

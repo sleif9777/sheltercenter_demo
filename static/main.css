@@ -151,7 +151,8 @@ Appointment box styling
 ============================== */
 
 .appointment,
-.dog-card {
+.dog-card,
+.litter-card {
   background-color: #e8e8e8;
   border: 2px solid #cccccc;
   color: #1E6C80;
@@ -169,12 +170,14 @@ Appointment box styling
 }
 
 .appt-description,
-.dog-description {
+.dog-description,
+.litter-description {
   font-size: 18pt;
 }
 
 .appt-info-block,
-.dog-info-block {
+.dog-info-block,
+.litter-info-block {
   border-bottom: 1px solid #1E6C80;
   margin-bottom: 0;
   width: 100%;
@@ -192,7 +195,8 @@ Appointment box styling
 .appt-subblock a,
 .appt-subblock a:hover,
 #appt-header-block a,
-.dog-info-block a {
+.dog-info-block a,
+.litter-info-block a {
   color: #1E6C80;
 }
 
@@ -725,7 +729,8 @@ th {
   }
 
   ul.appt_solo,
-  ul.appt-solo {
+  ul.appt-solo,
+  ul.litter-list {
     column-count: 1;
     list-style-type: none;
     padding: 0;
@@ -788,7 +793,8 @@ th {
   }
 
   ul.appt_solo,
-  ul.appt-solo {
+  ul.appt-solo,
+  ul.litter-list {
     column-count: 1;
     list-style-type: none;
     margin: auto;

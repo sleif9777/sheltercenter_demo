@@ -1,0 +1,29 @@
+{% load auth_extras %}
+{% load wishlist_extras %}
+
+<div class="litter-card" id={{dog.shelterluv_id}}>
+  <table class="auto-margin full-width">
+    <tr class="litter-info-block no-border">
+      <td class="center no-border" style="width: 20%;">
+        <div class="btm-margin-5">
+          {% if litter.name != "" %}
+          <span class="bold litter-description left upper">
+            {{litter.name}}
+          </span>
+          <br>
+          {% endif %}
+          <label for="{{litter.id}}-name">Edit Litter Name: </label>
+          <input type="text" name="{{litter.id}}-name" id="">
+          <br>
+          <b>Email All Interested:</b> <a href="{% url 'create_watchlist_email_batch_litter' 'popular' litter.id %}">Popular</a> &#x2022; <a href="{% url 'create_watchlist_email_batch_litter' 'adopted' litter.id %}">All Adopted</a> <br>
+        </div>
+        {% for dog in litter.dogs.iterator %}
+        <div style="display: inline-block;">
+          <img class="{{dog|wishlist_class:'image'}}" src="{{dog.info.CoverPhoto}}" height="150px" alt="{{dog.name}}"><br>
+          <span>{{dog.name}}</span>
+        </div>
+        {% endfor %}
+      </td>
+    </tr>
+  </table>
+</div>

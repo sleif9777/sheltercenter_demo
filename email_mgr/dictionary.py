@@ -18,8 +18,10 @@ def get_adopter_replacements(adopter, appt):
             '*ADP_DOG*': adopter.chosen_dog,
             '*ADP_FNAME*': adopter.f_name,
             '*ADP_LIVES_W_PARENTS*': lwp_text if adopter.lives_with_parents else "",
-            '*ADP_WATCHLIST*': get_watchlist_replacements(adopter, appt.date)
         }
+        if appt:
+            adopter_replacements['*ADP_WATCHLIST*'] = get_watchlist_replacements(
+                adopter, appt.date)
     except Exception as e:
         print(e)
         pass
@@ -28,6 +30,8 @@ def get_adopter_replacements(adopter, appt):
 
 
 def get_appt_replacements(appt):
+    appt_replacements = {}
+
     if appt:
         appt_replacements = {
             '*APT_DATE*': date_str(appt.date),
@@ -57,9 +61,38 @@ def get_next_bd_replacements():
     return next_bd_replacements
 
 
+def get_litter_string(litter):
+    dogs_in_litter = [dog.name for dog in litter.dogs.iterator()]
+    dogs_in_litter_str = ", ".join(dogs_in_litter)
+
+    if len(litter.name) > 0:
+        return "our {0} litter ({1})".format(
+            litter.name, dogs_in_litter_str
+        )
+    else:
+        return "one of our litters ({0})".format(
+            dogs_in_litter_str
+        )
+
+
+def get_litter_or_dog_replacements(litter, dog):
+    if litter:
+        return {
+            "*DOGNAME*": get_litter_string(litter),
+            "*DOGNAME2*": "This litter"
+        }
+    elif dog:
+        return {
+            "*DOGNAME*": dog.name,
+            "*DOGNAME2*": dog.name
+        }
+    else:
+        return {}
+
+
 def get_signature():
     base_user = User.objects.get(username='base')
-    return base_user.profile.signature  
+    return base_user.profile.signature
 
 
 def get_watchlist_replacements(adopter, date):
@@ -105,12 +138,13 @@ def get_watchlist_replacements(adopter, date):
     return statuses
 
 
-def replacer(html, adopter, appt):
+def replacer(html, adopter, appt, litter=None, dog=None):
     global today
 
     adopter_replacements = get_adopter_replacements(adopter, appt)
     appt_replacements = get_appt_replacements(appt)
     next_bd_replacements = get_next_bd_replacements()
+    litter_or_dog_replacements = get_litter_or_dog_replacements(litter, dog)
 
     global_replacements = {
         '*HOST_URL*': '<a href="https://savinggracenc.org/host-a-dog/">If you would like to learn more about our Weekend Host program, please visit our website.</a>',
@@ -121,6 +155,7 @@ def replacer(html, adopter, appt):
         'adopter': adopter_replacements,
         'appt': appt_replacements,
         'global': global_replacements,
+        'litter_or_dog': litter_or_dog_replacements,
         'next_bd': next_bd_replacements
     }
 

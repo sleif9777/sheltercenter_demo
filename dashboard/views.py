@@ -340,12 +340,12 @@ def gen_cal_get_dates_and_delta_dict(date):
 
 def gen_cal_get_offsite_dog_dict():
     # get info on dogs that have offsite circumstances
-    host_or_foster_dogs = DogProfile.objects.filter(
+    host_or_foster_dogs = DogObject.objects.filter(
         appt_only=False,
         offsite=True,
         shelterluv_status="Available for Adoption").order_by('name')
     
-    offsite_dogs = DogProfile.objects.filter(
+    offsite_dogs = DogObject.objects.filter(
         offsite=True, 
         shelterluv_status="Available for Adoption").order_by('name')
 

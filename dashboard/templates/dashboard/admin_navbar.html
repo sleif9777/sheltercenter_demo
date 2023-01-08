@@ -16,6 +16,7 @@
 <li><a href="https://docs.google.com/document/d/1D_-MGNVgaxyzmcqeO1DeWDYwPAlEVJH82kzS_djcO0E/edit?usp=sharing" target="blank">Help</a></li>
 {% if request.user|has_group:"superuser" %}
   <li><a href="{% url 'display_list' %}">Manage Dogs</a></li>
+  <li><a href="{% url 'litter_mgmt' %}">Manage Litters</a></li>
   <li><a href="{% url 'admin:index' %}">Django Admin</a></li>
   <!-- <li><a href="{% url 'fake500' %}">Prompt 500</a></li> -->
 {% endif %}

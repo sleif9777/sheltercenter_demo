@@ -1,7 +1,7 @@
 {% load auth_extras %}
 {% load wishlist_extras %}
 
-<div class="appointment" id={{dog.shelterluv_id}}>
+<div class="dog-card" id={{dog.shelterluv_id}}>
   <table class="auto-margin full-width">
     <tr class="dog-info-block no-border">
       <td class="no-border" style="width: 20%;">
@@ -26,7 +26,6 @@
           <tr class="dog-info-block no-border">
             <td>
               {% if request.user|has_group:"adopter" and dog|on_wishlist:user_wishlist %}
-                <!-- <input type="checkbox" name="{{dog.shelterluv_id}}" value="{{dog.shelterluv_id}}" checked> -->
                 <a href="{% url 'remove_dog_from_wishlist' dog.id %}">Remove from Watch List</a>
               {% elif request.user|has_group:"adopter" and not dog|on_wishlist:user_wishlist %}
                 <input type="checkbox" name="{{dog.shelterluv_id}}" value="{{dog.shelterluv_id}}">
@@ -39,7 +38,8 @@
                 <label for="{{dog.shelterluv_id}}-fstr">Foster Return</label><br>
                 <input type="date" name="{{dog.shelterluv_id}}-fstr" id="foster-{{dog.shelterluv_id}}" value="{{dog.foster_date_str}}"><br>
               {% endif %}
-              <a href="">Send Dog Was Adopted Emails</a>
+              <a href="{% url 'create_watchlist_email_batch_dog' 'adopted' dog.id %}">Send Dog Was Adopted Emails</a><br>
+              <a href="{% url 'create_watchlist_email_batch_dog' 'popular' dog.id %}">Send Dog Is Popular Emails</a>
               {% if request.user|has_group:"superuser" %}
               <br>
               <a href="https://sheltercenter.dog/admin/wishlist/dogprofile/{{dog.id}}/change/">Edit Dog in Admin</a>
