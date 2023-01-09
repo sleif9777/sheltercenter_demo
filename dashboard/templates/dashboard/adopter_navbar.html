@@ -1,6 +1,6 @@
 {% if user.adopter.acknowledged_faq %}
 <li><a href="{% url 'calendar' %}">Calendar</a></li>
-<li><a href="{% url 'display_list' %}">Watch List</a></li>
+<!-- <li><a href="{% url 'display_list' %}">Watch List</a></li> -->
 <li><a href="{% url 'faq' %}">FAQ</a></li>
   {% if user.adopter.has_current_appt %}
   <li><a href="{% url 'visitor_instructions' %}">Visit Instructions</a></li>

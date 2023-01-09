@@ -14,12 +14,14 @@ from email_mgr.dictionary import *
 from email_mgr.email_sender import *
 from email_mgr.models import *
 
+api_root = "https://www.shelterluv.com/api/v1/"
 today = datetime.datetime.today()
 yesterday = datetime.datetime(2023, 1, 5)
 
 # TO DO
 # decorators for authentication
 # cleanup formatting
+# break into more functions
 
 def get_groups(user):
     try:
@@ -31,13 +33,16 @@ def get_groups(user):
 
 
 def get_all_available_dogs_from_shelterluv():
+    global api_root
     dogs = []
     has_more = True
     headers = {'X-Api-Key': os.environ.get('SHELTERLUV_API_KEY')}
     offset = 0
     
     while has_more:
-        request_address = 'https://www.shelterluv.com/api/v1/animals?offset={0}&status_type=publishable'.format(offset)
+        request_address = """
+            {0}animals?offset={1}&status_type=publishable
+        """.format(api_root, offset)
         dogs_request = requests.get(request_address, headers=headers).json()
         dogs += dogs_request['animals']
         offset += 100
@@ -46,6 +51,8 @@ def get_all_available_dogs_from_shelterluv():
     return dogs
 
 
+@authenticated_user
+@allowed_users(allowed_roles={'adopter'})
 def remove_dog_from_wishlist(request, dog_id):
     dog = DogObject.objects.get(pk=dog_id)
     wishlist = request.user.adopter.wishlist
@@ -63,24 +70,13 @@ def update_from_shelterluv():
     dogs = get_all_available_dogs_from_shelterluv()
 
     for dog_json in dogs:
-        litter = get_litter(dog_json)
-        dog, created = DogObject.objects.update_or_create(
-            shelterluv_id=dog_json['Internal-ID'],
-            defaults={
-                'name': dog_json['Name'],
-                'info': dog_json,
-                'litter_group': litter,
-                'shelterluv_status': dog_json['Status'],
-                'update_dt': datetime.datetime.fromtimestamp(
-                    int(dog_json['LastUpdatedUnixTime'])
-                )
-            }
-        )
+        dog, created, litter = update_available_dog_from_json(dog_json)
 
         if not created:
             current_available_dogs.add(dog)
         elif len(litter) > 0:
-            litter_obj = LitterObject.objects.get_or_create(litter_id=litter)[0]
+            litter_obj = LitterObject.objects.get_or_create(
+                litter_id=litter)[0]
 
             if dog not in litter_obj.dogs.iterator():
                 litter_obj.dogs.add(dog)
@@ -88,23 +84,45 @@ def update_from_shelterluv():
     adopted_dogs = original_available_dogs - current_available_dogs
     
     for dog in adopted_dogs:
-        dog_info = get_dog_info(dog.shelterluv_id)
+        update_adopted_dog(dog)
 
-        DogObject.objects.update_or_create(
-            pk=dog.id,
-            defaults={
-                "appt_only": False,
-                "foster_date": datetime.date(2000,1,1),
-                "host_date": datetime.date(2000,1,1),
-                "info": dog_info,
-                'litter_group': "",
-                "offsite": False,
-                "shelterluv_status": dog_info['Status'],
-                'update_dt': datetime.datetime.fromtimestamp(
-                    int(dog_info['LastUpdatedUnixTime'])
-                )
-            }
-        )
+
+def update_available_dog_from_json(dog_json):
+    litter = get_litter(dog_json)
+    dog, created = DogObject.objects.update_or_create(
+        shelterluv_id=dog_json['Internal-ID'],
+        defaults={
+            'name': dog_json['Name'],
+            'info': dog_json,
+            'litter_group': litter,
+            'shelterluv_status': dog_json['Status'],
+            'update_dt': datetime.datetime.fromtimestamp(
+                int(dog_json['LastUpdatedUnixTime'])
+            )
+        }
+    )
+    
+    return dog, created, litter
+
+
+def update_adopted_dog(dog):
+    dog_info = get_dog_info(dog.shelterluv_id)
+
+    DogObject.objects.update_or_create(
+        pk=dog.id,
+        defaults={
+            "appt_only": False,
+            "foster_date": datetime.date(2000,1,1),
+            "host_date": datetime.date(2000,1,1),
+            "info": dog_info,
+            'litter_group': "",
+            "offsite": False,
+            "shelterluv_status": dog_info['Status'],
+            'update_dt': datetime.datetime.fromtimestamp(
+                int(dog_info['LastUpdatedUnixTime'])
+            )
+        }
+    )    
 
 
 def update_all_dogs():
@@ -130,7 +148,8 @@ def update_all_dogs():
         )
 
         if len(litter) > 0:
-            litter_obj = LitterObject.objects.get_or_create(litter_id=litter)[0]
+            litter_obj = LitterObject.objects.get_or_create(
+                litter_id=litter)[0]
 
             if dog_obj not in litter_obj.dogs.iterator():
                 litter_obj.dogs.add(dog)
@@ -152,13 +171,18 @@ def get_litters():
     recently_adopted_litters = LitterObject.objects.annotate(
             num_dogs=Count('dogs')
         ).filter(
-            any_available=False, num_dogs__gt=1, latest_update__in=[today, yesterday]
+            any_available=False, 
+            latest_update__in=[today, yesterday],
+            num_dogs__gt=1, 
         )
 
     return available_litters, recently_adopted_litters
 
 
-def create_watchlist_email_batch(request, message_type, litter_id=None, dog_id=None):
+@authenticated_user
+@allowed_users(allowed_roles={'superuser', 'admin'})
+def create_watchlist_email_batch(
+        request, message_type, litter_id=None, dog_id=None):
     if litter_id:
         litter = LitterObject.objects.get(pk=litter_id)
         dog_ids = [dog.id for dog in litter.dogs.iterator()]
@@ -208,6 +232,8 @@ def update_litter_name(litter_id, litter_name):
     litter.save()
 
 
+@authenticated_user
+@allowed_users(allowed_roles={'superuser', 'admin'})
 def litter_mgmt(request):
     global today, yesterday
     update_all_litters()
@@ -232,8 +258,9 @@ def litter_mgmt(request):
 
 
 def filter_dogs_adopted_today():
-    global today, yesterday
-    all_dogs = DogObject.objects.filter(update_dt__date__in=[today, yesterday])
+    global api_root, today, yesterday
+    all_dogs = DogObject.objects.filter(
+        update_dt__date__in=[today, yesterday])
     adopted_dogs = []
     posted_dogs = []
 
@@ -249,7 +276,7 @@ def filter_dogs_adopted_today():
 def get_dog_info(shelterluv_id):
     headers = {'X-Api-Key': os.environ.get('SHELTERLUV_API_KEY')}
     
-    request_address = 'https://www.shelterluv.com/api/v1/animals/{0}'.format(shelterluv_id)
+    request_address = '{0}animals/{1}'.format(api_root, shelterluv_id)
     dogs_request = requests.get(request_address, headers=headers).json()
 
     return dogs_request     
@@ -277,7 +304,8 @@ def get_all_available_dogs(filter_today=False):
             shelterluv_status='Available for Adoption')
 
     all_available_dogs = [dog for dog in all_available_dogs_query]
-    all_available_dogs = sorted(all_available_dogs, key=operator.attrgetter('name'))
+    all_available_dogs = sorted(
+        all_available_dogs, key=operator.attrgetter('name'))
 
     return all_available_dogs
 
@@ -285,7 +313,7 @@ def get_all_available_dogs(filter_today=False):
 def remove_expired_dates():
     today = datetime.datetime.today()
     default_date = datetime.date(2000, 1, 1)
-    shifted_date = datetime.date(2000, 1, 2) # to exclude true 1/1/2000 default
+    shifted_date = datetime.date(2000, 1, 2) # exclude true 1/1/2000 default
     
     for dog in DogObject.objects.filter(
             host_date__range=(shifted_date, today)):
@@ -334,7 +362,8 @@ def display_list_adopter(request):
 
     all_available_dogs = get_all_available_dogs()
     user_wishlist_arr = [dog for dog in user_wishlist.iterator()]
-    other_available_dogs = [dog for dog in all_available_dogs if dog not in user_wishlist_arr]
+    other_available_dogs = [dog for dog in all_available_dogs 
+        if dog not in user_wishlist_arr]
  
     context = {
         'other_available_dogs': other_available_dogs,

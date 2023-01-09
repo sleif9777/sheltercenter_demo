@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'tinymce',
     'dashboard.apps.DashboardConfig',
     'visit_and_faq.apps.VisitAndFaqConfig',
-    'wishlist.apps.WishlistConfig'
+    'wishlist.apps.WishlistConfig',
+    'corporate_volunteering.apps.CorporateVolunteeringConfig'
 
 ]
 

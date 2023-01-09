@@ -31,7 +31,7 @@ urlpatterns = [
     path('adopter/', include('adopter.urls')),
     path('emails/', include('email_mgr.urls')),
     path('visit_comms/', include('visit_and_faq.urls')),
-    path('wishlist/', include('wishlist.urls')),
+    path('watchlist/', include('wishlist.urls')),
     path('login/', views.login_page, name="login"),
     path('settings/', views.user_settings, name='user_settings'),
     path('logout/', views.logout_user, name="logout"),
