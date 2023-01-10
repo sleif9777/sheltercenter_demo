@@ -95,12 +95,21 @@ def create_adopter_from_row(row):
 
 
 def create_new_user_from_adopter(adopter):
-    #initiate user object
-    new_user = User.objects.create_user(
-        username=adopter.primary_email.lower(), 
-        email=adopter.primary_email, 
-        password=str(adopter.auth_code)
-    )
+    #search for coorporate volunteer and add first
+    try:
+        new_user = User.objects.get(
+            username=adopter.primary_email.lower(), 
+            email=adopter.primary_email,
+        )
+        if new_user.organization:
+            adopter.auth_code = new_user.organization.auth_code
+    #if new, create user
+    except:
+        new_user = User.objects.create_user(
+            username=adopter.primary_email.lower(), 
+            email=adopter.primary_email, 
+            password=str(adopter.auth_code)
+        )
 
     #assign to adopter and save
     adopter.user = new_user
@@ -177,7 +186,7 @@ def create_invite_email(adopter, inactive=False):
                 template_name="Application Accepted (inside NC, VA, SC)")
 
     html = replacer(template.text, adopter, None)
-    text = strip_tags(html, adopter, None)
+    text = strip_tags(html)
 
     message.html = html
     message.text = text
@@ -385,7 +394,7 @@ def handle_redirect_from_add_form(adopter, shellappt):
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin'})
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def add(request):
     global today
     form = AdopterForm(request.POST or None)
@@ -418,7 +427,6 @@ def add(request):
     context = {
         'form': form,
         'page_title': "Add Adopters",
-        'role': 'admin',
         'today': today,
     }
 
@@ -426,19 +434,18 @@ def add(request):
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin'})
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def manage(request):
     adopters = Adopter.objects.all()
     context = {
         'adopters': adopters,
         'page_title': "Manage Adopters",
-        'role': 'admin',
     }
     return render(request, "adopter/adoptermgmt.html", context)
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin'})
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def send_to_inactive(request):
     add_date = datetime.date.today() - datetime.timedelta(days = 5)
     adopters = Adopter.objects.filter(
@@ -454,7 +461,7 @@ def send_to_inactive(request):
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin'})
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def resend_invite(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)
     invite(adopter)
@@ -462,7 +469,7 @@ def resend_invite(request, adopter_id):
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin'})
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def resend_confirmation(request, appt_id):
     appt = Appointment.objects.get(pk=appt_id)
     date = appt.date
@@ -472,7 +479,7 @@ def resend_confirmation(request, appt_id):
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin'})
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def set_alert_mgr(request, adopter_id):
     adopter = Adopter.objects.get(pk=adopter_id)
     form = SetAlertDateForm(request.POST or None, instance=adopter)
@@ -523,7 +530,7 @@ def get_current_appt_info(adopter):
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin'})
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def edit_adopter(request, adopter_id, alert=False):
     adopter = Adopter.objects.get(pk=adopter_id)
     status = copy.deepcopy(adopter.status)
@@ -832,7 +839,7 @@ def get_appt_for_contact(appt_id):
             
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin'})
+@allowed_users(allowed_roles={'admin', 'superuser'})
 def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
     global today
     appt = get_appt_for_contact(appt_id)
@@ -889,7 +896,6 @@ def home(request):
         'first_name': adopter.f_name,
         'full_name': adopter.full_name(),
         'page_title': "Home",
-        'role': 'adopter',
     }
 
     if blocked:

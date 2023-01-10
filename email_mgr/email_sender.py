@@ -34,7 +34,7 @@ class MLStripper(HTMLParser):
         return self.text.getvalue()
 
 
-def strip_tags(html, adopter, appt):
+def strip_tags(html):
     s = MLStripper()
     s.feed(html)
     return s.get_data()
@@ -84,7 +84,7 @@ def scrub_and_send(subject, template, adopter, appt):
     email = adopter.primary_email
     html = replacer(template.text, adopter, appt)
     files = [template.file1, template.file2]
-    text = strip_tags(html, adopter, appt)
+    text = strip_tags(html)
 
     send_email(text, html, "default", subject, email, files)
 
@@ -322,9 +322,20 @@ def new_contact_adopter_msg(adopter, message, files, subject):
         subject = "New message from the Saving Grace adoptions team"
 
     email = adopter.primary_email
-    text = strip_tags(message, adopter, None)
+    text = strip_tags(message)
 
     send_email(text, message, "default", subject, email, files)
+
+
+def new_contact_org_msg(organization, message, files, subject):
+    if not subject:
+        subject = "New message from the Saving Grace volunteering team"
+
+    email = organization.contact_email
+    text = strip_tags(message)
+
+    send_email(text, message, "default", subject, email, files)
+
 
 def new_contact_us_msg(adopter, message, appt_id=None):
     full_name = adopter.full_name()

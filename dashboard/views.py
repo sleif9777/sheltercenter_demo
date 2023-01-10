@@ -42,6 +42,8 @@ def login_page(request):
 
             if 'adopter' in user_groups and not user.adopter.acknowledged_faq:
                 return redirect('adopter_home')
+            # elif corp volunteer redirect blah
+            # elif corp volunteer admin redirect bleh
             else:
                 return redirect('calendar')
 

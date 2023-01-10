@@ -151,7 +151,9 @@
               {% include 'dashboard/admin_navbar.html' %}
             {% elif request.user|has_group:"greeter" %}
               {% include 'dashboard/greeter_navbar.html' %}
-            {% elif request.user|has_group:"adopter" %}
+            {% elif request.user|has_group:"corp_volunteer_admin" %}
+              {% include 'dashboard/volunteer_admin_navbar.html' %}
+            {% elif request.user|has_group:"adopter" or request.user|has_group:"corp_volunteer" %}
               {% include 'dashboard/adopter_navbar.html' %}
             {% endif %}
             <li class="end"><a href="{% url 'logout' %}">Log Out</a></li>

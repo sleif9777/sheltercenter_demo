@@ -23,7 +23,7 @@ def get_adopter_replacements(adopter, appt):
             adopter_replacements['*ADP_WATCHLIST*'] = get_watchlist_replacements(
                 adopter, appt.date)
     except Exception as e:
-        print(e)
+        print('Error at get_adopter_replacements: ', e)
         pass
 
     return adopter_replacements
@@ -59,6 +59,18 @@ def get_next_bd_replacements():
     }
 
     return next_bd_replacements
+
+
+def get_org_replacements(org):
+    if org:
+        org_replacements = {
+            "*ORG_NAME*": org.org_name,
+            "*ORG_LEADER_FNAME*": org.leader_fname,
+        }
+    else:
+        org_replacements = {}
+
+    return org_replacements
 
 
 def get_litter_string(litter):
@@ -138,13 +150,14 @@ def get_watchlist_replacements(adopter, date):
     return statuses
 
 
-def replacer(html, adopter, appt, litter=None, dog=None):
+def replacer(html, adopter, appt, litter=None, dog=None, org=None):
     global today
 
     adopter_replacements = get_adopter_replacements(adopter, appt)
     appt_replacements = get_appt_replacements(appt)
     next_bd_replacements = get_next_bd_replacements()
     litter_or_dog_replacements = get_litter_or_dog_replacements(litter, dog)
+    org_replacements = get_org_replacements(org)
 
     global_replacements = {
         '*HOST_URL*': '<a href="https://savinggracenc.org/host-a-dog/">If you would like to learn more about our Weekend Host program, please visit our website.</a>',

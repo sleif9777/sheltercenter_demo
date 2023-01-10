@@ -218,7 +218,7 @@ def create_watchlist_email(adopter, message_type, litter=None, dog=None):
             return
 
     html = replacer(template.text, adopter, None, litter=litter, dog=dog)
-    text = strip_tags(html, adopter, None)
+    text = strip_tags(html)
 
     message.html = html
     message.text = text

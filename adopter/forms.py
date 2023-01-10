@@ -1,5 +1,3 @@
-import datetime
-
 from django import forms
 from tinymce.widgets import TinyMCE
 
@@ -14,8 +12,6 @@ class AdopterForm(forms.ModelForm):
             'primary_email',
             'auth_code',
             'status',
-            # 'adoption_complete',
-            # 'carryover_shelterluv',
             'out_of_state',
             'lives_with_parents',
             'adopting_host',
@@ -29,8 +25,6 @@ class AdopterForm(forms.ModelForm):
             'primary_email': 'Email:',
             'auth_code': "Authorization Code:",
             'status': 'Status:',
-            # 'adoption_complete': 'Adoption Completed?',
-            # 'carryover_shelterluv': 'Adopter was in Shelterluv before ShelterCenter went live',
             'out_of_state': 'Adopter from outside NC, SC, or VA',
             'lives_with_parents': 'Adopter lives with parents',
             'adopting_host': 'Adopting their host dog',

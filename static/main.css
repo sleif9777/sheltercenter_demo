@@ -392,15 +392,18 @@ input[type=submit].medium-button {
 List page styling
 ============================== */
 
-div.adopter-listing {
+div.adopter-listing,
+div.org-listing {
   break-inside: avoid-column;
 }
 
-.adopter-listing-entry {
+.adopter-listing-entry,
+.org-listing-entry {
   border-bottom: 1px solid #BF4580;
 }
 
-.adopter-name {
+.adopter-name,
+.org-name {
   font-size: 14pt;
 }
 

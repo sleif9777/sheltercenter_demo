@@ -11,7 +11,6 @@ from django.db.models import F
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import Group, User
 from django.shortcuts import get_object_or_404, redirect, render
-from reportlab.pdfgen import canvas
 
 from .appointment_manager import *
 from .date_time_strings import *

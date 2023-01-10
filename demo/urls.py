@@ -21,6 +21,7 @@ import adopter, visit_and_faq
 from . import settings
 from adopter import views
 from appt_calendar import views
+from corporate_volunteering import views
 from dashboard import views as views
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     path('calendar/', include('appt_calendar.urls')),
     path('adopter/', include('adopter.urls')),
     path('emails/', include('email_mgr.urls')),
+    path('corp_volunteering/', include('corporate_volunteering.urls')),
     path('visit_comms/', include('visit_and_faq.urls')),
     path('watchlist/', include('wishlist.urls')),
     path('login/', views.login_page, name="login"),

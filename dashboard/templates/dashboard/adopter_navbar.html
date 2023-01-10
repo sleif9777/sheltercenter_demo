@@ -1,11 +1,17 @@
-{% if user.adopter.acknowledged_faq %}
-<li><a href="{% url 'calendar' %}">Calendar</a></li>
-<!-- <li><a href="{% url 'display_list' %}">Watch List</a></li> -->
-<li><a href="{% url 'faq' %}">FAQ</a></li>
-  {% if user.adopter.has_current_appt %}
-  <li><a href="{% url 'visitor_instructions' %}">Visit Instructions</a></li>
+{% if request.user|has_group:"adopter" %}
+  {% if user.adopter.acknowledged_faq %}
+  <li><a href="{% url 'calendar' %}">Calendar</a></li>
+  <!-- <li><a href="{% url 'display_list' %}">Watch List</a></li> -->
+  <li><a href="{% url 'faq' %}">FAQ</a></li>
+    {% if user.adopter.has_current_appt %}
+    <li><a href="{% url 'visitor_instructions' %}">Visit Instructions</a></li>
+    {% endif %}
+  <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
+  {% else %}
+  <li><a href="{% url 'adopter_home' %}">Home</a></li>
   {% endif %}
-<li><a href="{% url 'contact_us' %}">Contact Us</a></li>
-{% else %}
-<li><a href="{% url 'adopter_home' %}">Home</a></li>
+{% endif %}
+{% if request.user|has_group:"corp_volunteer" %}
+  <li><a href="">Corp. Volunteering</a></li>
+  <!-- <li><a href="{% url 'fake500' %}">Prompt 500</a></li> -->
 {% endif %}

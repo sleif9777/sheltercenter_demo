@@ -37,9 +37,9 @@
                 <input type="date" name="{{dog.shelterluv_id}}-host" id="host-{{dog.shelterluv_id}}" value="{{dog.host_date_str}}"><br>
                 <label for="{{dog.shelterluv_id}}-fstr">Foster Return</label><br>
                 <input type="date" name="{{dog.shelterluv_id}}-fstr" id="foster-{{dog.shelterluv_id}}" value="{{dog.foster_date_str}}"><br>
+                <a href="{% url 'create_watchlist_email_batch_dog' 'adopted' dog.id %}">Send Dog Was Adopted Emails</a><br>
+                <a href="{% url 'create_watchlist_email_batch_dog' 'popular' dog.id %}">Send Dog Is Popular Emails</a>
               {% endif %}
-              <a href="{% url 'create_watchlist_email_batch_dog' 'adopted' dog.id %}">Send Dog Was Adopted Emails</a><br>
-              <a href="{% url 'create_watchlist_email_batch_dog' 'popular' dog.id %}">Send Dog Is Popular Emails</a>
               {% if request.user|has_group:"superuser" %}
               <br>
               <a href="https://sheltercenter.dog/admin/wishlist/dogprofile/{{dog.id}}/change/">Edit Dog in Admin</a>
