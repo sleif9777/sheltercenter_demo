@@ -150,7 +150,9 @@ Subsection toolbar styling (for timeslots, FAQs, visitor instructions, etc.)
 Appointment box styling
 ============================== */
 
-.appointment {
+.appointment,
+.dog-card,
+.litter-card {
   background-color: #e8e8e8;
   border: 2px solid #cccccc;
   color: #1E6C80;
@@ -167,11 +169,15 @@ Appointment box styling
   padding-left: 0;
 }
 
-.appt-description {
+.appt-description,
+.dog-description,
+.litter-description {
   font-size: 18pt;
 }
 
-.appt-info-block {
+.appt-info-block,
+.dog-info-block,
+.litter-info-block {
   border-bottom: 1px solid #1E6C80;
   margin-bottom: 0;
   width: 100%;
@@ -188,7 +194,9 @@ Appointment box styling
 
 .appt-subblock a,
 .appt-subblock a:hover,
-#appt-header-block a {
+#appt-header-block a,
+.dog-info-block a,
+.litter-info-block a {
   color: #1E6C80;
 }
 
@@ -375,19 +383,27 @@ input[type=submit].large-button {
   padding: 10px;
 }
 
+input[type=submit].medium-button {
+  font-size: 14pt;
+  padding: 10px;
+}
+
 /* ==============================
 List page styling
 ============================== */
 
-div.adopter-listing {
+div.adopter-listing,
+div.org-listing {
   break-inside: avoid-column;
 }
 
-.adopter-listing-entry {
+.adopter-listing-entry,
+.org-listing-entry {
   border-bottom: 1px solid #BF4580;
 }
 
-.adopter-name {
+.adopter-name,
+.org-name {
   font-size: 14pt;
 }
 
@@ -504,6 +520,10 @@ th {
   display: block;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .border-box {
   box-sizing: border-box;
 }
@@ -530,6 +550,10 @@ th {
 
 .full-width {
   width: 100%;
+}
+
+.greyscale {
+  filter: grayscale(1);
 }
 
 .half-width {
@@ -596,6 +620,11 @@ th {
   margin: 0 5px;
 }
 
+.strikethrough-italic {
+  font-style: italic;
+  text-decoration: line-through;
+}
+
 .subscript {
   font-size: 8pt;
 }
@@ -625,8 +654,6 @@ th {
 }
 
 /* Conditional page formatting (needs to be built on) */
-
-
 
 @media only screen and (max-width: 1200px) {
   #narrow-screen-nav {
@@ -676,7 +703,6 @@ th {
     margin-right: 10px;
   }
 
-  ul.appt_list,
   ul.appt-list {
     column-count: 2;
     list-style-type: none;
@@ -684,6 +710,16 @@ th {
   }
 
   ul.appt-list li {
+    width: 100%;
+  }
+
+  ul.dog-list {
+    column-count: 3;
+    list-style-type: none;
+    padding: 0;
+  }
+
+  ul.dog-list li {
     width: 100%;
   }
 
@@ -696,7 +732,8 @@ th {
   }
 
   ul.appt_solo,
-  ul.appt-solo {
+  ul.appt-solo,
+  ul.litter-list {
     column-count: 1;
     list-style-type: none;
     padding: 0;
@@ -759,7 +796,8 @@ th {
   }
 
   ul.appt_solo,
-  ul.appt-solo {
+  ul.appt-solo,
+  ul.litter-list {
     column-count: 1;
     list-style-type: none;
     margin: auto;
