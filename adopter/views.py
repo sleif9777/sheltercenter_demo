@@ -513,6 +513,11 @@ def handle_valid_edit_adopter_form(form, adopter, og_status, og_email):
 
     if email_changed:
         adopter.user.username = str(adopter.primary_email)
+
+        if adopter.user.organization:
+            adopter.user.organization.contact_email = adopter.primary_email
+            adopter.user.organization.save()
+
         adopter.user.save()
 
 

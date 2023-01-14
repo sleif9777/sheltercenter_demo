@@ -36,12 +36,15 @@
     {% for org in organizations %}
       <div class="org-listing">
         <li class="org-listing-entry">
-          <a href="{% url 'edit_adopter' adopter.id %}">
+          <a href="{% url 'edit_org' org.id %}">
             <span class="org-name">
-            {{org.name}}
+            {{org.org_name}}
             </span><br>
             <span class="org-leader subscript">{{org.leader_fname}} {{org.leader_lname}}</span><br>
             <span class="org-email subscript">{{org.contact_email}}</span>
+            <ul>
+              <li>Resend Schedule</li>
+            </ul>
           </a>
         </li>
       </div>

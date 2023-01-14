@@ -10,7 +10,6 @@ def has_group(user, group_name):
     group = Group.objects.get(name=group_name)
     if group in user.groups.all():
         return True
-
     return False
 
 

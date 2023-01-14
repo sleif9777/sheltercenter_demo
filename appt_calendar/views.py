@@ -672,6 +672,25 @@ def edit_calendar_announcement(request, date_year, date_month, date_day):
     return render(request, "appt_calendar/add_edit_appt.html", context)
 
 
+def handle_add_appointment_form_upon_save(appt, timeslot, date):
+    adopter = appt.adopter
+    timeslot.appointments.add(appt)
+
+    if not appt.schedulable():
+        appt.delist()
+
+    if appt.adopter:
+        appt.delist()
+
+        if short_notice(appt):
+            appt.mark_short_notice()
+            update_or_create_sn_obj(appt, adopter, appt, None, "1")
+            notify_adoptions_add(adopter, appt)
+
+        if appt.schedulable():
+            return redirect('contact_adopter', appt.id, date.year, date.month, date.day, 'confirm_appt')
+
+
 # NEEDS REFACTOR
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
@@ -689,23 +708,7 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
     if form.is_valid():
         form.save()
         appt = Appointment.objects.latest('id')
-        adopter = appt.adopter
-        timeslot.appointments.add(appt)
-
-        if not appt.schedulable():
-            appt.delist()
-
-        if appt.adopter:
-            appt.delist()
-
-            if short_notice(appt):
-                appt.mark_short_notice()
-                update_or_create_sn_obj(appt, adopter, appt, None, "1")
-                notify_adoptions_add(adopter, appt)
-
-            if appt.schedulable():
-                return redirect('contact_adopter', appt.id, date_year, date_month, date_day, 'confirm_appt')
-
+        handle_add_appointment_form_upon_save(appt, timeslot, date)
         return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
     else:
         form = AppointmentModelFormPrefilled(

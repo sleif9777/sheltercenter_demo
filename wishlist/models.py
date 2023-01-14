@@ -135,6 +135,7 @@ class LitterObject(models.Model):
     any_available = models.BooleanField(default=False)
     dogs = models.ManyToManyField(DogObject, blank=True)
     latest_update = models.DateField(default=datetime.date(2000,1,1), blank=True)
+    return_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
 
     def check_availability(self):
         self.any_available = any([dog.available() for dog in self.dogs.iterator()])
@@ -145,6 +146,12 @@ class LitterObject(models.Model):
         last_update_time = [dog.update_dt for dog in self.dogs.iterator()]
         self.latest_update = max(last_update_time)
         self.save()
+
+    def return_date_str(self):
+        if self.return_date.year != 2000:
+            return self.return_date.strftime("%Y-%m-%d")
+        else:
+            return
 
     def __repr__(self):
         return "{0} {1}".format(self.litter_id, self.name)

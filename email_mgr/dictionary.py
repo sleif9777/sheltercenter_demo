@@ -114,7 +114,7 @@ def get_watchlist_replacements(adopter, date):
         if they choose to do so.</sup></em><br>
     """
     first_come_first_serve_disclaimer = """
-        <em><sup>*Available on a first-come-first-serve basis. 
+        <em><sup>*Currently available on a first-come-first-serve basis. 
         Marking them on your watch list does not equate to any sort of 
         "hold" prior to an appointment.</sup></em><br>
     """
@@ -130,7 +130,9 @@ def get_watchlist_replacements(adopter, date):
             status = " - no longer available"
 
         if dog.offsite:
-            if dog.foster_date > date or dog.host_date > date:
+            if dog.appt_only:
+                status = " - by appointment only, must be arranged by the Adoptions team in advance"
+            elif dog.foster_date > date or dog.host_date > date:
                 potential_dates = [dog.foster_date, dog.host_date]
                 rtrn_date = [date for date in potential_dates if date.year > 2000]
                 status = " - in foster/extended host during your appointment on {0}, returning {1}**".format(

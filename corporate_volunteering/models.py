@@ -19,7 +19,13 @@ class Organization(models.Model):
     leader_fname = models.CharField(default="", max_length=20, blank=True)
     leader_lname = models.CharField(default="", max_length=20, blank=True)
     org_name = models.CharField(default="", max_length=100, blank=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+
+    def __repr__(self):
+        return self.org_name
+
+    def __str__(self):
+        return self.org_name
 
     def leader_name(self):
         return "{0} {1}".format(
@@ -32,7 +38,7 @@ class VolunteeringEvent(models.Model):
     donation_received = models.BooleanField(default=False)
     event_counselor = models.CharField(default="", max_length=30, blank=True)
     event_end_time = models.TimeField(default=datetime.time(9,0))
-    event_start_time = models.TimeField(default=datetime.time(12,0))
+    event_start_time = models.TimeField(default=datetime.time(9,0))
     event_task = models.CharField(default="", max_length=200, blank=True)
     organization = models.ForeignKey(
         Organization, 
@@ -64,10 +70,17 @@ class VolunteeringEvent(models.Model):
         end_time_str = time_str(self.event_end_time)
         return "({0} - {1})".format(start_time_str, end_time_str)
 
-    def delist(self, organization):
-        self.organization = organization
+    def delist(self):
         self.organization.has_event = True
         self.organization.save()
         
         self.available = False
+        self.save()
+
+    def relist(self, organization):
+        organization.has_event = False
+        organization.save()
+
+        self.organization = None
+        self.available = True
         self.save()

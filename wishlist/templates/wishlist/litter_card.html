@@ -14,8 +14,10 @@
           {% endif %}
           <label for="{{litter.id}}-name">Edit Litter Name: </label>
           <input type="text" name="{{litter.id}}-name" id="">
+          <label for="{{litter.id}}-return">Set Return Date: </label>
+          <input type="date" name="{{litter.id}}-return" id="" value="{{litter.return_date_str}}">
           <br>
-          <b>Email All Interested:</b> <a href="{% url 'create_watchlist_email_batch_litter' 'popular' litter.id %}">Popular</a> &#x2022; <a href="{% url 'create_watchlist_email_batch_litter' 'adopted' litter.id %}">All Adopted</a> <br>
+          <b>Email All Interested:</b> <a href="{% url 'create_watchlist_email_batch_litter' 'popular' litter.id %}">Popular</a> &#x2022; <a href="{% url 'create_watchlist_email_batch_litter' 'adopted' litter.id %}">All Adopted</a><br>
         </div>
         {% for dog in litter.dogs.iterator %}
         <div style="display: inline-block;">

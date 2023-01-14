@@ -37,7 +37,7 @@ def login_page(request):
 
         if user:
             login(request, user)
-            get_and_update_dogs()
+            # get_and_update_dogs()
             user_groups = get_groups(user)
 
             if 'adopter' in user_groups and not user.adopter.acknowledged_faq:
@@ -340,20 +340,52 @@ def gen_cal_get_dates_and_delta_dict(date):
     return dates_delta_cal_dict
 
 
+def dog_part_of_litter(dog):
+    # returns true if following are met:
+    # 1. ((dog is part of litter of 2+ and litter arrival date matches OR
+    # 2. dog is a singleton) AND
+    # 3. dog is under 6 months) OR
+    # 4. dog is appointment only
+    try:
+        litter = LitterObject.objects.get(litter_id=dog.info["LitterGroupId"])
+        litter_two_or_more = len(litter.dogs) >= 2
+    except:
+        litter_two_or_more = False
+    
+    dog_is_puppy = dog.info["Age"] <= 6
+    dog_is_appointment_only = dog.appt_only
+
+    if litter_two_or_more and dog_is_puppy:
+        return True
+    elif dog_is_puppy:
+        if dog_is_appointment_only:
+            return False
+        else:
+            return True
+    else:
+        return False
+
+
 def gen_cal_get_offsite_dog_dict():
     # get info on dogs that have offsite circumstances
     host_or_foster_dogs = DogObject.objects.filter(
         appt_only=False,
         offsite=True,
         shelterluv_status="Available for Adoption").order_by('name')
+
+    host_or_foster_dogs_over_6_mos = [
+        dog for dog in host_or_foster_dogs if not dog_part_of_litter(dog)]
     
     offsite_dogs = DogObject.objects.filter(
         offsite=True, 
         shelterluv_status="Available for Adoption").order_by('name')
 
+    offsite_dogs_over_6_mos = [
+        dog for dog in offsite_dogs if not dog_part_of_litter(dog)]
+
     offsite_dog_dict = {
-        'host_or_foster_dogs': host_or_foster_dogs,
-        'offsite_dogs': offsite_dogs
+        'host_or_foster_dogs': host_or_foster_dogs_over_6_mos,
+        'offsite_dogs': offsite_dogs_over_6_mos
     }
 
     return offsite_dog_dict

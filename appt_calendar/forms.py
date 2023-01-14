@@ -1,9 +1,6 @@
-import datetime
-
 from django import forms
 
 from .models import *
-from adopter.models import Adopter
 from demo import settings as settings
 
 class AppointmentModelFormPrefilled(forms.ModelForm):

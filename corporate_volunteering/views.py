@@ -1,3 +1,4 @@
+import copy
 import datetime
 
 from django.contrib.auth.models import Group, User
@@ -26,11 +27,11 @@ def calendar(request):
         all_future_events = VolunteeringEvent.objects.filter(
             available=True,
             date__gte=today,
-        )
+        ).order_by('date')
     else:
         all_future_events = VolunteeringEvent.objects.filter(
             date__gte=today,
-        )
+        ).order_by('date')
 
     context = {
         'all_future_events': all_future_events
@@ -55,16 +56,16 @@ def create_new_user_from_organization(organization):
     #search for coorporate volunteer and add first
     try:
         new_user = User.objects.get(
-            username=organization.primary_email.lower(), 
-            email=organization.primary_email,
+            username=organization.contact_email.lower(), 
+            email=organization.contact_email,
         )
         if new_user.adopter:
             organization.auth_code = new_user.adopter.auth_code
     #if new, create user
     except:
         new_user = User.objects.create_user(
-            username=organization.primary_email.lower(), 
-            email=organization.primary_email, 
+            username=organization.contact_email.lower(), 
+            email=organization.contact_email, 
             password=str(organization.auth_code)
         )
 
@@ -72,7 +73,7 @@ def create_new_user_from_organization(organization):
     organization.user = new_user
     organization.save()
 
-    corporate_volunteer_group = Group.objects.get(name='corporate_volunteer')
+    corporate_volunteer_group = Group.objects.get(name='corp_volunteer')
     corporate_volunteer_group.user_set.add(new_user)
 
 
@@ -92,8 +93,7 @@ def add_from_form(organization):
 @authenticated_user
 @allowed_users(allowed_roles={'corp_volunteer_admin', 'superuser'})
 def add_organization(request):
-    global today
-    form = AddOrganizationForm(request.POST or None)
+    form = OrganizationForm(request.POST or None)
 
     if form.is_valid():
         try:
@@ -106,15 +106,144 @@ def add_organization(request):
 
         contact_org(request, org.id, 'add')
 
-    form = AddOrganizationForm(request.POST or None)
+    form = OrganizationForm(request.POST or None)
 
     context = {
         'form': form,
-        'page_title': "Add Adopters",
-        'today': today,
+        'page_title': "Add Organization",
     }
 
     return render(request, "corporate_volunteering/add_orgs.html", context)
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'corp_volunteer_admin', 'superuser'})
+def edit_organization(request, org_id):
+    org = Organization.objects.get(pk=org_id)
+    email = copy.deepcopy(org.primary_email)
+
+    form = OrganizationForm(request.POST or None, instance=org)
+
+    if form.is_valid():
+        handle_valid_edit_org_form(form, org, email)
+        return redirect('edit_org', org_id)
+    else:
+        form = OrganizationForm(request.POST or None, instance=org)
+
+    context = {
+        'form': form,
+        'header_text': org.org_name,
+        'page_title': "Edit Organization",
+    }
+
+    return render(request, "corporate_volunteering/edit_form.html", context)
+
+
+def handle_valid_edit_event_form(form, event, og_org_id):
+    form.save()
+    org = event.organization
+
+    if org:
+        event.delist()
+        return event.organization.id != og_org_id
+    else:
+        if og_org_id:
+            og_org = Organization.objects.get(pk=og_org_id)
+            event.relist(og_org)
+        return False
+
+
+def remove_organization(request, event_id):
+    event = VolunteeringEvent.objects.get(pk=event_id)
+    org = event.organization
+
+    event.relist(org)
+    return redirect("event_calendar")
+
+
+def delete_event(request, event_id):
+    event = VolunteeringEvent.objects.get(pk=event_id)
+    org = event.organization
+
+    if org:
+        event.relist(org)   
+
+    event.delete()
+    return redirect("event_calendar")
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'corp_volunteer_admin', 'superuser'})
+def edit_event(request, event_id):
+    event = VolunteeringEvent.objects.get(pk=event_id)
+    org = event.organization
+    form = EventForm(request.POST or None, instance=event)
+
+    if org:
+        og_org = copy.deepcopy(event.organization.id)
+        header_text = event.organization.org_name
+    else:
+        og_org = None
+        header_text = event.date_string()
+
+    if form.is_valid():
+        org_changed = handle_valid_edit_event_form(form, event, og_org)
+        
+        if org_changed:
+            return redirect('contact_org', event.organization.id, "add")
+        else:
+            return redirect('event_calendar')
+    else:
+        form = EventForm(request.POST or None, instance=event)
+
+    context = {
+        'form': form,
+        'header_text': header_text,
+        'page_title': "Edit Event",
+    }
+
+    return render(request, "corporate_volunteering/edit_form.html", context)
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'corp_volunteer_admin', 'superuser'})
+def add_event(request):
+    form = EventForm(request.POST or None)
+
+    if form.is_valid():
+        form.save()
+        event = VolunteeringEvent.objects.latest('id')
+        org_changed = handle_valid_edit_event_form(form, event, None)
+        
+        if org_changed:
+            return redirect('contact_org', event.organization.id, "add")
+        else:
+            return redirect('event_calendar')
+    else:
+        form = EventForm(request.POST or None)
+
+    context = {
+        'form': form,
+        'header_text': "Add Event",
+        'page_title': "Add Event",
+    }
+
+    return render(request, "corporate_volunteering/edit_form.html", context)
+
+
+def handle_valid_edit_org_form(form, org, og_email):
+    form.save()
+    
+    email_changed = org.contact_email != og_email
+
+    if email_changed:
+        org.user.username = str(org.contact_email)
+
+        if org.user.adopter:
+            org.user.adopter.primary_email = org.contact_email
+            org.user.adopter.save()
+
+        org.user.save()
 
 
 def get_template_from_source(source, org, signature):
@@ -128,16 +257,16 @@ def get_template_from_source(source, org, signature):
     match source:     
         case 'add':
             template = EmailTemplate.objects.get(
-                template_name="")
+                template_name="Dogs Were Adopted")
         case 'confirm':
             template = EmailTemplate.objects.get(
-                template_name="")
+                template_name="Dogs Were Adopted")
         case 'thank_you':
             template = EmailTemplate.objects.get(
-                template_name="")
+                template_name="Dogs Were Adopted")
         case _:
             template = EmailTemplate.objects.get(
-                template_name="")
+                template_name="Dogs Were Adopted")
 
     template = replacer(
         template.text.replace('*SIGNATURE*', signature), None, None, org=org)
@@ -199,4 +328,7 @@ def attempt_to_retrieve_existing_org(email_for_search):
         existing_organization = Organization.objects.filter(
             contact_email=email_for_search).latest('id')
 
-    return existing_organization
+    if existing_organization:
+        return existing_organization
+    else:
+        raise AttributeError

@@ -15,10 +15,13 @@
 
     {% if request.user|has_group:"superuser" or request.user|has_group:"corp_volunteer_admin" %}
     <div class="page-actions">
-        {% include 'corporate_volunteering/admin_actions.html' %}
+        <a href="{% url 'add_event' %}">Add Event</a>
+        {% if request.user|has_group:"superuser" %}
+        <a href="{% url 'add_org' %}">Add Organization</a>
+        <a href="{% url 'manage_orgs' %}">Manage Organizations</a>
+        {% endif %}
     </div>
     {% endif %}
-
 
     {% for event in all_future_events %}
     <div class="timeslot" id="event{{event.id}}">
@@ -26,8 +29,11 @@
             <th class="subsection-header left">{{event.date_string}}</th>
             {% if request.user|has_group:"superuser" or request.user|has_group:"corp_volunteer_admin" %}
             <th class="subsection-header right">
-            <a class="subsection-action" href="">Cancel Organization</a> |
-            <a class="subsection-action" href="">Delete Event</a>
+            <a class="subsection-action" href="{% url 'edit_event' event.id %}">Edit</a> | 
+            {% if event.organization %}
+            <a class="subsection-action" href="{% url 'remove_organization' event.id %}">Cancel Organization</a> |
+            {% endif %}
+            <a class="subsection-action" href="{% url 'delete_event' event.id %}">Delete Event</a>
             </th>
             {% endif %}
         </table>

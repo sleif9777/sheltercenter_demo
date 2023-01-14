@@ -1,3 +1,5 @@
+{% load auth_extras %}
+
 {% if request.user|has_group:"adopter" %}
   {% if user.adopter.acknowledged_faq %}
   <li><a href="{% url 'calendar' %}">Calendar</a></li>
@@ -11,7 +13,7 @@
   <li><a href="{% url 'adopter_home' %}">Home</a></li>
   {% endif %}
 {% endif %}
-{% if request.user|has_group:"corp_volunteer" %}
+{% if request.user|has_group:"corp_volunteer_admin" %}
   <li><a href="">Corp. Volunteering</a></li>
   <!-- <li><a href="{% url 'fake500' %}">Prompt 500</a></li> -->
 {% endif %}

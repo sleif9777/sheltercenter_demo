@@ -10,14 +10,13 @@
     <tbody>
       <tr>
         <td class="appt-description left upper">
-          <a href="{% url 'edit_event' event.id %}">{{event}}</a>
-        </td>
-        <td class="appt-description right">
-            <a href="{% url 'edit_event' event.id %}">&#9998;&#xFE0E;</a>
-            {% if event.organization %}
-            <a href="{% url 'remove_organization' event.id %}">&#128100;&#xFE0E;<sub style="font-size: 8pt;">&#128683;&#xFE0E;</sub></a>
-            {% endif %}
-            <a href="{% url 'delete_event' event.id %}">&#10006;&#xFE0E;</a>
+          <a href="{% url 'edit_event' event.id %}">
+          {% if event.organization %}
+          {{event.organization.org_name}}
+          {% else %}
+          OPEN
+          {% endif %}
+          </a>
         </td>
       </tr>
       {% if not event.available %}
@@ -33,8 +32,6 @@
   </table>
 
   {% if not event.available %}
-
-  {% if appt.appt_type in schedulable and appt.adopter %}
   <table class="appt-subblock appt-info-block contact-subblock">
     <tr class="info-block-subheader">
       <th>Contact Person: {{event.organization.leader_name}}</th>
@@ -49,17 +46,12 @@
   </table>
 
   <table class="appt-subblock appt-info-block notes-subblock">
-  <!-- if false, it is an open appointment, paperwork, or surrender and could have notes at most -->
-  {% else %}
-  <table class="appt-subblock appt-info-block no-border notes-subblock">
-  {% endif %}      
     <tbody>
       <tr class="info-block-subheader">
         <th class="left">
-          <a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">Summary</a>
+          <a href="{% url 'edit_event' event.id %}">Summary</a>
         </th>
         <th class="right">
-          <a href="{% url 'edit_cal_appointment' appt.id date.year date.month date.day %}">&#9998;&#xFE0E;</a>
         </th>
       </tr>
       <tr class="internal-notes">
@@ -72,11 +64,9 @@
       </tr>
     </tbody>
   </table>
-  {% endif %}
 
   <!-- if appt is booked, show actions and contacts -->
-  {% if appt.appt_type in schedulable and appt.available == False %}
-  <table class="appt-subblock appt-info-block about-subblock">
+  <table class="appt-subblock appt-info-block about-subblock no-border">
     <tbody>
       <tr class="info-block-subheader">
         <th>Checklist</th>
@@ -89,6 +79,9 @@
             <li>Donation Received</li>
             <li>Prospective Volunteer Count</li>
             <li>Volunteer Count Confirmed</li>
+            <li>Social Media Post</li>
+            <li>Thank You Sent</li>
+            <li>Mark As Complete</li>
           </ul>
         </td>
       </tr>          

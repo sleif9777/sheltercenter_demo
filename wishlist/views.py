@@ -1,8 +1,8 @@
-import datetime
 import operator
 import os
 import requests
 
+from datetime import datetime, timedelta
 from django.contrib.auth.models import Group, User
 from django.db.models import Count
 from django.shortcuts import render
@@ -16,7 +16,8 @@ from email_mgr.models import *
 
 api_root = "https://www.shelterluv.com/api/v1/"
 today = datetime.datetime.today()
-yesterday = datetime.datetime(2023, 1, 5)
+yesterday = today - timedelta(days=1)
+two_days_ago = today - timedelta(days=2)
 
 # TO DO
 # decorators for authentication
@@ -40,9 +41,8 @@ def get_all_available_dogs_from_shelterluv():
     offset = 0
     
     while has_more:
-        request_address = """
-            {0}animals?offset={1}&status_type=publishable
-        """.format(api_root, offset)
+        request_address = "{0}animals?offset={1}&status_type=publishable".format(
+            api_root, offset)
         dogs_request = requests.get(request_address, headers=headers).json()
         dogs += dogs_request['animals']
         offset += 100
@@ -163,6 +163,7 @@ def update_all_litters():
 
 
 def get_litters():
+    global today, yesterday, two_days_ago
     available_litters = LitterObject.objects.annotate(
             num_dogs=Count('dogs')
         ).filter(
@@ -172,7 +173,7 @@ def get_litters():
             num_dogs=Count('dogs')
         ).filter(
             any_available=False, 
-            latest_update__in=[today, yesterday],
+            latest_update__in=[today, yesterday, two_days_ago],
             num_dogs__gt=1, 
         )
 
@@ -232,10 +233,31 @@ def update_litter_name(litter_id, litter_name):
     litter.save()
 
 
+def update_litter_return(litter_id, return_date):
+    litter_id = litter_id[:-7] #chop off the -return
+    litter = LitterObject.objects.get(pk=litter_id)
+    year, month, day = get_date_from_form_data(return_date)
+    litter.return_date = datetime.date(year, month, day)
+
+    for dog in litter.dogs.iterator():
+        dog.offsite = True
+        dog.foster_date = datetime.date(year, month, day)
+        dog.save()
+
+    litter.save()    
+
+
+def get_litter_and_data_type(key):
+    if "-name" in key:
+        return "name"
+    elif "-return" in key:
+        return "return"
+
+
 @authenticated_user
 @allowed_users(allowed_roles={'superuser', 'admin'})
 def litter_mgmt(request):
-    global today, yesterday
+    global today, yesterday, two_days_ago
     update_all_litters()
     available_litters, recently_adopted_litters = get_litters()
 
@@ -243,12 +265,17 @@ def litter_mgmt(request):
         form_data = dict(request.POST)
         del form_data['csrfmiddlewaretoken']
 
-        for litter in form_data:
-            litter_name = form_data[litter][0]
+        for key in form_data:
+            litter_data = form_data[key][0]
+            litter_data_type = get_litter_and_data_type(key)
 
-            if len(litter_name) > 0:
-                update_litter_name(litter, litter_name)
-  
+            if len(litter_data) > 0:
+                match litter_data_type:
+                    case "name":
+                        update_litter_name(key, litter_data)
+                    case "return":
+                        update_litter_return(key, litter_data)
+    
     context = {
         "available_litters": available_litters,
         "recently_adopted_litters": recently_adopted_litters,
@@ -258,9 +285,9 @@ def litter_mgmt(request):
 
 
 def filter_dogs_adopted_today():
-    global api_root, today, yesterday
+    global api_root, today, yesterday, two_days_ago
     all_dogs = DogObject.objects.filter(
-        update_dt__date__in=[today, yesterday])
+        update_dt__date__in=[today, yesterday, two_days_ago])
     adopted_dogs = []
     posted_dogs = []
 
@@ -279,7 +306,7 @@ def get_dog_info(shelterluv_id):
     request_address = '{0}animals/{1}'.format(api_root, shelterluv_id)
     dogs_request = requests.get(request_address, headers=headers).json()
 
-    return dogs_request     
+    return dogs_request
 
 
 def get_and_update_dogs():
@@ -289,15 +316,15 @@ def get_and_update_dogs():
 
 
 def get_all_available_dogs(filter_today=False):
-    global today, yesterday
+    global today, yesterday, two_days_ago
     # update_all_dogs()
-    update_all_litters()
+    # update_all_litters()
 
     if filter_today:
         all_available_dogs_query = DogObject.objects.filter(
             shelterluv_status='Available for Adoption'
         ).exclude(
-            update_dt__date__in=[today, yesterday]
+            update_dt__date__in=[today, yesterday, two_days_ago]
         )
     else:
         all_available_dogs_query = DogObject.objects.filter(
@@ -340,7 +367,7 @@ def get_date_from_form_data(data):
 @allowed_users(allowed_roles={'superuser', 'admin', 'adopter'})
 def display_list(request):
     user_groups = get_groups(request.user)
-    get_and_update_dogs()
+    # get_and_update_dogs()
 
     if 'adopter' in user_groups:
         return redirect('display_list_adopter')
