@@ -1010,6 +1010,8 @@ def close_out_appointment(appt, adopter):
     # If no decision
     if appt.outcome == "5":
         adopter.visits_to_date += 1
+        adopter.waiting_for_chosen = False
+        adopter.adoption_complete = False
         follow_up(adopter)
     # If decision made
     elif appt.outcome in ["2", "3", "4"]:
