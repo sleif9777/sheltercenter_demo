@@ -4,13 +4,14 @@
 
 {% block content %}
 <div class="main text-page">
+  {% if request.user|has_group:"superuser" %}
   <h1 class="page-header">Email Templates</h1>
   <div class="page-actions">
-    {% if request.user|has_group:"superuser" %}
-      <a href="{% url 'add_email_template' %}">Add Template</a>
-    {% endif %}
-    <a href="{% url 'edit_sig' %}">Edit Signature</a>
+    <a href="{% url 'add_email_template' %}">Add Template</a>
   </div>
+  {% else %}
+  <h1 class="page-header no-actions">Email Templates</h1>
+  {% endif %}
   <ul class="list-page">
     {% for template in templates %}
       <li><a href="{% url 'edit_email_template' template.id %}">{{template.template_name}}</a> - <em>{{template.description}}</em></li>

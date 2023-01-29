@@ -1,7 +1,9 @@
 import copy
 import datetime
+import numpy as np
 
 from django.contrib.auth.models import Group, User
+from django.db.models import Q
 from django.shortcuts import render
 
 from .forms import *
@@ -20,21 +22,21 @@ today = datetime.datetime.today()
 @authenticated_user
 @allowed_users(allowed_roles={
         'corp_volunteer_admin', 'corp_volunteer', 'superuser'})
-def calendar(request):
+def calendar(request, past=0):
     global today
 
     if 'corp_volunteer' in get_groups(request.user):
-        all_future_events = VolunteeringEvent.objects.filter(
-            available=True,
-            date__gte=today,
+        org = request.user.organization
+        events = VolunteeringEvent.objects.filter(
+            Q(organization=org) | Q(available=True)
         ).order_by('date')
     else:
-        all_future_events = VolunteeringEvent.objects.filter(
-            date__gte=today,
+        events = VolunteeringEvent.objects.filter(
+            marked_as_complete=bool(past),
         ).order_by('date')
 
     context = {
-        'all_future_events': all_future_events
+        'events': events
     }
     
     return render(
@@ -50,6 +52,17 @@ def manage_orgs(request):
         'page_title': "Manage Organizations",
     }
     return render(request, "corporate_volunteering/org_mgmt.html", context)
+
+
+def book_event(request, event_id):
+    event = VolunteeringEvent.objects.get(pk=event_id)
+    org = request.user.organization
+
+    event.organization = org
+    event.delist()
+    event_booked(org, event)
+
+    return redirect("event_calendar")
 
 
 def create_new_user_from_organization(organization):
@@ -120,7 +133,7 @@ def add_organization(request):
 @allowed_users(allowed_roles={'corp_volunteer_admin', 'superuser'})
 def edit_organization(request, org_id):
     org = Organization.objects.get(pk=org_id)
-    email = copy.deepcopy(org.primary_email)
+    email = copy.deepcopy(org.contact_email)
 
     form = OrganizationForm(request.POST or None, instance=org)
 
@@ -172,12 +185,49 @@ def delete_event(request, event_id):
     return redirect("event_calendar")
 
 
+def get_event_time_form_defaults(event):
+    defaults = {
+        'start_hour': event.event_start_time.hour,
+        'start_minute': event.event_start_time.minute,
+        'start_daypart': "0" if event.event_start_time.hour < 12 else "1",
+        'end_hour': event.event_end_time.hour,
+        'end_minute': event.event_end_time.minute,
+        'end_daypart': "0" if event.event_end_time.hour < 12 else "1",
+    }
+    return defaults
+
+
+def map_start_and_end(form_data):
+    start_hour = int(form_data['start_hour'])
+    start_minute = int(form_data['start_minute'])
+    if form_data['start_daypart'] == "1" and start_hour < 12:
+        start_hour += 12
+    start_time = datetime.time(start_hour, start_minute)
+    
+    end_hour = int(form_data['end_hour'])
+    end_minute = int(form_data['end_minute'])
+    if form_data['end_daypart'] == "1" and end_hour < 12:
+        end_hour += 12   
+    end_time = datetime.time(end_hour, end_minute)
+
+    return start_time, end_time
+
+
+def save_start_end_times(event, timeform_data):
+    start_time, end_time = map_start_and_end(timeform_data)
+    event.event_start_time = start_time
+    event.event_end_time = end_time
+    event.save()
+
+
 @authenticated_user
 @allowed_users(allowed_roles={'corp_volunteer_admin', 'superuser'})
 def edit_event(request, event_id):
     event = VolunteeringEvent.objects.get(pk=event_id)
     org = event.organization
     form = EventForm(request.POST or None, instance=event)
+    get_defaults = get_event_time_form_defaults(event)
+    time_form = EventTimeForm(request.POST or None, initial=get_defaults)
 
     if org:
         og_org = copy.deepcopy(event.organization.id)
@@ -186,8 +236,10 @@ def edit_event(request, event_id):
         og_org = None
         header_text = event.date_string()
 
-    if form.is_valid():
+    if form.is_valid() and time_form.is_valid():
         org_changed = handle_valid_edit_event_form(form, event, og_org)
+        timeform_data = time_form.cleaned_data
+        save_start_end_times(event, timeform_data)
         
         if org_changed:
             return redirect('contact_org', event.organization.id, "add")
@@ -195,11 +247,13 @@ def edit_event(request, event_id):
             return redirect('event_calendar')
     else:
         form = EventForm(request.POST or None, instance=event)
+        time_form = EventTimeForm(request.POST or None, initial=get_defaults)
 
     context = {
         'form': form,
         'header_text': header_text,
         'page_title': "Edit Event",
+        'time_form': time_form,
     }
 
     return render(request, "corporate_volunteering/edit_form.html", context)
@@ -246,42 +300,78 @@ def handle_valid_edit_org_form(form, org, og_email):
         org.user.save()
 
 
-def get_template_from_source(source, org, signature):
+def get_template_from_source(source, signature, org, event=None):
     file1 = None
     file2 = None
     subject = None
 
-    # TO DO
-    # create and update templates, add file for waiver
-
     match source:     
         case 'add':
             template = EmailTemplate.objects.get(
-                template_name="Dogs Were Adopted")
+                template_name="Invite Organization")
         case 'confirm':
             template = EmailTemplate.objects.get(
-                template_name="Dogs Were Adopted")
+                template_name="Confirm Event")
+        #case waiver?
         case 'thank_you':
             template = EmailTemplate.objects.get(
-                template_name="Dogs Were Adopted")
+                template_name="Thank Organization")
         case _:
             template = EmailTemplate.objects.get(
-                template_name="Dogs Were Adopted")
+                template_name="Contact Organization")
 
     template = replacer(
-        template.text.replace('*SIGNATURE*', signature), None, None, org=org)
+        template.text.replace(
+            '*SIGNATURE*', signature), None, None, org=org, event=event)
 
     return template, file1, file2, subject
 
 
 @authenticated_user
+@allowed_users(allowed_roles={'corp_volunteer'})
+def contact_team(request, event_id=None):
+    if event_id:
+        event = VolunteeringEvent.objects.get(pk=event_id)
+        d_string = event.date_string()
+        default_message = "I would like to reschedule my event for for {0}...".format(d_string)
+    else:
+        event = None
+        default_message = ""
+
+    form = ContactUsForm(
+        request.POST or None, 
+        initial={'message': default_message}
+    )
+
+    if form.is_valid():
+        org = request.user.organization
+        message = form.cleaned_data['message']
+        new_contact_volunteer_event_team_msg(org, message, event)
+        return redirect('event_calendar')
+
+    context = {
+        'events': True,
+        'form': form,
+        'page_title': "Contact Us",
+    }
+
+    return render(request, "adopter/contactteam.html", context)
+
+
+@authenticated_user
 @allowed_users(allowed_roles={'corp_volunteer_admin', 'superuser'})
-def contact_org(request, org_id, source):
+def contact_org(request, org_id, source, event_id=None):
     global today
     org = Organization.objects.get(pk=org_id)
     signature = get_signature_for_contact(request.user)
+
+    if event_id:
+        event = VolunteeringEvent.objects.get(pk=event_id)
+    else:
+        event = None
+
     template, file1, file2, subject = get_template_from_source(
-        source, org, signature)
+        source, signature, org, event)
 
     form = ContactUsForm(
         request.POST or None, initial={'message': template})
@@ -290,9 +380,9 @@ def contact_org(request, org_id, source):
         data = form.cleaned_data
         message = data['message']
         new_contact_org_msg(Organization, message, [file1, file2], subject)
-        
-        # return redirect to add page
 
+        return redirect("add_org")
+        
     context = {
         'form': form,
         'page_title': "Contact {0}".format(org.org_name),
@@ -332,3 +422,23 @@ def attempt_to_retrieve_existing_org(email_for_search):
         return existing_organization
     else:
         raise AttributeError
+
+
+def mark_event(request, event_id, flag):
+    event = VolunteeringEvent.objects.get(pk=event_id)
+
+    match flag:
+        case "donation":
+            event.donation_received = not event.donation_received
+        case "waivers":
+            event.waivers_complete = not event.waivers_complete
+        case "social_media":
+            event.posted_social_media = not event.posted_social_media
+        case "thank_you":
+            event.sent_thank_you = not event.sent_thank_you
+        case "complete":
+            event.marked_as_complete = not event.marked_as_complete
+
+    event.save()
+
+    return redirect("event_calendar")

@@ -5,11 +5,7 @@
 {% block content %}
 <div class="main">
     <!-- displays a calendar date and arrows to move back and forth -->
-    {% if request.user|has_group:"superuser" or request.user|has_group:"corp_volunteer_admin" %}
-    <div class="page-header">
-    {% elif request.user|has_group:"corp_volunteer" %}
     <div class="page-header no-actions">
-    {% endif %}
         <h1>Schedule</h1>
     </div>
 
@@ -23,7 +19,7 @@
     </div>
     {% endif %}
 
-    {% for event in all_future_events %}
+    {% for event in events %}
     <div class="timeslot" id="event{{event.id}}">
         <table class="subsection-table">
             <th class="subsection-header left">{{event.date_string}}</th>

@@ -1,9 +1,10 @@
 {% load wishlist_extras %}
+{% load appt_extras %}
 
 <div class="adopter-messages">
   <p class="greeting"><b>Hello, {{request.user.adopter.f_name}}!</b></p><br>
 
-  {% if request.user.adopter.waiting_for_chosen %}
+  {% if pending_or_complete|request.user.adopter == "pending" %}
   <div class="info-box calendar-notes">
     <table>
       <tr>
@@ -13,7 +14,7 @@
       </tr>
     </table>
   </div>
-  {% elif request.user.adopter.adoption_complete %}
+  {% eif pending_or_complete|request.user.adopter == "complete" %}
   <div class="info-box calendar-notes">
     <table>
       <tr>

@@ -111,6 +111,7 @@ def update_adopted_dog(dog):
     DogObject.objects.update_or_create(
         pk=dog.id,
         defaults={
+            "alter_date": datetime.date(2000,1,1),
             "appt_only": False,
             "foster_date": datetime.date(2000,1,1),
             "host_date": datetime.date(2000,1,1),
@@ -134,6 +135,7 @@ def update_all_dogs():
         dog_obj, created = DogObject.objects.update_or_create(
             pk=dog.id,
             defaults={
+                "alter_date": datetime.date(2000,1,1),
                 "appt_only": False,
                 "foster_date": datetime.date(2000,1,1),
                 "host_date": datetime.date(2000,1,1),
@@ -343,6 +345,12 @@ def remove_expired_dates():
     shifted_date = datetime.date(2000, 1, 2) # exclude true 1/1/2000 default
     
     for dog in DogObject.objects.filter(
+            alter_date__range=(shifted_date, today)):
+        dog.alter_date = default_date
+        dog.offsite = True if dog.appt_only else False
+        dog.save()
+
+    for dog in DogObject.objects.filter(
             host_date__range=(shifted_date, today)):
         dog.host_date = default_date
         dog.offsite = True if dog.appt_only else False
@@ -408,7 +416,9 @@ def update_dog_from_form_data(id, form_data):
         dog.appt_only = True
     else:
         year, month, day = get_date_from_form_data(form_data[0])
-        if '-host' in id:
+        if '-altr' in id:
+            dog.alter_date = datetime.date(year, month, day)
+        elif '-host' in id:
             dog.host_date = datetime.date(year, month, day)
         elif '-fstr' in id:
             dog.foster_date = datetime.date(year, month, day)

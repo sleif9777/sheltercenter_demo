@@ -40,6 +40,12 @@ def get_groups(user_obj):
 @authenticated_user
 def calendar(request):
     global today
+    direct_to_event_calendar = (only_role(request.user, "corp_volunteer") or
+        only_role(request.user, "corp_volunteer_admin"))
+
+    if direct_to_event_calendar:
+        return redirect('event_calendar')
+
     return redirect('calendar_date', today.year, today.month, today.day)
 
 
@@ -1378,7 +1384,10 @@ def toggle_time(request, timeslot_id, date_year, date_month, date_day, lock):
 def request_access(request, adopter_id):
     adopter = Adopter.objects.update_or_create(
         pk=adopter_id,
-        defaults={'requested_access': True}
+        defaults={
+            'requested_access': True,
+            'waiting_for_chosen': False,
+        }
     )[0]
 
     access_requested(adopter)

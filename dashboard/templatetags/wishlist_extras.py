@@ -39,7 +39,9 @@ def wishlist_str(dog, date):
         if dog.appt_only:
             string += " - by appointment only, contact us to coordinate"
         else:
-            if dog.foster_date > date or dog.host_date > date:
+            if dog.alter_date == date:
+                string += " - in surgery and unavailable for meetings today"
+            elif dog.foster_date > date or dog.host_date > date:
                 potential_dates = [dog.foster_date, dog.host_date]
                 rtrn_date = [date for date in potential_dates if date.year > 2000]
                 string += " - not available on this date, returning {0}".format(

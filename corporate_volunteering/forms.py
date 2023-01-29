@@ -1,3 +1,5 @@
+import numpy as np
+
 from django import forms
 
 from .models import *
@@ -46,25 +48,25 @@ class EventForm(forms.ModelForm):
         }
         widgets = {
             'date': forms.SelectDateWidget(),
-            'event_task': forms.TextInput(attrs={'size': 200}),
+            'event_task': forms.TextInput(attrs={'size': 120}),
         }
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label_suffix', '')
         super(EventForm, self).__init__(*args, **kwargs)
 
 
-class EventConfirmHeadcountForm(forms.ModelForm):
-    class Meta:
-        model = VolunteeringEvent
-        fields = [
-            'volunteer_confirmed_count',
-        ]
-        labels = {
-            'volunteer_confirmed_count': "Confirmed Volunteer Count: ",
-        }
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('label_suffix', '')
-        super(EventForm, self).__init__(*args, **kwargs)
+# class EventConfirmHeadcountForm(forms.ModelForm):
+#     class Meta:
+#         model = VolunteeringEvent
+#         fields = [
+#             'volunteer_confirmed_count',
+#         ]
+#         labels = {
+#             'volunteer_confirmed_count': "Confirmed Volunteer Count: ",
+#         }
+#     def __init__(self, *args, **kwargs):
+#         kwargs.setdefault('label_suffix', '')
+#         super(EventForm, self).__init__(*args, **kwargs)
 
 
 class EventTimeForm(forms.Form):

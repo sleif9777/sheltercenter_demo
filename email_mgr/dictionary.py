@@ -65,13 +65,27 @@ def get_org_replacements(org):
     if org:
         org_replacements = {
             "*ORG_NAME*": org.org_name,
-            "*ORG_LEADER_FNAME*": org.leader_fname,
+            "*ORG_L_FNAME*": org.leader_fname,
         }
     else:
         org_replacements = {}
 
     return org_replacements
 
+
+def get_event_replacements(event):
+    if event:
+        event_replacements = {
+            "*EVENT_COUNSELOR*": event.event_counselor,
+            "*EVENT_DATE*": event.date_string(),
+            "*EVENT_END*": time_str(event.event_end_time),
+            "*EVENT_START*": time_str(event.event_start_time),
+            "*EVENT_TASK*": event.event_task,
+        }
+    else:
+        event_replacements = {}
+
+    return event_replacements
 
 def get_litter_string(litter):
     dogs_in_litter = [dog.name for dog in litter.dogs.iterator()]
@@ -107,6 +121,30 @@ def get_signature():
     return base_user.profile.signature
 
 
+def evaluate_dog_for_watchlist_replacements(dog, date):
+    status = "*"
+    popular = calc_popularity(dog)
+    is_foster_host = False
+
+    if dog.shelterluv_status != "Available for Adoption":
+        status = " - no longer available"
+
+    if dog.offsite:
+        if dog.appt_only:
+            status = " - by appointment only, must be arranged by the Adoptions team in advance"
+        elif dog.alter_date == date:
+            status = " - in surgery and unavailable for meetings today"
+        elif dog.foster_date > date or dog.host_date > date:
+            potential_dates = [dog.foster_date, dog.host_date]
+            rtrn_date = [date for date in potential_dates if date.year > 2000]
+            status = " - in foster/extended host during your appointment on {0}, returning {1}**".format(
+                date_num_str(date), date_num_str(rtrn_date[0]))
+            is_foster_host = True
+    elif popular:
+            status = " - high interest, likely to be adopted quickly*"
+
+    return status, is_foster_host
+
 def get_watchlist_replacements(adopter, date):
     statuses = ""
     foster_host_disclaimer = """
@@ -119,31 +157,18 @@ def get_watchlist_replacements(adopter, date):
         "hold" prior to an appointment.</sup></em><br>
     """
     inc_foster_host = False
-    inc_first_come_first_serve = False
+    watchlist = adopter.wishlist.iterator()
 
-    for dog in adopter.wishlist.iterator():
-        status = "*"
-        popular = calc_popularity(dog)
-        inc_first_come_first_serve = True
+    for dog in watchlist:
+        status, is_foster_host = evaluate_dog_for_watchlist_replacements(
+            dog, date)
 
-        if dog.shelterluv_status != "Available for Adoption":
-            status = " - no longer available"
-
-        if dog.offsite:
-            if dog.appt_only:
-                status = " - by appointment only, must be arranged by the Adoptions team in advance"
-            elif dog.foster_date > date or dog.host_date > date:
-                potential_dates = [dog.foster_date, dog.host_date]
-                rtrn_date = [date for date in potential_dates if date.year > 2000]
-                status = " - in foster/extended host during your appointment on {0}, returning {1}**".format(
-                    date_num_str(date), date_num_str(rtrn_date[0]))
-                inc_foster_host = True
-        elif popular:
-                status = " - high interest, likely to be adopted quickly*"
+        if is_foster_host:
+            inc_foster_host = True
 
         statuses += "{0}{1}<br>".format(dog.name, status)
 
-    if inc_first_come_first_serve:
+    if len(watchlist) > 0:
         statuses += first_come_first_serve_disclaimer
 
     if inc_foster_host:
@@ -152,7 +177,7 @@ def get_watchlist_replacements(adopter, date):
     return statuses
 
 
-def replacer(html, adopter, appt, litter=None, dog=None, org=None):
+def replacer(html, adopter, appt, litter=None, dog=None, org=None, event=None):
     global today
 
     adopter_replacements = get_adopter_replacements(adopter, appt)
@@ -160,6 +185,7 @@ def replacer(html, adopter, appt, litter=None, dog=None, org=None):
     next_bd_replacements = get_next_bd_replacements()
     litter_or_dog_replacements = get_litter_or_dog_replacements(litter, dog)
     org_replacements = get_org_replacements(org)
+    event_replacements = get_event_replacements(org)
 
     global_replacements = {
         '*HOST_URL*': '<a href="https://savinggracenc.org/host-a-dog/">If you would like to learn more about our Weekend Host program, please visit our website.</a>',
@@ -169,9 +195,11 @@ def replacer(html, adopter, appt, litter=None, dog=None, org=None):
     replacements_master = {
         'adopter': adopter_replacements,
         'appt': appt_replacements,
+        'event': event_replacements,
         'global': global_replacements,
         'litter_or_dog': litter_or_dog_replacements,
-        'next_bd': next_bd_replacements
+        'next_bd': next_bd_replacements,
+        'org': org_replacements,
     }
 
     for item in replacements_master:

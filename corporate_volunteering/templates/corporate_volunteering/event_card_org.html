@@ -1,0 +1,38 @@
+{% load appt_extras %}
+{% load auth_extras %}
+
+<div class="appointment">
+  <table class="appt-info-block no-border" id="appt-header-block">
+    <tbody>
+      {% if event.organization %}
+      <tr>
+        <td class="appt-description left upper">
+          {{event.organization.org_name}}
+        </td>
+      </tr>
+      {% elif request.user.organization.has_event %}
+      <tr>
+        <td class="appt-description left upper">
+          <a href="{% url 'contact_corp_volunteer_team_reschedule' event.id %}">
+          CONTACT US TO RESCHEDULE
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td class="left font-10 top-pad-5">
+          <a href="{% url 'contact_corp_volunteer_team_reschedule' event.id %}">
+            We'd prefer that you try to stick with your original date, but understand things come up. Click here to request moving your event to this date.
+          </a>
+        </td>
+        </a>
+      </tr>
+      {% else %}
+      <tr>
+        <td class="appt-description left upper">
+          <a href="">CLICK TO RESERVE</a>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>

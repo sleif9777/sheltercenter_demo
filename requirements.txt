@@ -1,11 +1,12 @@
+boto3
 django>=2.0
 django-dotenv
-gunicorn
-psycopg2-binary
 django-storages
-boto3
-num2words
 django-tinymce
+gunicorn
+numpy
+num2words
+psycopg2-binary
 reportlab
 requests
 sentry_sdk

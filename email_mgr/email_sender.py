@@ -42,7 +42,6 @@ def strip_tags(html):
 
 def send_email(text, html, reply_to_email, subject, receiver_email, files):
     sender_email = os.environ.get('EMAIL_ADDRESS')
-    password = os.environ.get('EMAIL_PASSWORD')
 
     if reply_to_email == "default":
         reply_to_email = "adoptions@savinggracenc.org"
@@ -59,8 +58,6 @@ def send_email(text, html, reply_to_email, subject, receiver_email, files):
         email.to += ["adoptions@savinggracenc.org"]
 
     email.attach_alternative(html, 'text/html')
-
-    file_count = 0
 
     try:
         for file in files:
@@ -80,9 +77,9 @@ def clean_time_and_date(time, date):
     return time, date
 
 
-def scrub_and_send(subject, template, adopter, appt):
+def scrub_and_send(subject, template, adopter, appt, org=None, event=None):
     email = adopter.primary_email
-    html = replacer(template.text, adopter, appt)
+    html = replacer(template.text, adopter, appt, org, event)
     files = [template.file1, template.file2]
     text = strip_tags(html)
 
@@ -151,7 +148,8 @@ def upload_errors(errors):
         </html>
         """.format(blocked_errors_html, pending_errors_html)
 
-    send_email(text, html, "default", subject, get_base_email(), None) #done
+    send_email(text, html, "default", subject, get_base_email(), None)
+    
 
 def dates_are_open(adopter, date):
     subject = "Let's Book Your Saving Grace Adoption Appointment! ({0})".format(upper_full_name(adopter))
@@ -365,6 +363,64 @@ def new_contact_us_msg(adopter, message, appt_id=None):
 
     send_email(text, html, reply_to, subject, get_base_email(), None)
 
+
+def new_contact_volunteer_event_team_msg(org, message, event=None):
+    org_name = org.org_name
+    leader_name = org.leader_name()
+    subject = "New message from {0}".format(org_name)
+    reply_to = org.contact_email
+
+    text = """\
+    Organization: """ + org_name + """\n
+    \n""" + message
+
+    html = """\
+    <html>
+      <body>
+        <h2>New Message from {0} ({1})</h2>
+        <p><b>Message:</b> {2}</p>
+      </body>
+    </html>
+    """.format(leader_name, org_name, message)
+
+    send_email(text, html, reply_to, subject, get_events_email(), None)
+
+
+def event_booked(org, event):
+    org_name = org.org_name
+    leader_fname = org.leader_fname
+    subject = "New event from {0}".format(org_name)
+    email = org.contact_email
+
+    external_text = "Hi {0} and the rest of the {1} team! Thank you for choosing {2} as your upcoming Day of Service. Our coordinators will follow up with you closer to your event date.".format(
+        leader_fname, org_name, event.date_string())
+
+    internal_text = "{0} has chosen {1} as for their Days of Service event! Reply directly to this email to start planning with {2}.".format(
+        org_name, event.date_string(), leader_fname)
+
+    external_html = """\
+    <html>
+      <body>
+        <p>Hi {0} and the rest of the {1} team!</p>
+        <p>Thank you for choosing {2} as your upcoming Day of Service. Our coordinators will follow up with you closer to your event date.</p>
+      </body>
+    </html>
+    """.format(leader_fname, org_name, event.date_string())
+
+    internal_html = """\
+    <html>
+      <body>
+        <p>{0} has chosen {1} as for their Days of Service event! Reply directly to this email to start planning with {2}.</p>
+      </body>
+    </html>
+    """.format(org_name, event.date_string(), leader_fname)
+
+    #send email to org
+    send_email(external_text, external_html, get_events_email(), subject, email, None)
+    #send email to margaret and team
+    send_email(internal_text, internal_html, email, subject, get_events_email(), None)
+
+
 def appt_requested(adopter, appt):
     subject = "You Have Requested An Appointment"
     name = adopter.f_name
@@ -389,6 +445,7 @@ def appt_requested(adopter, appt):
     """.format(name, appt.date_and_time_string())
 
     send_email(text, html, "default", subject, email, None)
+
 
 def questions_msg(adopter, appt, questions):
     subject = "Question from " + adopter.full_name()
@@ -551,6 +608,15 @@ def get_base_email():
         return "sheltercenterdev@gmail.com"
     else:
         return "adoptions@savinggracenc.org"
+
+
+def get_events_email():
+    if str(os.environ.get("DJANGO_ALLOWED_HOST")) != "*":
+        return "sheltercenterdev@gmail.com"
+    else:
+        # TO DO
+        # get actual email for this from margaret
+        return "sheltercenterdev@gmail.com"
 
 
 def notify_adoptions_time_change(adopter, current_appt, new_appt):

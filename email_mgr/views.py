@@ -5,14 +5,15 @@ from io import StringIO
 from .email_sender import *
 from .forms import *
 from .models import *
+from appt_calendar.views import get_groups
 from dashboard.decorators import *
 
-@authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
-def email_home(request):
-    templates = EmailTemplate.objects.filter(active=True)
 
-    print([template.template_name for template in templates])
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'corp_volunteer_admin', 'superuser'})
+def email_home(request):
+    user_groups = [group for group in request.user.groups.all().iterator() if group.name != "greeter"]
+    templates = EmailTemplate.objects.filter(active=True, allowed_editors__in=user_groups).distinct()
     context = {
         'page_title': "Email Templates",
         'templates': templates,
@@ -77,7 +78,7 @@ def send_outbox(request):
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
+@allowed_users(allowed_roles={'admin', 'corp_volunteer_admin', 'superuser'})
 def edit_template(request, template_id):
     template = EmailTemplate.objects.get(pk=template_id)
     form = EmailTemplateForm(request.POST or None, instance=template)
@@ -105,10 +106,14 @@ def add_email_template(request):
 
     if form.is_valid():
         data = form.cleaned_data
-        EmailTemplate.objects.create(
+        template = EmailTemplate.objects.create(
             template_name=data['template_name'],
-            text=data['text']
+            description = data['description'],
+            text=data['text'],
         )
+
+        for group in data['allowed_editors']:
+            template.allowed_editors.add(group)
 
         return redirect('email_home')
     else:

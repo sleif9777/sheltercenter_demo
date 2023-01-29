@@ -13,7 +13,8 @@
   <li><a href="{% url 'adopter_home' %}">Home</a></li>
   {% endif %}
 {% endif %}
-{% if request.user|has_group:"corp_volunteer_admin" %}
-  <li><a href="">Corp. Volunteering</a></li>
+{% if request.user|has_group:"corp_volunteer" %}
+  <li><a href="{% url 'event_calendar' %}">Days of Service</a></li>
+  <li><a href="{% url 'contact_corp_volunteer_team' %}">Contact Our Team</a></li>
   <!-- <li><a href="{% url 'fake500' %}">Prompt 500</a></li> -->
 {% endif %}

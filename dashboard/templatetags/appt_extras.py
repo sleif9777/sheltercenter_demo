@@ -52,3 +52,17 @@ def show_notes(appt):
     return show
 
 
+@register.filter(name='pending_or_complete')
+def pending_or_complete(adopter):
+    waiting_for_chosen = adopter.waiting_for_chosen
+    chosen_appointment = Appointment.objects.get(
+        adopter=adopter,
+        status__in=["3", "9", "10"],
+    )
+
+    if waiting_for_chosen and chosen_appointment:
+        return "pending"
+    elif waiting_for_chosen:
+        return "complete"
+    else:
+        return

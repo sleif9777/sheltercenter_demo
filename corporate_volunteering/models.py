@@ -14,7 +14,6 @@ class Organization(models.Model):
         ]
     )
     contact_email = models.EmailField(default="", blank=True)
-    donation_interest = models.BooleanField(default=True)
     has_event = models.BooleanField(default=False)
     leader_fname = models.CharField(default="", max_length=20, blank=True)
     leader_lname = models.CharField(default="", max_length=20, blank=True)
@@ -29,13 +28,16 @@ class Organization(models.Model):
 
     def leader_name(self):
         return "{0} {1}".format(
-            self.leader_fname.upper(), self.leader_lname.upper())
+            self.leader_fname, self.leader_lname)
+
+    def leader_name_upper(self):
+        return self.leader_name.upper()
 
 
 class VolunteeringEvent(models.Model):
+    #basic info
     available = models.BooleanField(default=True)
     date = models.DateField(default=datetime.date(2000,1,1))
-    donation_received = models.BooleanField(default=False)
     event_counselor = models.CharField(default="", max_length=30, blank=True)
     event_end_time = models.TimeField(default=datetime.time(9,0))
     event_start_time = models.TimeField(default=datetime.time(9,0))
@@ -46,9 +48,15 @@ class VolunteeringEvent(models.Model):
         blank=True, 
         on_delete=models.SET_NULL
     )
-    volunteer_confirmed_count = models.IntegerField(default=0, blank=True)
     volunteer_maximum = models.IntegerField(default=0, blank=True)
     volunteer_minimum = models.IntegerField(default=0, blank=True)
+
+    #statuses
+    donation_received = models.BooleanField(default=False)
+    marked_as_complete = models.BooleanField(default=False)
+    posted_social_media = models.BooleanField(default=False)
+    sent_thank_you = models.BooleanField(default=False)
+    waivers_complete = models.BooleanField(default=False)
 
     def __repr__(self):
         try:
@@ -69,6 +77,15 @@ class VolunteeringEvent(models.Model):
         start_time_str = time_str(self.event_start_time)
         end_time_str = time_str(self.event_end_time)
         return "({0} - {1})".format(start_time_str, end_time_str)
+
+    def volunteer_count_str(self):
+        min = self.volunteer_minimum
+        max = self.volunteer_maximum
+
+        if min == max:
+            return str(max)
+        else:
+            return "{0} to {1}".format(min, max)
 
     def delist(self):
         self.organization.has_event = True

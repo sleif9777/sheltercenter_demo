@@ -29,6 +29,7 @@ class EmailTemplateAddForm(forms.ModelForm):
             'template_name',
             'description',
             'text',
+            'allowed_editors',
         ]
         labels = {
         }

@@ -6,7 +6,10 @@
   <h1 class="page-header no-actions">{{header_text}}</h1>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {% if time_form %}
+      {{ time_form }}
+    {% endif %}
+    {{form.as_p}}
     <br>
     <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;"  value="Submit">
   </form>

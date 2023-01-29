@@ -37,13 +37,16 @@ def login_page(request):
 
         if user:
             login(request, user)
-            # get_and_update_dogs()
             user_groups = get_groups(user)
+            is_corp_volunteer = user_groups == {'corp_volunteer'}
+            is_corp_volunteer_admin = user_groups == {'corp_volunteer_admin'}
 
             if 'adopter' in user_groups and not user.adopter.acknowledged_faq:
                 return redirect('adopter_home')
             # elif corp volunteer redirect blah
             # elif corp volunteer admin redirect bleh
+            elif is_corp_volunteer or is_corp_volunteer_admin:
+                return redirect('event_calendar')
             else:
                 return redirect('calendar')
 
@@ -257,7 +260,7 @@ def filter_timeslots_adopter(timeslots_query, date, adopter):
             ))
 
         #delete unnecessary timeslots
-        if timeslots[time] == []:
+        if time.time.minute % 30 != 0:
             timeslots.pop(time)
     
     return timeslots

@@ -18,7 +18,7 @@
   <li><a href="{% url 'display_list' %}">Manage Dogs</a></li>
   <li><a href="{% url 'litter_mgmt' %}">Manage Litters</a></li>
   <li><a href="{% url 'admin:index' %}">Django Admin</a></li>
-  <li><a href="{% url 'event_calendar' %}">Corp. Volunteering</a></li>
+  {% include 'dashboard/volunteer_admin_navbar.html' %}
   <!-- <li><a href="{% url 'fake500' %}">Prompt 500</a></li> -->
 {% endif %}
 <li><a href="{% url 'user_settings' %}">Settings</a></li>

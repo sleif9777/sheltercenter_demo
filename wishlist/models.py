@@ -86,6 +86,7 @@ class DogObject(models.Model):
     info = models.JSONField()
     offsite = models.BooleanField(default=False)
     appt_only = models.BooleanField(default=False)
+    alter_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
     host_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
     foster_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
     litter_group = models.CharField(default="", max_length=20, blank=True)
@@ -123,6 +124,11 @@ class DogObject(models.Model):
         else:
             return
 
+    def alter_date_str(self):
+        if self.alter_date.year != 2000:
+            return self.alter_date.strftime("%Y-%m-%d")
+        else:
+            return
 
     class Meta:
         ordering = ('name', 'id',)
