@@ -31,7 +31,8 @@ class Organization(models.Model):
             self.leader_fname, self.leader_lname)
 
     def leader_name_upper(self):
-        return self.leader_name.upper()
+        return "{0} {1}".format(
+            self.leader_fname, self.leader_lname).upper()
 
 
 class VolunteeringEvent(models.Model):

@@ -907,12 +907,12 @@ def handle_appt_delist_from_edit_appt(appt, changed, prev_adopter, date):
     return
 
 
-# REFACTORED
+# TO DO - strip out date parameters and use appt.date (need to update in templates)
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'adopter'})
 def edit_appointment(request, date_year, date_month, date_day, appt_id):
-    date = datetime.date(date_year, date_month, date_day)
     appt = Appointment.objects.get(pk=appt_id)
+    date = datetime.date(date_year, date_month, date_day)
     current_adopter = appt.adopter
     adopter_form, appt_form = get_default_edit_appt_forms(request, current_adopter, appt)
     current_email = get_current_email(appt)
@@ -1385,6 +1385,7 @@ def request_access(request, adopter_id):
     adopter = Adopter.objects.update_or_create(
         pk=adopter_id,
         defaults={
+            'adoption_complete': True,
             'requested_access': True,
             'waiting_for_chosen': False,
         }

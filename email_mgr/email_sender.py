@@ -614,9 +614,7 @@ def get_events_email():
     if str(os.environ.get("DJANGO_ALLOWED_HOST")) != "*":
         return "sheltercenterdev@gmail.com"
     else:
-        # TO DO
-        # get actual email for this from margaret
-        return "sheltercenterdev@gmail.com"
+        return "events@savinggracenc.org"
 
 
 def notify_adoptions_time_change(adopter, current_appt, new_appt):

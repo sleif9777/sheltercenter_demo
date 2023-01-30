@@ -15,7 +15,7 @@ from dashboard.decorators import *
 from email_mgr.email_sender import *
 from email_mgr.models import EmailTemplate
 
-sandbox = str(os.environ.get('SANDBOX')) == "1"
+sandbox = str(os.environ.get('EVENT_SANDBOX')) == "1"
 today = datetime.datetime.today()
 
 # Create your views here.
@@ -158,12 +158,9 @@ def handle_valid_edit_event_form(form, event, og_org_id):
 
     if org:
         event.delist()
-        return event.organization.id != og_org_id
-    else:
-        if og_org_id:
-            og_org = Organization.objects.get(pk=og_org_id)
-            event.relist(og_org)
-        return False
+    elif og_org_id:
+        og_org = Organization.objects.get(pk=og_org_id)
+        event.relist(og_org)
 
 
 def remove_organization(request, event_id):
@@ -237,14 +234,11 @@ def edit_event(request, event_id):
         header_text = event.date_string()
 
     if form.is_valid() and time_form.is_valid():
-        org_changed = handle_valid_edit_event_form(form, event, og_org)
+        handle_valid_edit_event_form(form, event, og_org)
         timeform_data = time_form.cleaned_data
         save_start_end_times(event, timeform_data)
         
-        if org_changed:
-            return redirect('contact_org', event.organization.id, "add")
-        else:
-            return redirect('event_calendar')
+        return redirect('event_calendar')
     else:
         form = EventForm(request.POST or None, instance=event)
         time_form = EventTimeForm(request.POST or None, initial=get_defaults)
@@ -267,12 +261,9 @@ def add_event(request):
     if form.is_valid():
         form.save()
         event = VolunteeringEvent.objects.latest('id')
-        org_changed = handle_valid_edit_event_form(form, event, None)
+        handle_valid_edit_event_form(form, event, None)
         
-        if org_changed:
-            return redirect('contact_org', event.organization.id, "add")
-        else:
-            return redirect('event_calendar')
+        return redirect('event_calendar')
     else:
         form = EventForm(request.POST or None)
 

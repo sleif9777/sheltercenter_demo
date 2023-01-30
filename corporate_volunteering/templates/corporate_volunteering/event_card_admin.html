@@ -1,5 +1,6 @@
 {% load appt_extras %}
 {% load auth_extras %}
+{% load corp_volunteer_extras %}
 
 <div class="appointment">
   {% if not event.available %}
@@ -91,38 +92,44 @@
         <td>
           <ul class="appt-two-col-list">
             <li>Send/Resend Waivers</li>
-            <li>Send/Resend Confirmation</li>
+            <li>
+              {% if event|able_to_confirm %}
+              <a href="{% url 'contact_org' event.organization.id 'add' %}">Send/Resend Confirmation</a>
+              {% else %}
+              <em>Counselor and task required to send confirmation</em>
+              {% endif %}
+            </li>
             <li>
               {% if event.waivers_complete %}
-              <span class="completed-appt-action">Waivers Complete </span><a href="{% url 'mark_event' event.id 'waivers' %}">(Undo)</a>
+              <span class="completed-appt-action">Waivers Complete</span><a href="{% url 'mark_event' event.id 'waivers' %}"> (Undo)</a>
               {% else %}
               <a href="{% url 'mark_event' event.id 'waivers' %}">Waivers Complete</a>
               {% endif %}
             </li>
             <li>
               {% if event.donation_received %}
-              <span class="completed-appt-action">Donation Received </span><a href="{% url 'mark_event' event.id 'donation' %}">(Undo)</a>
+              <span class="completed-appt-action">Donation Received</span><a href="{% url 'mark_event' event.id 'donation' %}"> (Undo)</a>
               {% else %}
               <a href="{% url 'mark_event' event.id 'donation' %}">Donation Received</a>
               {% endif %}
             </li>
             <li>
               {% if event.posted_social_media %}
-              <span class="completed-appt-action">Posted on Social Media </span><a href="{% url 'mark_event' event.id 'social_media' %}">(Undo)</a>
+              <span class="completed-appt-action">Posted on Social Media</span><a href="{% url 'mark_event' event.id 'social_media' %}"> (Undo)</a>
               {% else %}
               <a href="{% url 'mark_event' event.id 'social_media' %}">Posted on Social Media</a>
               {% endif %}
             </li>
             <li>
               {% if event.sent_thank_you %}
-              <span class="completed-appt-action">Thank You Sent </span><a href="{% url 'mark_event' event.id 'thank_you' %}">(Undo)</a>
+              <span class="completed-appt-action">Thank You Sent</span><a href="{% url 'mark_event' event.id 'thank_you' %}"> (Undo)</a>
               {% else %}
               <a href="{% url 'mark_event' event.id 'thank_you' %}">Thank You Sent</a>
               {% endif %}
             </li>
             <li>
               {% if event.marked_as_complete %}
-              <span class="completed-appt-action">Mark as Complete </span><a href="{% url 'mark_event' event.id 'complete' %}">(Undo)</a>
+              <span class="completed-appt-action">Mark as Complete</span><a href="{% url 'mark_event' event.id 'complete' %}"> (Undo)</a>
               {% else %}
               <a href="{% url 'mark_event' event.id 'complete' %}">Mark as Complete</a>
               {% endif %}

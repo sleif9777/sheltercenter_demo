@@ -33,12 +33,14 @@
               {% elif request.user|has_group:"admin" and dog not in recently_adopted_dogs %}
                 <label for="{{dog.shelterluv_id}}-appt">Appointment Only? </label>
                 <input type="checkbox" name="{{dog.shelterluv_id}}-appt" value="appt-only" {% if dog.appt_only %} checked {% endif %}><br>
+                <hr>
                 <label for="{{dog.shelterluv_id}}-host">Extended Host</label><br>
                 <input type="date" name="{{dog.shelterluv_id}}-host" id="host-{{dog.shelterluv_id}}" value="{{dog.host_date_str}}"><br>
                 <label for="{{dog.shelterluv_id}}-fstr">Foster Return</label><br>
                 <input type="date" name="{{dog.shelterluv_id}}-fstr" id="foster-{{dog.shelterluv_id}}" value="{{dog.foster_date_str}}"><br>
                 <label for="{{dog.shelterluv_id}}-altr">Spay/Neuter Date</label><br>
-                <input type="date" name="{{dog.shelterluv_id}}-altr" id="foster-{{dog.shelterluv_id}}" value="{{dog.alter_date_str}}"><br>
+                <input class="btm-margin-5" type="date" name="{{dog.shelterluv_id}}-altr" id="foster-{{dog.shelterluv_id}}" value="{{dog.alter_date_str}}"><br>
+                <hr>
                 <a href="{% url 'create_watchlist_email_batch_dog' 'popular' dog.id %}">Send Dog Is Popular Emails</a><br>
               {% endif %}
               {% if request.user|has_group:"admin" %}
@@ -46,7 +48,7 @@
               {% endif %}
               {% if request.user|has_group:"superuser" %}
               <br>
-              <a href="https://sheltercenter.dog/admin/wishlist/dogprofile/{{dog.id}}/change/">Edit Dog in Admin</a>
+              <a href="https://sheltercenter.dog/admin/wishlist/dogobject/{{dog.id}}/change/">Edit Dog in Admin</a>
               {% endif %}
             </td>
           </tr>

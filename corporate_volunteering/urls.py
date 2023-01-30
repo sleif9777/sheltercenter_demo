@@ -9,6 +9,7 @@ urlpatterns = [
     path("add_event/", views.add_event, name="add_event"),
     path("edit_event?event=<int:event_id>/", views.edit_event, name="edit_event"),
     path("book_event?event=<int:event_id>/", views.book_event, name="book_event"),
+    path("?past=<int:past>/", views.calendar, name="past_events"),
     path("edit_org?org=<int:org_id>", views.edit_organization, name="edit_org"),
     path("remove_org?event=<int:event_id>/", views.remove_organization, name="remove_organization"),
     path("delete_event?event=<int:event_id>", views.delete_event, name="delete_event"),

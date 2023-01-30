@@ -20,7 +20,6 @@ yesterday = today - timedelta(days=1)
 two_days_ago = today - timedelta(days=2)
 
 # TO DO
-# decorators for authentication
 # cleanup formatting
 # break into more functions
 
@@ -158,7 +157,7 @@ def update_all_dogs():
 
 
 def update_all_litters():
-    litters = LitterObject.objects.filter(any_available=True)
+    litters = LitterObject.objects.all()
 
     for litter in litters:
         litter.check_availability()
@@ -319,8 +318,6 @@ def get_and_update_dogs():
 
 def get_all_available_dogs(filter_today=False):
     global today, yesterday, two_days_ago
-    # update_all_dogs()
-    # update_all_litters()
 
     if filter_today:
         all_available_dogs_query = DogObject.objects.filter(
@@ -375,7 +372,8 @@ def get_date_from_form_data(data):
 @allowed_users(allowed_roles={'superuser', 'admin', 'adopter'})
 def display_list(request):
     user_groups = get_groups(request.user)
-    # get_and_update_dogs()
+    get_and_update_dogs()
+    print('done')
 
     if 'adopter' in user_groups:
         return redirect('display_list_adopter')
