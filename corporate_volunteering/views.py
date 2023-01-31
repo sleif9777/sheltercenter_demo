@@ -1,6 +1,5 @@
 import copy
 import datetime
-import numpy as np
 
 from django.contrib.auth.models import Group, User
 from django.db.models import Q
@@ -55,10 +54,17 @@ def manage_orgs(request):
 
 
 def book_event(request, event_id):
+    form_data = dict(request.POST)
+    del form_data['csrfmiddlewaretoken']
+
     event = VolunteeringEvent.objects.get(pk=event_id)
     org = request.user.organization
 
     event.organization = org
+    event.activity_level = int(form_data['activity-level'][0])
+    event.headcount = int(form_data['headcount'][0])
+    event.notes = form_data['notes'][0]
+
     event.delist()
     event_booked(org, event)
 
@@ -139,7 +145,7 @@ def edit_organization(request, org_id):
 
     if form.is_valid():
         handle_valid_edit_org_form(form, org, email)
-        return redirect('edit_org', org_id)
+        return redirect('manage_orgs')
     else:
         form = OrganizationForm(request.POST or None, instance=org)
 
@@ -195,19 +201,19 @@ def get_event_time_form_defaults(event):
 
 
 def map_start_and_end(form_data):
-    start_hour = int(form_data['start_hour'])
-    start_minute = int(form_data['start_minute'])
-    if form_data['start_daypart'] == "1" and start_hour < 12:
-        start_hour += 12
-    start_time = datetime.time(start_hour, start_minute)
-    
-    end_hour = int(form_data['end_hour'])
-    end_minute = int(form_data['end_minute'])
-    if form_data['end_daypart'] == "1" and end_hour < 12:
-        end_hour += 12   
-    end_time = datetime.time(end_hour, end_minute)
+    start_time = map_time_from_data(form_data, 'start')
+    end_time = map_time_from_data(form_data, 'end')
 
     return start_time, end_time
+
+
+def map_time_from_data(form_data, start_or_end):
+    hour = int(form_data['{0}_hour'.format(start_or_end)])
+    minute = int(form_data['{0}_minute'.format(start_or_end)])
+    if form_data['{0}_daypart'.format(start_or_end)] == "1" and hour < 12:
+        hour += 12
+
+    return datetime.time(hour, minute)
 
 
 def save_start_end_times(event, timeform_data):
@@ -284,9 +290,11 @@ def handle_valid_edit_org_form(form, org, og_email):
     if email_changed:
         org.user.username = str(org.contact_email)
 
-        if org.user.adopter:
+        try:
             org.user.adopter.primary_email = org.contact_email
             org.user.adopter.save()
+        except:
+            pass
 
         org.user.save()
 
@@ -296,6 +304,8 @@ def get_template_from_source(source, signature, org, event=None):
     file2 = None
     subject = None
 
+    print(source)
+
     match source:     
         case 'add':
             template = EmailTemplate.objects.get(
@@ -303,7 +313,7 @@ def get_template_from_source(source, signature, org, event=None):
         case 'confirm':
             template = EmailTemplate.objects.get(
                 template_name="Confirm Event")
-        #case waiver?
+            file1 = template.file1
         case 'thank_you':
             template = EmailTemplate.objects.get(
                 template_name="Thank Organization")
@@ -370,9 +380,13 @@ def contact_org(request, org_id, source, event_id=None):
     if form.is_valid():
         data = form.cleaned_data
         message = data['message']
-        new_contact_org_msg(Organization, message, [file1, file2], subject)
+        new_contact_org_msg(org, message, [file1, file2], subject)
 
-        return redirect("add_org")
+        match source:
+            case "add":
+                return redirect("add_org")
+            case _:
+                return redirect("event_calendar")
         
     context = {
         'form': form,
@@ -429,6 +443,12 @@ def mark_event(request, event_id, flag):
             event.sent_thank_you = not event.sent_thank_you
         case "complete":
             event.marked_as_complete = not event.marked_as_complete
+
+    all_flags_true = (event.donation_received and event.waivers_complete 
+        and event.posted_social_media and event.sent_thank_you)
+
+    if all_flags_true:
+        event.marked_as_complete = True
 
     event.save()
 

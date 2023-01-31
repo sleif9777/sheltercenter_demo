@@ -124,12 +124,39 @@
       function closeNav() {
         document.getElementById("activity-menu").style.height = "0";
       }
+
+      function hideSignupForms() {
+        signupForms = document.getElementsByClassName("event-signup-form");
+
+        for (let i = 0; i < signupForms.length; i++) {
+          signupForms[i].style.display = "none";
+        }
+      }
+
+      function restoreEventHeaders() {
+        eventHeaders = document.getElementsByClassName("event-header");
+
+        for (let i = 0; i < signupForms.length; i++) {
+          eventHeaders[i].style.display = "block";
+        }
+      }
+
+      function showSignupForm(event_id) {
+        hideSignupForms();
+        restoreEventHeaders();
+
+        headerToHide = document.getElementById("event-header-" + event_id.toString());
+        headerToHide.style.display = "none";
+        signupFormToShow = document.getElementById("event-signup-form-" + event_id.toString());
+        signupFormToShow.style.display = "block";
+      }
     
       window.onload = function() {
         {% if request.user|has_group:"admin" %}
         loadInitialApptCardState({{request.user.profile.get_card_settings|safe}}, {{request.user.profile.get_card_subblock_settings|safe}});
         {% endif %}
         assignDefaultAlignments("appt-two-col-list");
+        hideSignupForms();
       }
     </script>
     <link rel="icon" href="{% static 'media/logo.png' %}">

@@ -34,17 +34,17 @@ class EventForm(forms.ModelForm):
             'date',
             'organization',
             'event_counselor',
+            'activity_level',
             'event_task',
-            'volunteer_minimum',
-            'volunteer_maximum',
+            'headcount',
+            'notes'
         ]
         labels = {
             'date': "Date: ",
             'organization': "Organization: ",
             'event_counselor': "Counselor: ",
             'event_task': "This group will be helping with ",
-            'volunteer_minimum': "Minimum Estimated Volunteers: ",
-            'volunteer_maximum': "Maximum Estimated Volunteers: ",
+            'headcount': "Volunteer headcount: ",
         }
         widgets = {
             'date': forms.SelectDateWidget(),

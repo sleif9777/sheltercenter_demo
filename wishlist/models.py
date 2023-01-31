@@ -138,7 +138,7 @@ class DogObject(models.Model):
 class LitterObject(models.Model):
     name = models.CharField(default="", max_length=20, blank=True)
     litter_id = models.CharField(default="", max_length=20, blank=True)
-    any_available = models.BooleanField(default=False)
+    any_available = models.BooleanField(default=True)
     dogs = models.ManyToManyField(DogObject, blank=True)
     latest_update = models.DateField(default=datetime.date(2000,1,1), blank=True)
     return_date = models.DateField(default=datetime.date(2000,1,1), blank=True)

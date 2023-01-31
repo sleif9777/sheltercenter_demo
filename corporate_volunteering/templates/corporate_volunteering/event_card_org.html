@@ -7,7 +7,7 @@
       {% if event.organization %}
       <tr>
         <td class="appt-description left upper">
-          {{event.organization.org_name}}
+          {{event.organization.org_name}} - CONFIRMED
         </td>
       </tr>
       {% elif request.user.organization.has_event %}
@@ -29,7 +29,28 @@
       {% else %}
       <tr>
         <td class="appt-description left upper">
-          <a href="">CLICK TO RESERVE</a>
+          <a class="event-header" id="event-header-{{event.id}}" onclick="showSignupForm({{event.id}});">CLICK TO RESERVE</a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <form action="{% url 'book_event' event.id %}" method="post" id="event-signup-form-{{event.id}}" class="event-signup-form">
+            {% csrf_token %}
+            <div class="btm-margin-5">
+              <h1 class="appt-description left upper">Select a physical activity level</h1>
+              <input type="radio" id="light" name="activity-level" value="1">
+              <label for="light">Light (i.e. cleaning and organizing)</label><br>
+              <input type="radio" id="moderate" name="activity-level" value="2">
+              <label for="moderate">Moderate (i.e. painting and shoveling gravel)</label><br>
+              <input type="radio" id="heavy" name="activity-level" value="3">
+              <label for="heavy">Heavy (i.e. assist with construction projects and heavy lifting)</label>
+            </div>
+            <h1 class="appt-description left upper">Confirm volunteer count</h1>
+            <input class="btm-margin-5" type="number" id="headcount" name="headcount" min="1" max="20"><br>
+            <h1 class="appt-description left upper">Additional notes (Optional)</h1>
+            <textarea class="btm-margin-5" rows="4" cols="50" maxlength="200" name="notes"></textarea>
+            <input type="submit" value="Reserve">
+          </form>
         </td>
       </tr>
       {% endif %}

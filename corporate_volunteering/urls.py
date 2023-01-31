@@ -14,7 +14,7 @@ urlpatterns = [
     path("remove_org?event=<int:event_id>/", views.remove_organization, name="remove_organization"),
     path("delete_event?event=<int:event_id>", views.delete_event, name="delete_event"),
     path("contact?org=<int:org_id>?source=<str:source>/", views.contact_org, name="contact_org"),
-    path("contact?org=<int:org_id>?source=<str:source>?event=<int:event_id>/", views.contact_org, name="contact_org_event"),
+    path("contact?org=<int:org_id>?source=<str:source>/event=<int:event_id>/", views.contact_org, name="contact_org_event"),
     path("contact_team/", views.contact_team, name="contact_corp_volunteer_team"),
     path("contact_team?event=<int:event_id>/", views.contact_team, name="contact_corp_volunteer_team_reschedule"),
     path("mark_event?event=<int:event_id>?flag=<str:flag>/", views.mark_event, name="mark_event"),

@@ -36,21 +36,29 @@ class Organization(models.Model):
 
 
 class VolunteeringEvent(models.Model):
+    ACTIVITY_LEVELS = [
+        ("0", "Unknown"),
+        ("1", "Light"),
+        ("2", "Moderate"),
+        ("3", "Heavy"),
+    ]
+
     #basic info
+    activity_level = models.CharField(default="0", max_length=1, choices=ACTIVITY_LEVELS)
     available = models.BooleanField(default=True)
     date = models.DateField(default=datetime.date(2000,1,1))
     event_counselor = models.CharField(default="", max_length=30, blank=True)
     event_end_time = models.TimeField(default=datetime.time(9,0))
     event_start_time = models.TimeField(default=datetime.time(9,0))
     event_task = models.CharField(default="", max_length=200, blank=True)
+    headcount = models.IntegerField(default=0, blank=True)
+    notes = models.CharField(default="", max_length=200, blank=True)
     organization = models.ForeignKey(
         Organization, 
         null=True, 
         blank=True, 
         on_delete=models.SET_NULL
     )
-    volunteer_maximum = models.IntegerField(default=0, blank=True)
-    volunteer_minimum = models.IntegerField(default=0, blank=True)
 
     #statuses
     donation_received = models.BooleanField(default=False)
@@ -79,14 +87,13 @@ class VolunteeringEvent(models.Model):
         end_time_str = time_str(self.event_end_time)
         return "({0} - {1})".format(start_time_str, end_time_str)
 
-    def volunteer_count_str(self):
-        min = self.volunteer_minimum
-        max = self.volunteer_maximum
+    def activity_level_str(self):
+        activity_levels = ["Unknown", "Light", "Moderate", "Heavy"]
 
-        if min == max:
-            return str(max)
-        else:
-            return "{0} to {1}".format(min, max)
+        return activity_levels[int(self.activity_level)]
+
+    def volunteer_count_str(self):
+        return "{0} volunteers".format(self.headcount)
 
     def delist(self):
         self.organization.has_event = True

@@ -193,7 +193,7 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
             if not adopter.has_current_appt:
                 save_booking_form(adopter, appt, booking_form, adopter_form)
             
-            return redirect('calendar')
+            return redirect('calendar_date_appt', date_year, date_month, date_day, appt.id)
         else:
             adopter_form, booking_form = get_default_booking_forms(
                 request, appt, adopter)

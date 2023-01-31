@@ -56,12 +56,8 @@
         </th>
       </tr>
       <tr class="internal-notes">
-        <td class="left" style="width:20%;"><b>Task:</b></td>
-        {% if event.event_task|length > 0 %}
-        <td class="left"><a href="{% url 'edit_event' event.id %}">This team will assist with {{event.event_task}}.</a></td>
-        {% else %}
-        <td class="left italic"><a href="{% url 'edit_event' event.id %}">Not assigned</a></td>
-        {% endif %}
+        <td class="left" style="width:20%;"><b>Physical Activity Level:</b></td>
+        <td class="left"><a href="{% url 'edit_event' event.id %}">{{event.activity_level_str}}</a></td>
       </tr>
       <tr class="internal-notes">
         <td class="left" style="width:20%;"><b>Counselor:</b></td>
@@ -72,8 +68,16 @@
         {% endif %}
       </tr>
       <tr class="internal-notes">
+        <td class="left" style="width:20%;"><b>Task:</b></td>
+        {% if event.event_task|length > 0 %}
+        <td class="left"><a href="{% url 'edit_event' event.id %}">This team will assist with {{event.event_task}}.</a></td>
+        {% else %}
+        <td class="left italic"><a href="{% url 'edit_event' event.id %}">Not assigned</a></td>
+        {% endif %}
+      </tr>
+      <tr class="internal-notes">
         <td class="left" style="width:20%;"><b>Volunteer Count:</b></td>
-        {% if event.volunteer_minimum > 0 %}
+        {% if event.headcount > 0 %}
         <td class="left"><a href="{% url 'edit_event' event.id %}">{{event.volunteer_count_str}}</a></td>
         {% else %}
         <td class="left italic"><a href="{% url 'edit_event' event.id %}">Unknown</a></td>
@@ -91,10 +95,9 @@
       <tr>
         <td>
           <ul class="appt-two-col-list">
-            <li>Send/Resend Waivers</li>
             <li>
               {% if event|able_to_confirm %}
-              <a href="{% url 'contact_org' event.organization.id 'add' %}">Send/Resend Confirmation</a>
+              <a href="{% url 'contact_org_event' event.organization.id 'confirm' event.id %}">Send/Resend Confirmation and Waivers</a>
               {% else %}
               <em>Counselor and task required to send confirmation</em>
               {% endif %}

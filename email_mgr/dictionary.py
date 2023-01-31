@@ -23,7 +23,6 @@ def get_adopter_replacements(adopter, appt):
             adopter_replacements['*ADP_WATCHLIST*'] = get_watchlist_replacements(
                 adopter, appt.date)
     except Exception as e:
-        print('Error at get_adopter_replacements: ', e)
         pass
 
     return adopter_replacements
@@ -79,8 +78,10 @@ def get_event_replacements(event):
             "*EVENT_COUNSELOR*": event.event_counselor,
             "*EVENT_DATE*": event.date_string(),
             "*EVENT_END*": time_str(event.event_end_time),
+            "*EVENT_HEADCOUNT*": str(event.headcount) if event.headcount > 0 else "10",
             "*EVENT_START*": time_str(event.event_start_time),
             "*EVENT_TASK*": event.event_task,
+            "*EVENT_WEEKDAY*": weekday_str(event.date),
         }
     else:
         event_replacements = {}
@@ -185,7 +186,7 @@ def replacer(html, adopter, appt, litter=None, dog=None, org=None, event=None):
     next_bd_replacements = get_next_bd_replacements()
     litter_or_dog_replacements = get_litter_or_dog_replacements(litter, dog)
     org_replacements = get_org_replacements(org)
-    event_replacements = get_event_replacements(org)
+    event_replacements = get_event_replacements(event)
 
     global_replacements = {
         '*HOST_URL*': '<a href="https://savinggracenc.org/host-a-dog/">If you would like to learn more about our Weekend Host program, please visit our website.</a>',

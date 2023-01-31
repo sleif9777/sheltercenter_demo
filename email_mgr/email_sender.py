@@ -329,8 +329,12 @@ def new_contact_org_msg(organization, message, files, subject):
     if not subject:
         subject = "New message from the Saving Grace volunteering team"
 
-    email = organization.contact_email
+    print(organization, organization.contact_email)
+
+    email = str(organization.contact_email)
     text = strip_tags(message)
+
+    print(type(email), email)
 
     send_email(text, message, "default", subject, email, files)
 

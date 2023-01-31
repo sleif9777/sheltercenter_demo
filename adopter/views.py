@@ -36,7 +36,7 @@ def get_email_from_row(row):
         f_name = row[13]
         l_name = row[14]
         primary_email = get_sandbox_email(f_name, l_name)
-        secondary_email = None
+        secondary_email = ""
     #else use real email
     else:
         primary_email = row[28].lower()
@@ -171,7 +171,7 @@ def create_invite_email(adopter, inactive=False):
         template = EmailTemplate.objects.get(
             template_name="Are you ready to schedule your appointment?")
     else:        
-        include_app_interest = eval_app_interest(adopter)
+        include_app_interest = eval_app_interest(adopter.app_interest)
         message.subject = "Your adoption request has been reviewed: {0}".format(
             adopter.full_name().upper())
 
@@ -219,11 +219,10 @@ def handle_existing(existing_adopter, status, app_interest):
     if process:
         #if the adopter is approved...
         if accepted_adopter_status:
+            existing_adopter.accept_date = today
+
             if unique_app_interest:
                 existing_adopter.app_interest = app_interest
-
-            if accepted_over_1_year:
-                existing_adopter.accept_date = today
 
         #elif moved from pending to approved, send invite
         elif pending_adopter_status:
@@ -231,6 +230,9 @@ def handle_existing(existing_adopter, status, app_interest):
             
         existing_adopter.save()
         create_invite_email(existing_adopter)
+        # print("Processed")
+    # else:
+        # print("Did not process")
 
 
 def remove_spaces_and_lower(f_name, l_name):
@@ -246,9 +248,11 @@ def too_many_rows(request):
 
 
 def attempt_to_handle_existing_from_file(row):
-    email_for_search = get_email_from_row(row)
+    email_for_search = get_email_from_row(row)[0]
     existing_adopter = attempt_to_retrieve_existing_adopter(
         email_for_search)
+
+    # print("Located record for ", existing_adopter)
 
     #update to newest application
     existing_adopter.application_id = row[0]
@@ -256,9 +260,10 @@ def attempt_to_handle_existing_from_file(row):
 
     #if blocked, add to error report
     if existing_adopter.status == "2":
-        errors += [existing_adopter]
+        return existing_adopter
     else:
         handle_existing(existing_adopter, row[4], row[11])
+        return False
 
 
 def handle_new_from_file(row):
@@ -266,13 +271,18 @@ def handle_new_from_file(row):
     
     try:
         create_new_user_from_adopter(adopter)
-    except:
+    except Exception as g:
+        # print("ExceptionG: ", g)
+        # exc_type, exc_obj, exc_tb = sys.exc_info()
+        # fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        # print(exc_type, fname, exc_tb.tb_lineno)
         pass
 
     if accepted_status(adopter):
         create_invite_email(adopter)
+        return False
     else:
-        errors += [adopter]
+        return adopter
 
 
 def add_from_file(request, file):
@@ -284,10 +294,20 @@ def add_from_file(request, file):
         return True
     else:
         for row in adopter_data:
+            # print("Starting on ", row[28])
             try:
-                attempt_to_handle_existing_from_file(row)
-            except:
-                handle_new_from_file(row)
+                error = attempt_to_handle_existing_from_file(row)
+                # print("User previously existed")
+            except Exception as f:
+                # print("ExceptionF: ", f)
+                # exc_type, exc_obj, exc_tb = sys.exc_info()
+                # fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                # print(exc_type, fname, exc_tb.tb_lineno)
+                error = handle_new_from_file(row)
+                # print('New user added', error)
+
+            if error is not False:
+                errors += [error]
 
         if len(errors) > 0:
             upload_errors(errors)
@@ -354,7 +374,8 @@ def attempt_to_retrieve_existing_adopter(email_for_search):
     try:
         existing_user = User.objects.get(username=email_for_search)
         existing_adopter = Adopter.objects.get(user=existing_user)
-    except:
+    except Exception as h:
+        # print("ExceptionH: ", h)
         existing_adopter = Adopter.objects.filter(primary_email=email_for_search).latest('id')
 
     return existing_adopter
@@ -399,17 +420,22 @@ def add(request):
     global today
     form = AdopterForm(request.POST or None)
 
+    # print(request.FILES)
+
     #try adding from file
     try:
         if request.method == 'POST' and request.FILES['app_file']:
             file = request.FILES['app_file']
-
             # can return either boolean or redirect
-            too_long = add_from_file(request, file) 
+            too_long = add_from_file(request, file)
             if type(too_long) == bool:
                 return render(request, "adopter/too_many_rows.html")
     #except no file, add manually without application
-    except:
+    except Exception as e:
+        # print("ExceptionE: ", e)
+        # exc_type, exc_obj, exc_tb = sys.exc_info()
+        # fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        # print(exc_type, fname, exc_tb.tb_lineno)
         if form.is_valid():
             try:
                 form_data = form.cleaned_data
@@ -619,10 +645,7 @@ def contact(request, appt_id=None, dog_name=None):
         dt_string = Appointment.objects.get(pk=appt_id).date_and_time_string()
         default_message = "I would like to book for {0}.".format(dt_string)
     elif dog_name:
-        default_message = """
-            I am interested in meeting {0} (available by appointment only). 
-            My availability is...
-        """.format(dog_name)
+        default_message = "I am interested in meeting {0} (available by appointment only). My availability is [date & time 1], [date & time 2], date & time 3]...".format(dog_name)
     else:
         default_message = ""
 
