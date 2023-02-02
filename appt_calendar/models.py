@@ -176,7 +176,7 @@ class Appointment(models.Model):
         return "Booked {0} at {1}".format(date_num_str(self.dt_booking), time_str(self.dt_booking))
 
     def appt_string(self):
-        appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA", "Visit", "Donation Drop-Off"]
+        appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA", "Visit", "Donation Drop-Off", "Test"]
         return appt_type[int(self.appt_type) - 1]
 
     def mark_short_notice(self):
