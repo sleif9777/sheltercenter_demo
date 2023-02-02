@@ -17,6 +17,7 @@ class Profile(models.Model):
     ac_show_internal_notes = models.BooleanField(default=True)
     ac_show_adopter_notes = models.BooleanField(default=True)
     ac_show_shelterluv_notes = models.BooleanField(default=True)
+    ac_show_watchlist = models.BooleanField(default=True)
     ac_show_city_state = models.BooleanField(default=True)
     ac_show_household_activity = models.BooleanField(default=True)
     ac_show_housing = models.BooleanField(default=True)
@@ -61,6 +62,7 @@ class Profile(models.Model):
             'internal-notes': int(self.ac_show_internal_notes),
             'adopter-notes': int(self.ac_show_adopter_notes),
             'shelterluv-notes': int(self.ac_show_shelterluv_notes),
+            'ac_show_watchlist': int(self.ac_show_watchlist),
             'city-state': int(self.ac_show_city_state),
             'household-activity': int(self.ac_show_household_activity),
             'housing': int(self.ac_show_housing),
@@ -100,7 +102,8 @@ class Profile(models.Model):
         notes = [
             self.ac_show_internal_notes,
             self.ac_show_adopter_notes,
-            self.ac_show_shelterluv_notes
+            self.ac_show_shelterluv_notes,
+            self.ac_show_watchlist,
         ]
         
         about = [

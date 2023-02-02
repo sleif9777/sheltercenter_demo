@@ -25,12 +25,16 @@
           </tr>
           <tr class="dog-info-block no-border">
             <td>
-              {% if request.user|has_group:"adopter" and dog|on_wishlist:user_wishlist %}
-                <a href="{% url 'remove_dog_from_wishlist' dog.id %}">Remove from Watch List</a>
-              {% elif request.user|has_group:"adopter" and not dog|on_wishlist:user_wishlist %}
-                <input type="checkbox" name="{{dog.shelterluv_id}}" value="{{dog.shelterluv_id}}">
-                <label for="{{dog.shelterluv_id}}">Add to Watch List</label>
-              {% elif request.user|has_group:"admin" and dog not in recently_adopted_dogs %}
+              {% if request.user|has_group:"adopter" %} 
+                {% if dog|on_wishlist:user_wishlist %}
+                  <a href="{% url 'remove_dog_from_wishlist' dog.id %}">Remove from Watch List</a><br>
+                {% else %}
+                  <input type="checkbox" name="{{dog.shelterluv_id}}" value="{{dog.shelterluv_id}}">
+                  <label for="{{dog.shelterluv_id}}">Add to Watch List</label><br>
+                {% endif %}
+                <a href="https://savinggracenc.org/adopt/#sl_embed&page=shelterluv_wrap_1626451623687%2Fembed%2Fanimal%2F{{dog.shelterluv_id}}">Learn More About Me</a>
+              {% endif %}
+              {% if request.user|has_group:"admin" and dog not in recently_adopted_dogs %}
                 <label for="{{dog.shelterluv_id}}-appt">Appointment Only? </label>
                 <input type="checkbox" name="{{dog.shelterluv_id}}-appt" value="appt-only" {% if dog.appt_only %} checked {% endif %}><br>
                 <hr>

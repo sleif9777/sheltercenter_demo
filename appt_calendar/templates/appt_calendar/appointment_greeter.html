@@ -26,7 +26,7 @@
     </tr>
   </table>
 
-  {% if appt.appt_type in schedulable %}
+  {% if appt.appt_type in schedulable and appt.adopter %}
   <table class="appt-subblock appt-info-block">
     <tr class="info-block-subheader">
       <th>Contact Info</th>
@@ -76,11 +76,20 @@
         <td class="left">{{appt.adopter_notes|linebreaks}}</td>
       </tr>
       {% endif %}
-
       {% if appt.adopter.app_interest and appt.appt_type in schedulable %}
       <tr>
         <td class="left" style="width:20%;"><b>From Shelterluv:</b></td>
         <td class="left">{{appt.adopter.app_interest_str|linebreaks}}</td>
+      </tr>
+      {% endif %}
+      {% if appt|show_watchlist and appt.schedulable %}
+      <tr class="watchlist">
+        <td class="left" style="width:20%;"><b>Watch List:</b></td>
+        <td class="left">{{appt.adopter.watchlist_available_str}}</td>
+      </tr>
+      <tr class="watchlist">
+        <td class="left" style="width:20%;"></td>
+        <td class="left strikethrough-italic">{{appt.adopter.watchlist_unavailable_str}}</td>
       </tr>
       {% endif %}
     </table>

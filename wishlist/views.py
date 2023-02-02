@@ -259,7 +259,7 @@ def get_litter_and_data_type(key):
 @allowed_users(allowed_roles={'superuser', 'admin'})
 def litter_mgmt(request):
     global today, yesterday, two_days_ago
-    update_all_litters()
+    get_and_update_dogs()
     available_litters, recently_adopted_litters = get_litters()
 
     if request.method == "POST":
@@ -373,7 +373,6 @@ def get_date_from_form_data(data):
 def display_list(request):
     user_groups = get_groups(request.user)
     get_and_update_dogs()
-    print('done')
 
     if 'adopter' in user_groups:
         return redirect('display_list_adopter')

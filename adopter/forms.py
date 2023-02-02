@@ -14,10 +14,10 @@ class AdopterForm(forms.ModelForm):
             'status',
             'out_of_state',
             'lives_with_parents',
-            'adopting_host',
-            'adopting_foster',
-            'chosen_dog',
-            'app_interest',
+            # 'adopting_host',
+            # 'adopting_foster',
+            # 'chosen_dog',
+            # 'app_interest',
         ]
         labels = {
             'f_name': 'First Name:',
@@ -27,10 +27,10 @@ class AdopterForm(forms.ModelForm):
             'status': 'Status:',
             'out_of_state': 'Adopter from outside NC, SC, or VA',
             'lives_with_parents': 'Adopter lives with parents',
-            'adopting_host': 'Adopting their host dog',
-            'adopting_foster': 'Adopting their foster dog',
-            'chosen_dog': '(For foster/host adoptions) Chosen dog:',
-            'app_interest': '(For general adoptions) Interested in:'
+            # 'adopting_host': 'Adopting their host dog',
+            # 'adopting_foster': 'Adopting their foster dog',
+            # 'chosen_dog': '(For foster/host adoptions) Chosen dog:',
+            # 'app_interest': '(For general adoptions) Interested in:'
         }
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label_suffix', '')

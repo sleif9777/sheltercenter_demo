@@ -354,7 +354,7 @@ def paperwork_calendar(
         request, date_year, date_month, date_day, appt_id, hw_status):
     appt = Appointment.objects.get(pk=appt_id)
     fta_or_adoption = "FTA" if hw_status == "positive" else "Adoption"
-    calendar = gc(request.user, 'full', date_year, date_month, date_day)
+    calendar = gc(request.user, 'exclude_host', date_year, date_month, date_day)
     context = {
         "appt": appt,
         "hw_status": hw_status,
@@ -369,7 +369,7 @@ def paperwork_calendar(
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def calendar_print(request, date_year, date_month, date_day):
-    context = gc(request.user, 'full', date_year, date_month, date_day)
+    context = gc(request.user, 'exclude_host', date_year, date_month, date_day)
     context['page_title'] = "Print Calendar"
     return render(request, "appt_calendar/calendar_print.html/", context)
 
@@ -678,7 +678,7 @@ def edit_calendar_announcement(request, date_year, date_month, date_day):
     return render(request, "appt_calendar/add_edit_appt.html", context)
 
 
-def handle_add_appointment_form_upon_save(appt, timeslot, date):
+def handle_add_appointment_form_upon_save(appt: Appointment, timeslot, date):
     adopter = appt.adopter
     timeslot.appointments.add(appt)
 
@@ -687,14 +687,21 @@ def handle_add_appointment_form_upon_save(appt, timeslot, date):
 
     if appt.adopter:
         appt.delist()
+        not_chosen = appt.appt_type != "9"
 
-        if short_notice(appt):
+        if short_notice(appt) and not_chosen:
             appt.mark_short_notice()
             update_or_create_sn_obj(appt, adopter, appt, None, "1")
             notify_adoptions_add(adopter, appt)
 
         if appt.schedulable():
-            return redirect('contact_adopter', appt.id, date.year, date.month, date.day, 'confirm_appt')
+            return 'confirm_appt'
+        elif appt.appt_type == "9":
+            appt.save_host_to_adoption_info()
+            return 'add_form_adopting_host'
+    
+    return None
+
 
 
 # NEEDS REFACTOR
@@ -714,8 +721,12 @@ def add_appointment(request, date_year, date_month, date_day, timeslot_id):
     if form.is_valid():
         form.save()
         appt = Appointment.objects.latest('id')
-        handle_add_appointment_form_upon_save(appt, timeslot, date)
-        return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
+        contact_type = handle_add_appointment_form_upon_save(appt, timeslot, date)
+
+        if contact_type:
+            return redirect('contact_adopter', appt.id, date.year, date.month, date.day, contact_type)
+        else:
+            return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
     else:
         form = AppointmentModelFormPrefilled(
             initial={
@@ -896,15 +907,18 @@ def handle_short_notice_from_edit_appt(appt, adopter):
     notify_adoptions_add(adopter, appt) 
 
 
-def handle_appt_delist_from_edit_appt(appt, changed, prev_adopter, date):
+def handle_appt_delist_from_edit_appt(appt, changed, prev_adopter):
     appt.delist()
 
     if appt.schedulable():
-        if changed:
-            if prev_adopter:
-                cancel(prev_adopter, appt)
-        return redirect('contact_adopter', appt.id, date.year, date.month, date.day, 'confirm_appt')
-    return
+        if changed and prev_adopter:
+            cancel(prev_adopter, appt)
+        return 'confirm_appt'
+    elif appt.appt_type == "9":
+        appt.save_host_to_adoption_info()
+        return 'add_form_adopting_host'
+    
+    return None
 
 
 # TO DO - strip out date parameters and use appt.date (need to update in templates)
@@ -927,14 +941,18 @@ def edit_appointment(request, date_year, date_month, date_day, appt_id):
         post_save_adopter = appt.adopter
         email_changed = post_save_email != current_email
         adopter_changed = post_save_adopter != current_adopter
+        not_chosen = appt.appt_type != "9"
 
         if email_changed:
-            if short_notice(appt):
+            if short_notice(appt) and not_chosen:
                 handle_short_notice_from_edit_appt(appt, post_save_adopter)
 
             if appt.adopter:
-                handle_appt_delist_from_edit_appt(
-                    appt, adopter_changed, current_adopter, date)
+                contact_type = handle_appt_delist_from_edit_appt(
+                    appt, adopter_changed, current_adopter)
+
+                if contact_type:
+                    return redirect('contact_adopter', appt.id, date.year, date.month, date.day, contact_type)
 
         return redirect('calendar_date_appt', date_year, date_month, date_day, appt.id)
     else:

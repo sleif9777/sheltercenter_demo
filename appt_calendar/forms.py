@@ -25,7 +25,7 @@ class AppointmentModelFormPrefilled(forms.ModelForm):
             'appt_type': 'Appointment Type:',
             'adopter': 'Select Adopter:',
             'locked': 'Lock appointment?',
-            'dog': '(For surrenders and paperwork appointments) Dog:',
+            'dog': '(For surrender, paperwork, and Host appointments) Dog:',
             'dog_fka': '(For surrenders, if applicable) FKA:',
             'internal_notes': 'Notes:',
         }

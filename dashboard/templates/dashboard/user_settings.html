@@ -48,6 +48,10 @@
         <label for="id_ac_show_shelterluv_notes">
           Shelterluv notes <br>
         </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_watchlist.id_for_label }}" name="{{ form.ac_show_watchlist.html_name }}" onclick="updateAppointmentBox('id_ac_show_watchlist');" {% if form.ac_show_watchlist.value %}checked{% endif %}>
+        <label for="id_ac_show_watchlist">
+          Watch List <br>
+        </label>
         <h3>About</h3>
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_city_state.id_for_label }}" name="{{ form.ac_show_city_state.html_name }}" onclick="updateAppointmentBox('id_ac_show_city_state');" {% if form.ac_show_city_state.value %}checked{% endif %}>
         <label for="id_ac_show_city_state">
@@ -219,6 +223,10 @@
           <td class="left">No preferences!</td>
         </tr>
 
+        <tr class="watchlist">
+          <td class="left" style="width:20%;"><b>Watch List:</b></td>
+          <td class="left">Maxine, Lenny, Lil' Woofer</td>
+        </tr>
       </table>
       <table class="appt-subblock appt-info-block">
         <tbody>

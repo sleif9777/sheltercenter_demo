@@ -29,7 +29,8 @@ class Appointment(models.Model):
         ("5", "Adoption Paperwork"),
         ("6", "FTA Paperwork"),
         ("7", "Visit"),
-        ("8", "Donation Drop-Off")
+        ("8", "Donation Drop-Off"),
+        ("9", "Host Weekend/Chosen")
     ]
 
     OUTCOME_TYPES = [
@@ -147,21 +148,19 @@ class Appointment(models.Model):
         display_string = ""
         render_appt_type = self.appt_string()
 
-        if int(self.appt_type) <= 3:
+        if self.schedulable():
             if self.adopter is not None:
                 display_string += str(self.adopter).upper()
             else:
                 display_string += "OPEN"
-
-        elif int(self.appt_type) in range(3, 8): #exclude drop-off appts
+        elif int(self.appt_type) in range(3, 8) or self.appt_type == "9": #exclude drop-off appts
             if self.dog == "":
                 display_string += "MORE DETAILS NEEDED"
             else:
                 display_string += self.dog.upper()
 
-                if self.dog_fka != "":
+                if self.dog_fka:
                     display_string += " fka " + self.dog_fka.upper()
-
         else:
             display_string = "DONATION DROP-OFF"
 
@@ -199,7 +198,7 @@ class Appointment(models.Model):
 
     def appt_string(self):
         appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", 
-            "Adoption", "FTA", "Visit", "Donation Drop-Off"]
+            "Adoption", "FTA", "Visit", "Donation Drop-Off", "Host Weekend/Chosen"]
         return appt_type[int(self.appt_type) - 1]
 
     def mark_short_notice(self):
@@ -259,6 +258,15 @@ class Appointment(models.Model):
                 self.adopter.save()
 
         self.save()
+
+    def save_host_to_adoption_info(self):
+        self.outcome = "3"
+        self.internal_notes = "Chosen by {0}".format(self.adopter)
+        self.save()
+
+        self.adopter.waiting_for_chosen = True
+        self.adopter.dog = self.dog
+        self.adopter.save()
 
     class Meta:
         ordering = ('time', 'adopter', 'appt_type', 'id',)

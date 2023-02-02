@@ -113,10 +113,14 @@
         </tr>
         {% endif %}
 
-        {% if appt.adopter.wishlist_str %}
-        <tr class="wishlist">
-          <td class="left" style="width:20%;"><b>Tracking List:</b></td>
-          <td class="left">{{appt.adopter.wishlist_str}}</td>
+        {% if appt|show_watchlist and appt.schedulable %}
+        <tr class="watchlist">
+          <td class="left" style="width:20%;"><b>Watch List:</b></td>
+          <td class="left">{{appt.adopter.watchlist_available_str}}</td>
+        </tr>
+        <tr class="watchlist">
+          <td class="left" style="width:20%;"></td>
+          <td class="left strikethrough-italic">{{appt.adopter.watchlist_unavailable_str}}</td>
         </tr>
         {% endif %}
       {% else %}

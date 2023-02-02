@@ -36,7 +36,7 @@ def notes_only(appt):
 
 
 @register.filter(name='show_notes')
-def show_notes(appt):
+def show_notes(appt: Appointment):
     show = False
 
     try:
@@ -44,12 +44,17 @@ def show_notes(appt):
         if appt.internal_notes or appt.adopter_notes:
             show = True
         # for non-schedulable, should be shown so long as one exists other than app_interest
-        if appt.appt_type in ["1", "2", "3"] and appt.adopter.app_interest:
+        if appt.schedulable() and appt.adopter.app_interest:
             show = True
     except:
         pass
 
     return show
+
+
+@register.filter(name='show_watchlist')
+def show_watchlist(appt):
+    return appt.adopter.watchlist_available_str or appt.adopter.watchlist_unavailable_str
 
 
 @register.filter(name='pending_or_complete')

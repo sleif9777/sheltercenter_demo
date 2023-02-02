@@ -17,6 +17,9 @@ class AppointmentTemplate(models.Model):
         ("4", "Surrender"),
         ("5", "Adoption"),
         ("6", "FTA"),
+        ("7", "Visit"),
+        ("8", "Donation Drop-Off"),
+        ("9", "Host Weekend/Chosen")
     ]
 
     DAYS_OF_WEEK = (
@@ -55,7 +58,7 @@ class AppointmentTemplate(models.Model):
         return time_str(self.time)
 
     def appt_string(self):
-        appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA"]
+        appt_type = ["Adults", "Puppies", "Puppies and/or Adults", "Surrender", "Adoption", "FTA", "Visit", "Donation Drop-Off", "Host Weekend/Chosen"]
         return appt_type[int(self.appt_type) - 1]
 
     class Meta:

@@ -756,6 +756,7 @@ def get_template_from_source(source, adopter, appt, signature):
 def get_redirect(source):
     add_source = "add_form" in source
     calendar_source = source in [
+        'add_form_adopting_host',
         'calendar', 
         'confirm_appt', 
         'dogs_were_adopted', 

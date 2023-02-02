@@ -210,7 +210,7 @@ def generate_calendar(user, load, date_year, date_month, date_day):
     return context
 
 
-def filter_timeslots_admin(timeslots_query, date, load):
+def filter_timeslots_staff(timeslots_query, date, load):
     # filters appointments per timeslot and discards empty timeslots
     timeslots = {}
     for time in timeslots_query:
@@ -219,6 +219,13 @@ def filter_timeslots_admin(timeslots_query, date, load):
                 timeslots[time] = list(time.appointments.filter(
                     date=date,
                     time=time.time
+                ))
+            case "exclude_host":
+                timeslots[time] = list(time.appointments.filter(
+                    date=date,
+                    time=time.time
+                ).exclude(
+                    appt_type__in=["9"],
                 ))
             case "reschedule":
                 timeslots[time] = list(time.appointments.filter(
@@ -427,12 +434,15 @@ def gen_cal_get_timeslots_dict(date, load, user, user_groups):
     )
     application_ids = [[appt.adopter.application_id, appt.adopter.full_name()] 
         for appt in all_appointments]
-    is_staff = 'greeter' in user_groups or 'admin' in user_groups
+    is_admin = 'admin' in user_groups
+    is_greeter = 'greeter' in user_groups
     timeslots_query = [slot for slot in Timeslot.objects.filter(date=date)]    
     empty_day_db = True if timeslots_query == [] else False
 
-    if is_staff:
-        timeslots = filter_timeslots_admin(timeslots_query, date, load)
+    if is_admin:
+        timeslots = filter_timeslots_staff(timeslots_query, date, load)
+    elif is_greeter:
+        timeslots = filter_timeslots_staff(timeslots_query, date, 'exclude_host')
     else:
         timeslots = filter_timeslots_adopter(
             timeslots_query, date, user.adopter)

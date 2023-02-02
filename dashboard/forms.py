@@ -35,6 +35,7 @@ class AppointmentCardPreferences(forms.ModelForm):
             'ac_show_internal_notes',
             'ac_show_adopter_notes',
             'ac_show_shelterluv_notes',
+            'ac_show_watchlist',
             'ac_show_city_state',
             'ac_show_household_activity',
             'ac_show_housing',
