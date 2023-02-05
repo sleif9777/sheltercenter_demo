@@ -200,7 +200,7 @@ def is_special_circumstances(adopter):
 
 
 def handle_existing(existing_adopter, status, app_interest):
-    global today
+    today = datetime.date.today()
     last_4_days = [today - datetime.timedelta(days = x) for x in range(4)]
     one_year_ago = today - datetime.timedelta(days = 365)
     accepted_last_4_days = existing_adopter.accept_date in last_4_days
@@ -230,9 +230,6 @@ def handle_existing(existing_adopter, status, app_interest):
             
         existing_adopter.save()
         create_invite_email(existing_adopter)
-        # print("Processed")
-    # else:
-        # print("Did not process")
 
 
 def remove_spaces_and_lower(f_name, l_name):
@@ -417,7 +414,7 @@ def handle_redirect_from_add_form(adopter, shellappt):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def add(request):
-    global today
+    today = datetime.date.today()
     form = AdopterForm(request.POST or None)
 
     # print(request.FILES)
@@ -870,7 +867,7 @@ def get_appt_for_contact(appt_id):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def contact_adopter(request, appt_id, date_year, date_month, date_day, source):
-    global today
+    today = datetime.date.today()
     appt = get_appt_for_contact(appt_id)
     adopter = get_adopter_for_contact(source, appt)
     redirect_type = get_redirect(source)
@@ -932,7 +929,7 @@ def home(request):
     elif not adopter.acknowledged_faq:
         return render(request, "adopter/decision.html", context)
 
-    global today
+    today = datetime.date.today()
 
     return redirect("calendar_date", today.year, today.month, today.day)
 

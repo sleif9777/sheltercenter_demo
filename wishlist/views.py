@@ -15,9 +15,13 @@ from email_mgr.email_sender import *
 from email_mgr.models import *
 
 api_root = "https://www.shelterluv.com/api/v1/"
-today = datetime.datetime.today()
-yesterday = today - timedelta(days=1)
-two_days_ago = today - timedelta(days=2)
+
+def get_past_three_days():
+    today = datetime.datetime.today()
+    yesterday = today - timedelta(days=1)
+    two_days_ago = today - timedelta(days=2)
+
+    return today, yesterday, two_days_ago
 
 # TO DO
 # cleanup formatting
@@ -164,7 +168,7 @@ def update_all_litters():
 
 
 def get_litters():
-    global today, yesterday, two_days_ago
+    today, yesterday, two_days_ago = get_past_three_days()
     available_litters = LitterObject.objects.annotate(
             num_dogs=Count('dogs')
         ).filter(
@@ -258,7 +262,6 @@ def get_litter_and_data_type(key):
 @authenticated_user
 @allowed_users(allowed_roles={'superuser', 'admin'})
 def litter_mgmt(request):
-    global today, yesterday, two_days_ago
     get_and_update_dogs()
     available_litters, recently_adopted_litters = get_litters()
 
@@ -286,7 +289,8 @@ def litter_mgmt(request):
 
 
 def filter_dogs_adopted_today():
-    global api_root, today, yesterday, two_days_ago
+    global api_root
+    today, yesterday, two_days_ago = get_past_three_days()
     all_dogs = DogObject.objects.filter(
         update_dt__date__in=[today, yesterday, two_days_ago])
     adopted_dogs = []
@@ -317,7 +321,7 @@ def get_and_update_dogs():
 
 
 def get_all_available_dogs(filter_today=False):
-    global today, yesterday, two_days_ago
+    today, yesterday, two_days_ago = get_past_three_days()
 
     if filter_today:
         all_available_dogs_query = DogObject.objects.filter(

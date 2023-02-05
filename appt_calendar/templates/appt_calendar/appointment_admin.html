@@ -113,14 +113,20 @@
         </tr>
         {% endif %}
 
-        {% if appt|show_watchlist and appt.schedulable %}
+        {% if appt|show_watchlist:"either" and appt.schedulable %}
         <tr class="watchlist">
           <td class="left" style="width:20%;"><b>Watch List:</b></td>
-          <td class="left">{{appt.adopter.watchlist_available_str}}</td>
-        </tr>
-        <tr class="watchlist">
-          <td class="left" style="width:20%;"></td>
-          <td class="left strikethrough-italic">{{appt.adopter.watchlist_unavailable_str}}</td>
+          <td class="left">
+            {% if appt|show_watchlist:"available" %}
+            {{appt.adopter.watchlist_available_str}}
+            {% endif %}
+            {% if appt|show_watchlist:"both" %}
+            <br>
+            {% endif %}
+            {% if appt|show_watchlist:"unavailable" and appt.schedulable %}
+            <span class="left strikethrough-italic">{{appt.adopter.watchlist_unavailable_str}}</span>
+            {% endif %}
+          </td>
         </tr>
         {% endif %}
       {% else %}

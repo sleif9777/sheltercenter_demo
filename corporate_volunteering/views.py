@@ -22,7 +22,7 @@ today = datetime.datetime.today()
 @allowed_users(allowed_roles={
         'corp_volunteer_admin', 'corp_volunteer', 'superuser'})
 def calendar(request, past=0):
-    global today
+    today = datetime.date.today()
 
     if 'corp_volunteer' in get_groups(request.user):
         org = request.user.organization
@@ -362,7 +362,7 @@ def contact_team(request, event_id=None):
 @authenticated_user
 @allowed_users(allowed_roles={'corp_volunteer_admin', 'superuser'})
 def contact_org(request, org_id, source, event_id=None):
-    global today
+    today = datetime.date.today()
     org = Organization.objects.get(pk=org_id)
     signature = get_signature_for_contact(request.user)
 

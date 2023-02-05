@@ -23,7 +23,6 @@ from wishlist.models import *
 from wishlist.views import *
 
 system_settings = SystemSettings.objects.get(pk=1)
-today = datetime.date.today()
 
 # AUTHENTICATION WORKFLOWS
 @unauthenticated_user
@@ -177,7 +176,6 @@ def user_settings(request):
 def generate_calendar(user, load, date_year, date_month, date_day):
     # master function, calls helper functions to piece together data, 
     # sets a few constants
-    global today
     current_appt = gen_cal_get_current_appt(user)
     date = datetime.date(date_year, date_month, date_day)
     user_groups = get_groups(user)
@@ -328,7 +326,7 @@ def gen_cal_get_current_appt(user):
 
 def gen_cal_get_dates_and_delta_dict(date):
     # set up date constants and other date-related attributes
-    global today
+    today = datetime.date.today()
 
     date_pretty = date_str(date)
     delta_from_today = (date - datetime.date.today()).days
@@ -462,7 +460,7 @@ def gen_cal_get_timeslots_dict(date, load, user, user_groups):
 
 def get_empty_days():
     # see what days are missing appointments in upcoming 14 days
-    global today
+    today = datetime.date.today()
     empty_dates = []
 
     for d in [today + datetime.timedelta(days=x) for x in range(14)]:
@@ -477,7 +475,7 @@ def get_empty_days():
 
 def get_no_outcome_appts():
     # see appointments in past 7 days without outcome entered
-    global today
+    today = datetime.date.today()
     no_outcome_appts = []
 
     for d in [today - datetime.timedelta(days=x) for x in range(7, 0, -1)]:

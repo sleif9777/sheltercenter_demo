@@ -23,9 +23,6 @@ from dashboard.views import generate_calendar as gc
 from email_mgr.email_sender import *
 from schedule_template.models import *
 
-# GLOBAL VARIABLE
-today = datetime.date.today()
-
 # REFACTORED
 def get_groups(user_obj):
     try:
@@ -39,7 +36,7 @@ def get_groups(user_obj):
 # REFACTORED
 @authenticated_user
 def calendar(request):
-    global today
+    today = datetime.date.today()
     direct_to_event_calendar = (only_role(request.user, "corp_volunteer") or
         only_role(request.user, "corp_volunteer_admin"))
 
@@ -105,7 +102,7 @@ def set_alert_date(request, date_year, date_month, date_day):
 @authenticated_user
 def set_alert_date_greeter(
         request, adopter_id, date_year, date_month, date_day):
-    global today
+    today = datetime.date.today()
     date = datetime.date(date_year, date_month, date_day)
 
     adopter = Adopter.objects.get(pk=adopter_id)
@@ -396,7 +393,7 @@ def daily_reports_home(request):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def chosen_board(request):
-    global today
+    today = datetime.date.today()
 
     chosen_appointments_query = Appointment.objects.filter(
         outcome__in = ["3", "9", "10"], paperwork_complete=False)
@@ -486,7 +483,7 @@ def mark_complete_on_chosen_board(request, appt_id):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def checked_in_appts(request):
-    global today
+    today = datetime.date.today()
     context = gc(request.user, 'full', today.year, today.month, today.day)
     return render(request, "appt_calendar/checked_in_appts.html/", context)
 
@@ -838,7 +835,7 @@ def add_paperwork_appointment(
 
 # REFACTORED
 def short_notice(appt):
-    global today
+    today = datetime.date.today()
     time_now = datetime.datetime.now().time()
 
     try:
@@ -1233,7 +1230,7 @@ def close_out_current(current_appt, adopter):
 # REFACTORED
 @authenticated_user
 def adopter_reschedule(request, adopter_id, appt_id, date_year, date_month, date_day, source):
-    global today
+    today = datetime.date.today()
     adopter = Adopter.objects.get(pk=adopter_id)
     date = datetime.date(date_year, date_month, date_day)
     
