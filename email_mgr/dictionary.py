@@ -169,7 +169,7 @@ def get_watchlist_replacements(adopter, date):
 
         statuses += "{0}{1}<br>".format(dog.name, status)
 
-    if len(watchlist) > 0:
+    if adopter.wishlist.count() > 0:
         statuses += first_come_first_serve_disclaimer
 
     if inc_foster_host:
