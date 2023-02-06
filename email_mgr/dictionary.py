@@ -47,8 +47,7 @@ def get_appt_replacements(appt):
 
 
 def get_next_bd_replacements():
-    global today
-
+    today = datetime.datetime.today()
     next_business_day = 0 if today.weekday() >= 4 else today.weekday() + 1
     next_business_day_text = "Monday" if today.weekday() >= 4 else "tomorrow"
     next_bd_open_hour = 13 if next_business_day == 3 else 12
@@ -179,7 +178,7 @@ def get_watchlist_replacements(adopter, date):
 
 
 def replacer(html, adopter, appt, litter=None, dog=None, org=None, event=None):
-    global today
+    today = datetime.datetime.today()
 
     adopter_replacements = get_adopter_replacements(adopter, appt)
     appt_replacements = get_appt_replacements(appt)
