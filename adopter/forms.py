@@ -48,10 +48,15 @@ class AdopterPreferenceForm(forms.ModelForm):
             'hypo_preferred',
         ]
         labels = {
-            'min_weight': "Minimum desired weight (optional)",
-            'max_weight': "Maximum desired weight (optional)",
+            'min_weight': "Minimum desired weight (optional, 0 = no minimum)",
+            'max_weight': "Maximum desired weight (optional, 0 = no maximum)",
             'hypo_preferred': "I am only looking for a low-shed or hypoallergenic dog"
         }
+
+    def __init__(self, *args, **kwargs):
+        super(AdopterPreferenceForm, self).__init__(*args, **kwargs)
+        self.fields['min_weight'].required = True
+        self.fields['max_weight'].required = True
 
 class SetAlertDateForm(forms.ModelForm):
     class Meta:
