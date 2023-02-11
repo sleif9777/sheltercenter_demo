@@ -64,7 +64,7 @@ def login_page(request):
 
 
 def open_house_add_adopter_redirect(request):
-    return redirect("open_house_add")
+    return redirect("open_house_add_adopter")
 
 
 @unauthenticated_user
