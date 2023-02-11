@@ -204,14 +204,70 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
         return render(request, "appt_calendar/bookappt.html", context)
 
 
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def open_house_scheduling(request):
     adopters = Adopter.objects.filter(open_house_appt=True)
-
     context = {
         'adopters': adopters
     }
 
     return render(request, "appt_calendar/open_house_scheduling.html", context)
+
+
+def get_timeslot_for_open_house_appt():
+    today = datetime.date.today()
+
+    try:
+        now = datetime.datetime.now()
+        hour = now.hour
+        minute = 0 if now.minute < 30 else 30
+        timeslot = Timeslot.objects.get(
+            date=today,
+            time=datetime.time(hour, minute)
+        )
+    except:
+        timeslot = Timeslot.objects.filter(
+            date=today
+        ).latest('time')
+
+    return timeslot
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
+def open_house_schedule_now(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+    timeslot = get_timeslot_for_open_house_appt()
+
+    appt = Appointment.objects.create(
+        appt_type="3",
+        date=timeslot.date,
+        time=timeslot.time,
+        internal_notes="Open House walk-in",
+        available=False,
+        adopter=adopter,
+        published=False,
+        locked=True,
+    )
+
+    adopter.has_current_appt = True
+    adopter.open_house_appt = False
+    adopter.save()
+
+    date = appt.date
+    timeslot.appointments.add(appt)
+    return redirect('calendar_date_appt', date.year, date.month, date.day, appt.id)
+
+
+@authenticated_user
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
+def open_house_cancel_adopter(request, adopter_id):
+    adopter = Adopter.objects.get(pk=adopter_id)
+    adopter.open_house_appt = False
+    adopter.save()
+
+    return redirect('open_house_scheduling')
 
 
 # REFACTORED

@@ -40,7 +40,7 @@ urlpatterns = [
     path('staff_login/', views.staff_login, name="staff_login"),
     path('images/', views.images, name="images"),
     path('fake500/', views.fake500, name="fake500"),
-    path('open_house/', views.open_house_add_adopter_redirect, name="open_house_add_adopter"),
+    path('open_house/', views.open_house_add_adopter_redirect, name="open_house_add_adopter_redirect"),
     path('tinymce/', include('tinymce.urls')),
 ]
 
