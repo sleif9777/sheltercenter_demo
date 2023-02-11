@@ -338,6 +338,37 @@ def add_from_form(adopter):
             pass
 
 
+def open_house_add_adopter(request):
+    form = AdopterOpenHouseForm(request.POST or None)
+    sign_up_valid = False
+
+    if form.is_valid():
+        form_data = form.cleaned_data
+        try:
+            form_data = form.cleaned_data
+            adopter = attempt_to_handle_existing_user(form_data, open_house=True)
+        except:
+            form.save()
+            adopter = Adopter.objects.latest('id')
+            add_from_form(adopter)
+
+        adopter.open_house_appt = True
+        adopter.open_house_signup_timestamp = datetime.datetime.now()
+        adopter.save()
+
+        sign_up_valid = True
+
+    form = AdopterOpenHouseForm()
+
+    context = {
+        'form': form,
+        'page_title': "Open House Appointment Sign-Up",
+        'sign_up_valid': sign_up_valid
+    }
+
+    return render(request, "adopter/simple_add_form.html", context)
+
+
 def create_shell_appt(adopter):
     shellappt = Appointment()
     shellappt.time = datetime.datetime.now()
@@ -371,26 +402,30 @@ def attempt_to_retrieve_existing_adopter(email_for_search):
     try:
         existing_user = User.objects.get(username=email_for_search)
         existing_adopter = Adopter.objects.get(user=existing_user)
-    except Exception as h:
-        # print("ExceptionH: ", h)
+    except:
         existing_adopter = Adopter.objects.filter(primary_email=email_for_search).latest('id')
 
     return existing_adopter
 
 
-def attempt_to_handle_existing_user(form_data):
+def attempt_to_handle_existing_user(form_data, open_house=False):
     fname = form_data["f_name"]
     lname = form_data["l_name"]
     primary_email = form_data["primary_email"]
-    status = form_data["status"]
-    app_interest = form_data["app_interest"]
+
+    if not open_house:
+        status = form_data["status"]
+        app_interest = form_data["app_interest"]
 
     email_for_search = get_email_from_form(fname, lname, primary_email)
     existing_adopter = attempt_to_retrieve_existing_adopter(email_for_search)
 
     blocked = existing_adopter.status == "2"
     if not blocked:
-        handle_existing(existing_adopter, status, app_interest)
+        if open_house:
+            return existing_adopter
+        else:
+            handle_existing(existing_adopter, status, app_interest)
 
 
 def redirect_to_contact(appt, exemption):
@@ -428,11 +463,7 @@ def add(request):
             if type(too_long) == bool:
                 return render(request, "adopter/too_many_rows.html")
     #except no file, add manually without application
-    except Exception as e:
-        # print("ExceptionE: ", e)
-        # exc_type, exc_obj, exc_tb = sys.exc_info()
-        # fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        # print(exc_type, fname, exc_tb.tb_lineno)
+    except:
         if form.is_valid():
             try:
                 form_data = form.cleaned_data
@@ -672,78 +703,57 @@ def get_template_from_source(source, adopter, appt, signature):
 
     match source:     
         case 'cough':
-            template = EmailTemplate.objects.get(
-                template_name="Update for Adopter: Cough")
+            template_record = "Update for Adopter: Cough"
         case 'nasal_discharge':
-            template = EmailTemplate.objects.get(
-                template_name="Update for Adopter: Nasal Discharge")
+            template_record = "Update for Adopter: Nasal Discharge"
         case 'no_longer_ready':
-            template = EmailTemplate.objects.get(
-                template_name="Update for Adopter: No Longer Ready")            
+            template_record = "Update for Adopter: No Longer Ready"        
         case "ready_positive":
-            template = EmailTemplate.objects.get(
-                template_name="Ready to Roll (Heartworm Positive)")
+            template_record = "Ready to Roll (Heartworm Positive)"
             subject = "{0} is ready to come home!".format(appt.dog)
             file1 = template.file1
             file2 = template.file2
         case "confirm_appt":
-            template = EmailTemplate.objects.get(
-                template_name="Appointment Confirmation")
+            template_record = "Appointment Confirmation"
             subject = "Your appointment is confirmed: {0}".format(
                 adopter.full_name().upper())
         case "ready_negative":
-            template = EmailTemplate.objects.get(
-                template_name="Ready to Roll (Heartworm Negative)")
+            template_record = "Ready to Roll (Heartworm Negative)"
             subject = "{0} is ready to come home!".format(appt.dog)
         case "limited_puppies":
-            template = EmailTemplate.objects.get(
-                template_name="Limited Puppies")
+            template_record = "Limited Puppies"
         case "limited_small":
-            template = EmailTemplate.objects.get(
-                template_name="Limited Small Dogs")
+            template_record = "Limited Small Dogs"
         case "limited_small_puppies":
-            template = EmailTemplate.objects.get(
-                template_name="Limited Small Breed Puppies")
+            template_record = "Limited Small Breed Puppies"
         case "limited_hypo":
-            template = EmailTemplate.objects.get(
-                template_name="Limited Hypo")
+            template_record = "Limited Hypo"
         case 'dogs_were_adopted':
-            template = EmailTemplate.objects.get(
-                template_name="Watch List (BETA)")
+            template_record = "Watch List (BETA)"
         case 'dog_in_extended_host':
-            template = EmailTemplate.objects.get(
-                template_name="Dog In Extended Host")
+            template_record = "Dog In Extended Host"
         case 'dog_in_medical_foster':
-            template = EmailTemplate.objects.get(
-                template_name="Dog In Medical Foster")
+            template_record = "Dog In Medical Foster"
         case 'dog_is_popular_x_in_line':
-            template = EmailTemplate.objects.get(
-                template_name="Dog Is Popular (X in Line)")
+            template_record = "Dog Is Popular (X in Line)"
         case 'dog_is_popular_low_chances':
-            template = EmailTemplate.objects.get(
-                template_name="Dog Is Popular (Low Chances)")
+            template_record = "Dog Is Popular (Low Chances)"
         case 'dog_not_here_yet':
-            template = EmailTemplate.objects.get(
-                template_name="Dog Not Here Yet")
+            template_record = "Dog Not Here Yet"
         case 'add_form_adopting_foster':
-            template = EmailTemplate.objects.get(
-                template_name="Application Accepted (Adopting Foster)")
+            template_record = "Application Accepted (Adopting Foster)"
         case 'add_form_friend_of_foster':
-            template = EmailTemplate.objects.get(
-                template_name="Application Accepted (Friend of Foster)")
+            template_record = "Application Accepted (Friend of Foster)"
         case 'add_form_adopting_host':
-            template = EmailTemplate.objects.get(
-                template_name="Application Accepted (Host Weekend)")
+            template_record = "Application Accepted (Host Weekend)"
         case 'reminder_breed':
-            template = EmailTemplate.objects.get(
-                template_name="Reminder: Breed Restrictions")
+            template_record = "Reminder: Breed Restrictions"
         case 'reminder_parents':
-            template = EmailTemplate.objects.get(
-                template_name="Reminder: Lives With Parents")
+            template_record = "Reminder: Lives With Parents"
         case _:
-            template = EmailTemplate.objects.get(
-                template_name="Contact Adopter")
+            template_record = "Contact Adopter"
 
+    template = EmailTemplate.objects.get(template_name=template_record)
     template = replacer(
         template.text.replace('*SIGNATURE*', signature), adopter, appt)
 

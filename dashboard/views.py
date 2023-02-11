@@ -63,6 +63,10 @@ def login_page(request):
     return render(request, 'dashboard/login.html', context)
 
 
+def open_house_add_adopter_redirect(request):
+    return redirect("open_house_add")
+
+
 @unauthenticated_user
 def staff_login(request):
     # renders login page for staff

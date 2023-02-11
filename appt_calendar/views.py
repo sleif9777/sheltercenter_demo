@@ -204,6 +204,16 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
         return render(request, "appt_calendar/bookappt.html", context)
 
 
+def open_house_scheduling(request):
+    adopters = Adopter.objects.filter(open_house_appt=True)
+
+    context = {
+        'adopters': adopters
+    }
+
+    return render(request, "appt_calendar/open_house_scheduling.html", context)
+
+
 # REFACTORED
 def update_or_create_sn_obj(query_appt, query_adopter, current, prev, status):
     sn_obj = ShortNotice.objects.update_or_create(

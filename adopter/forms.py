@@ -37,6 +37,23 @@ class AdopterForm(forms.ModelForm):
         super(AdopterForm, self).__init__(*args, **kwargs)
         self.fields['auth_code'].disabled = True
 
+class AdopterOpenHouseForm(forms.ModelForm):
+    class Meta:
+        model = Adopter
+        fields = [
+            'f_name',
+            'l_name',
+            'primary_email',
+        ]
+        labels = {
+            'f_name': 'First Name:',
+            'l_name': 'Last Name:',
+            'primary_email': 'Email:',
+        }
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label_suffix', '')
+        super(AdopterOpenHouseForm, self).__init__(*args, **kwargs)
+
 class AdopterPreferenceForm(forms.ModelForm):
     class Meta:
         model = Adopter

@@ -41,6 +41,7 @@ urlpatterns = [
     path("toggle/<int:appt_id>/<int:date_year>/<int:date_month>/<int:date_day>/", views.toggle_lock, name="toggle_lock"),
     path("toggle_all/<int:date_year>/<int:date_month>/<int:date_day>/<int:lock>/", views.toggle_all, name="toggle_all"),
     path("toggle_time/<int:timeslot_id>/<int:date_year>/<int:date_month>/<int:date_day>/<int:lock>/", views.toggle_time, name="toggle_time"),
+    path("open_house_scheduling/", views.open_house_scheduling, name="open_house_scheduling"),
 
     #report pages
     path("reports/home/", views.daily_reports_home, name="daily_reports_home"),
