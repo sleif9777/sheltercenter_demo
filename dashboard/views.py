@@ -39,13 +39,14 @@ def login_page(request):
             user_groups = get_groups(user)
             is_corp_volunteer = user_groups == {'corp_volunteer'}
             is_corp_volunteer_admin = user_groups == {'corp_volunteer_admin'}
+            is_foster_admin = user_groups == {'foster_admin'}
 
             if 'adopter' in user_groups and not user.adopter.acknowledged_faq:
                 return redirect('adopter_home')
-            # elif corp volunteer redirect blah
-            # elif corp volunteer admin redirect bleh
             elif is_corp_volunteer or is_corp_volunteer_admin:
                 return redirect('event_calendar')
+            elif is_foster_admin:
+                return redirect('display_list')
             else:
                 return redirect('calendar')
 

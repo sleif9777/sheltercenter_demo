@@ -48,8 +48,8 @@ class AdopterPreferenceForm(forms.ModelForm):
             'hypo_preferred',
         ]
         labels = {
-            'min_weight': "Minimum desired weight (optional, 0 = no minimum)",
-            'max_weight': "Maximum desired weight (optional, 0 = no maximum)",
+            'min_weight': "Minimum desired weight (value required, use 0 for no minimum)",
+            'max_weight': "Maximum desired weight (value required, use 0 for no maximum)",
             'hypo_preferred': "I am only looking for a low-shed or hypoallergenic dog"
         }
 

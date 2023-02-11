@@ -260,7 +260,7 @@ def get_litter_and_data_type(key):
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'superuser', 'admin'})
+@allowed_users(allowed_roles={'superuser', 'admin', 'foster_admin'})
 def litter_mgmt(request):
     get_and_update_dogs()
     available_litters, recently_adopted_litters = get_litters()
@@ -373,7 +373,7 @@ def get_date_from_form_data(data):
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'superuser', 'admin', 'adopter'})
+@allowed_users(allowed_roles={'superuser', 'admin', 'foster_admin', 'adopter'})
 def display_list(request):
     user_groups = get_groups(request.user)
     get_and_update_dogs()
@@ -428,7 +428,7 @@ def update_dog_from_form_data(id, form_data):
 
 
 @authenticated_user
-@allowed_users(allowed_roles={'superuser', 'admin'})
+@allowed_users(allowed_roles={'superuser', 'admin', 'foster_admin'})
 def display_list_admin(request):
     all_available_dogs = get_all_available_dogs(filter_today=True)
     recently_adopted_dogs, recently_posted_dogs = filter_dogs_adopted_today()
