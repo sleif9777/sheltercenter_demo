@@ -407,7 +407,7 @@ def gen_cal_get_offsite_dog_dict():
 def gen_cal_get_popular_dogs():
     # filter to all dogs with high interest (10+ adopters)
     all_dogs = get_all_available_dogs()
-    popular_dogs = [dog.name for dog in all_dogs if calc_popularity(dog)]
+    popular_dogs = [dog for dog in all_dogs if calc_popularity(dog)]
     return popular_dogs
     
 
