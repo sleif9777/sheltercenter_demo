@@ -710,6 +710,7 @@ def get_template_from_source(source, adopter, appt, signature):
             template_record = "Update for Adopter: No Longer Ready"        
         case "ready_positive":
             template_record = "Ready to Roll (Heartworm Positive)"
+            template = EmailTemplate.objects.get(template_name=template_record)
             subject = "{0} is ready to come home!".format(appt.dog)
             file1 = template.file1
             file2 = template.file2
