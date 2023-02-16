@@ -207,7 +207,8 @@ def book_appointment(request, appt_id, date_year, date_month, date_day):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def open_house_scheduling(request):
-    adopters = Adopter.objects.filter(open_house_appt=True)
+    adopters = Adopter.objects.filter(
+        open_house_appt=True).order_by('open_house_signup_timestamp')
     context = {
         'adopters': adopters
     }
