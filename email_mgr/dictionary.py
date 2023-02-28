@@ -23,6 +23,7 @@ def get_adopter_replacements(adopter, appt):
             adopter_replacements['*ADP_WATCHLIST*'] = get_watchlist_replacements(
                 adopter, appt.date)
     except Exception as e:
+        print(e)
         pass
 
     return adopter_replacements
@@ -145,34 +146,83 @@ def evaluate_dog_for_watchlist_replacements(dog, date):
 
     return status, is_foster_host
 
+
+def join_names(names):
+    if len(names) > 1:
+        names[-1] = "and {0}".format(names[-1])
+
+    match len(names):
+        case 0:
+            return ""
+        case 1:
+            return names[0]
+        case 2:
+            return " ".join(names)
+        case _:
+            return ", ".join(names)
+
+
+def find_watchlist_context(key, plural):
+    match plural:
+        case True:
+            copula = "are"
+            copula2 = "have"
+        case False:
+            copula = "is"
+            copula2 = "has"
+
+    match key:
+        case "adopted":
+            context = copula + " no longer available."
+        case "appt":
+            context = copula + " available by appointment only, which must be pre-arranged by the Adoptions team."
+        case "alter":
+            context = copula + " undergoing spay/neuter surgery today and will not be available to meet."
+        case "popular":
+            context = copula2 + " received a lot of interest and may not be available at the time of your appointment."
+        case "foster":
+            context = copula + " in foster and will not have returned at the time of your appointment. Please check sheltercenter.dog for an updated return date."
+        case "host":
+            context = copula + " in extended host and will not have returned at the time of your appointment. Please check sheltercenter.dog for an updated return date."
+
+    return context
+
+
+def evaluate_watchlist_for_email(watchlist, date):
+    statuses = []
+    classifications = {
+        "adopted": [dog.name for dog in watchlist if dog.shelterluv_status != "Available for Adoption"],
+        "appt": [dog.name for dog in watchlist if dog.appt_only],
+        "alter": [dog.name for dog in watchlist if dog.alter_date == date],
+        "foster": [dog.name for dog in watchlist if dog.foster_date > date],
+        "host": [dog.name for dog in watchlist if dog.host_date > date],
+        "popular": [dog.name for dog in watchlist if calc_popularity(dog)],
+    }
+
+    for key in classifications:
+        if len(classifications[key]) > 0:
+            plural = len(classifications[key]) > 1
+            joined_names = join_names(classifications[key])
+            print(joined_names)
+            context = find_watchlist_context(key, plural)
+            print(context)
+            statuses += ["{0} {1}".format(
+                join_names(classifications[key]), 
+                find_watchlist_context(key, plural)
+            )]
+
+    print(statuses)
+    return statuses
+
+
 def get_watchlist_replacements(adopter, date):
     statuses = ""
-    foster_host_disclaimer = """
-        <em><sup>**Fosters and hosts have first dibs to adopt their assigned dog, 
-        if they choose to do so.</sup></em><br>
-    """
-    first_come_first_serve_disclaimer = """
-        <em><sup>*Currently available on a first-come-first-serve basis. 
-        Marking them on your watch list does not equate to any sort of 
-        "hold" prior to an appointment.</sup></em><br>
-    """
-    inc_foster_host = False
-    watchlist = adopter.wishlist.iterator()
+    watchlist = [dog for dog in adopter.wishlist.iterator()]
 
-    for dog in watchlist:
-        status, is_foster_host = evaluate_dog_for_watchlist_replacements(
-            dog, date)
+    status_results = evaluate_watchlist_for_email(watchlist, date)
 
-        if is_foster_host:
-            inc_foster_host = True
-
-        statuses += "{0}{1}<br>".format(dog.name, status)
-
-    if adopter.wishlist.count() > 0:
-        statuses += first_come_first_serve_disclaimer
-
-    if inc_foster_host:
-        statuses += foster_host_disclaimer
+    for status in status_results:
+        statuses += "{0}<br><br>".format(status)
 
     return statuses
 
