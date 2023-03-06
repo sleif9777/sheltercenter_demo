@@ -427,11 +427,43 @@ def update_dog_from_form_data(id, form_data):
     dog.save()
 
 
+def handle_cleared_dates_in_form(form_data):
+    date_default = datetime.date(2000, 1, 1)
+
+    for dog in DogObject.objects.filter(appt_only=True):
+        if dog.shelterluv_id not in form_data.keys():
+            dog.appt_only = False
+            dog.save()
+
+    for dog in DogObject.objects.filter(
+            shelterluv_status="Available for Adoption").exclude(
+            alter_date=date_default):
+        if dog.shelterluv_id not in form_data.keys():
+            dog.alter_date = date_default
+            dog.save()
+            
+    for dog in DogObject.objects.filter(
+            shelterluv_status="Available for Adoption").exclude(
+            foster_date=date_default):
+        if dog.shelterluv_id not in form_data.keys():
+            dog.foster_date = date_default
+            dog.save()
+
+    for dog in DogObject.objects.filter(
+            shelterluv_status="Available for Adoption").exclude(
+            host_date=date_default):
+        if dog.shelterluv_id not in form_data.keys():
+            dog.host_date = date_default
+            dog.save()
+
+
 @authenticated_user
 @allowed_users(allowed_roles={'superuser', 'admin', 'foster_admin'})
 def display_list_admin(request):
     all_available_dogs = get_all_available_dogs(filter_today=True)
     recently_adopted_dogs, recently_posted_dogs = filter_dogs_adopted_today()
+    user_groups = get_groups(request.user)
+    remove_expired_dates()
 
     if request.method == "POST":
         form_data = dict(request.POST)
@@ -439,15 +471,15 @@ def display_list_admin(request):
 
         form_data = dict([(k, v) for k, v in form_data.items() if v[0] != ""])
 
-        for dog in DogObject.objects.filter(appt_only=True):
-            if dog.shelterluv_id not in form_data.keys():
-                dog.appt_only = False
-                dog.save()
-
         for id in form_data.keys():
             update_dog_from_form_data(id, form_data[id])
 
-        return redirect('calendar')
+        handle_cleared_dates_in_form(form_data)
+
+        if 'admin' in user_groups:
+            return redirect('calendar')
+        else:
+            return redirect('display_list')
 
     context = {
         'all_available_dogs': all_available_dogs,
