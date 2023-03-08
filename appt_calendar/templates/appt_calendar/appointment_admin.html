@@ -68,8 +68,14 @@
             {% endif %}
           </li>
           {% if appt.checked_in %}
-          <li class="adopter-description">{{appt.adopter_description}}</li>
-          <li class="counselor"><b>Counselor:</b> {{appt.counselor}}</li>
+          <li>{{appt.adopter_description}}</li>
+          <li>
+            {% if appt.counselor != "" %}
+            <b>Counselor:</b> {{appt.counselor}}
+            {% else %}
+            <em><a href="{% url 'check_in_appt' appt.id date.year date.month date.day%}">Assign Counselor</a></em>
+            {% endif %}
+          </li>
           {% endif %}
         </ul>
       </td>
