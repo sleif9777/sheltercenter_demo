@@ -46,7 +46,7 @@ def login_page(request):
             elif is_corp_volunteer or is_corp_volunteer_admin:
                 return redirect('event_calendar')
             elif is_foster_admin:
-                return redirect('display_list')
+                return redirect('watchlist_status_page')
             else:
                 return redirect('calendar')
 
@@ -379,26 +379,27 @@ def dog_part_of_litter(dog):
         return False
 
 
-def gen_cal_get_offsite_dog_dict():
+def gen_cal_get_offsite_dog_dict(include_puppies=False):
     # get info on dogs that have offsite circumstances
     host_or_foster_dogs = DogObject.objects.filter(
         appt_only=False,
         offsite=True,
         shelterluv_status="Available for Adoption").order_by('name')
-
-    host_or_foster_dogs_over_6_mos = [
-        dog for dog in host_or_foster_dogs if not dog_part_of_litter(dog)]
     
     offsite_dogs = DogObject.objects.filter(
         offsite=True, 
         shelterluv_status="Available for Adoption").order_by('name')
 
-    offsite_dogs_over_6_mos = [
-        dog for dog in offsite_dogs if not dog_part_of_litter(dog)]
+    if not include_puppies:
+        host_or_foster_dogs = [
+            dog for dog in host_or_foster_dogs if not dog_part_of_litter(dog)]
+
+        offsite_dogs = [
+            dog for dog in offsite_dogs if not dog_part_of_litter(dog)]
 
     offsite_dog_dict = {
-        'host_or_foster_dogs': host_or_foster_dogs_over_6_mos,
-        'offsite_dogs': offsite_dogs_over_6_mos
+        'host_or_foster_dogs': host_or_foster_dogs,
+        'offsite_dogs': offsite_dogs
     }
 
     return offsite_dog_dict
