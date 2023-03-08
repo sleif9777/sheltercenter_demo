@@ -1402,7 +1402,7 @@ def toggle_lock(request, appt_id, date_year, date_month, date_day):
 
 # REFACTORED
 @authenticated_user
-@allowed_users(allowed_roles={'admin', 'superuser'})
+@allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def check_in_appt(request, appt_id, date_year, date_month, date_day):
     appt = Appointment.objects.update_or_create(
         pk=appt_id,
