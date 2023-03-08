@@ -1,3 +1,4 @@
+import numpy
 import operator
 import os
 import requests
@@ -315,7 +316,7 @@ def get_dog_info(shelterluv_id):
 
 
 def get_and_update_dogs():
-    update_from_shelterluv()
+    # update_from_shelterluv()
     update_all_litters()
     remove_expired_dates()
 
@@ -430,30 +431,43 @@ def update_dog_from_form_data(id, form_data):
 def handle_cleared_dates_in_form(form_data):
     date_default = datetime.date(2000, 1, 1)
 
+    for dog in DogObject.objects.filter(
+            appt_only=False,
+            alter_date = date_default, 
+            foster_date = date_default,
+            host_date = date_default,
+            offsite=True):
+        dog.offsite = False
+        dog.save()
+
     for dog in DogObject.objects.filter(appt_only=True):
-        if dog.shelterluv_id not in form_data.keys():
+        if "{0}-appt".format(dog.shelterluv_id) not in form_data.keys():
             dog.appt_only = False
+            dog.offsite = False
             dog.save()
 
     for dog in DogObject.objects.filter(
             shelterluv_status="Available for Adoption").exclude(
             alter_date=date_default):
-        if dog.shelterluv_id not in form_data.keys():
+        if "{0}-altr".format(dog.shelterluv_id) not in form_data.keys():
             dog.alter_date = date_default
+            dog.offsite = True if dog.appt_only else False
             dog.save()
             
     for dog in DogObject.objects.filter(
             shelterluv_status="Available for Adoption").exclude(
             foster_date=date_default):
-        if dog.shelterluv_id not in form_data.keys():
+        if "{0}-fstr".format(dog.shelterluv_id) not in form_data.keys():
             dog.foster_date = date_default
+            dog.offsite = True if dog.appt_only else False
             dog.save()
 
     for dog in DogObject.objects.filter(
             shelterluv_status="Available for Adoption").exclude(
             host_date=date_default):
-        if dog.shelterluv_id not in form_data.keys():
+        if "{0}-host".format(dog.shelterluv_id) not in form_data.keys():
             dog.host_date = date_default
+            dog.offsite = True if dog.appt_only else False
             dog.save()
 
 
@@ -470,6 +484,7 @@ def display_list_admin(request):
         del form_data['csrfmiddlewaretoken']
 
         form_data = dict([(k, v) for k, v in form_data.items() if v[0] != ""])
+        print(form_data)
 
         for id in form_data.keys():
             update_dog_from_form_data(id, form_data[id])
@@ -479,7 +494,7 @@ def display_list_admin(request):
         if 'admin' in user_groups:
             return redirect('calendar')
         else:
-            return redirect('display_list')
+            return redirect('watchlist_status_page')
 
     context = {
         'all_available_dogs': all_available_dogs,
@@ -488,3 +503,27 @@ def display_list_admin(request):
     }
 
     return render(request, "wishlist/list_admin.html", context)
+
+
+def render_status_page(request):
+    context = {
+        'foster_responsible_dogs': offsite_dogs_by_team("foster"),
+        'host_responsible_dogs': offsite_dogs_by_team("host")
+    }
+
+    return render(request, "wishlist/watchlist_dashboard.html", context)
+
+
+def offsite_dogs_by_team(team):
+    appt_only = list(DogObject.objects.filter(appt_only=True))
+    foster_dogs = list(DogObject.objects.filter(foster_date__gte=today))
+    host_dogs = list(DogObject.objects.filter(host_date__gte=today))
+
+    match team:
+        case "foster":
+            return sorted(list(set(appt_only + foster_dogs)),
+                key=lambda x: x.name)
+        case "host":
+            return host_dogs
+    
+    return
