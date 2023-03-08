@@ -1,3 +1,6 @@
+{% load appt_extras %}
+{% load auth_extras %}
+
 <div class="appointment {% if appt.short_notice %} short-notice {% endif %}" id="appt{{appt.id}}">
   {% if not appt.available %}
   <table class="appt-info-block" id="appt-header-block">
