@@ -15,9 +15,14 @@
         {% if appt.bringing_dog %}&#128021;&#xFE0E;{% endif %}
         {% if appt.has_cat %}&#128008;&#xFE0E;{% endif %}
       </td>
+      <td class="appt-description right">
+        {% if appt.adopter %}
+        <a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">&#128196;&#xFE0E;</a>
+        {% endif %}
+      </td>
     </tr>
     <tr>
-      <td>
+      <td colspan="2">
         <ul class="appt-two-col-list">
           {% if appt.appt_type != "8" %}<li>({{appt.appt_string}})</li>{% endif %}
           {% if appt.visits_to_date >= 1 and appt.appt_type in schedulable %}<li>{{appt.number_of_visits}}</li>{% endif %}
@@ -47,7 +52,13 @@
           </li>
           {% if appt.checked_in %}
           <li>{{appt.adopter_description}}</li>
-          <li><b>Counselor:</b> {{appt.counselor}}</li>
+          <li>
+            {% if appt.counselor != "" %}
+            <b>Counselor:</b> {{appt.counselor}}
+            {% else %}
+            <em><a href="{% url 'check_in_appt' appt.id date.year date.month date.day%}">Assign Counselor</a></em>
+            {% endif %}
+          </li>
           {% endif %}
         </ul>
       </td>
@@ -106,6 +117,72 @@
 
   <!-- if appt is booked, show actions and contacts -->
   {% if appt.appt_type in schedulable and appt.available == False %}
+
+  <table class="appt-subblock appt-info-block about-subblock">
+    <tbody>
+      <tr class="info-block-subheader">
+        <th>About {{appt.adopter.f_name}}</th>
+      </tr>
+      <tr>
+        <td>
+          <ul class="appt-two-col-list">
+            {% if appt.adopter.city == "" and appt.adopter.state == "" %}
+            <li>No Shelterluv information on file.</li>
+            {% else %}
+            <li class="city-state">Coming from {{appt.adopter.city}}, {{appt.adopter.state}}</li> 
+            <li class="household-activity">{{appt.adopter.activity_level}} Activity Household</li>
+            <li class="booking-timestamp">{{appt.dt_booking_string}}</li>
+            <li class="housing">{{appt.adopter.housing_type}} ({{appt.adopter.housing}})</li>
+            <li class="fence">
+              {% if appt.adopter.has_fence %}
+              Has Fence
+              {% elif appt.adopter.application_id and not appt.adopter.has_fence %}
+              No Fence
+              {% endif %}
+            </li>
+            {% endif %}
+          </ul>
+        </td>
+      </tr>          
+    </tbody>
+  </table>
+
+  {% if appt.adopter.show_preferences %}
+  <table class="appt-subblock appt-info-block preferences-subblock">
+    <tbody>
+      <tr class="info-block-subheader">
+        <th>{{appt.adopter.f_name}}'s Preferences</th>
+      </tr>
+      <tr>
+        <td>
+          <ul class="appt-two-col-list">
+            {% if appt.adopter.gender_preference == "2" %}
+            <li class="gender-preference">Only interested in females</li>
+            {% elif appt.adopter.gender_preference == "3" %}
+            <li class="gender-preference">Only interested in males</li>
+            {% endif %}
+            {% if appt.adopter.age_preference == "2" %}
+            <li class="age-preference">Puppies only</li>
+            {% elif appt.adopter.age_preference == "3" %}
+            <li class="gender-preference">Adults only</li>
+            {% endif %}
+            {% if appt.adopter.min_weight > 0 and appt.adopter.max_weight == 0 %}
+            <li class="weight-preference">Looking for over {{appt.adopter.min_weight}} lbs.</li>
+            {% elif appt.adopter.max_weight > 0 and appt.adopter.min_weight == 0 %}
+            <li class="weight-preference">Looking for under {{appt.adopter.max_weight}} lbs.</li>
+            {% elif appt.adopter.min_weight > 0 and appt.adopter.max_weight > 0 %}
+            <li class="weight-preference">Looking for between {{appt.adopter.min_weight}} and {{appt.adopter.max_weight}} lbs.</li>
+            {% endif %}
+            {% if appt.adopter.hypo_preferred %}
+            <li class="hypo-preference">Needs hypo/low-shedding!</li>
+            {% endif %}
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
+
   <!-- actions table will always be last (if present) -->
   <table class="appt-subblock appt-info-block no-border follow_ups-subblock">
     <tbody>
@@ -144,6 +221,7 @@
                 <span class="completed-appt-action">Send Follow-Up Email (with Host Info)</span>
               {% endif %}
             </li>
+            <li><a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">Print Application</a></li>
             <li class="schedule-next">
               <a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'followup' %}">Schedule Next Appointment</a>
             </li>
