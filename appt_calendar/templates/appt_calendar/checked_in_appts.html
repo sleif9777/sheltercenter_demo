@@ -11,17 +11,19 @@
 
   <table class="report">
     <tr class="no-border">
-      <th style="width:20%;">Adopter</th>
-      <th style="width:20%;">Check-In Time</th>
-      <th style="width:20%;">Description</th>
-      <th style="width:20%;">Counselor</th>
-      <th style="width:20%;">Actions</th>
+      <th style="width:17%;">Adopter</th>
+      <th style="width:17%;">Appointment Time</th>
+      <th style="width:16%;">Check-In Time</th>
+      <th style="width:17%;">Description</th>
+      <th style="width:16%;">Counselor</th>
+      <th style="width:17%;">Actions</th>
     </tr>
     {% for timeslot, appointments in timeslots.items %}
       {% for appt in appointments %}
         {% if appt.checked_in %}
           <tr>
             <td>{{appt.adopter}}</td>
+            <td>{{appt.time_string}}</td>
             <td>{{appt.checked_in_time}}</td>
             <td>{{appt.adopter_description}}</td>
             <td>{{appt.counselor}}</td>
