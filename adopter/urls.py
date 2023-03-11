@@ -21,5 +21,6 @@ urlpatterns = [
     path('resend_invite/<int:adopter_id>/', views.resend_invite, name="resend_invite"),
     path('send_to_inactive/', views.send_to_inactive, name="send_to_inactive"),
     path('manage/', views.manage, name="adopter_manage"),
+    path('stage_import/', views.stage_import, name="stage_import"),
     path('set_alert/<int:adopter_id>', views.set_alert_mgr, name="set_alert_mgr"),
 ]
