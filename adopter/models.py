@@ -7,6 +7,10 @@ from num2words import num2words
 
 from wishlist.models import *
 
+
+class AdopterUploadSettings(models.Model):
+    last_adopter_id_uploaded = models.IntegerField(default=0)
+
 class Adopter(models.Model):
     STATUSES = [
         ("1", "Approved"),
