@@ -451,7 +451,7 @@ def report_print(request, date_year, date_month, date_day):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser', 'greeter'})
 def daily_reports_home(request):
-    date = today
+    date = datetime.date.today()
     return redirect(
         'daily_report_adopted_chosen_fta', date.year, date.month, date.day)
 

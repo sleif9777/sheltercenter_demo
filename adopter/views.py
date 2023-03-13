@@ -2,6 +2,7 @@ import copy
 import csv
 import datetime
 import os
+import requests
 import sys
 import time
 
@@ -21,9 +22,9 @@ from email_mgr.models import *
 from schedule_template.models import *
 from visit_and_faq.models import *
 
+api_root = "https://www.shelterluv.com/api/v1/"
 sandbox = str(os.environ.get('SANDBOX')) == "1"
 system_settings = SystemSettings.objects.get(pk=1)
-today = datetime.date.today()
 
 # Create your views here.
 
@@ -140,7 +141,7 @@ def eval_unique_app_interest(response):
 def eval_app_interest(response):
     # evaluates whether app interest should be included in subject line
     unique = eval_unique_app_interest(response)
-    short = len(response) >= 10
+    short = len(response) <= 10
 
     return True if unique and short else False
 
@@ -201,8 +202,8 @@ def is_special_circumstances(adopter):
 
 def handle_existing(existing_adopter, status, app_interest):
     today = datetime.date.today()
-    last_4_days = [today - datetime.timedelta(days = x) for x in range(4)]
-    one_year_ago = today - datetime.timedelta(days = 365)
+    last_4_days = [date_delta(x) for x in range(4)]
+    one_year_ago = today - datetime.timedelta(days=365)
     accepted_last_4_days = existing_adopter.accept_date in last_4_days
     accepted_over_1_year = existing_adopter.accept_date < one_year_ago
 
@@ -490,6 +491,8 @@ def add(request):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def manage(request):
+    get_feed_of_shelterluv_people()
+
     adopters = Adopter.objects.all()
     context = {
         'adopters': adopters,
@@ -953,3 +956,94 @@ def acknowledged_faq(request):
     adopter.save()
 
     return redirect('adopter_home')
+
+
+def get_feed_of_shelterluv_people():
+    global api_root
+    headers = {'X-Api-Key': os.environ.get('SHELTERLUV_API_KEY')}
+    request_address = '{0}people'.format(api_root)
+    people_request = requests.get(request_address, headers=headers).json()
+    people = people_request['people']
+
+    return people
+
+
+def clean_feed_of_shelterluv_people(people):
+    clean_people = {}
+
+    for person in people:
+        id = person['Internal-ID']
+        clean_people[id] = {
+            'ID': person['Internal-ID'],
+            'Firstname': person['Firstname'].title(),
+            'Lastname': person['Lastname'].title(),
+            'Email': person['Email'].lower(),
+            'City': person['City'].title(),
+            'State': person['State'],
+            'Phone': person['Phone'][2:],
+        }
+
+    return clean_people
+
+
+def date_delta(days):
+    today = datetime.date.today()
+    date_delta = today - datetime.timedelta(days=days)
+
+    return date_delta
+
+
+def stage_import(request):
+    last_4_days = [date_delta(x) for x in range(4)]
+    people = get_feed_of_shelterluv_people()
+    people = clean_feed_of_shelterluv_people(people)
+
+    if request.method == "POST":
+        form_data = dict(request.POST)
+        del form_data['csrfmiddlewaretoken']
+
+        for id in form_data:
+            if form_data[id][0] == 'on':
+                person = people[id]
+                email_for_search = person['Email']
+
+                try:
+                    user = User.objects.get(username=email_for_search)
+                    adopter = Adopter.objects.get(
+                        primary_email=email_for_search)
+                    accepted_last_4_days = adopter.accept_date in last_4_days
+
+                    if not accepted_last_4_days:
+                        create_invite_email(adopter)
+                except User.DoesNotExist:
+                    print('Add {0}'.format(person['Firstname']))
+                except:
+                    pass
+
+        return redirect('outbox')
+
+    context = {
+        'people': people
+    }
+
+    return render(request, "adopter/stage_upload.html", context)
+
+
+def create_adopter_from_api_import(person_dict):
+    auth_code = generate_auth_code()
+    status = "1"
+
+    new_adopter = Adopter.objects.create(
+        auth_code = auth_code,
+        city = person_dict['City'],
+        f_name = person_dict['Firstname'],
+        l_name = person_dict['Lastname'],
+        out_of_state = False if person_dict['Phone'] == "NC" else True,
+        phone_number = person_dict['Phone'],
+        primary_email = person_dict['Email'],
+        state = person_dict['State'],
+        status = status
+    )
+
+    return new_adopter
+

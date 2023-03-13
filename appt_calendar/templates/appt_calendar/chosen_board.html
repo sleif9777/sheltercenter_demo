@@ -59,6 +59,7 @@
             {% elif appt.outcome == "8" %}
               Adopter Notified<br>
               Paperwork Scheduled<br>
+              <a href="{% url 'revert_to_needs_well_check' appt.id %}">Put Back as Chosen</a><br>
               <a href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
             {% endif %}
           </td>
