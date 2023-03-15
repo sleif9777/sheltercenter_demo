@@ -316,7 +316,7 @@ def get_dog_info(shelterluv_id):
 
 
 def get_and_update_dogs():
-    update_from_shelterluv()
+    # update_from_shelterluv()
     update_all_litters()
     remove_expired_dates()
 
