@@ -9,7 +9,7 @@
         <div class="center">
             <input type="submit" class="medium-button side-margin-5" onClick="this.form.submit(); this.disabled=true;" name="" value="Upload">
         </div>        
-        <ul style="list-style-type: none;">
+        <ul class="list-page" id="adopter-list">
             {% for personID, personValues in people.items %}
             <li>
                 <input type="checkbox" name="{{personID}}" id="{{personID}}" checked>

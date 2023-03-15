@@ -13,7 +13,7 @@ from random import randint
 
 from .adopter_manager import *
 from .forms import *
-from .models import Adopter
+from .models import *
 from appt_calendar.models import Appointment
 from dashboard.decorators import *
 from email_mgr.dictionary import *
@@ -22,6 +22,7 @@ from email_mgr.models import *
 from schedule_template.models import *
 from visit_and_faq.models import *
 
+adopter_upload_settings = AdopterUploadSettings.objects.get(pk=1)
 api_root = "https://www.shelterluv.com/api/v1/"
 sandbox = str(os.environ.get('SANDBOX')) == "1"
 system_settings = SystemSettings.objects.get(pk=1)
@@ -253,8 +254,9 @@ def attempt_to_handle_existing_from_file(row):
     # print("Located record for ", existing_adopter)
 
     #update to newest application
-    existing_adopter.application_id = row[0]
-    existing_adopter.save()
+    # existing_adopter.application_id = row[0]
+    # existing_adopter.save()
+    update_app_details_from_row(existing_adopter.id, row)
 
     #if blocked, add to error report
     if existing_adopter.status == "2":
@@ -965,23 +967,27 @@ def get_feed_of_shelterluv_people():
     people_request = requests.get(request_address, headers=headers).json()
     people = people_request['people']
 
+    print(people)
+
     return people
 
 
 def clean_feed_of_shelterluv_people(people):
     clean_people = {}
+    last_id = adopter_upload_settings.last_adopter_id_uploaded
 
     for person in people:
         id = person['Internal-ID']
-        clean_people[id] = {
-            'ID': person['Internal-ID'],
-            'Firstname': person['Firstname'].title(),
-            'Lastname': person['Lastname'].title(),
-            'Email': person['Email'].lower(),
-            'City': person['City'].title(),
-            'State': person['State'],
-            'Phone': person['Phone'][2:],
-        }
+        if int(id) > last_id:
+            clean_people[id] = {
+                'ID': person['Internal-ID'],
+                'Firstname': person['Firstname'].title(),
+                'Lastname': person['Lastname'].title(),
+                'Email': person['Email'].lower(),
+                'City': person['City'].title(),
+                'State': person['State'],
+                'Phone': person['Phone'][2:],
+            }
 
     return clean_people
 
@@ -1016,9 +1022,13 @@ def stage_import(request):
                     if not accepted_last_4_days:
                         create_invite_email(adopter)
                 except User.DoesNotExist:
-                    print('Add {0}'.format(person['Firstname']))
+                    create_adopter_from_api_import(person)
                 except:
                     pass
+
+        first_form_data_key = list(form_data.keys())[0]
+        adopter_upload_settings.last_adopter_id_uploaded = int(first_form_data_key)
+        adopter_upload_settings.save()
 
         return redirect('outbox')
 
@@ -1043,6 +1053,29 @@ def create_adopter_from_api_import(person_dict):
         primary_email = person_dict['Email'],
         state = person_dict['State'],
         status = status
+    )
+
+    return new_adopter
+
+
+def update_app_details_from_row(adopter_id, row):
+    primary_email, secondary_email = get_email_from_row(row)
+
+    new_adopter = Adopter.objects.update_or_create(
+        pk=adopter_id, 
+        defaults={
+            'activity_level': row[32],
+            'app_interest': row[11],
+            'application_id': row[0],
+            'has_fence': True if row[45] == "Yes" else False,
+            'housing': row[35],
+            'housing_type': row[33],
+            'lives_with_parents': True if row[35] == "Live with Parents" else False,
+            'out_of_state': False if row[19] == "NC" else True,
+            'phone_number': row[22],
+            'secondary_email': secondary_email,
+            'state': row[19],
+        }
     )
 
     return new_adopter
