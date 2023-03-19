@@ -1049,7 +1049,8 @@ def stage_import(request):
                     accepted_last_4_days = adopter.accept_date in last_4_days
 
                     if not accepted_last_4_days:
-                        create_invite_email(adopter)
+                        adopter = create_invite_email(adopter)
+                        create_new_user_from_adopter(adopter)
                 except User.DoesNotExist:
                     adopter = create_adopter_from_api_import(person)
                     create_new_user_from_adopter(adopter)
