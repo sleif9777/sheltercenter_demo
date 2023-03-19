@@ -7,6 +7,7 @@ import sys
 import time
 
 from django.contrib.auth.models import Group, User
+from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
 from random import randint
@@ -103,6 +104,9 @@ def create_new_user_from_adopter(adopter):
             username=adopter.primary_email.lower(), 
             email=adopter.primary_email,
         )
+
+        print("located user #{0}".format(new_user.id))
+
         if new_user.organization:
             adopter.auth_code = new_user.organization.auth_code
     #if new, create user
@@ -112,6 +116,10 @@ def create_new_user_from_adopter(adopter):
             email=adopter.primary_email, 
             password=str(adopter.auth_code)
         )
+        # except IntegrityError:
+        #     attach_existing_user_to_adopter(adopter)
+        # except:
+        #     pass
 
     #assign to adopter and save
     adopter.user = new_user
@@ -121,7 +129,7 @@ def create_new_user_from_adopter(adopter):
     adopter_group.user_set.add(new_user)
 
 
-def reconcile_missing_users(request):
+def reconcile_missing_users(request, generate_email=False):
     affected_adopters = Adopter.objects.filter(user=None)
     print("Attempting to reconcile {0} adopters".format(len(affected_adopters)))
 
@@ -129,10 +137,31 @@ def reconcile_missing_users(request):
         try:
             create_new_user_from_adopter(adopter)
             print("Created user for {0}".format(adopter.full_name()))
+        except IntegrityError:
+            attach_existing_user_to_adopter(adopter, generate_email)
+            print("Attached user for {0}".format(adopter.full_name()))
         except:
             print("Could not create user for {0}".format(adopter.full_name()))
 
-    return redirect('add_adopter')
+    if not generate_email:
+        return redirect('add_adopter')
+
+
+def attach_existing_user_to_adopter(adopter, generate_email=False):
+    user = User.objects.get(username=adopter.primary_email.lower())
+
+    try:
+        adopter_with_user = Adopter.objects.get(user=user)
+        if generate_email:
+            create_invite_email(adopter_with_user)
+        # adopter.delete() #TO DO: transfer attribute data from new to old
+        return adopter_with_user
+    except:
+        adopter.user = user
+        adopter.save()
+
+        adopter_group = Group.objects.get(name='adopter')
+        adopter_group.user_set.add(user)
 
 
 def eval_unique_app_interest(response):
@@ -1022,13 +1051,17 @@ def stage_import(request):
                     if not accepted_last_4_days:
                         create_invite_email(adopter)
                 except User.DoesNotExist:
-                    create_adopter_from_api_import(person)
+                    adopter = create_adopter_from_api_import(person)
+                    create_new_user_from_adopter(adopter)
                 except:
                     pass
 
-        first_form_data_key = list(form_data.keys())[0]
-        adopter_upload_settings.last_adopter_id_uploaded = int(first_form_data_key)
-        adopter_upload_settings.save()
+        reconcile_missing_users(generate_email=True)
+
+        if not sandbox:
+            first_form_data_key = list(form_data.keys())[0]
+            adopter_upload_settings.last_adopter_id_uploaded = int(first_form_data_key)
+            adopter_upload_settings.save()
 
         return redirect('outbox')
 
