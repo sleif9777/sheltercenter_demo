@@ -16,6 +16,7 @@ from email_mgr.email_sender import *
 from email_mgr.models import *
 
 api_root = "https://www.shelterluv.com/api/v1/"
+sandbox = str(os.environ.get('SANDBOX')) == "1"
 
 def get_past_three_days():
     today = datetime.datetime.today()
@@ -316,7 +317,9 @@ def get_dog_info(shelterluv_id):
 
 
 def get_and_update_dogs():
-    # update_from_shelterluv()
+    if not sandbox:
+        update_from_shelterluv()
+    
     update_all_litters()
     remove_expired_dates()
 
@@ -404,6 +407,7 @@ def display_list_adopter(request):
  
     context = {
         'other_available_dogs': other_available_dogs,
+        'sandbox': sandbox,
         'user_wishlist': user_wishlist_arr,
     }
 
@@ -484,7 +488,6 @@ def display_list_admin(request):
         del form_data['csrfmiddlewaretoken']
 
         form_data = dict([(k, v) for k, v in form_data.items() if v[0] != ""])
-        print(form_data)
 
         for id in form_data.keys():
             update_dog_from_form_data(id, form_data[id])
@@ -500,6 +503,7 @@ def display_list_admin(request):
         'all_available_dogs': all_available_dogs,
         'recently_adopted_dogs': recently_adopted_dogs,
         'recently_posted_dogs': recently_posted_dogs,
+        'sandbox': sandbox,
     }
 
     return render(request, "wishlist/list_admin.html", context)

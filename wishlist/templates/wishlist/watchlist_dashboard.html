@@ -52,11 +52,11 @@
             <ul>
               {% for dog in foster_responsible_dogs %}
               <li>
-                {{dog.name}} -
+                {{dog.name}}
                 {% if dog.appt_only %}
-                by appointment only
+                 (by appointment only)
                 {% elif dog.foster_date.year > 2000 %}
-                returning {{dog.foster_date}}
+                 ({{dog.foster_date}})
                 {% endif %}
               </li>
               {% endfor %}
@@ -68,14 +68,9 @@
         <td>
             {% if host_responsible_dogs %}
             <ul>
-              {% for dog in foster_responsible_dogs %}
+              {% for dog in host_responsible_dogs %}
               <li>
-                {{dog.name}} -
-                {% if dog.appt_only %}
-                by appointment only
-                {% elif dog.foster_date.year > 2000 %}
-                returning {{dog.foster_date}}
-                {% endif %}
+                {{dog.name}} ({{dog.host_date_str}})
               </li>
               {% endfor %}
             {% else %}

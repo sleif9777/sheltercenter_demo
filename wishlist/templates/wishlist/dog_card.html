@@ -4,9 +4,11 @@
 <div class="dog-card" id={{dog.shelterluv_id}}>
   <table class="auto-margin full-width">
     <tr class="dog-info-block no-border">
+      {% if not sandbox %}
       <td class="no-border" style="width: 20%;">
         <img class="{{dog|wishlist_class:'image'}}" src="{{dog.info.CoverPhoto}}" height="150px" alt=""><br>
       </td>
+      {% endif %}
       <td>
         <table class="auto-margin full-width">
           <tr class="dog-info-block">

@@ -9,28 +9,32 @@
     input = document.getElementById("search-bar");
     filter = input.value.toLowerCase();
     li = document.getElementsByClassName('dog-listing');
-    console.log(li);
-    spans = document.getElementsByClassName('dog-name');
-    console.log(spans);
+    male_str = " male "
+    female_str = " female "
 
     // Loop through all list items, and hide those who don't match the search query
     for (i = 0; i < li.length; i++) {
-      // name = li[i].getElementsByClassName("dog-name")[0];
-      name = li[i].getElementsByClassName('dog-name')[0];
-      console.log(name);
-      nameTxtValue = name.innerText; // || name.innerText;
-      console.log(nameTxtValue);
-      // if (nameTxtValue.toLowerCase().indexOf(filter) > -1) {
-      //   li[i].style.display = "";
-      // } else {
-      //   li[i].style.display = "none";
-      // }
+      listing = li[i].innerText.toLowerCase();
+      listing = listing.replace(/\n/g, ' ');
+
+      if (listing.includes(male_str)) {
+        listing = listing.split(male_str)[0]
+      } else {
+        listing = listing.split(female_str)[0]
+      }
+
+      console.log(listing);
+      if (listing.includes(filter)) {
+        li[i].style.display = "";
+      } else {
+        li[i].style.display = "none";
+      }
     }
   }
 </script>
   <div class="main">
     <h1 class="page-header">Manage Dogs</h1>
-    <input type="text" id="search-bar" onkeyup="filterDogs()" placeholder="Search by name or email address.">
+    <input type="text" id="search-bar" onkeyup="filterDogs()" placeholder="Search by name.">
 
     <div class="info-box toc btm-margin-5">
       <table>
