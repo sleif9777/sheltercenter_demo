@@ -1053,10 +1053,9 @@ def stage_import(request):
                 except User.DoesNotExist:
                     adopter = create_adopter_from_api_import(person)
                     create_new_user_from_adopter(adopter)
+                    create_invite_email(adopter)
                 except:
                     pass
-
-        reconcile_missing_users(generate_email=True)
 
         if not sandbox:
             first_form_data_key = list(form_data.keys())[0]
