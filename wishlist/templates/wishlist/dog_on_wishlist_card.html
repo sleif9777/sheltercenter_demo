@@ -14,7 +14,7 @@
             <td>
               <span class="appt-description left upper">
                 <b>{{dog.info.Name}}
-                {% if dog.info.Status != "Available for Adoption" %}
+                {% if dog.info.Status not in available_statuses %}
                   - NO LONGER AVAILABLE
                 {% endif %}</b>
               </span><br>

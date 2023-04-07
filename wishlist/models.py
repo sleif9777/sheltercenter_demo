@@ -110,7 +110,10 @@ class DogObject(models.Model):
             return ""
 
     def available(self):
-        return self.shelterluv_status == "Available for Adoption"
+        return self.shelterluv_status in [
+            "Available for Adoption",
+            "Foster Returning Soon to Farm"
+        ]
 
     def host_date_str(self):
         if self.host_date.year != 2000:
