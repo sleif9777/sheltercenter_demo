@@ -3,6 +3,10 @@ from django import template
 from adopter.models import Adopter
 from appt_calendar.date_time_strings import *
 
+available_statuses = [
+        "Available for Adoption",
+        "Foster Returning Soon to Farm"
+    ]
 register = template.Library()
 
 @register.filter(name='on_wishlist')
@@ -18,7 +22,7 @@ def calc_popularity(dog):
 @register.filter(name='wishlist_class')
 def wishlist_class(dog, element_type):
     # Dogs no longer available
-    if dog.shelterluv_status != "Available for Adoption":
+    if dog.shelterluv_status not in available_statuses:
         match element_type:
             case "string":
                 return "strikethrough-italic"
@@ -28,10 +32,11 @@ def wishlist_class(dog, element_type):
 
 @register.filter(name='wishlist_str')
 def wishlist_str(dog, date):
+
     popular = calc_popularity(dog)
     string = ""
 
-    if dog.shelterluv_status != "Available for Adoption":
+    if dog.shelterluv_status not in available_statuses:
         string += " - no longer available"
         return string
     

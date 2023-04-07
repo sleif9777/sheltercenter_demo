@@ -22,6 +22,10 @@ from schedule_template.models import *
 from wishlist.models import *
 from wishlist.views import *
 
+available_statuses = [
+        "Available for Adoption",
+        "Foster Returning Soon to Farm"
+    ]
 system_settings = SystemSettings.objects.get(pk=1)
 
 # AUTHENTICATION WORKFLOWS
@@ -381,14 +385,16 @@ def dog_part_of_litter(dog):
 
 def gen_cal_get_offsite_dog_dict(include_puppies=False):
     # get info on dogs that have offsite circumstances
+    global available_statuses
+    
     host_or_foster_dogs = DogObject.objects.filter(
         appt_only=False,
         offsite=True,
-        shelterluv_status="Available for Adoption").order_by('name')
+        shelterluv_status__in=available_statuses).order_by('name')
     
     offsite_dogs = DogObject.objects.filter(
         offsite=True, 
-        shelterluv_status="Available for Adoption").order_by('name')
+        shelterluv_status__in=available_statuses).order_by('name')
 
     if not include_puppies:
         host_or_foster_dogs = [

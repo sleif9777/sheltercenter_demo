@@ -17,7 +17,7 @@
                 {{dog.info.Name}}
               </span><br>
               <span class="subscript italic">
-                {% if dog.shelterluv_status != "Available for Adoption" %}
+                {% if dog.shelterluv_status not in available_statuses %}
                   NO LONGER AVAILABLE
                 {% else %}
                   {{dog.info.Sex}} {{dog.info.Breed}}, {{dog.Weight_str}}{{dog.Age_str}}

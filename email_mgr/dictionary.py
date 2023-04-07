@@ -6,6 +6,10 @@ from django.contrib.auth.models import User
 from appt_calendar.date_time_strings import *
 from dashboard.templatetags.wishlist_extras import calc_popularity
 
+available_statuses = [
+        "Available for Adoption",
+        "Foster Returning Soon to Farm"
+    ]
 today = datetime.datetime.today()
 
 def get_adopter_replacements(adopter, appt):
@@ -123,11 +127,12 @@ def get_signature():
 
 
 def evaluate_dog_for_watchlist_replacements(dog, date):
+    global available_statuses
     status = "*"
     popular = calc_popularity(dog)
     is_foster_host = False
 
-    if dog.shelterluv_status != "Available for Adoption":
+    if dog.shelterluv_status not in available_statuses:
         status = " - no longer available"
 
     if dog.offsite:
@@ -189,9 +194,10 @@ def find_watchlist_context(key, plural):
 
 
 def evaluate_watchlist_for_email(watchlist, date):
+    global available_statuses
     statuses = []
     classifications = {
-        "adopted": [dog.name for dog in watchlist if dog.shelterluv_status != "Available for Adoption"],
+        "adopted": [dog.name for dog in watchlist if dog.shelterluv_status not in available_statuses],
         "appt": [dog.name for dog in watchlist if dog.appt_only],
         "alter": [dog.name for dog in watchlist if dog.alter_date == date],
         "foster": [dog.name for dog in watchlist if dog.foster_date > date],
