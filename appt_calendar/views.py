@@ -1482,6 +1482,12 @@ def request_access(request, adopter_id):
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
 def allow_access(request, adopter_id):
+    # adopter = Adopter.objects.get(pk=id)
+    # adopter.adoption_complete = False
+    # adopter.requested_access = False
+    # adopter.requested_surrender = False
+    # adopter.save()
+
     adopter = Adopter.objects.update_or_create(
         pk=adopter_id,
         defaults={
@@ -1491,8 +1497,8 @@ def allow_access(request, adopter_id):
         }
     )[0]
 
-    access_restored(adopter)
-    return redirect('edit_adopter', adopter.id, alert=True)
+    # access_restored(adopter)
+    return redirect('edit_adopter_alert', adopter.id, 1)
 
 
 # REFACTORED

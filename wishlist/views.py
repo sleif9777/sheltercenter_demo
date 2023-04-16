@@ -334,14 +334,12 @@ def get_all_available_dogs(filter_today=False):
 
     if filter_today:
         all_available_dogs_query = DogObject.objects.filter(
-            # shelterluv_status='Available for Adoption'
             shelterluv_status__in=available_statuses
         ).exclude(
             update_dt__date__in=[today, yesterday, two_days_ago]
         )
     else:
         all_available_dogs_query = DogObject.objects.filter(
-            # shelterluv_status='Available for Adoption')
             shelterluv_status__in=available_statuses)
 
     all_available_dogs = [dog for dog in all_available_dogs_query]
