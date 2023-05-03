@@ -77,7 +77,7 @@
                     <br>
                     {% endif %}
                 {% endif %}  
-                {% if appt|show_watchlist:"unavailable" and appt.schedulable %}
+                {% if appt|show_watchlist:"unavailable" and appt.schedulable and appt.adopter.watchlist_unavailable_str %}
                   <span class="left strikethrough-italic">{{appt.adopter.watchlist_unavailable_str}}</span> <em>(Watch List - Unavailable)</em>
                   {% endif %}
                 {% endif %}
