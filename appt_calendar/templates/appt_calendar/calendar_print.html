@@ -67,20 +67,6 @@
               {% endif %}
               {% if appt.appt_type in schedulable %}
                 {{appt.adopter.app_interest}} <em>(Shelterluv)</em>
-                {% if appt|show_watchlist:"either" %}
-                <br><br>
-                {% if appt.adopter.watchlist_available_str %}
-                    {% if appt|show_watchlist:"available" %}
-                    {{appt.adopter.watchlist_available_str}} <em>(Watch List - Available)</em>
-                    {% endif %}
-                    {% if appt|show_watchlist:"both" %} 
-                    <br>
-                    {% endif %}
-                {% endif %}  
-                {% if appt|show_watchlist:"unavailable" and appt.schedulable and appt.adopter.watchlist_unavailable_str %}
-                  <span class="left strikethrough-italic">{{appt.adopter.watchlist_unavailable_str}}</span> <em>(Watch List - Unavailable)</em>
-                  {% endif %}
-                {% endif %}
               {% endif %}
             </td>
             <td>
