@@ -2,7 +2,9 @@ import datetime
 import json
 import random
 import requests
+import sys
 import time
+import traceback
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
@@ -22,6 +24,10 @@ from schedule_template.models import *
 from wishlist.models import *
 from wishlist.views import *
 
+available_statuses = [
+        "Available for Adoption",
+        "Foster Returning Soon to Farm"
+    ]
 system_settings = SystemSettings.objects.get(pk=1)
 
 # AUTHENTICATION WORKFLOWS
@@ -138,7 +144,10 @@ def fake500(request):
 
 
 def error_500(request):
-    # customized error page
+    error_type, error_value, error_tb = sys.exc_info()
+    error_tb = traceback.extract_tb(error_tb, limit=5)
+    error_tb = traceback.format_list(error_tb)
+
     all_available_dogs = get_all_available_dogs()
     display_dog = random.choice(all_available_dogs)
     display_dog_info = display_dog.info
@@ -161,6 +170,8 @@ def error_500(request):
         'dog_name': dog_name,
         'dog_sex': dog_sex,
         'dog_weight': dog_weight,
+        'error_tb': error_tb,
+        'error_value': error_value,
     }
 
     return render(request, 'dashboard/500.html', context)
@@ -384,14 +395,16 @@ def dog_part_of_litter(dog):
 
 def gen_cal_get_offsite_dog_dict(include_puppies=False):
     # get info on dogs that have offsite circumstances
+    global available_statuses
+    
     host_or_foster_dogs = DogObject.objects.filter(
         appt_only=False,
         offsite=True,
-        shelterluv_status="Available for Adoption").order_by('name')
+        shelterluv_status__in=available_statuses).order_by('name')
     
     offsite_dogs = DogObject.objects.filter(
         offsite=True, 
-        shelterluv_status="Available for Adoption").order_by('name')
+        shelterluv_status__in=available_statuses).order_by('name')
 
     if not include_puppies:
         host_or_foster_dogs = [

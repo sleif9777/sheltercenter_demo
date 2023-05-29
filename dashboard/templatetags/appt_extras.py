@@ -54,18 +54,21 @@ def show_notes(appt: Appointment):
 
 @register.filter(name='show_watchlist')
 def show_watchlist(appt, list_type):
-    available_list = appt.adopter.watchlist_available_str()
-    unavailable_list = appt.adopter.watchlist_unavailable_str()
+    try:
+        available_list = appt.adopter.watchlist_available_str()
+        unavailable_list = appt.adopter.watchlist_unavailable_str()
 
-    match list_type:
-        case "available":
-            return True if available_list else False
-        case "unavailable":
-            return True if unavailable_list else False
-        case "either":
-            return True if available_list or unavailable_list else False
-        case "both":
-            return True if available_list and unavailable_list else False
+        match list_type:    
+            case "available":
+                return True if available_list else False
+            case "unavailable":
+                return True if unavailable_list else False
+            case "either":
+                return True if available_list or unavailable_list else False
+            case "both":
+                return True if available_list and unavailable_list else False
+    except:
+        return False
 
 
 @register.filter(name='pending_or_complete')

@@ -16,6 +16,10 @@ from email_mgr.email_sender import *
 from email_mgr.models import *
 
 api_root = "https://www.shelterluv.com/api/v1/"
+available_statuses = [
+        "Available for Adoption",
+        "Foster Returning Soon to Farm"
+    ]
 sandbox = str(os.environ.get('SANDBOX')) == "1"
 
 def get_past_three_days():
@@ -291,7 +295,7 @@ def litter_mgmt(request):
 
 
 def filter_dogs_adopted_today():
-    global api_root
+    global api_root, available_statuses
     today, yesterday, two_days_ago = get_past_three_days()
     all_dogs = DogObject.objects.filter(
         update_dt__date__in=[today, yesterday, two_days_ago])
@@ -299,7 +303,7 @@ def filter_dogs_adopted_today():
     posted_dogs = []
 
     for dog in all_dogs:
-        if dog.shelterluv_status == "Available for Adoption":
+        if dog.shelterluv_status in available_statuses:
             posted_dogs += [dog]
         else:
             adopted_dogs += [dog]
@@ -325,17 +329,18 @@ def get_and_update_dogs():
 
 
 def get_all_available_dogs(filter_today=False):
+    global available_statuses
     today, yesterday, two_days_ago = get_past_three_days()
 
     if filter_today:
         all_available_dogs_query = DogObject.objects.filter(
-            shelterluv_status='Available for Adoption'
+            shelterluv_status__in=available_statuses
         ).exclude(
             update_dt__date__in=[today, yesterday, two_days_ago]
         )
     else:
         all_available_dogs_query = DogObject.objects.filter(
-            shelterluv_status='Available for Adoption')
+            shelterluv_status__in=available_statuses)
 
     all_available_dogs = [dog for dog in all_available_dogs_query]
     all_available_dogs = sorted(
@@ -391,6 +396,7 @@ def display_list(request):
 @authenticated_user
 @allowed_users(allowed_roles={'adopter'})
 def display_list_adopter(request):
+    global available_statuses
     user_wishlist = request.user.adopter.wishlist
 
     if request.method == "POST":
@@ -406,6 +412,7 @@ def display_list_adopter(request):
         if dog not in user_wishlist_arr]
  
     context = {
+        'available_statuses': available_statuses,
         'other_available_dogs': other_available_dogs,
         'sandbox': sandbox,
         'user_wishlist': user_wishlist_arr,
@@ -433,6 +440,7 @@ def update_dog_from_form_data(id, form_data):
 
 
 def handle_cleared_dates_in_form(form_data):
+    global available_statuses
     date_default = datetime.date(2000, 1, 1)
 
     for dog in DogObject.objects.filter(
@@ -451,7 +459,7 @@ def handle_cleared_dates_in_form(form_data):
             dog.save()
 
     for dog in DogObject.objects.filter(
-            shelterluv_status="Available for Adoption").exclude(
+            shelterluv_status__in=available_statuses).exclude(
             alter_date=date_default):
         if "{0}-altr".format(dog.shelterluv_id) not in form_data.keys():
             dog.alter_date = date_default
@@ -459,7 +467,7 @@ def handle_cleared_dates_in_form(form_data):
             dog.save()
             
     for dog in DogObject.objects.filter(
-            shelterluv_status="Available for Adoption").exclude(
+            shelterluv_status__in=available_statuses).exclude(
             foster_date=date_default):
         if "{0}-fstr".format(dog.shelterluv_id) not in form_data.keys():
             dog.foster_date = date_default
@@ -467,7 +475,7 @@ def handle_cleared_dates_in_form(form_data):
             dog.save()
 
     for dog in DogObject.objects.filter(
-            shelterluv_status="Available for Adoption").exclude(
+            shelterluv_status__in=available_statuses).exclude(
             host_date=date_default):
         if "{0}-host".format(dog.shelterluv_id) not in form_data.keys():
             dog.host_date = date_default
@@ -478,6 +486,7 @@ def handle_cleared_dates_in_form(form_data):
 @authenticated_user
 @allowed_users(allowed_roles={'superuser', 'admin', 'foster_admin'})
 def display_list_admin(request):
+    global available_statuses
     all_available_dogs = get_all_available_dogs(filter_today=True)
     recently_adopted_dogs, recently_posted_dogs = filter_dogs_adopted_today()
     user_groups = get_groups(request.user)
@@ -501,6 +510,7 @@ def display_list_admin(request):
 
     context = {
         'all_available_dogs': all_available_dogs,
+        'available_statuses': available_statuses,
         'recently_adopted_dogs': recently_adopted_dogs,
         'recently_posted_dogs': recently_posted_dogs,
         'sandbox': sandbox,

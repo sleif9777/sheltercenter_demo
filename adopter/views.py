@@ -624,7 +624,7 @@ def get_current_appt_info(adopter):
 
 @authenticated_user
 @allowed_users(allowed_roles={'admin', 'superuser'})
-def edit_adopter(request, adopter_id, alert=False):
+def edit_adopter(request, adopter_id, alert=0):
     adopter = Adopter.objects.get(pk=adopter_id)
     status = copy.deepcopy(adopter.status)
     email = copy.deepcopy(adopter.primary_email)
@@ -641,7 +641,7 @@ def edit_adopter(request, adopter_id, alert=False):
 
     context = {
         'adopter': adopter,
-        'alert': alert,
+        'alert': bool(alert),
         'appt': current_appt,
         'appt_str': current_appt_str,
         'date': date,
