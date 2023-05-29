@@ -96,6 +96,14 @@ def update_from_shelterluv():
         update_adopted_dog(dog)
 
 
+def get_timestamp_from_json(dog_json):
+    if dog_json['LastUpdatedUnixTime']:
+        return datetime.datetime.fromtimestamp(
+                int(dog_json['LastUpdatedUnixTime'])
+    else:
+        return datetime.datetime.today()
+
+
 def update_available_dog_from_json(dog_json):
     litter = get_litter(dog_json)
     dog, created = DogObject.objects.update_or_create(
@@ -105,9 +113,7 @@ def update_available_dog_from_json(dog_json):
             'info': dog_json,
             'litter_group': litter,
             'shelterluv_status': dog_json['Status'],
-            'update_dt': datetime.datetime.fromtimestamp(
-                int(dog_json['LastUpdatedUnixTime'])
-            )
+            'update_dt': get_timestamp_from_json(dog_json)
         }
     )
     
@@ -128,9 +134,7 @@ def update_adopted_dog(dog):
             'litter_group': "",
             "offsite": False,
             "shelterluv_status": dog_info['Status'],
-            'update_dt': datetime.datetime.fromtimestamp(
-                int(dog_info['LastUpdatedUnixTime'])
-            )
+            'update_dt': get_timestamp_from_json(dog_json)
         }
     )    
 
@@ -152,9 +156,7 @@ def update_all_dogs():
                 'litter_group': litter,
                 "offsite": False,
                 "shelterluv_status": dog_info['Status'],
-                'update_dt': datetime.datetime.fromtimestamp(
-                    int(dog_info['LastUpdatedUnixTime'])
-                )
+                'update_dt': get_timestamp_from_json(dog_json)
             }
         )
 
