@@ -32,23 +32,26 @@ def login_page(request):
         username = request.POST.get('username').lower()
         password = request.POST.get('password')
 
-        user = authenticate(username=username, password=password)
+        try:
+            user = authenticate(username=username, password=password)
 
-        if user:
-            login(request, user)
-            user_groups = get_groups(user)
-            is_corp_volunteer = user_groups == {'corp_volunteer'}
-            is_corp_volunteer_admin = user_groups == {'corp_volunteer_admin'}
-            is_foster_admin = user_groups == {'foster_admin'}
+            if user:
+                login(request, user)
+                user_groups = get_groups(user)
+                is_corp_volunteer = user_groups == {'corp_volunteer'}
+                is_corp_volunteer_admin = user_groups == {'corp_volunteer_admin'}
+                is_foster_admin = user_groups == {'foster_admin'}
 
-            if 'adopter' in user_groups and not user.adopter.acknowledged_faq:
-                return redirect('adopter_home')
-            elif is_corp_volunteer or is_corp_volunteer_admin:
-                return redirect('event_calendar')
-            elif is_foster_admin:
-                return redirect('watchlist_status_page')
-            else:
-                return redirect('calendar')
+                if 'adopter' in user_groups and not user.adopter.acknowledged_faq:
+                    return redirect('adopter_home')
+                elif is_corp_volunteer or is_corp_volunteer_admin:
+                    return redirect('event_calendar')
+                elif is_foster_admin:
+                    return redirect('watchlist_status_page')
+                else:
+                    return redirect('calendar')
+        except Exception as e:
+            print("Login failed: ", e)
 
     context = {
         'cred_placeholder': 'adopter@sheltercenter.dog',
