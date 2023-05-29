@@ -539,7 +539,7 @@ def mark_complete_on_chosen_board(request, appt_id):
     Adopter.objects.update_or_create(
         pk = appt.adopter.id,
         defaults={
-            'adoption_complete': True,
+            # 'adoption_complete': True,
             'waiting_for_chosen': False
         }
     )
@@ -1111,8 +1111,8 @@ def close_out_appointment(appt, adopter):
         chosen(adopter, appt)
 
     # If dog was taken home (FTA or adoption)
-    if appt.outcome in ["2", "4"]:
-        adopter.adoption_complete = True
+    # if appt.outcome in ["2", "4"]:
+    #     adopter.adoption_complete = True
 
     adopter.has_current_appt = False
     adopter.save()
@@ -1467,7 +1467,7 @@ def request_access(request, adopter_id):
     adopter = Adopter.objects.update_or_create(
         pk=adopter_id,
         defaults={
-            'adoption_complete': True,
+            # 'adoption_complete': True,
             'requested_access': True,
             'waiting_for_chosen': False,
         }

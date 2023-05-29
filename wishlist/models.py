@@ -152,9 +152,12 @@ class LitterObject(models.Model):
         self.save()
 
     def updated_last(self):
-        last_update_time = [dog.update_dt for dog in self.dogs.iterator()]
-        self.latest_update = max(last_update_time)
-        self.save()
+        try:
+            last_update_time = [dog.update_dt for dog in self.dogs.iterator()]
+            self.latest_update = max(last_update_time)
+            self.save()
+        except:
+            pass
 
     def return_date_str(self):
         if self.return_date.year != 2000:
