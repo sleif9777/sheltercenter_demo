@@ -134,7 +134,7 @@ def update_adopted_dog(dog):
             'litter_group': "",
             "offsite": False,
             "shelterluv_status": dog_info['Status'],
-            'update_dt': get_timestamp_from_json(dog_json)
+            'update_dt': get_timestamp_from_json(dog_info)
         }
     )    
 
