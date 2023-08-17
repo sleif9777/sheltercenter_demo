@@ -13,7 +13,10 @@ class Dog(models.Model):
         return self.info['Name']
 
     def __str__(self):
-        return self.info['Name']
+        try:        
+            return self.info['Name']
+        except:
+            return "NoNameDog"
 
     def Age_str(self):
         age = int(self.info['Age'])
