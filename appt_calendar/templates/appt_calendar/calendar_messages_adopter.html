@@ -113,7 +113,7 @@
               </tr>
               {% endif %}
               {% if visible == False or empty_day_db %}
-                {% if date.weekday < 5 and delta > 13 %}
+                {% if date.weekday < 6 and delta > 13 %}
                 <tr>
                   <td class="info-box-data">
                     <span class="alert-symbol">&#9432;&#xFE0E; </span>We only schedule two weeks in advance, and are not scheduling for this date yet.
@@ -122,10 +122,13 @@
                     {% else %}
                       <a href="{% url 'set_alert_date' date.year date.month date.day %}">Click here to be alerted when we have opened appointments for this date.</a>
                     {% endif %}
+                    {% if date.weekday == 5 %}
+                    (Note: We are open on alternating Saturdays. It is possible we are not open at all on this date.)
+                    {% endif %}
                   </td>
                 </tr>
                 {% endif %}
-              {% elif empty_day and date.weekday < 5 %}
+              {% elif empty_day and date.weekday < 6 %}
                 <tr>
                   <td class="info-box-data">
                     <span class="alert-symbol">&#9432;&#xFE0E; </span>We're sorry, this date is fully booked. To see more available appointments, please select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
