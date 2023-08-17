@@ -489,7 +489,7 @@ def get_empty_days():
         appts_for_date = list(Appointment.objects.filter(date=d))
 
         #discard if it's a weekend
-        if len(appts_for_date) <= 10 and d.weekday() < 5:
+        if len(appts_for_date) <= 10 and d.weekday() < 6:
             empty_dates += [[d, date_str(d)]]   
 
     return empty_dates
