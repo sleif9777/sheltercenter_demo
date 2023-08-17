@@ -97,7 +97,7 @@ def update_from_shelterluv():
 
 
 def get_timestamp_from_json(dog_json):
-    if dog_json['LastUpdatedUnixTime']:
+    if dog_json.get('LastUpdatedUnixTime'):
         return datetime.datetime.fromtimestamp(
                 int(dog_json['LastUpdatedUnixTime']))
     else:
