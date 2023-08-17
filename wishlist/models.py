@@ -99,8 +99,11 @@ class DogObject(models.Model):
         return self.info['Name']
 
     def __str__(self):
-        return self.info['Name']
-
+        try:
+            return self.info['Name']
+        except:
+            return "NoNameDog"
+        
     def Age_str(self):
         age = int(self.info['Age'])
         return "Age {0}Y {1}M".format(age // 12, age % 12)
