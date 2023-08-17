@@ -102,7 +102,13 @@
               {% if date.weekday == 5 or date.weekday == 6 %}
               <tr>
                 <td class="info-box-data">
-                  <span class="alert-symbol">&#9432;&#xFE0E; </span>We are not open on weekends.
+                  <span class="alert-symbol">&#9432;&#xFE0E; </span>We are not open on Sundays.
+                </td>
+              </tr>
+              {% elif empty_day and date.weekday == 5 %}
+              <tr>
+                <td class="info-box-data">
+                  <span class="alert-symbol">&#9432;&#xFE0E; </span>We are open on alternating Saturdays. If you do not see any appointments below, we are either entirely booked or closed on this Saturday.
                 </td>
               </tr>
               {% endif %}
@@ -119,7 +125,7 @@
                   </td>
                 </tr>
                 {% endif %}
-              {% elif empty_day == True and date.weekday < 5 %}
+              {% elif empty_day and date.weekday < 5 %}
                 <tr>
                   <td class="info-box-data">
                     <span class="alert-symbol">&#9432;&#xFE0E; </span>We're sorry, this date is fully booked. To see more available appointments, please select another date using the &#9664;&#xFE0E; and &#9654;&#xFE0E; symbols at the top of the page.
