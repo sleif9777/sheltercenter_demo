@@ -15,6 +15,18 @@
       </script>
     {% endif %}
     <script type="text/javascript">
+      function openAllApplications(appointments) {
+        var noApplication = []
+        for (let i = 0; i < appointments.length; i++) {
+          if (appointments[i][0] == "") {
+            noApplication.push(appointments[i][1]);
+          } else {
+            window.open(`https://www.shelterluv.com/adoption_request_print/${appointments[i][0]}`, '_blank');
+          }
+        }
+        window.alert(`The following adopters must be looked up manually: ${noApplication.join(', ')}`)
+      }
+
       function getCardElementName(checkboxElementID) {
         return checkboxElementID.slice(11).replace(/_/g, "-");
       }
@@ -86,6 +98,21 @@
         }
       }
 
+      function toggleCols() {
+        var checkboxElement = document.getElementById('hide-cols-cbx');
+        var colElements = document.getElementsByClassName('hide-cols-elements');
+
+        if (!checkboxElement.checked) {
+          for (let i = 0; i < colElements.length; i++) {
+            colElements[i].style.display = "table-cell";
+          }
+        } else {
+          for (let i = 0; i < colElements.length; i++) {
+            colElements[i].style.display = "none";
+          }        
+        }
+      }
+
       function isVisible(element) {
         return element.style.display != "none";
       }
@@ -97,12 +124,39 @@
       function closeNav() {
         document.getElementById("activity-menu").style.height = "0";
       }
+
+      function hideSignupForms() {
+        signupForms = document.getElementsByClassName("event-signup-form");
+
+        for (let i = 0; i < signupForms.length; i++) {
+          signupForms[i].style.display = "none";
+        }
+      }
+
+      function restoreEventHeaders() {
+        eventHeaders = document.getElementsByClassName("event-header");
+
+        for (let i = 0; i < signupForms.length; i++) {
+          eventHeaders[i].style.display = "block";
+        }
+      }
+
+      function showSignupForm(event_id) {
+        hideSignupForms();
+        restoreEventHeaders();
+
+        headerToHide = document.getElementById("event-header-" + event_id.toString());
+        headerToHide.style.display = "none";
+        signupFormToShow = document.getElementById("event-signup-form-" + event_id.toString());
+        signupFormToShow.style.display = "block";
+      }
     
       window.onload = function() {
         {% if request.user|has_group:"admin" %}
         loadInitialApptCardState({{request.user.profile.get_card_settings|safe}}, {{request.user.profile.get_card_subblock_settings|safe}});
         {% endif %}
         assignDefaultAlignments("appt-two-col-list");
+        hideSignupForms();
       }
     </script>
     <link rel="icon" href="{% static 'media/logo.png' %}">
@@ -120,11 +174,17 @@
         </div>
         <nav>
           <ul id="navbar-list">
-            {% if request.user|has_group:"admin" %}
+            {% if request.user|has_group:"superuser" %}
+              {% include 'dashboard/superuser_navbar.html' %}
+            {% elif request.user|has_group:"admin" %}
               {% include 'dashboard/admin_navbar.html' %}
+            {% elif request.user|has_group:"foster_admin" %}
+              {% include 'dashboard/foster_admin_navbar.html' %}
             {% elif request.user|has_group:"greeter" %}
               {% include 'dashboard/greeter_navbar.html' %}
-            {% elif request.user|has_group:"adopter" %}
+            {% elif request.user|has_group:"corp_volunteer_admin" %}
+              {% include 'dashboard/volunteer_admin_navbar.html' %}
+            {% elif request.user|has_group:"adopter" or request.user|has_group:"corp_volunteer" %}
               {% include 'dashboard/adopter_navbar.html' %}
             {% endif %}
             <li class="end"><a href="{% url 'logout' %}">Log Out</a></li>

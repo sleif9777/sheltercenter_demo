@@ -1,0 +1,37 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load appt_extras %}
+{% load auth_extras %}
+
+{% block content %}
+<div class="main text-page">
+  <div class="page-header no-actions">
+    <h1>Current Appointments</h1>
+  </div>
+
+  <table class="report">
+    <tr class="no-border">
+      <th style="width:17%;">Adopter</th>
+      <th style="width:17%;">Appointment Time</th>
+      <th style="width:16%;">Check-In Time</th>
+      <th style="width:17%;">Description</th>
+      <th style="width:16%;">Counselor</th>
+      <th style="width:17%;">Actions</th>
+    </tr>
+    {% for timeslot, appointments in timeslots.items %}
+      {% for appt in appointments %}
+        {% if appt.checked_in %}
+          <tr>
+            <td>{{appt.adopter}}</td>
+            <td>{{appt.time_string}}</td>
+            <td>{{appt.checked_in_time}}</td>
+            <td>{{appt.adopter_description}}</td>
+            <td>{{appt.counselor}}</td>
+            <td><a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a></td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

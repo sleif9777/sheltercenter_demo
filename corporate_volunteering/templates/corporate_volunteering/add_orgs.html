@@ -1,0 +1,14 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block content %}
+<div class="main text-page">
+  <h1 class="page-header no-actions">Add Organization</h1>
+  <form class="add-adopter" action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Add Organization"><br>
+  </form>
+</div>
+{% endblock %}

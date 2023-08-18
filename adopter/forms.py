@@ -1,5 +1,3 @@
-import datetime
-
 from django import forms
 from tinymce.widgets import TinyMCE
 
@@ -14,14 +12,12 @@ class AdopterForm(forms.ModelForm):
             'primary_email',
             'auth_code',
             'status',
-            # 'adoption_complete',
-            # 'carryover_shelterluv',
             'out_of_state',
             'lives_with_parents',
-            'adopting_host',
-            'adopting_foster',
-            'chosen_dog',
-            'app_interest',
+            # 'adopting_host',
+            # 'adopting_foster',
+            # 'chosen_dog',
+            # 'app_interest',
         ]
         labels = {
             'f_name': 'First Name:',
@@ -29,19 +25,34 @@ class AdopterForm(forms.ModelForm):
             'primary_email': 'Email:',
             'auth_code': "Authorization Code:",
             'status': 'Status:',
-            # 'adoption_complete': 'Adoption Completed?',
-            # 'carryover_shelterluv': 'Adopter was in Shelterluv before ShelterCenter went live',
             'out_of_state': 'Adopter from outside NC, SC, or VA',
             'lives_with_parents': 'Adopter lives with parents',
-            'adopting_host': 'Adopting their host dog',
-            'adopting_foster': 'Adopting their foster dog',
-            'chosen_dog': '(For foster/host adoptions) Chosen dog:',
-            'app_interest': '(For general adoptions) Interested in:'
+            # 'adopting_host': 'Adopting their host dog',
+            # 'adopting_foster': 'Adopting their foster dog',
+            # 'chosen_dog': '(For foster/host adoptions) Chosen dog:',
+            # 'app_interest': '(For general adoptions) Interested in:'
         }
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label_suffix', '')
         super(AdopterForm, self).__init__(*args, **kwargs)
         self.fields['auth_code'].disabled = True
+
+class AdopterOpenHouseForm(forms.ModelForm):
+    class Meta:
+        model = Adopter
+        fields = [
+            'f_name',
+            'l_name',
+            'primary_email',
+        ]
+        labels = {
+            'f_name': 'First Name:',
+            'l_name': 'Last Name:',
+            'primary_email': 'Email:',
+        }
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label_suffix', '')
+        super(AdopterOpenHouseForm, self).__init__(*args, **kwargs)
 
 class AdopterPreferenceForm(forms.ModelForm):
     class Meta:
@@ -54,10 +65,15 @@ class AdopterPreferenceForm(forms.ModelForm):
             'hypo_preferred',
         ]
         labels = {
-            'min_weight': "Minimum desired weight (optional)",
-            'max_weight': "Maximum desired weight (optional)",
+            'min_weight': "Minimum desired weight (value required, use 0 for no minimum)",
+            'max_weight': "Maximum desired weight (value required, use 0 for no maximum)",
             'hypo_preferred': "I am only looking for a low-shed or hypoallergenic dog"
         }
+
+    def __init__(self, *args, **kwargs):
+        super(AdopterPreferenceForm, self).__init__(*args, **kwargs)
+        self.fields['min_weight'].required = True
+        self.fields['max_weight'].required = True
 
 class SetAlertDateForm(forms.ModelForm):
     class Meta:

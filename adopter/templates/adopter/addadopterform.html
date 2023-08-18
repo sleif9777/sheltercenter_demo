@@ -5,6 +5,8 @@
 {% block content %}
 <div class="main text-page">
   <h1 class="page-header no-actions">Add Adopters</h1>
+  <a href="{% url 'stage_import' %}">NEW - Import from Shelterluv</a>
+  <br><hr><br>
   <form enctype="multipart/form-data" action="" method="post">
     {% csrf_token %}
     <label for="app_file">Upload a file to add multiple adopters from Shelterluv:</label><br><br>

@@ -24,7 +24,7 @@
             </td>
           </tr>
           <tr>
-            <td class="info-box-data no-border">
+            <td class="info-box-data">
               <p class="calendar-notes-header"><b>DISPLAYS ONLY FOR {{date_pretty.upper}}</b></p>
               {% if daily_announcement %}
               <span class="alert-symbol">&#9432;&#xFE0E; </span><a href="{% url 'edit_daily_announcement' daily_announcement.id date.year date.month date.day %}">{{daily_announcement.text|safe}} &#9998;&#xFE0E;</a>
@@ -33,8 +33,8 @@
               {% endif %}
             </td>
           </tr>
-          <!-- <tr>
-            <td class="info-box-data no-border">
+          <tr>
+            <td class="info-box-data {% if not popular_dogs %} no-border {% endif %}">
               <p class="calendar-notes-header"><a href="{% url 'display_list' %}"><b>OFFSITE DOGS &#9998;&#xFE0E;</b></a></p>
               {% if offsite_dogs %}
               <ul>
@@ -55,7 +55,19 @@
               No dogs offsite at this time.
               {% endif %}
             </td>
-          </tr> -->
+          </tr>
+          {% if popular_dogs %}
+          <tr>
+            <td class="info-box-data no-border">
+              <p class="calendar-notes-header"><b>POPULAR DOGS</b></p>
+              <ul>
+                {% for dog in popular_dogs %}
+                <li>{{dog.name}}</li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+          {% endif %}
         </table>
       </div>
     </td>
@@ -95,6 +107,22 @@
           <tr>
             <td class="info-box-data no-border">
               <span class="alert-symbol">&#x2713;&#xFE0E;</span> Good job! All future dates are open, and all past appointments have decisions entered.
+            </td>
+          </tr>
+        </table>
+      </div>
+      {% endif %}
+      {% if timeslots|length > 0 %}
+      <div class="info-box timeslot-redirect">
+        <table>
+          <tr>
+            <td class="info-box-data no-border">
+              <p class="calendar-notes-header">JUMP TO TIMESLOT</p>
+              <ul>
+                {% for timeslot in timeslots %}
+                <li><a href="#ts{{timeslot.id}}">{{timeslot}}</a></li>
+                {% endfor %}
+              </ul>
             </td>
           </tr>
         </table>

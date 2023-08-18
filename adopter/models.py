@@ -5,7 +5,11 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from num2words import num2words
 
-from wishlist.models import Dog
+from wishlist.models import *
+
+
+class AdopterUploadSettings(models.Model):
+    last_adopter_id_uploaded = models.IntegerField(default=0)
 
 class Adopter(models.Model):
     STATUSES = [
@@ -33,6 +37,7 @@ class Adopter(models.Model):
     secondary_email = models.EmailField(default="", blank=True)
     city = models.CharField(default="", max_length=200, blank=True)
     state = models.CharField(default="", max_length=2, blank=True)
+    phone_number = models.CharField(default="See application", max_length=20, blank=True)
 
     #application attributes
     application_id = models.CharField(default="", max_length=20, blank=True)
@@ -42,31 +47,33 @@ class Adopter(models.Model):
     activity_level = models.CharField(default="", max_length=200, blank=True)
     has_fence = models.BooleanField(default=False, blank=True)
     app_interest = models.CharField(default="", max_length=2000, blank=True)
-    wishlist = models.ManyToManyField(Dog, null=True, blank=True)
+    wishlist = models.ManyToManyField(DogObject, null=True, blank=True)
 
     #adoption-related attributes
-    out_of_state = models.BooleanField(default = False)
-    lives_with_parents = models.BooleanField(default = False)
-    adopting_host = models.BooleanField(default = False)
-    adopting_foster = models.BooleanField(default = False)
-    friend_of_foster = models.BooleanField(default = False)
-    carryover_shelterluv = models.BooleanField(default = False)
+    out_of_state = models.BooleanField(default=False)
+    lives_with_parents = models.BooleanField(default=False)
+    adopting_host = models.BooleanField(default=False)
+    adopting_foster = models.BooleanField(default=False)
+    friend_of_foster = models.BooleanField(default=False)
+    carryover_shelterluv = models.BooleanField(default=False)
     chosen_dog = models.CharField(default="", max_length=200, blank=True)
     waiting_for_chosen = models.BooleanField(default=False)
 
     #preference attributes
-    min_weight = models.IntegerField(default = 0,)
-    max_weight = models.IntegerField(default = 0,)
-    hypo_preferred = models.BooleanField(default = False)
+    min_weight = models.IntegerField(default=0, blank=True)
+    max_weight = models.IntegerField(default=0, blank=True)
+    hypo_preferred = models.BooleanField(default=False)
     gender_preference = models.CharField(default="1", max_length=1, choices=PREF_GENDERS)
     age_preference = models.CharField(default="1", max_length=1, choices=PREF_AGES)
 
     #database-related attributes
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    auth_code = models.IntegerField(default = 100000, validators = [MinValueValidator(100000), MaxValueValidator(999999)])
-    acknowledged_faq = models.BooleanField(default = False)
-    has_current_appt = models.BooleanField(default = False)
-    alert_date = models.DateField(default=datetime.date(datetime.date.today().year,1,1), blank=True)
+    auth_code = models.IntegerField(default=100000, validators = [MinValueValidator(100000), MaxValueValidator(999999)])
+    acknowledged_faq = models.BooleanField(default=False)
+    has_current_appt = models.BooleanField(default=False)
+    open_house_appt = models.BooleanField(default=False)
+    open_house_signup_timestamp = models.DateTimeField(default=datetime.datetime(2000,1,1,0,0), blank=True)
+    alert_date = models.DateField(default=datetime.date(2000,1,1), blank=True)
     visits_to_date = models.IntegerField(default=0)
     adoption_complete = models.BooleanField(default=False)
     requested_access = models.BooleanField(default=False)
@@ -98,6 +105,14 @@ class Adopter(models.Model):
             return self.app_interest[:48] + "..."
         else:
             return self.app_interest
+
+    def watchlist_available_str(self):
+        wishlist_names = [dog.name for dog in self.wishlist.all() if dog.available()]
+        return ', '.join(wishlist_names) if len(wishlist_names) > 0 else None
+
+    def watchlist_unavailable_str(self):
+        wishlist_names = [dog.name for dog in self.wishlist.all() if not dog.available()]
+        return ', '.join(wishlist_names) if len(wishlist_names) > 0 else None
 
     def chg_appt_status(self):
         self.has_current_appt = not self.has_current_appt

@@ -1,9 +1,6 @@
-import datetime
-
 from django import forms
 
 from .models import *
-from adopter.models import Adopter
 from demo import settings as settings
 
 class AppointmentModelFormPrefilled(forms.ModelForm):
@@ -28,7 +25,7 @@ class AppointmentModelFormPrefilled(forms.ModelForm):
             'appt_type': 'Appointment Type:',
             'adopter': 'Select Adopter:',
             'locked': 'Lock appointment?',
-            'dog': '(For surrenders and paperwork appointments) Dog:',
+            'dog': '(For surrender, paperwork, and Host appointments) Dog:',
             'dog_fka': '(For surrenders, if applicable) FKA:',
             'internal_notes': 'Notes:',
         }
@@ -109,7 +106,7 @@ class EditAppointmentForm(forms.ModelForm):
             'mobility'
         ]
         widgets = {
-            'adopter_notes': forms.Textarea(attrs={'placeholder': 'Please note that providing the names of specific dogs does not guarantee you the opportunity to meet/adopt them. All dogs are available on a first-come-first-serve basis and can potentially be adopted prior to your appointment. The Adoptions team emphasizes that keeping an open mind and not narrowing your scope to only one or two dogs from the website is the best way to experience our program.', 'rows': 3}),
+            'adopter_notes': forms.Textarea(attrs={'rows': 3}),
         }
         labels = {
             'adopter_notes': "",
@@ -121,6 +118,23 @@ class EditAppointmentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label_suffix', '')
         super(EditAppointmentForm, self).__init__(*args, **kwargs)
+
+
+class AppointmentCheckInForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = [
+            'adopter_description',
+            'counselor'
+        ]
+        labels = {
+            'adopter_description': "Enter a short visual description of the adopter: ",
+            'counselor': "Assign a counselor: ",
+        }
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label_suffix', '')
+        super(AppointmentCheckInForm, self).__init__(*args, **kwargs)
 
 
 class JumpToDateForm(forms.Form):
@@ -149,10 +163,6 @@ class SurrenderForm(forms.Form):
         label="Is your dog up to date on all vet records?",
         widget=forms.Textarea
     )
-    # vet_records = forms.ChoiceField(
-    #     label="Is your dog up to date on all vet records?",
-    #     widget=forms.Textarea
-    # )
     sought_training = forms.CharField(
         label="Did you seek training or professional guidance with your dog?",
         widget=forms.Textarea

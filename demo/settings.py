@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'tinymce',
     'dashboard.apps.DashboardConfig',
     'visit_and_faq.apps.VisitAndFaqConfig',
-    'wishlist.apps.WishlistConfig'
+    'wishlist.apps.WishlistConfig',
+    'corporate_volunteering.apps.CorporateVolunteeringConfig'
 
 ]
 
@@ -232,3 +233,13 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ADMINS = [('Sam Leifer', 'leifersam9@gmail.com')]
 SERVER_EMAIL = os.environ.get('EMAIL_ADDRESS')
 LOGGING['handlers']['mail_admins']['include_html'] = True
+
+import sentry_sdk
+sentry_sdk.init(
+    dsn="https://362c2fb8a5944e2caea1ac477b36a466@o4504165610356736.ingest.sentry.io/4504165613830144",
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0
+)

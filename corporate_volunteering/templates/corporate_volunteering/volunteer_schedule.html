@@ -1,0 +1,48 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block content %}
+<div class="main">
+    <!-- displays a calendar date and arrows to move back and forth -->
+    <div class="page-header no-actions">
+        <h1>Schedule</h1>
+    </div>
+
+    {% if request.user|has_group:"superuser" or request.user|has_group:"corp_volunteer_admin" %}
+    <div class="page-actions">
+        <a href="{% url 'add_event' %}">Add Event</a>
+        {% if request.user|has_group:"superuser" %}
+        <a href="{% url 'add_org' %}">Add Organization</a>
+        <a href="{% url 'manage_orgs' %}">Manage Organizations</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% for event in events %}
+    <div class="timeslot" id="event{{event.id}}">
+        <table class="subsection-table">
+            <th class="subsection-header left">{{event.date_string}}</th>
+            {% if request.user|has_group:"superuser" or request.user|has_group:"corp_volunteer_admin" %}
+            <th class="subsection-header right">
+            <a class="subsection-action" href="{% url 'edit_event' event.id %}">Edit</a> | 
+            {% if event.organization %}
+            <a class="subsection-action" href="{% url 'remove_organization' event.id %}">Cancel Organization</a> |
+            {% endif %}
+            <a class="subsection-action" href="{% url 'delete_event' event.id %}">Delete Event</a>
+            </th>
+            {% endif %}
+        </table>
+        <ul class="appt-solo">
+            <li class="appt-slot">
+            {% if request.user|has_group:"superuser" or request.user|has_group:"corp_volunteer_admin" %}
+                {% include 'corporate_volunteering/event_card_admin.html' %}
+            {% elif request.user|has_group:"corp_volunteer" %}
+                {% include 'corporate_volunteering/event_card_org.html' %}
+            {% endif %}
+            </li>
+        </ul>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

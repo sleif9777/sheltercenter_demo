@@ -1,0 +1,147 @@
+{% load appt_extras %}
+{% load auth_extras %}
+{% load corp_volunteer_extras %}
+
+<div class="appointment">
+  {% if not event.available %}
+  <table class="appt-info-block" id="appt-header-block">
+  {% else %}
+  <table class="appt-info-block no-border" id="appt-header-block">
+  {% endif %}
+    <tbody>
+      <tr>
+        <td class="appt-description left upper">
+          <a href="{% url 'edit_event' event.id %}">
+          {% if event.organization %}
+            {{event.organization.org_name}}
+          {% else %}
+            OPEN
+          {% endif %}
+          </a>
+        </td>
+      </tr>
+      {% if not event.available %}
+      <tr>
+        <td colspan="2">
+          <ul class="appt-two-col-list">
+            <li>{{event.start_and_end}}</li>
+          </ul>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  {% if not event.available %}
+  <table class="appt-subblock appt-info-block contact-subblock">
+    <tr class="info-block-subheader">
+      <th>Contact Person: {{event.organization.leader_name_upper}}</th>
+    </tr>
+    <tr>
+      <td>
+        <ul class="appt-two-col-list">
+          <li class="adopter-email">{{event.organization.contact_email}}</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <table class="appt-subblock appt-info-block notes-subblock">
+    <tbody>
+      <tr class="info-block-subheader">
+        <th class="left">
+          <a href="{% url 'edit_event' event.id %}">Summary</a>
+        </th>
+        <th class="right">
+        </th>
+      </tr>
+      <tr class="internal-notes">
+        <td class="left" style="width:20%;"><b>Physical Activity Level:</b></td>
+        <td class="left"><a href="{% url 'edit_event' event.id %}">{{event.activity_level_str}}</a></td>
+      </tr>
+      <tr class="internal-notes">
+        <td class="left" style="width:20%;"><b>Counselor:</b></td>
+        {% if event.event_counselor|length > 0 %}
+        <td class="left"><a href="{% url 'edit_event' event.id %}">{{event.event_counselor}}</a></td>
+        {% else %}
+        <td class="left italic"><a href="{% url 'edit_event' event.id %}">Not assigned</a></td>
+        {% endif %}
+      </tr>
+      <tr class="internal-notes">
+        <td class="left" style="width:20%;"><b>Task:</b></td>
+        {% if event.event_task|length > 0 %}
+        <td class="left"><a href="{% url 'edit_event' event.id %}">This team will assist with {{event.event_task}}.</a></td>
+        {% else %}
+        <td class="left italic"><a href="{% url 'edit_event' event.id %}">Not assigned</a></td>
+        {% endif %}
+      </tr>
+      <tr class="internal-notes">
+        <td class="left" style="width:20%;"><b>Volunteer Count:</b></td>
+        {% if event.headcount > 0 %}
+        <td class="left"><a href="{% url 'edit_event' event.id %}">{{event.volunteer_count_str}}</a></td>
+        {% else %}
+        <td class="left italic"><a href="{% url 'edit_event' event.id %}">Unknown</a></td>
+        {% endif %}
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- if appt is booked, show actions and contacts -->
+  <table class="appt-subblock appt-info-block about-subblock no-border">
+    <tbody>
+      <tr class="info-block-subheader">
+        <th>Checklist</th>
+      </tr>
+      <tr>
+        <td>
+          <ul class="appt-two-col-list">
+            <li>
+              {% if event|able_to_confirm %}
+              <a href="{% url 'contact_org_event' event.organization.id 'confirm' event.id %}">Send/Resend Confirmation and Waivers</a>
+              {% else %}
+              <em>Counselor and task required to send confirmation</em>
+              {% endif %}
+            </li>
+            <li>
+              {% if event.waivers_complete %}
+              <span class="completed-appt-action">Waivers Complete</span><a href="{% url 'mark_event' event.id 'waivers' %}"> (Undo)</a>
+              {% else %}
+              <a href="{% url 'mark_event' event.id 'waivers' %}">Waivers Complete</a>
+              {% endif %}
+            </li>
+            <li>
+              {% if event.donation_received %}
+              <span class="completed-appt-action">Donation Received</span><a href="{% url 'mark_event' event.id 'donation' %}"> (Undo)</a>
+              {% else %}
+              <a href="{% url 'mark_event' event.id 'donation' %}">Donation Received</a>
+              {% endif %}
+            </li>
+            <li>
+              {% if event.posted_social_media %}
+              <span class="completed-appt-action">Posted on Social Media</span><a href="{% url 'mark_event' event.id 'social_media' %}"> (Undo)</a>
+              {% else %}
+              <a href="{% url 'mark_event' event.id 'social_media' %}">Posted on Social Media</a>
+              {% endif %}
+            </li>
+            <li>
+              {% if event.sent_thank_you %}
+              <span class="completed-appt-action">Thank You Sent</span><a href="{% url 'mark_event' event.id 'thank_you' %}"> (Undo)</a>
+              {% else %}
+              <a href="{% url 'mark_event' event.id 'thank_you' %}">Thank You Sent</a>
+              {% endif %}
+            </li>
+            <li>
+              {% if event.marked_as_complete %}
+              <span class="completed-appt-action">Mark as Complete</span><a href="{% url 'mark_event' event.id 'complete' %}"> (Undo)</a>
+              {% else %}
+              <a href="{% url 'mark_event' event.id 'complete' %}">Mark as Complete</a>
+              {% endif %}
+            </li>
+          </ul>
+        </td>
+      </tr>          
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+

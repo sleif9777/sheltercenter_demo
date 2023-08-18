@@ -1,0 +1,151 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load appt_extras %}
+{% load auth_extras %}
+
+<!-- <script>
+  function toggleCols() {
+    var checkboxElement = document.getElementById('hide-cols-cbx');
+    var colElements = document.getElementsByClassName('hide-cols-elements');
+
+    if (!checkboxElement.checked) {
+      for (let i = 0; i < colElements.length; i++) {
+        if (colElements[i] instanceof HTMLTableRowElement) {
+          colElements[i].style.display = "table-row";
+        } else {
+          colElements[i].style.display = "list-item";
+        }
+      }
+    } else {
+      for (let i = 0; i < colElements.length; i++) {
+        colElements[i].style.display = "none";
+      }        
+    }
+  }
+</script> -->
+
+{% block content %}
+<div class="main text-page">
+  <div class="page-header {% if not request.user|has_group:'admin' %} no-actions {% endif %}">
+    <h1>Current Statuses</h1>
+  </div>
+
+  <!-- {% if request.user|has_group:"admin" %}
+  <div class="page-actions">   
+    <a href="{% url 'daily_report_adopted_chosen_fta' today.year today.month today.day %}">Return to Today</a>
+    <a target="_blank" href="{% url 'report_print' date.year date.month date.day %}">Print View</a>
+    <input type="checkbox" name="hide-cols" id="hide-cols-cbx" onclick="toggleCols();"><label for="hide-cols"> Hide Check-In, Counselor, and Check-Out?</label>
+  </div>
+  {% endif %} -->
+
+  <!-- {% if empty_day == True %}
+  No appointments today.
+  {% else %} -->
+  <table class="full-width">
+    <tr>
+        <th class="half-width">Foster</th>
+        <th class="half-width">Host</th>
+    </tr>
+    <tr>
+        <td>
+            {% if foster_responsible_dogs %}
+            <ul>
+              {% for dog in foster_responsible_dogs %}
+              <li>
+                {{dog.name}}
+                {% if dog.appt_only %}
+                 (by appointment only)
+                {% elif dog.foster_date.year > 2000 %}
+                 ({{dog.foster_date}})
+                {% endif %}
+              </li>
+              {% endfor %}
+            {% else %}
+            No dogs offsite at this time.
+            {% endif %}
+            </ul>
+        </td>
+        <td>
+            {% if host_responsible_dogs %}
+            <ul>
+              {% for dog in host_responsible_dogs %}
+              <li>
+                {{dog.name}} ({{dog.host_date_str}})
+              </li>
+              {% endfor %}
+            {% else %}
+            No dogs offsite at this time.
+            {% endif %}
+            </ul>
+        </td>
+    </tr>
+  </table>
+
+  <!-- <h2>Adopted</h2>
+  <table class="report">
+    <tr class="no-border">
+      <th style="width:15%;">Time</th>
+      <th style="width:30%;">Adopter</th>
+      <th style="width:30%;">Outcome</th>
+      <th style="width:25%;">Dog</th>
+    </tr>
+    {% for timeslot, appointments in timeslots.items %}
+      {% for appt in appointments %}
+        {% if appt.appt_type in schedulable and appt.outcome == "2" %}
+          <tr>
+            <td>{{appt.time}}</td>
+            <td>{{appt.adopter.f_name}} {{appt.adopter.l_name}}</td>
+            <td>{{appt.get_outcome_display}}</td>
+            <td>{{appt.dog}}</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </table>
+
+  <h2>Chosen</h2>
+  <table class="report">
+    <tr class="no-border">
+      <th style="width:15%;">Time</th>
+      <th style="width:30%;">Adopter</th>
+      <th style="width:30%;">Outcome</th>
+      <th style="width:25%;">Dog</th>
+    </tr>
+    {% for timeslot, appointments in timeslots.items %}
+      {% for appt in appointments %}
+        {% if appt.appt_type in schedulable and appt|is_chosen %}
+          <tr>
+            <td>{{appt.time}}</td>
+            <td>{{appt.adopter}}</td>
+            <td>{{appt.get_outcome_display}}</td>
+            <td>{{appt.dog}}</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </table>
+
+  <h2>FTA</h2>
+  <table class="report">
+    <tr class="no-border">
+      <th style="width:15%;">Time</th>
+      <th style="width:30%;">Adopter</th>
+      <th style="width:30%;">Outcome</th>
+      <th style="width:25%;">Dog</th>
+    </tr>
+    {% for timeslot, appointments in timeslots.items %}
+      {% for appt in appointments %}
+        {% if appt.appt_type in schedulable and appt.outcome == "4" %}
+          <tr>
+            <td>{{appt.time}}</td>
+            <td>{{appt.adopter}}</td>
+            <td>{{appt.get_outcome_display}}</td>
+            <td>{{appt.dog}}</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </table>
+  {% endif %} -->
+</div>
+{% endblock %}

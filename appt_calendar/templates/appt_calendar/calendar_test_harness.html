@@ -40,11 +40,11 @@
     {% endif %}
 
     {% if empty_day == True and request.user|has_group:"admin" and date.weekday < 5 %}
-      <div class="copy-template-button">
+      <div class="center">
         <br>
         <form class="" action="{% url 'copy_temp_to_cal' date.year date.month date.day %}" method="post">
           {% csrf_token %}
-          <input class="copy-template" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Copy From My {{weekday}} Template">
+          <input class="large-button" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Copy From My {{weekday}} Template">
         </form>
       </div>
     {% elif request.user|show_calendar:visible %}
@@ -57,26 +57,32 @@
           {% include 'appt_calendar/calendar_timeslot_toolbar.html' %}
         {% endif %}
 
-        <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment, else use appt_list for two-column responsive layout -->
-        {% if appointments|length <= 1 %}
-        <ul class="appt-solo">
-        <!-- else use appt_list for two-column responsive layout  -->
-        {% else %}
-        <ul class="appt-list">
-        {% endif %}
+        {% if appointments|length > 0 %}
+          <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment, else use appt_list for two-column responsive layout -->
+          {% if appointments|length == 1 %}
+          <ul class="appt-solo">
+          <!-- else use appt_list for two-column responsive layout  -->
+          {% else %}
+          <ul class="appt-list">
+          {% endif %}
 
-        {% for appt in appointments %}
-          <li class="appt-slot">
-            {% if request.user|has_group:"admin" %}
-              {% include 'appt_calendar/appointment_admin.html' %}
-            {% elif request.user|has_group:"greeter" %}
-              {% include 'appt_calendar/appointment_greeter.html' %}
-            {% elif request.user|has_group:"adopter" %}
-              {% include 'appt_calendar/appointment_adopter.html' %}
-            {% endif %}
-          </li>
-        {% endfor %}
-        </ul>
+          {% for appt in appointments %}
+            <li class="appt-slot">
+              {% if request.user|has_group:"admin" %}
+                {% include 'appt_calendar/appointment_admin.html' %}
+              {% elif request.user|has_group:"greeter" %}
+                {% include 'appt_calendar/appointment_greeter.html' %}
+              {% elif request.user|has_group:"adopter" %}
+                {% include 'appt_calendar/appointment_adopter.html' %}
+              {% endif %}
+            </li>
+          {% endfor %}
+          </ul>
+        {% else %}
+        <div class="center full-width">
+          No appointments available for {{timeslot}}.
+        </div>
+        {% endif %}
       </div>
       {% endfor %}
 

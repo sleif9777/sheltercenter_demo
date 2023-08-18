@@ -1,0 +1,22 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block content %}
+<div class="main text-page">
+    <form method="post">
+        {% csrf_token %}
+        <div class="center">
+            <input type="submit" class="medium-button side-margin-5" onClick="this.form.submit(); this.disabled=true;" name="" value="Upload">
+        </div>        
+        <ul class="list-page" id="adopter-list">
+            {% for personID, personValues in people.items %}
+            <li>
+                <input type="checkbox" name="{{personID}}" id="{{personID}}" checked>
+                <label for="{{personID}}">{{personValues.Firstname}} {{personValues.Lastname}}<br><span class="subscript">{{personValues.Email}}</span></label><br>
+            </li>
+            {% endfor %}
+        </ul>
+    </form>
+</div>
+{% endblock %}

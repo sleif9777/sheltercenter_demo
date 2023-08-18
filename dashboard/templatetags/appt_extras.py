@@ -36,7 +36,7 @@ def notes_only(appt):
 
 
 @register.filter(name='show_notes')
-def show_notes(appt):
+def show_notes(appt: Appointment):
     show = False
 
     try:
@@ -44,7 +44,7 @@ def show_notes(appt):
         if appt.internal_notes or appt.adopter_notes:
             show = True
         # for non-schedulable, should be shown so long as one exists other than app_interest
-        if appt.appt_type in ["1", "2", "3"] and appt.adopter.app_interest:
+        if appt.schedulable() and appt.adopter.app_interest:
             show = True
     except:
         pass
@@ -52,3 +52,41 @@ def show_notes(appt):
     return show
 
 
+@register.filter(name='show_watchlist')
+def show_watchlist(appt, list_type):
+    try:
+        available_list = appt.adopter.watchlist_available_str()
+        unavailable_list = appt.adopter.watchlist_unavailable_str()
+
+        match list_type:    
+            case "available":
+                return True if available_list else False
+            case "unavailable":
+                return True if unavailable_list else False
+            case "either":
+                return True if available_list or unavailable_list else False
+            case "both":
+                return True if available_list and unavailable_list else False
+    except:
+        return False
+
+
+@register.filter(name='pending_or_complete')
+def pending_or_complete(adopter):
+    waiting_for_chosen = adopter.waiting_for_chosen
+    adoption_complete = adopter.adoption_complete
+
+    try:
+        chosen_appointment = Appointment.objects.get(
+            adopter=adopter,
+            outcome__in=["3", "9", "10"],
+        )
+    except:
+        chosen_appointment = None
+
+    if waiting_for_chosen and chosen_appointment:
+        return "pending"
+    elif waiting_for_chosen or adoption_complete:
+        return "complete"
+    else:
+        return "none"

@@ -97,7 +97,7 @@ body {
 .page-actions a {
   color: black;
   margin: 5px;
-  text-decoration-style: dotted;
+  text-decoration: none;
 }
 
 .page-header a:hover {
@@ -150,7 +150,9 @@ Subsection toolbar styling (for timeslots, FAQs, visitor instructions, etc.)
 Appointment box styling
 ============================== */
 
-.appointment {
+.appointment,
+.dog-card,
+.litter-card {
   background-color: #e8e8e8;
   border: 2px solid #cccccc;
   color: #1E6C80;
@@ -167,11 +169,15 @@ Appointment box styling
   padding-left: 0;
 }
 
-.appt-description {
+.appt-description,
+.dog-description,
+.litter-description {
   font-size: 18pt;
 }
 
-.appt-info-block {
+.appt-info-block,
+.dog-info-block,
+.litter-info-block {
   border-bottom: 1px solid #1E6C80;
   margin-bottom: 0;
   width: 100%;
@@ -188,7 +194,9 @@ Appointment box styling
 
 .appt-subblock a,
 .appt-subblock a:hover,
-#appt-header-block a {
+#appt-header-block a,
+.dog-info-block a,
+.litter-info-block a {
   color: #1E6C80;
 }
 
@@ -310,6 +318,23 @@ p.greeting {
   color: #1E6C80;
 }
 
+/* Timeslot redirect - purple theme */
+.timeslot-redirect,
+.timeslot-redirect a,
+.timeslot-redirect a:hover {
+  background-color: #D6ADFF;
+  border-color: #6D00C7;
+  color: #6D00C7;
+}
+
+.timeslot-redirect li {
+  display: inline;
+}
+
+.timeslot-redirect ul {
+  padding: 0;
+}
+
 #toc-list {
   list-style-type: disc;
   padding: 5px 0 5px 40px;
@@ -358,19 +383,27 @@ input[type=submit].large-button {
   padding: 10px;
 }
 
+input[type=submit].medium-button {
+  font-size: 14pt;
+  padding: 10px;
+}
+
 /* ==============================
 List page styling
 ============================== */
 
-div.adopter-listing {
+div.adopter-listing,
+div.org-listing {
   break-inside: avoid-column;
 }
 
-.adopter-listing-entry {
+.adopter-listing-entry,
+.org-listing-entry {
   border-bottom: 1px solid #BF4580;
 }
 
-.adopter-name {
+.adopter-name,
+.org-name {
   font-size: 14pt;
 }
 
@@ -441,7 +474,7 @@ Universalisms
 
 a {
   color: #A7396E;
-  text-decoration-style: dotted;
+  text-decoration: none;
 }
 
 a:hover {
@@ -487,6 +520,10 @@ th {
   display: block;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .border-box {
   box-sizing: border-box;
 }
@@ -515,6 +552,10 @@ th {
   width: 100%;
 }
 
+.greyscale {
+  filter: grayscale(1);
+}
+
 .half-width {
   width: 50%;
 }
@@ -537,6 +578,10 @@ th {
 
 .left {
   text-align: left;
+}
+
+.left-pad-5 {
+  padding-left: 5px;
 }
 
 .left-pad-10 {
@@ -579,6 +624,11 @@ th {
   margin: 0 5px;
 }
 
+.strikethrough-italic {
+  font-style: italic;
+  text-decoration: line-through;
+}
+
 .subscript {
   font-size: 8pt;
 }
@@ -608,8 +658,6 @@ th {
 }
 
 /* Conditional page formatting (needs to be built on) */
-
-
 
 @media only screen and (max-width: 1200px) {
   #narrow-screen-nav {
@@ -659,7 +707,6 @@ th {
     margin-right: 10px;
   }
 
-  ul.appt_list,
   ul.appt-list {
     column-count: 2;
     list-style-type: none;
@@ -667,6 +714,16 @@ th {
   }
 
   ul.appt-list li {
+    width: 100%;
+  }
+
+  ul.dog-list {
+    column-count: 3;
+    list-style-type: none;
+    padding: 0;
+  }
+
+  ul.dog-list li {
     width: 100%;
   }
 
@@ -679,7 +736,8 @@ th {
   }
 
   ul.appt_solo,
-  ul.appt-solo {
+  ul.appt-solo,
+  ul.litter-list {
     column-count: 1;
     list-style-type: none;
     padding: 0;
@@ -742,12 +800,19 @@ th {
   }
 
   ul.appt_solo,
-  ul.appt-solo {
+  ul.appt-solo,
+  ul.litter-list {
     column-count: 1;
     list-style-type: none;
     margin: auto;
     padding: 0;
     width: 75%;
+  }
+
+  ul.dog-list {
+    column-count: 3;
+    list-style-type: none;
+    padding: 0;
   }
 
   .outstanding_task ul,
@@ -789,6 +854,12 @@ th {
 
   ul.appt-list li {
     width: 100%;
+  }
+
+  ul.dog-list {
+    column-count: 1;
+    list-style-type: none;
+    padding: 0;
   }
 
   #short-notice-table .subscript {

@@ -4,88 +4,66 @@
 
 {% block content %}
   <div class="main">
-
-    <div class="page_header">
-      <h1><a href="{% url 'greeter_reschedule' adopter.id appt.id previous_day.year previous_day.month previous_day.day source %}">&#9664;&#xFE0E;</a>  {{date_pretty}}  <a href="{% url 'greeter_reschedule' adopter.id appt.id next_day.year next_day.month next_day.day source %}">&#9654;&#xFE0E;</a></h1>
+    <div class="page-header">
+      <h1>
+        <a href="{% url 'greeter_reschedule' adopter.id appt.id previous_day.year previous_day.month previous_day.day source %}">&#9664;&#xFE0E;</a>
+        {{date_pretty}}
+        <a href="{% url 'greeter_reschedule' adopter.id appt.id next_day.year next_day.month next_day.day source %}">&#9654;&#xFE0E;</a>
+      </h1>
     </div>
-
-    <div class="calendar_actions">
+    <div class="page-actions">
       <a href="{% url 'jump_to_date_greeter' adopter.id appt.id source %}">Jump To Date</a>
       <a href="{% url 'greeter_reschedule' adopter.id appt.id today.year today.month today.day source %}">Return to Today</a>
     </div>
 
-    <h2 style="text-align: center; margin: 10px 0px;">{{action}} for {{adopter}}</h2>
+    <h2 class="center pad-10">{{action}} for {{adopter}}</h2>
 
     {% if date.weekday < 5 and not timeslots %}
       <br><br>
-      <p style="margin-left: 10px;">Adoptions is not scheduling for this date yet.
-        <a class="standalone" href="{% url 'set_alert_date_greeter' adopter.id date.year date.month date.day %}">Email {{adopter.f_name}} when appointments open?</a>
+      <p class="left-pad-10">Adoptions is not scheduling for this date yet.
+        <a href="{% url 'set_alert_date_greeter' adopter.id date.year date.month date.day %}">Email {{adopter.f_name}} when appointments open?</a>
       </p>
     {% endif %}
 
     {% for timeslot, appointments in timeslots.items %}
-
       {% if timeslot in timeslots %}
-        <div class="timeslot">
+      <div class="timeslot" id="ts{{timeslot.id}}">
 
-          <!-- two-column table displaying timeslot and timeslot-level actions -->
-          <table style = "width:100%; padding: 10px; margin: 0;">
-            <th style="font-size: 18pt; text-align: left;" class="timeslotheader">{{timeslot}}</th>
-            <th style="font-size: 18pt; text-align: right;" class="timeslotheader">
-              {% if request.user|has_group:"admin" %}
-                <a class="timeslot_action" href="{% url 'add_followup_appointment' adopter.id date.year date.month date.day timeslot.id %}">Add Appointment for {{adopter.f_name}}</a>
-              {% endif %}
-            </th>
-          </table>
+        <table class="subsection-table">
+          <th class="subsection-header left">{{timeslot}}</th>
+          <th class="subsection-header right">
+            <a class="subsection-action" href="{% url 'add_followup_appointment' adopter.id date.year date.month date.day timeslot.id %}">Add Appointment for {{adopter.f_name}}</a>
+          </th>
+        </table>
 
-          <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment -->
-          {% if appointments|length <= 1 %}
-          <ul class="appt_solo">
-          <!-- else use appt_list for two-column responsive layout  -->
-          {% else %}
-          <ul class="appt_list">
+        <!-- if zero or one appointments, use appt_solo (has margin: auto; and column-count: 1;) to center a single appointment, else use appt_list for two-column responsive layout -->
+        {% if appointments|length <= 1 %}
+        <ul class="appt-solo">
+        <!-- else use appt_list for two-column responsive layout  -->
+        {% else %}
+        <ul class="appt-list">
+        {% endif %}
+
+        {% for appt in appointments %}
+          {% if appt.available == True and appt.appt_type in schedulable %}
+          <li class="appt-slot">
+            <div class="appointment">
+              <table class="appt-info-block no-border" id="appt-header-block">
+                <tr>
+                  <td class="appt-description left upper"><b><a href="{% url 'adopter_reschedule' adopter.id appt.id date.year date.month date.day source %}">CLICK TO BOOK</a></b></td>
+                </tr>
+                <tr>
+                  <td class="left"><b>({{appt.appt_string}})</b></td>
+                  <td class="right"></td>
+                </tr>
+              </table>
+            </div>
+          </li>
           {% endif %}
-
-          {% for appt in appointments %}
-
-            <!-- format for open appointments -->
-            {% if appt.available == True and appt.appt_type in schedulable %}
-              <li class="appt_slot">
-                <div class="appointment">
-                  <!-- header grid, has a bottom border unless it is the only section -->
-                  <!-- it will be the only section when the appointment is not booked and has no notes -->
-                  {% if appt.adopter_notes %}
-                    <table class="appt_info_block" id="appt_header_block">
-                  {% else %}
-                    <table class="appt_info_block appt_end_block" id="appt_header_block">
-                  {% endif %}
-
-                    <tr>
-                      <td class="appt_description left upper"><b><a href="{% url 'adopter_reschedule' adopter.id appt.id date.year date.month date.day source %}">CLICK TO BOOK</a></b></td>
-                    </tr>
-
-                    <tr>
-                      <td class="left"><b>({{appt.appt_string}})</b></td>
-                      <td class="right"></td>
-                    </tr>
-
-                    {% if appt.available and appt.appt_type in schedulable and has_current_appt %}
-                      <tr>
-                        <td class="left" style="font-size: 10pt; padding-top: 5px;">By scheduling this appointment, you will forfeit your current appt for {{current_appt_str}}.</td>
-                        <td></td>
-                      </tr>
-
-                    {% endif %}
-
-                  </table>
-                </div>
-              </li>
-            {% endif %}
-          {% endfor %}
-          </ul>
-        </div>
+        {% endfor %}
+        </ul>
+      </div>
       {% endif %}
     {% endfor %}
   </div>
-
 {% endblock %}

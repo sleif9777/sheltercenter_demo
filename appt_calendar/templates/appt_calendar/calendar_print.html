@@ -15,18 +15,17 @@
 
     {% if internal_announcement %}
     <div class="info-box btm-margin-10">
-      <span class="alert-symbol">&#128712;&#xFE0E; </span>{{internal_announcement.text|safe}}
+      <span class="alert-symbol">&#9432;&#xFE0E; </span>{{internal_announcement.text|safe}}
     </div>
     {% endif %}
 
     {% if not empty_day %}
-    <table class="print-view">
+    <table class="print-view report">
       <tr>
         <th style="width:5%;">Time</th>
         <th style="width:15%;">Adopter/Dog</th>
-        <th style="width:23%;">Notes from Adopter</th>
-        <th style="width:24%;">Notes from Adoptions Team</th>
-        <th style="width:23%;">Notes from Shelterluv</th>
+        <th style="width:25%;">Notes</th>
+        <th style="width:25%;">Interested In...</th>
         <th style="width:10%;"># of Visits</th>
       </tr>
       {% for timeslot, appointments in timeslots.items %}
@@ -35,25 +34,58 @@
           <tr>
             <td>{{appt.time_string}}</td>
             <td>
-              {{appt}}
-              {% if appt.mobility %}
-                &#9855;&#xFE0E;
-              {% endif %}
-              {% if appt.bringing_dog %}
-                &#128021;&#xFE0E;
-              {% endif %}
-              {% if appt.has_cat %}
-                &#128008;&#xFE0E;
-              {% endif %}
+              <b>
+                {{appt}}
+                {% if appt.mobility %}
+                  &#9855;&#xFE0E;
+                {% endif %}
+                {% if appt.bringing_dog %}
+                  &#128021;&#xFE0E;
+                {% endif %}
+                {% if appt.has_cat %}
+                  &#128008;&#xFE0E;
+                {% endif %}
+              </b>
               <br>
-              <span class="subscript">({{appt.appt_string}})</span><br>
-              <span class="subscript">{{appt.dt_booking_string}}</span>
-            </td>
-            <td>{{appt.adopter_notes}}</td>
-            <td>{{appt.internal_notes}}</td>
-            <td>
               {% if appt.appt_type in schedulable %}
-                {{appt.adopter.app_interest}}
+                <span class="subscript">{{appt.adopter.primary_email}}</span><br>
+                {% if appt.adopter.phone_number != "See application" %}
+                <span class="subscript">{{appt.adopter.phone_number}}</span><br>
+                {% endif %}
+              {% endif %}
+              <span class="subscript">({{appt.appt_string}})</span><br>
+              {% if appt.appt_type in schedulable %}
+                <span class="subscript">{{appt.dt_booking_string}}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if appt.adopter_notes %}
+                {{appt.adopter_notes}} <em>({{appt.adopter.f_name}})</em> <br>
+              {% endif %}
+              {% if appt.internal_notes %}
+                {{appt.internal_notes}} <em>(Adoptions)</em><br>
+              {% endif %}
+              {% if appt.appt_type in schedulable %}
+                {{appt.adopter.app_interest}} <em>(Shelterluv)</em>
+                {% if appt|show_watchlist:"either" %}
+                <br><br>
+                {% if appt.adopter.watchlist_available_str %}
+                    {% if appt|show_watchlist:"available" %}
+                    {{appt.adopter.watchlist_available_str}} <em>(Watch List - Available)</em>
+                    {% endif %}
+                    {% if appt|show_watchlist:"both" %} 
+                    <br>
+                    {% endif %}
+                {% endif %}  
+                {% if appt|show_watchlist:"unavailable" and appt.schedulable and appt.adopter.watchlist_unavailable_str %}
+                  <span class="left strikethrough-italic">{{appt.adopter.watchlist_unavailable_str}}</span> <em>(Watch List - Unavailable)</em>
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            </td>
+            <td>
+              {% if appt.adopter.wishlist_str %}
+              {{appt.adopter.wishlist_str}}
               {% endif %}
             </td>
             <td>

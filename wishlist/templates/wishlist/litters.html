@@ -1,0 +1,41 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block content%}
+  <div class="main text-page">
+    <h1 class="page-header">Manage Litters</h1>
+
+    <div class="info-box toc btm-margin-5">
+      <table>
+        <tr>
+          <td class="info-box-data no-border">
+            <span class="alert-symbol">&#9432;&#xFE0E; </span>Set a litter name, or email adopters about a popular or fully-adopted litter.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <form class="" action="" method="post">
+      {% csrf_token %}
+      <div class="center">
+        <input type="submit" class="medium-button side-margin-5" onClick="this.form.submit(); this.disabled=true;" name="" value="Save">
+      </div>
+      {% if recently_adopted_litters.count > 0 %}
+      <h2>Recently Adopted</h2>
+      <ul class="litter-list">
+        {% for litter in recently_adopted_litters %}
+          <li>{% include 'wishlist/litter_card.html' %}</li>
+        {% endfor %}
+      </ul>
+      <hr>
+      <h2>All Litters</h2>
+      {% endif %}
+      <ul class="appt-solo">
+        {% for litter in available_litters %}
+          <li>{% include 'wishlist/litter_card.html' %}</li>
+        {% endfor %}
+      </ul>
+    </form>
+  </div>
+{% endblock %}

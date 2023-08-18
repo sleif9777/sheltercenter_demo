@@ -1,0 +1,56 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block content %}
+
+<script>
+  function filterAdopters() {
+    // Declare variables
+    var input, filter, ul, li, name, email, i, txtValue;
+    input = document.getElementById("search-bar");
+    filter = input.value.toLowerCase();
+    ul = document.getElementById("adopter-list");
+    li = ul.getElementsByClassName('adopter-listing-entry');
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < li.length; i++) {
+      org_name = li[i].getElementsByClassName("org-name")[0];
+      leader_name = li[i].getElementsByClassName("org-leader")[0];
+      email = li[i].getElementsByClassName("org-email")[0];
+      nameTxtValue = org_name.textContent || org_name.innerText;
+      leaderTxtValue = leader_name.textContent || leader_name.innerText;
+      emailTxtValue = email.textContent || email.innerText;
+      if (nameTxtValue.toLowerCase().indexOf(filter) > -1 || leaderTxtValue.toLowerCase().indexOf(filter) > -1 || emailTxtValue.toLowerCase().indexOf(filter) > -1) {
+        li[i].style.display = "";
+      } else {
+        li[i].style.display = "none";
+      }
+    }
+  }
+</script>
+<div class="main text-page">
+  <h1 class="page-header no-actions">Manage Organizations</h1>
+  <input type="text" id="search-bar" onkeyup="filterAdopters()" placeholder="Search by name or email address.">
+  <ul class="list-page" id="adopter-list">
+    {% for org in organizations %}
+      <div class="org-listing">
+        <li class="org-listing-entry">
+          <a href="{% url 'edit_org' org.id %}">
+            <span class="org-name">
+            {{org.org_name}}
+            </span><br>
+            <span class="org-leader subscript">{{org.leader_fname}} {{org.leader_lname}}</span><br>
+            <span class="org-email subscript">{{org.contact_email}}</span>
+          </a>
+          <ul>
+            <li>
+              <a href="{% url 'contact_org' org.id 'add' %}">Resend Invitation</a>
+            </li>
+          </ul>
+        </li>
+      </div>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

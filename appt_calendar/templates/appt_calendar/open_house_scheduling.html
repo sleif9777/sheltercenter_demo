@@ -1,0 +1,25 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load auth_extras %}
+{% load appt_extras %}
+
+{% block content %}
+<div class="main text-page">
+  <h1 class="page-header">Open House Appointment Sign-Ups</h1>
+  <div class="page-actions">
+    <a href="{% url 'open_house_add_adopter' %}" target="_blank">Sign-Up Page</a>
+    <a href="https://www.qr-code-generator.com/" target="_blank">Generate a QR Code</a>
+  </div>
+  <table class="report" style="width: 40%;">
+    {% for adopter in adopters %}
+      <!-- appts with chosen or paperwork status -->
+      <tr>
+        <td>{{adopter}}</td>
+        <td class="right">
+          <a href="{% url 'open_house_schedule_now' adopter.id %}">Schedule Now</a> &#x2022; <a href="{% url 'open_house_cancel_adopter' adopter.id %}">Cancel</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

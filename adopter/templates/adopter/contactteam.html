@@ -4,8 +4,12 @@
 {% block content %}
 <div class="main text-page">
   <h1 class="page-header no-actions">Contact Us</h1>
+  {% if not events %}
   <p class="btm-margin-5">You can use the message field below to submit a message directly to our Adoptions team.</p>
   <p class="btm-margin-5">Before submitting, <a href="{% url 'faq' %}">please read our FAQ page!</a> Our team can be slow to respond to emails and you may find the answer to your question more quickly by reading our FAQs thoroughly.</p>
+  {% else %}
+  <p class="btm-margin-5">You can use the message field below to submit a message directly to our Corporate Volunteering team.</p> 
+  {% endif %}
   <br>
   <form method="post">
     {% csrf_token %}

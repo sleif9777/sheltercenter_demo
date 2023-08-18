@@ -10,9 +10,14 @@ class Profile(models.Model):
 
     #appointment card attributes
     ac_show_number_of_visits = models.BooleanField(default=True)
+    ac_show_adopter_email = models.BooleanField(default=True)
+    ac_show_adopter_phone = models.BooleanField(default=True)
+    ac_show_adopter_description = models.BooleanField(default=True)
+    ac_show_counselor = models.BooleanField(default=True)
     ac_show_internal_notes = models.BooleanField(default=True)
     ac_show_adopter_notes = models.BooleanField(default=True)
     ac_show_shelterluv_notes = models.BooleanField(default=True)
+    ac_show_watchlist = models.BooleanField(default=True)
     ac_show_city_state = models.BooleanField(default=True)
     ac_show_household_activity = models.BooleanField(default=True)
     ac_show_housing = models.BooleanField(default=True)
@@ -24,11 +29,16 @@ class Profile(models.Model):
     ac_show_hypo_preference = models.BooleanField(default=True)
     ac_show_breed_restriction_comm = models.BooleanField(default=True)
     ac_show_dogs_adopted_comm = models.BooleanField(default=True)
+    ac_show_dog_in_extended_host_comm = models.BooleanField(default=True)
+    ac_show_dog_in_medical_foster_comm = models.BooleanField(default=True)
+    ac_show_dog_is_popular_low_chances_comm = models.BooleanField(default=True)
+    ac_show_dog_is_popular_comm = models.BooleanField(default=True)
+    ac_show_dog_not_here_yet_comm = models.BooleanField(default=True)
+    ac_show_limited_hypo_comm = models.BooleanField(default=True)
+    ac_show_limited_puppies_comm = models.BooleanField(default=True)
     ac_show_limited_small_dogs_comm = models.BooleanField(default=True)
     ac_show_limited_small_puppies_comm = models.BooleanField(default=True)
     ac_show_lives_with_parents_comm = models.BooleanField(default=True)
-    ac_show_limited_puppies_comm = models.BooleanField(default=True)
-    ac_show_limited_hypo_comm = models.BooleanField(default=True)
     ac_show_send_follow_up = models.BooleanField(default=True)
     ac_show_send_follow_up_with_host = models.BooleanField(default=True)
     ac_show_schedule_next = models.BooleanField(default=True)
@@ -45,9 +55,14 @@ class Profile(models.Model):
     def get_card_settings(self):
         attributes = {
             'number-of-visits': int(self.ac_show_number_of_visits),
+            'adopter-email': int(self.ac_show_adopter_email),
+            'adopter-phone': int(self.ac_show_adopter_phone),
+            'adopter-description': int(self.ac_show_adopter_description),
+            'counselor': int(self.ac_show_counselor),
             'internal-notes': int(self.ac_show_internal_notes),
             'adopter-notes': int(self.ac_show_adopter_notes),
             'shelterluv-notes': int(self.ac_show_shelterluv_notes),
+            'ac_show_watchlist': int(self.ac_show_watchlist),
             'city-state': int(self.ac_show_city_state),
             'household-activity': int(self.ac_show_household_activity),
             'housing': int(self.ac_show_housing),
@@ -59,11 +74,16 @@ class Profile(models.Model):
             'hypo-preference': int(self.ac_show_hypo_preference),
             'breed-restriction-comm': int(self.ac_show_breed_restriction_comm),
             'dogs-adopted-comm': int(self.ac_show_dogs_adopted_comm),
+            'dog-in-extended-host-comm': int(self.ac_show_dog_in_extended_host_comm),
+            'dog-in-medical-foster-comm': int(self.ac_show_dog_in_medical_foster_comm),
+            'dog-is-popular-comm': int(self.ac_show_dog_is_popular_comm),
+            'dog-is-popular-low-chances-comm': int(self.ac_show_dog_is_popular_low_chances_comm),
+            'dog-not-here-yet-comm': int(self.ac_show_dog_not_here_yet_comm),
+            'limited-hypo-comm': int(self.ac_show_limited_hypo_comm),
+            'limited-puppies-comm': int(self.ac_show_limited_puppies_comm),
             'limited-small-dogs-comm': int(self.ac_show_limited_small_dogs_comm),
             'limited-small-puppies-comm': int(self.ac_show_limited_small_puppies_comm),
             'lives-with-parents-comm': int(self.ac_show_lives_with_parents_comm),
-            'limited-puppies-comm': int(self.ac_show_limited_puppies_comm),
-            'limited-hypo-comm': int(self.ac_show_limited_hypo_comm),
             'send-follow-up': int(self.ac_show_send_follow_up),
             'send-follow-up-with-host': int(self.ac_show_send_follow_up_with_host),
             'schedule-next': int(self.ac_show_schedule_next)
@@ -72,10 +92,18 @@ class Profile(models.Model):
         return attributes
 
     def get_card_subblock_settings(self):
+        contact = [
+            self.ac_show_adopter_email,
+            self.ac_show_adopter_phone,
+            self.ac_show_adopter_description,
+            self.ac_show_counselor
+        ]
+
         notes = [
             self.ac_show_internal_notes,
             self.ac_show_adopter_notes,
-            self.ac_show_shelterluv_notes
+            self.ac_show_shelterluv_notes,
+            self.ac_show_watchlist,
         ]
         
         about = [
@@ -100,10 +128,11 @@ class Profile(models.Model):
         ]
 
         subblocks = {
-            'notes': int(all(setting for setting in notes)),
-            'about': int(all(setting for setting in about)),
-            'preferences': int(all(setting for setting in preferences)),
-            'follow_ups': int(all(setting for setting in follow_ups))
+            'contact': int(any(setting for setting in contact)),
+            'notes': int(any(setting for setting in notes)),
+            'about': int(any(setting for setting in about)),
+            'preferences': int(any(setting for setting in preferences)),
+            'follow_ups': int(any(setting for setting in follow_ups))
         }
 
         return subblocks

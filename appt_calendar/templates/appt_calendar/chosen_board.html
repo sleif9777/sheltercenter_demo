@@ -59,6 +59,7 @@
             {% elif appt.outcome == "8" %}
               Adopter Notified<br>
               Paperwork Scheduled<br>
+              <a href="{% url 'revert_to_needs_well_check' appt.id %}">Put Back as Chosen</a><br>
               <a href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
             {% endif %}
           </td>
@@ -118,6 +119,7 @@
               {% else %}
               <a href="{% url 'paperwork_calendar' today.year today.month today.day appt.id 'negative' %}">Add Paperwork Appointment</a><br>
               {% endif %}
+              <a href="{% url 'revert_to_needs_well_check' appt.id %}">Put Back as Chosen</a><br>
               <a href="{% url 'mark_complete_cb' appt.id %}">Mark as Complete</a>
             {% endif %}
           </td>
@@ -163,9 +165,8 @@
         {% if request.user|has_group:"admin" %}
         <td>
           {% if appt|alert_overdue == True %}<span class="pink">&#9888;&#xFE0E;</span>{% endif %}{{appt.last_update_sent}} <br>
-          <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a>
+          <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'update' %}">Send Update</a> &#x2022; <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'cough' %}">Cough</a> &#x2022; <a href="{% url 'contact_adopter' appt.id appt.date.year appt.date.month appt.date.day 'nasal_discharge' %}">Nasal Discharge</a><br>
           {% if appt.all_updates_sent|length > 0 %}
-          <br>
           <span class="subscript italic top-pad-5">
             <b>Previous Updates:</b><br>
             <ul>

@@ -18,6 +18,23 @@
         <label for="id_ac_show_number_of_visits">
           Number of visits
         </label>
+        <h3>Contact Info</h3>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_adopter_email.id_for_label }}" name="{{ form.ac_show_adopter_email.html_name }}" onclick="updateAppointmentBox('id_ac_show_adopter_email');" {% if form.ac_show_adopter_email.value %}checked{% endif %}>
+        <label for="id_ac_show_adopter_email">
+          Adopter email <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_adopter_phone.id_for_label }}" name="{{ form.ac_show_adopter_phone.html_name }}" onclick="updateAppointmentBox('id_ac_show_adopter_phone');" {% if form.ac_show_adopter_phone.value %}checked{% endif %}>
+        <label for="id_ac_show_adopter_phone">
+          Adopter phone <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_adopter_description.id_for_label }}" name="{{ form.ac_show_adopter_description.html_name }}" onclick="updateAppointmentBox('id_ac_show_adopter_description');" {% if form.ac_show_adopter_description.value %}checked{% endif %}>
+        <label for="id_ac_show_adopter_description">
+          Adopter description <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_counselor.id_for_label }}" name="{{ form.ac_show_counselor.html_name }}" onclick="updateAppointmentBox('id_ac_show_counselor');" {% if form.ac_show_counselor.value %}checked{% endif %}>
+        <label for="id_ac_show_counselor">
+          Counselor
+        </label>
         <h3>Notes</h3>
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_internal_notes.id_for_label }}" name="{{ form.ac_show_internal_notes.html_name }}" onclick="updateAppointmentBox('id_ac_show_internal_notes');" {% if form.ac_show_internal_notes.value %}checked{% endif %}>
         <label for="id_ac_show_internal_notes">
@@ -30,6 +47,10 @@
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_shelterluv_notes.id_for_label }}" name="{{ form.ac_show_shelterluv_notes.html_name }}" onclick="updateAppointmentBox('id_ac_show_shelterluv_notes');" {% if form.ac_show_shelterluv_notes.value %}checked{% endif %}>
         <label for="id_ac_show_shelterluv_notes">
           Shelterluv notes <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_watchlist.id_for_label }}" name="{{ form.ac_show_watchlist.html_name }}" onclick="updateAppointmentBox('id_ac_show_watchlist');" {% if form.ac_show_watchlist.value %}checked{% endif %}>
+        <label for="id_ac_show_watchlist">
+          Watch List <br>
         </label>
         <h3>About</h3>
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_city_state.id_for_label }}" name="{{ form.ac_show_city_state.html_name }}" onclick="updateAppointmentBox('id_ac_show_city_state');" {% if form.ac_show_city_state.value %}checked{% endif %}>
@@ -78,6 +99,34 @@
         <label for="id_ac_show_dogs_adopted_comm">
           Dogs Were Adopted <br>
         </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dog_in_extended_host_comm.id_for_label }}" name="{{ form.ac_show_dog_in_extended_host_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dog_in_extended_host_comm');" {% if form.ac_show_dog_in_extended_host_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_dog_in_extended_host_comm">
+          Dog In Extended Host <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dog_in_medical_foster_comm.id_for_label }}" name="{{ form.ac_show_dog_in_medical_foster_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dog_in_medical_foster_comm');" {% if form.ac_show_dog_in_medical_foster_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_dog_in_medical_foster_comm">
+          Dog In Medical Foster <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dog_is_popular_low_chances_comm.id_for_label }}" name="{{ form.ac_show_dog_is_popular_low_chances_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dog_is_popular_low_chances_comm');" {% if form.ac_show_dog_is_popular_low_chances_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_dog_is_popular_low_chances_comm">
+          Dog Is Popular (Low Chances) <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dog_is_popular_comm.id_for_label }}" name="{{ form.ac_show_dog_is_popular_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dog_is_popular_comm');" {% if form.ac_show_dog_is_popular_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_dog_is_popular_comm">
+          Dog Is Popular (X in Line) <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_dog_not_here_yet_comm.id_for_label }}" name="{{ form.ac_show_dog_not_here_yet_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_dog_not_here_yet_comm');" {% if form.ac_show_dog_not_here_yet_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_dog_not_here_yet_comm">
+          Dog Not Here Yet <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_limited_hypo_comm.id_for_label }}" name="{{ form.ac_show_limited_hypo_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_limited_hypo_comm');" {% if form.ac_show_limited_hypo_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_limited_hypo_comm">
+          Limited Low-shed/Hypo <br>
+        </label>
+        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_limited_puppies_comm.id_for_label }}" name="{{ form.ac_show_limited_puppies_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_limited_puppies_comm');" {% if form.ac_show_limited_puppies_comm.value %}checked{% endif %}>
+        <label for="id_ac_show_limited_puppies_comm">
+          Limited Puppies <br>
+        </label>
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_limited_small_dogs_comm.id_for_label }}" name="{{ form.ac_show_limited_small_dogs_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_limited_small_dogs_comm');" {% if form.ac_show_limited_small_dogs_comm.value %}checked{% endif %}>
         <label for="id_ac_show_limited_small_dogs_comm">
           Limited Small Dogs <br>
@@ -89,14 +138,6 @@
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_lives_with_parents_comm.id_for_label }}" name="{{ form.ac_show_lives_with_parents_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_lives_with_parents_comm');" {% if form.ac_show_lives_with_parents_comm.value %}checked{% endif %}>
         <label for="id_ac_show_lives_with_parents_comm">
           Lives With Parents <br>
-        </label>
-        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_limited_puppies_comm.id_for_label }}" name="{{ form.ac_show_limited_puppies_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_limited_puppies_comm');" {% if form.ac_show_limited_puppies_comm.value %}checked{% endif %}>
-        <label for="id_ac_show_limited_puppies_comm">
-          Limited Puppies <br>
-        </label>
-        <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_limited_hypo_comm.id_for_label }}" name="{{ form.ac_show_limited_hypo_comm.html_name }}" onclick="updateAppointmentBox('id_ac_show_limited_hypo_comm');" {% if form.ac_show_limited_hypo_comm.value %}checked{% endif %}>
-        <label for="id_ac_show_limited_hypo_comm">
-          Limited Low-shed/Hypo <br>
         </label>
         <h3>Follow-Ups</h3>
         <input type="checkbox" class="ac-settings-cbx" id="{{ form.ac_show_send_follow_up.id_for_label }}" name="{{ form.ac_show_send_follow_up.html_name }}" onclick="updateAppointmentBox('id_ac_show_send_follow_up');" {% if form.ac_show_send_follow_up.value %}checked{% endif %}>
@@ -145,6 +186,21 @@
 
         </tbody>
       </table>
+      <table class="appt-info-block appt-subblock">
+        <tr class="info-block-subheader">
+          <th>Contact Info</th>
+        </tr>
+        <tr>
+          <td>
+            <ul class="appt-two-col-list">
+              <li class="adopter-email">leifersam9@gmail.com</li>
+              <li class="adopter-phone">(631) 278-9777</li>
+              <li class="adopter-description">Red jacket</li>
+              <li class="counselor"><b>Counselor:</b> Val</li>
+            </ul>
+          </td>
+        </tr>
+      </table>
       <table class="appt-subblock appt-info-block">
 
         <tr class="info-block-subheader">
@@ -167,6 +223,10 @@
           <td class="left">No preferences!</td>
         </tr>
 
+        <tr class="watchlist">
+          <td class="left" style="width:20%;"><b>Watch List:</b></td>
+          <td class="left">Maxine, Lenny, Lil' Woofer</td>
+        </tr>
       </table>
       <table class="appt-subblock appt-info-block">
         <tbody>
@@ -213,11 +273,16 @@
               <ul class="appt-two-col-list">
                 <li class="breed-restriction-comm">Breed Restrictions</li> 
                 <li class="dogs-adopted-comm">Dogs Were Adopted</li>
+                <li class="dog-in-extended-host-comm">Dog In Extended Host</li>
+                <li class="dog-in-medical-foster-comm">Dog In Medical Foster</li>
+                <li class="dog-is-popular-low-chances-comm">Dog Is Popular (Low Chances)</li>
+                <li class="dog-is-popular-comm">Dog Is Popular (X in Line)</li>
+                <li class="dog-not-here-yet-comm">Dog Not Here Yet</li>
+                <li class="limited-hypo-comm">Limited Low-shed/Hypo</li>
+                <li class="limited-puppies-comm">Limited Puppies</li>
                 <li class="limited-small-dogs-comm">Limited Small Dogs</li>
                 <li class="limited-small-puppies-comm">Limited Small Puppies</li>
                 <li class="lives-with-parents-comm">Lives With Parents</li>
-                <li class="limited-puppies-comm">Limited Puppies</li>
-                <li class="limited-hypo-comm">Limited Low-shed/Hypo</li>
                 <li class="resend-confirmation-comm">Resend Confirmation</li>
               </ul>
             </td>

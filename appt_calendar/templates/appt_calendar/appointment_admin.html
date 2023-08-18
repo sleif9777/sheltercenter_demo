@@ -1,4 +1,5 @@
 {% load appt_extras %}
+{% load auth_extras %}
 
 <div class="appointment {% if appt.short_notice %} short-notice {% endif %}" id="appt{{appt.id}}">
   {% if not appt.available %}
@@ -51,6 +52,36 @@
   {% if not appt.available %}
 
   {% if appt.appt_type in schedulable and appt.adopter %}
+  <table class="appt-subblock appt-info-block contact-subblock">
+    <tr class="info-block-subheader">
+      <th>Contact Info</th>
+    </tr>
+    <tr>
+      <td>
+        <ul class="appt-two-col-list">
+          <li class="adopter-email">{{appt.adopter.primary_email}}</li>
+          <li class="adopter-phone">
+            {% if appt.adopter.phone_number != "See application" %}
+            {{appt.adopter.phone_number}}
+            {% else %}
+            See application for phone number.
+            {% endif %}
+          </li>
+          {% if appt.checked_in %}
+          <li>{{appt.adopter_description}}</li>
+          <li>
+            {% if appt.counselor != "" %}
+            <b>Counselor:</b> {{appt.counselor}}
+            {% else %}
+            <em><a href="{% url 'check_in_appt' appt.id date.year date.month date.day%}">Assign Counselor</a></em>
+            {% endif %}
+          </li>
+          {% endif %}
+        </ul>
+      </td>
+    </tr>
+  </table>
+
   <table class="appt-subblock appt-info-block notes-subblock">
   <!-- if false, it is an open appointment, paperwork, or surrender and could have notes at most -->
   {% else %}
@@ -85,6 +116,25 @@
         <tr class="shelterluv-notes">
           <td class="left" style="width:20%;"><b>From Shelterluv:</b></td>
           <td class="left">{{appt.adopter.app_interest_str|linebreaks}}</td>
+        </tr>
+        {% endif %}
+
+        {% if appt|show_watchlist:"either" and appt.schedulable %}
+        <tr class="watchlist">
+          <td class="left" style="width:20%;"><b>Watch List:</b></td>
+          <td class="left">
+            {% if appt.adopter.watchlist_available_str %}
+              {% if appt|show_watchlist:"available" %}
+              {{appt.adopter.watchlist_available_str}}
+              {% endif %}
+              {% if appt|show_watchlist:"both" %}
+              <br>
+              {% endif %}
+            {% endif %}
+            {% if appt|show_watchlist:"unavailable" and appt.schedulable and appt.adopter.watchlist_unavailable_str %}
+            <span class="left strikethrough-italic">{{appt.adopter.watchlist_unavailable_str}}</span>
+            {% endif %}
+          </td>
         </tr>
         {% endif %}
       {% else %}
@@ -184,20 +234,53 @@
               {% endif %}
             </li>
             {% endif %}
-            {% if appt.adopter.lives_with_parents %}
-            <li class="lives-with-parents-comm">
-              {% if appt.comm_reminder_parents == False %}
-              <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'reminder_parents' %}">Lives With Parents</a>
-              {% else %}
-              <span class="completed-appt-action">Lives With Parents</span>
-              {% endif %}
-            </li>
-            {% endif %}
             <li class="dogs-adopted-comm">
               {% if appt.comm_adopted_dogs == False %}
                 <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dogs_were_adopted' %}">Dogs Were Adopted</a>
               {% else %}
                 <span class="completed-appt-action">Dogs Were Adopted</span>
+              {% endif %}
+            </li>
+            <li class="dog-in-extended-host-comm">
+              {% if appt.comm_dog_in_extended_host == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_in_extended_host' %}">Dog In Ext. Host</a>
+              {% else %}
+                <span class="completed-appt-action">Dog In Ext. Host</span>
+              {% endif %}
+            </li>
+            <li class="dog-in-medical-foster-comm">
+              {% if appt.comm_dog_in_medical_foster == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_in_medical_foster' %}">Dog In Med. Foster</a>
+              {% else %}
+                <span class="completed-appt-action">Dog Were Adopted</span>
+              {% endif %}
+            </li>
+            <li class="dog-is-popular-low-chances-comm">
+              {% if appt.comm_dog_is_popular_low_chances == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_is_popular_low_chances' %}">Dog Is Popular (Low Chances)</a>
+              {% else %}
+                <span class="completed-appt-action">Dog Is Popular (Low Chances)</span>
+              {% endif %}
+            </li>
+            <li class="dog-is-popular-comm">
+              {% if appt.comm_dog_is_popular == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_is_popular_x_in_line' %}">Dog Is Popular (X in Line)</a>
+              {% else %}
+                <span class="completed-appt-action">Dog Is Popular (X in Line)</span>
+              {% endif %}
+            </li>
+            <li class="dog-not-here-yet-comm">
+              {% if appt.comm_dog_not_here_yet == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'dog_not_here_yet' %}">Dog Not Here Yet</a>
+              {% else %}
+                <span class="completed-appt-action">Dog Is Popular</span>
+              {% endif %}
+            </li>
+            <li class="limited-hypo-comm">
+              {% if appt.comm_limited_hypo == False %}
+                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_hypo' %}">Limited Low-shed/Hypo</a>
+              {% else %}
+                <p class="completed-appt-action">Limited Low-shed/Hypo</p>
               {% endif %}
             </li>
             <li class="limited-puppies-comm">
@@ -214,20 +297,23 @@
                 <p class="completed-appt-action">Limited Small Dogs</p>
               {% endif %}
             </li>
-            <li class="limited-hypo-comm">
-              {% if appt.comm_limited_hypo == False %}
-                <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_hypo' %}">Limited Low-shed/Hypo</a>
-              {% else %}
-                <p class="completed-appt-action">Limited Low-shed/Hypo</p>
-              {% endif %}
-            </li>
-            <li class="limited-small-puppies">
+            <li class="limited-small-puppies-comm">
               {% if appt.comm_limited_small_puppies == False %}
                 <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'limited_small_puppies' %}">Limited Small Puppies</a>
               {% else %}
                 <p class="completed-appt-action">Limited Small Puppies</p>
               {% endif %}
             </li>
+            {% if appt.adopter.lives_with_parents %}
+            <li class="lives-with-parents-comm">
+              {% if appt.comm_reminder_parents == False %}
+              <a href="{% url 'contact_adopter' appt.id date.year date.month date.day 'reminder_parents' %}">Lives With Parents</a>
+              {% else %}
+              <span class="completed-appt-action">Lives With Parents</span>
+              {% endif %}
+            </li>
+            {% endif %}
+            <li><a href="{% url 'resend_invite' appt.adopter.id %}">Resend Approval Email</a></li>
             <li><a href="{% url 'resend_confirmation' appt.id %}">Resend Confirmation</a></li>
           </ul>
         </td>
@@ -245,7 +331,11 @@
           <ul class="appt-two-col-list">
             <li>
               {% if appt.outcome == "1" %}
-                <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
+                {% if appt.checked_in %}
+                  <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
+                {% else %}
+                  <a href="{% url 'check_in_appt' appt.id date.year date.month date.day%}">Check In</a> &#x2022; <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">Enter Decision</a>
+                {% endif %}
               {% else %}
                 {% if appt.outcome == "5" or appt.outcome == "6" or appt.outcome == "11" %}
                   <a href="{% url 'enter_decision' appt.id date.year date.month date.day%}">{{appt.get_outcome_display}}</a>
@@ -257,6 +347,10 @@
             <li><a href="{% url 'greeter_reschedule' appt.adopter.id appt.id date.year date.month date.day 'calendar' %}">Reschedule Adopter</a></li>
             <li><a href="{% url 'remove_adopter' appt.id date.year date.month date.day %}">Cancel Adopter</a></li>
             <li><a href="https://www.shelterluv.com/adoption_request_print/{{appt.adopter.application_id}}" target="_blank">Print Application</a></li>
+            {% if request.user|has_group:"superuser" %}
+            <li><a href="https://sheltercenter.dog/admin/adopter/adopter/{{appt.adopter.id}}/change/">Edit Adopter in Admin</a></li> 
+            <li><a href="http://sheltercenter.dog/admin/appt_calendar/appointment/{{appt.id}}/change/">Edit Appointment in Admin</a></li>
+            {% endif %}
           </ul>
         </td>
       </tr>  

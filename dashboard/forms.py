@@ -28,9 +28,14 @@ class AppointmentCardPreferences(forms.ModelForm):
         model = Profile
         fields = [
             'ac_show_number_of_visits',
+            'ac_show_adopter_email',
+            'ac_show_adopter_phone',
+            'ac_show_adopter_description',
+            'ac_show_counselor',
             'ac_show_internal_notes',
             'ac_show_adopter_notes',
             'ac_show_shelterluv_notes',
+            'ac_show_watchlist',
             'ac_show_city_state',
             'ac_show_household_activity',
             'ac_show_housing',
@@ -42,16 +47,17 @@ class AppointmentCardPreferences(forms.ModelForm):
             'ac_show_hypo_preference',
             'ac_show_breed_restriction_comm',
             'ac_show_dogs_adopted_comm',
+            'ac_show_dog_in_extended_host_comm',
+            'ac_show_dog_in_medical_foster_comm',
+            'ac_show_dog_is_popular_low_chances_comm',
+            'ac_show_dog_is_popular_comm',
+            'ac_show_dog_not_here_yet_comm',
+            'ac_show_limited_hypo_comm',
+            'ac_show_limited_puppies_comm',
             'ac_show_limited_small_dogs_comm',
             'ac_show_limited_small_puppies_comm',
             'ac_show_lives_with_parents_comm',
-            'ac_show_limited_puppies_comm',
-            'ac_show_limited_hypo_comm',
             'ac_show_send_follow_up',
             'ac_show_send_follow_up_with_host',
             'ac_show_schedule_next',
         ]
-
-        labels = {
-            'signature': 'Set your email signature here:'
-        }

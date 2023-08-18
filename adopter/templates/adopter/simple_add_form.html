@@ -1,13 +1,27 @@
-<form class="" action="{% url 'saf_submit' %}" method="post">
-    {% csrf_token %}
-    <label for="fname">First name: </label>
-    <input type="text" name="fname" value="" required><br>
-    <label for="lname">Last name: </label>
-    <input type="text" name="lname" value="" required><br>
-    <label for="email">Email: </label>
-    <input type="text" name="email" value="" required><br>
-    <label for="subjnotes">Subject line notes: </label>
-    <input type="text" name="subjnotes" value=""><br>
-    <input type="submit" name="submit" value="In NC/SC/VA">
-    <input type="submit" name="submit_oos" value="Out of State" formaction="{% url 'saf_sub_oos' %}">
-</form>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet"  href="{%  static  'main.css'  %}">
+  </head>
+  <body>
+    <div class="login-form">
+      <a href="https://savinggracenc.org/" target="_blank">
+        <img src="{% static 'media/logo.png' %}" alt="">
+      </a>
+      <h3 class="page-header btm-margin-5">Open House Appointment Sign-Up</h3>
+      {% if sign_up_valid %}
+        <span class="center">Your sign-up is complete.</span>
+      {% else %}
+        <form class="add-adopter center" action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="submit-form" type="submit" onClick="this.form.submit(); this.disabled=true;" name="" value="Submit"><br>
+        </form>
+      {% endif %}  
+    </div>
+  </body>
+</html>
