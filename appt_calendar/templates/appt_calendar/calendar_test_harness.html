@@ -39,7 +39,7 @@
       {% include 'appt_calendar/calendar_messages_adopter.html' %}
     {% endif %}
 
-    {% if empty_day == True and request.user|has_group:"admin" and date.weekday < 5 %}
+    {% if empty_day == True and request.user|has_group:"admin" and date.weekday < 6 %}
       <div class="center">
         <br>
         <form class="" action="{% url 'copy_temp_to_cal' date.year date.month date.day %}" method="post">
