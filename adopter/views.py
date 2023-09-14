@@ -1041,21 +1041,22 @@ def stage_import(request):
             if form_data[id][0] == 'on':
                 person = people[id]
                 email_for_search = person['Email']
-
-                try:
-                    user = User.objects.get(username=email_for_search)
-                    adopter = Adopter.objects.get(
-                        primary_email=email_for_search)
-                    accepted_last_4_days = adopter.accept_date in last_4_days
-
-                    if not accepted_last_4_days:
-                        adopter = create_invite_email(adopter)
-                except User.DoesNotExist:
-                    adopter = create_adopter_from_api_import(person)
-                    create_new_user_from_adopter(adopter)
-                    create_invite_email(adopter)
-                except:
-                    pass
+                
+                if "@" in email_for_search:
+                    try:
+                        user = User.objects.get(username=email_for_search)
+                        adopter = Adopter.objects.get(
+                            primary_email=email_for_search)
+                        accepted_last_4_days = adopter.accept_date in last_4_days
+    
+                        if not accepted_last_4_days:
+                            adopter = create_invite_email(adopter)
+                    except User.DoesNotExist:
+                        adopter = create_adopter_from_api_import(person)
+                        create_new_user_from_adopter(adopter)
+                        create_invite_email(adopter)
+                    except:
+                        pass
 
         if not sandbox:
             first_form_data_key = list(form_data.keys())[0]
